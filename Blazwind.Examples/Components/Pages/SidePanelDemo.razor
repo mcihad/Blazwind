@@ -1,0 +1,207 @@
+@page "/components/side-panel"
+@using Blazwind.Components.Input
+@using Blazwind.Components.SidePanel
+
+<PageTitle>Side Panel - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Side Panel"
+            Description="Panel that opens from the side of the screen. Ideal for detail viewing, forms, and settings."
+            Icon="fa-solid fa-table-columns" Color="BwColor.Success"/>
+
+    @* Basic Positions *@
+    <BwCard Title="Positions" Subtitle="Right, Left, Top, Bottom" Icon="fa-solid fa-arrows-up-down-left-right"
+            Color="BwColor.Primary">
+        <div class="flex flex-wrap gap-4">
+            <BwButton Text="Sağ Panel" Icon="fa-solid fa-arrow-right" OnClick="@(() => _rightPanelOpen = true)"/>
+            <BwButton Text="Sol Panel" Icon="fa-solid fa-arrow-left" Color="BwColor.Success"
+                      OnClick="@(() => _leftPanelOpen = true)"/>
+            <BwButton Text="Üst Panel" Icon="fa-solid fa-arrow-up" Color="BwColor.Warning"
+                      OnClick="@(() => _topPanelOpen = true)"/>
+            <BwButton Text="Alt Panel" Icon="fa-solid fa-arrow-down" Color="BwColor.Info"
+                      OnClick="@(() => _bottomPanelOpen = true)"/>
+        </div>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
+        <div class="flex flex-wrap gap-4">
+            <BwButton Text="Small (320px)" Size="BwSize.Small" Color="BwColor.Secondary"
+                      OnClick="@(() => _smallPanelOpen = true)"/>
+            <BwButton Text="Medium (384px)" Color="BwColor.Secondary" OnClick="@(() => _mediumPanelOpen = true)"/>
+            <BwButton Text="Large (600px)" Size="BwSize.Large" Color="BwColor.Secondary"
+                      OnClick="@(() => _largePanelOpen = true)"/>
+        </div>
+    </BwCard>
+
+    @* With Form *@
+    <BwCard Title="Form Panel" Subtitle="User editing form example" Icon="fa-solid fa-user-pen"
+            Color="BwColor.Success">
+        <BwButton Text="Edit User" Icon="fa-solid fa-user-pen" Color="BwColor.Success"
+                  OnClick="@(() => _formPanelOpen = true)"/>
+    </BwCard>
+
+    @* Settings Panel *@
+    <BwCard Title="Settings Panel" Subtitle="Settings menu example" Icon="fa-solid fa-gear" Color="BwColor.Info">
+        <BwButton Text="Settings" Icon="fa-solid fa-gear" Color="BwColor.Info"
+                  OnClick="@(() => _settingsPanelOpen = true)"/>
+    </BwCard>
+
+    @* Without Backdrop *@
+    <BwCard Title="Without Backdrop" Subtitle="ShowBackdrop=false" Icon="fa-solid fa-eye-slash"
+            Color="BwColor.Secondary">
+        <BwButton Text="No Backdrop" Icon="fa-solid fa-eye-slash" Color="BwColor.Secondary"
+                  OnClick="@(() => _noBackdropPanelOpen = true)"/>
+    </BwCard>
+</BwColumn>
+
+@* Right Panel *@
+<BwSidePanel @bind-IsOpen="_rightPanelOpen" Position="BwPosition.Right" Title="Left Panel" Subtitle="Default position"
+             Icon="fa-solid fa-arrow-right" Color="BwColor.Primary">
+    <p class="text-gray-600 dark:text-gray-400">
+        This panel opens from the right side of the screen. It can be used for shopping carts on e-commerce sites,
+        notifications on social media, or for displaying details.
+    </p>
+</BwSidePanel>
+
+@* Left Panel *@
+<BwSidePanel @bind-IsOpen="_leftPanelOpen" Position="BwPosition.Left" Title="Left Panel"
+             Subtitle="Navigation menu example" Icon="fa-solid fa-bars" Color="BwColor.Success">
+    <div class="space-y-2">
+        <div class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3">
+            <i class="fa-solid fa-house text-gray-500"></i>
+            <span>Home</span>
+        </div>
+        <div class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3">
+            <i class="fa-solid fa-box text-gray-500"></i>
+            <span>Products</span>
+        </div>
+        <div class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3">
+            <i class="fa-solid fa-users text-gray-500"></i>
+            <span>Customers</span>
+        </div>
+        <div class="p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg cursor-pointer flex items-center gap-3">
+            <i class="fa-solid fa-chart-bar text-gray-500"></i>
+            <span>Raporlar</span>
+        </div>
+    </div>
+</BwSidePanel>
+
+@* Top Panel *@
+<BwSidePanel @bind-IsOpen="_topPanelOpen" Position="BwPosition.Top" Title="Top Panel"
+             Subtitle="Notification or search example" Icon="fa-solid fa-bell" Color="BwColor.Warning">
+    <div class="flex gap-4">
+        <div class="flex-1 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+            <h4 class="font-medium text-amber-800 dark:text-amber-300">New Notification</h4>
+            <p class="text-sm text-amber-600 dark:text-amber-400">Your order has been shipped.</p>
+        </div>
+        <div class="flex-1 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <h4 class="font-medium text-blue-800 dark:text-blue-300">System Update</h4>
+            <p class="text-sm text-blue-600 dark:text-blue-400">New features have been added.</p>
+        </div>
+    </div>
+</BwSidePanel>
+
+@* Bottom Panel *@
+<BwSidePanel @bind-IsOpen="_bottomPanelOpen" Position="BwPosition.Bottom" Title="Bottom Panel"
+             Subtitle="Detail info example"
+             Icon="fa-solid fa-info-circle" Color="BwColor.Info">
+    <div class="flex items-center justify-around">
+        <div class="text-center">
+            <div class="text-3xl font-bold text-blue-600">1,234</div>
+            <div class="text-sm text-gray-500">Total Orders</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-green-600">₺45,678</div>
+            <div class="text-sm text-gray-500">Total Revenue</div>
+        </div>
+        <div class="text-center">
+            <div class="text-3xl font-bold text-amber-600">98%</div>
+            <div class="text-sm text-gray-500">Satisfaction</div>
+        </div>
+    </div>
+</BwSidePanel>
+
+@* Small Panel *@
+<BwSidePanel @bind-IsOpen="_smallPanelOpen" Size="BwSize.Small" Title="Small Panel">
+    <p class="text-gray-600 dark:text-gray-400">This narrow panel is 320px wide.</p>
+</BwSidePanel>
+
+@* Medium Panel *@
+<BwSidePanel @bind-IsOpen="_mediumPanelOpen" Size="BwSize.Medium" Title="Medium Panel">
+    <p class="text-gray-600 dark:text-gray-400">This medium panel is 384px wide (default).</p>
+</BwSidePanel>
+
+@* Large Panel *@
+<BwSidePanel @bind-IsOpen="_largePanelOpen" Size="BwSize.Large" Title="Large Panel">
+    <p class="text-gray-600 dark:text-gray-400">This wide panel is 600px wide. Ideal for detailed forms or tables.</p>
+</BwSidePanel>
+
+@* Form Panel *@
+<BwSidePanel @bind-IsOpen="_formPanelOpen" Title="Edit User" Subtitle="Update user information"
+             Icon="fa-solid fa-user-pen" Color="BwColor.Success" Size="BwSize.Large">
+    <ChildContent>
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInput Label="Full Name" Placeholder="User name" IconLeft="fa-solid fa-user"/>
+            <BwInput Label="Email" Type="email" Placeholder="[EMAIL_ADDRESS]" IconLeft="fa-solid fa-envelope"/>
+            <BwInput Label="Telefon" Type="tel" Placeholder="+90 555 123 4567" IconLeft="fa-solid fa-phone"/>
+            <BwTextarea Label="Adres" Placeholder="Açık adres..." Rows="3"/>
+        </BwColumn>
+    </ChildContent>
+    <FooterContent>
+        <div class="flex gap-3 justify-end">
+            <BwButton Text="İptal" Variant="BwVariant.Outline" Color="BwColor.Secondary"
+                      OnClick="@(() => _formPanelOpen = false)"/>
+            <BwButton Text="Kaydet" Icon="fa-solid fa-save" Color="BwColor.Success"
+                      OnClick="@(() => _formPanelOpen = false)"/>
+        </div>
+    </FooterContent>
+</BwSidePanel>
+
+@* Settings Panel *@
+<BwSidePanel @bind-IsOpen="_settingsPanelOpen" Title="Settings" Subtitle="Application settings" Icon="fa-solid fa-gear"
+             Color="BwColor.Info">
+    <div class="space-y-4">
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div>
+                <div class="font-medium">Dark Mode</div>
+                <div class="text-sm text-gray-500">Enable dark theme</div>
+            </div>
+            <BwSwitch/>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div>
+                <div class="font-medium">Notifications</div>
+                <div class="text-sm text-gray-500">Receive push notifications</div>
+            </div>
+            <BwSwitch IsChecked="true"/>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <div>
+                <div class="font-medium">Auto Save</div>
+                <div class="text-sm text-gray-500">Auto save changes</div>
+            </div>
+            <BwSwitch IsChecked="true"/>
+        </div>
+    </div>
+</BwSidePanel>
+
+@* No Backdrop Panel *@
+<BwSidePanel @bind-IsOpen="_noBackdropPanelOpen" ShowBackdrop="false" Title="No Backdrop"
+             Subtitle="Doesn't dim the background">
+    <p class="text-gray-600 dark:text-gray-400">When this panel opens, the background won't dim. The user can continue
+        interacting with the page.</p>
+</BwSidePanel>
+
+@code {
+    private bool _rightPanelOpen;
+    private bool _leftPanelOpen;
+    private bool _topPanelOpen;
+    private bool _bottomPanelOpen;
+    private bool _smallPanelOpen;
+    private bool _mediumPanelOpen;
+    private bool _largePanelOpen;
+    private bool _formPanelOpen;
+    private bool _settingsPanelOpen;
+    private bool _noBackdropPanelOpen;
+}

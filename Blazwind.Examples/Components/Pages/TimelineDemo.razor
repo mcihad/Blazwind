@@ -1,0 +1,135 @@
+@page "/components/timeline"
+
+<PageTitle>Timeline Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Timeline Component"
+            Description="Stylish timeline component displaying chronological events. Supports vertical, horizontal, and zigzag layouts."
+            Icon="fa-solid fa-timeline"
+            Color="BwColor.Success"/>
+
+    @* Basic Timeline & Alternate Layout *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Timeline" Subtitle="Simple vertical layout" Icon="fa-solid fa-list-timeline"
+                Color="BwColor.Primary">
+            <BwTimeline>
+                <BwTimelineItem Title="Project Started" Subtitle="January 2024" Icon="fa-solid fa-rocket"
+                                Color="BwColor.Info">
+                    <ChildContent>Project planning and team building completed.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Design Phase" Subtitle="February 2024" Icon="fa-solid fa-palette"
+                                Color="BwColor.Warning" IsCompleted="true">
+                    <ChildContent>UI/UX designs approved and prototype prepared.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Development" Subtitle="March 2024" Icon="fa-solid fa-code" IsActive="true">
+                    <ChildContent>Backend and frontend development is ongoing.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Test &amp; Release" Subtitle="April 2024" Icon="fa-solid fa-flag-checkered">
+                    <ChildContent>Testing processes and go-live are planned.</ChildContent>
+                </BwTimelineItem>
+            </BwTimeline>
+        </BwCard>
+
+        <BwCard Title="Zigzag Layout" Subtitle="Alternating left-right layout" Icon="fa-solid fa-shuffle"
+                Color="BwColor.Warning">
+            <BwTimeline Alternate="true">
+                <BwTimelineItem Title="Order Received" Color="BwColor.Success" IsCompleted="true">
+                    <OppositeContent>10:30 AM</OppositeContent>
+                    <ChildContent>Your order has been successfully created.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Preparing" Color="BwColor.Warning" IsCompleted="true">
+                    <OppositeContent>11:45 AM</OppositeContent>
+                    <ChildContent>Products are being packed.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Shipped" Color="BwColor.Info" IsActive="true">
+                    <OppositeContent>2:00 PM</OppositeContent>
+                    <ChildContent>Handed over to the shipping company.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Delivered" Color="BwColor.Success">
+                    <OppositeContent>Expected</OppositeContent>
+                    <ChildContent>Estimated 1-2 business days.</ChildContent>
+                </BwTimelineItem>
+            </BwTimeline>
+        </BwCard>
+    </BwRow>
+
+    @* Variants Row *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Minimal Design" Subtitle="Simple and elegant look" Icon="fa-solid fa-minus"
+                Color="BwColor.Secondary">
+            <BwTimeline Variant="BwVariant.Ghost" Size="BwSize.Small">
+                <BwTimelineItem Title="v1.0 - Initial Release" Subtitle="January 15, 2024">
+                    <ChildContent>Released with basic features.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="v1.1 - Bug Fixes" Subtitle="February 1, 2024">
+                    <ChildContent>Performance improvements made.</ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="v2.0 - Major Update" Subtitle="March 15, 2024" IsActive="true">
+                    <ChildContent>New features and UI refresh.</ChildContent>
+                </BwTimelineItem>
+            </BwTimeline>
+        </BwCard>
+
+        <BwCard Title="Card Design" Subtitle="Rich content cards" Icon="fa-solid fa-id-card" Color="BwColor.Primary">
+            <BwTimeline Variant="BwVariant.Outline">
+                <BwTimelineItem Title="Meeting Notes" Subtitle="Today, 09:00" Icon="fa-solid fa-users"
+                                Color="BwColor.Info" IsCompleted="true">
+                    <ChildContent>
+                        <p>Sprint planning meeting held.</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">5 participants</p>
+                    </ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Code Review" Subtitle="Today, 14:30" Icon="fa-solid fa-code-branch"
+                                Color="BwColor.Warning" IsActive="true">
+                    <ChildContent>
+                        <p>PR #142 waiting for review.</p>
+                    </ChildContent>
+                </BwTimelineItem>
+                <BwTimelineItem Title="Deployment" Subtitle="Tomorrow, 10:00" Icon="fa-solid fa-rocket">
+                    <ChildContent>Production release planned.</ChildContent>
+                </BwTimelineItem>
+            </BwTimeline>
+        </BwCard>
+    </BwRow>
+
+    @* Horizontal Timeline *@
+    <BwCard Title="Horizontal Timeline" Subtitle="Ideal for project milestones" Icon="fa-solid fa-arrows-left-right"
+            Color="BwColor.Info">
+        <BwTimeline Horizontal="true">
+            <BwTimelineItem Title="Q1" Subtitle="Research" IsCompleted="true" Color="BwColor.Success"/>
+            <BwTimelineItem Title="Q2" Subtitle="Design" IsCompleted="true" Color="BwColor.Success"/>
+            <BwTimelineItem Title="Q3" Subtitle="Development" IsActive="true" Color="BwColor.Info"/>
+            <BwTimelineItem Title="Q4" Subtitle="Release" Color="BwColor.Secondary"/>
+        </BwTimeline>
+    </BwCard>
+
+    @* Size Options *@
+    <BwCard Title="Size Options" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Lg" Wrap="true" Class="grid md:grid-cols-3">
+            <BwColumn>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Small</p>
+                <BwTimeline Size="BwSize.Small">
+                    <BwTimelineItem Title="Step 1" IsCompleted="true"/>
+                    <BwTimelineItem Title="Step 2" IsActive="true"/>
+                    <BwTimelineItem Title="Step 3"/>
+                </BwTimeline>
+            </BwColumn>
+            <BwColumn>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Medium (Default)</p>
+                <BwTimeline Size="BwSize.Medium">
+                    <BwTimelineItem Title="Step 1" IsCompleted="true"/>
+                    <BwTimelineItem Title="Step 2" IsActive="true"/>
+                    <BwTimelineItem Title="Step 3"/>
+                </BwTimeline>
+            </BwColumn>
+            <BwColumn>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Large</p>
+                <BwTimeline Size="BwSize.Large">
+                    <BwTimelineItem Title="Step 1" IsCompleted="true"/>
+                    <BwTimelineItem Title="Step 2" IsActive="true"/>
+                    <BwTimelineItem Title="Step 3"/>
+                </BwTimeline>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+</BwColumn>

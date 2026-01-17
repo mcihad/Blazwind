@@ -1,0 +1,336 @@
+@page "/components/form-validation"
+@using System.ComponentModel.DataAnnotations
+@using Blazwind.Components.Form
+@using Blazwind.Components.Input
+
+<PageTitle>Form Validation Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Form Validation" Description="Form validation with DataAnnotations and automatic error display."
+            Icon="fa-solid fa-shield-check" Color="BwColor.Primary"/>
+
+    @* Yeni Feature: For Parameter ile Otomatik Validasyon *@
+    <div class="p-4 bg-green-50 border border-green-200 rounded">
+        <div class="flex items-start gap-3">
+            <i class="fa-solid fa-sparkles text-green-600 text-xl mt-0.5"></i>
+            <div>
+                <h4 class="font-semibold text-green-800 mb-1">New: Automatic Validation with For Parameter</h4>
+                <ul class="text-sm text-green-700 list-disc list-inside space-y-1">
+                    <li>Add <code>For="@@(() =&gt; Model.Property)"</code> to input components</li>
+                    <li>Validation messages are automatically displayed under inputs</li>
+                    <li>No need for <code>BwFormField</code> wrapper</li>
+                    <li>LabelPosition and Density cascade from form</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @* Örnek 1: For Parametresi ile Direkt Validasyon *@
+    <BwCard Title="Direct Validation (For Parameter)"
+            Subtitle="Automatic error display with For parameter in input components" Icon="fa-solid fa-bolt"
+            Color="BwColor.Success">
+        <BwForm Model="@_directModel" OnValidSubmit="HandleDirectSubmit" OnInvalidSubmit="HandleDirectInvalid"
+                LabelPosition="BwLabelPosition.Top" Density="BwFormDensity.Normal">
+            <BwFormGrid Columns="2">
+                @* For parametresi ile otomatik validasyon *@
+                <BwInput @bind-Value="_directModel.FullName" For="@(() => _directModel.FullName)" Label="Full Name"
+                         Placeholder="Your full name" IconLeft="fa-solid fa-user" IsRequired="true"/>
+
+                <BwInput @bind-Value="_directModel.Email" For="@(() => _directModel.Email)" Label="Email" Type="email"
+                         Placeholder="example@mail.com" IconLeft="fa-solid fa-envelope" IsRequired="true"/>
+
+                <BwMaskedInput @bind-Value="_directModel.Phone" For="@(() => _directModel.Phone)" Label="Phone"
+                               Preset="BwMaskPreset.Phone"/>
+
+                <BwDatePicker @bind-Value="_directModel.BirthDate" For="@(() => _directModel.BirthDate)"
+                              Label="Birth Date" IsRequired="true"/>
+
+                <BwSelect @bind-Value="_directModel.Country" For="@(() => _directModel.Country)" Label="Country"
+                          Placeholder="Select country" IsRequired="true">
+                    <option value="TR">Turkey</option>
+                    <option value="US">United States</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                </BwSelect>
+
+                <BwTimePicker @bind-Value="_directModel.PreferredTime" For="@(() => _directModel.PreferredTime)"
+                              Label="Preferred Time"/>
+            </BwFormGrid>
+
+            <BwFormRow>
+                <BwTextarea @bind-Value="_directModel.Bio" For="@(() => _directModel.Bio)" Label="About"
+                            Placeholder="Introduce yourself..." Rows="3" Class="flex-1"/>
+            </BwFormRow>
+
+            <BwFormRow>
+                <BwRating @bind-Value="_directModel.Satisfaction" For="@(() => _directModel.Satisfaction)"
+                          Label="Satisfaction" AllowHalf="true" ShowValue="true"/>
+
+                <BwSlider @bind-Value="_directModel.Budget" For="@(() => _directModel.Budget)" Label="Budget (TL)"
+                          Min="0" Max="10000" Step="500" ShowValue="true" ValueFormat="N0"/>
+            </BwFormRow>
+
+            <BwFormRow>
+                <BwCheckbox @bind-Value="_directModel.AcceptTerms" For="@(() => _directModel.AcceptTerms)"
+                            Label="I accept the terms of use"/>
+
+                <BwSwitch @bind-Value="_directModel.Newsletter" For="@(() => _directModel.Newsletter)"
+                          Label="I want to receive newsletter"/>
+            </BwFormRow>
+
+            <BwFormActions>
+                <BwButton Text="Clear" Variant="BwVariant.Outline" Color="BwColor.Secondary"
+                          OnClick="ClearDirectForm"/>
+                <BwButton Text="Submit" Color="BwColor.Success" Icon="fa-solid fa-check" HtmlType="submit"/>
+            </BwFormActions>
+        </BwForm>
+
+        @if (_directSuccess)
+        {
+            <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded flex items-center gap-3">
+                <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
+                <span class="text-green-800 font-medium">Form submitted successfully!</span>
+            </div>
+        }
+        @if (_directFailed)
+        {
+            <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded flex items-center gap-3">
+                <i class="fa-solid fa-times-circle text-red-600 text-xl"></i>
+                <span class="text-red-800 font-medium">Please correct the errors.</span>
+            </div>
+        }
+    </BwCard>
+
+    @* Örnek 2: Label Pozisyonları *@
+    <BwCard Title="Label Positions" Subtitle="LabelPosition cascade test" Icon="fa-solid fa-align-left"
+            Color="BwColor.Info">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            @* Top Label (Default) *@
+            <div class="p-4 bg-gray-50 rounded border">
+                <h5 class="font-semibold text-gray-700 mb-3">LabelPosition.Top</h5>
+                <BwForm Model="@_labelModel" LabelPosition="BwLabelPosition.Top" Density="BwFormDensity.Normal">
+                    <BwInput @bind-Value="_labelModel.Name" Label="Name" Placeholder="Your name"/>
+                    <BwInput @bind-Value="_labelModel.Email" Label="Email" Type="email"
+                             Placeholder="example@mail.com"/>
+                </BwForm>
+            </div>
+
+            @* Left Label *@
+            <div class="p-4 bg-gray-50 rounded border">
+                <h5 class="font-semibold text-gray-700 mb-3">LabelPosition.Left</h5>
+                <BwForm Model="@_labelModel" LabelPosition="BwLabelPosition.Left" Density="BwFormDensity.Normal">
+                    <BwInput @bind-Value="_labelModel.Name" Label="Name" Placeholder="Your name" LabelWidth="100px"/>
+                    <BwInput @bind-Value="_labelModel.Email" Label="Email" Type="email" Placeholder="example@mail.com"
+                             LabelWidth="100px"/>
+                </BwForm>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Örnek 3: Density Seviyeleri *@
+    <BwCard Title="Form Density" Subtitle="Compact, Normal and Relaxed spacing" Icon="fa-solid fa-arrows-alt-v"
+            Color="BwColor.Warning">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            @* Compact *@
+            <div class="p-4 bg-yellow-50 rounded border border-yellow-200">
+                <h5 class="font-semibold text-yellow-800 mb-3">Compact</h5>
+                <BwForm Model="@_densityModel" Density="BwFormDensity.Compact">
+                    <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..."/>
+                    <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..."/>
+                    <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..."/>
+                </BwForm>
+            </div>
+
+            @* Normal *@
+            <div class="p-4 bg-blue-50 rounded border border-blue-200">
+                <h5 class="font-semibold text-blue-800 mb-3">Normal</h5>
+                <BwForm Model="@_densityModel" Density="BwFormDensity.Normal">
+                    <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..."/>
+                    <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..."/>
+                    <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..."/>
+                </BwForm>
+            </div>
+
+            @* Relaxed *@
+            <div class="p-4 bg-green-50 rounded border border-green-200">
+                <h5 class="font-semibold text-green-800 mb-3">Relaxed</h5>
+                <BwForm Model="@_densityModel" Density="BwFormDensity.Relaxed">
+                    <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..."/>
+                    <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..."/>
+                    <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..."/>
+                </BwForm>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Örnek 4: Şifre Eşleştirme *@
+    <BwCard Title="Password Matching Validation" Subtitle="Cross-field validation example" Icon="fa-solid fa-key"
+            Color="BwColor.Danger">
+        <BwForm Model="@_passwordModel" OnValidSubmit="HandlePasswordSubmit" Density="BwFormDensity.Normal">
+            <div class="max-w-md">
+                <BwInput @bind-Value="_passwordModel.Password" For="@(() => _passwordModel.Password)" Type="password"
+                         Label="New Password" Placeholder="••••••••" IconLeft="fa-solid fa-lock" IsRequired="true"/>
+
+                <BwInput @bind-Value="_passwordModel.ConfirmPassword" For="@(() => _passwordModel.ConfirmPassword)"
+                         Type="password" Label="Confirm Password" Placeholder="••••••••" IconLeft="fa-solid fa-lock"
+                         IsRequired="true"/>
+
+                @if (_passwordSuccess)
+                {
+                    <div
+                        class="p-3 bg-green-50 border border-green-200 rounded text-sm text-green-700 flex items-center gap-2">
+                        <i class="fa-solid fa-check"></i>
+                        Password changed successfully!
+                    </div>
+                }
+            </div>
+            <BwFormActions Align="BwAlignment.Left">
+                <BwButton Text="Change Password" Color="BwColor.Danger" Icon="fa-solid fa-lock" HtmlType="submit"/>
+            </BwFormActions>
+        </BwForm>
+    </BwCard>
+
+    @* Validation Rules Reference *@
+    <BwCard Title="Validation Rules Reference" Subtitle="Supported DataAnnotations attributes" Icon="fa-solid fa-book"
+            Color="BwColor.Secondary">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                <tr class="bg-gray-100">
+                    <th class="px-4 py-2 text-left border">Attribute</th>
+                    <th class="px-4 py-2 text-left border">Description</th>
+                    <th class="px-4 py-2 text-left border">Example</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="px-4 py-2 border font-mono text-blue-600">[Required]</td>
+                    <td class="px-4 py-2 border">Required field</td>
+                    <td class="px-4 py-2 border font-mono text-xs">[Required(ErrorMessage = "Name is required")]
+                    </td>
+                </tr>
+                <tr class="bg-gray-50">
+                    <td class="px-4 py-2 border font-mono text-blue-600">[EmailAddress]</td>
+                    <td class="px-4 py-2 border">Email format</td>
+                    <td class="px-4 py-2 border font-mono text-xs">[EmailAddress]</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2 border font-mono text-blue-600">[StringLength]</td>
+                    <td class="px-4 py-2 border">Min/Max characters</td>
+                    <td class="px-4 py-2 border font-mono text-xs">[StringLength(50, MinimumLength = 2)]</td>
+                </tr>
+                <tr class="bg-gray-50">
+                    <td class="px-4 py-2 border font-mono text-blue-600">[Range]</td>
+                    <td class="px-4 py-2 border">Number range</td>
+                    <td class="px-4 py-2 border font-mono text-xs">[Range(18, 120)]</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2 border font-mono text-blue-600">[Compare]</td>
+                    <td class="px-4 py-2 border">Field comparison</td>
+                    <td class="px-4 py-2 border font-mono text-xs">[Compare("Password")]</td>
+                </tr>
+                <tr class="bg-gray-50">
+                    <td class="px-4 py-2 border font-mono text-blue-600">[Url]</td>
+                    <td class="px-4 py-2 border">URL format</td>
+                    <td class="px-4 py-2 border font-mono text-xs">[Url]</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private DirectFormModel _directModel = new();
+    private readonly PasswordModel _passwordModel = new();
+    private readonly LabelDemoModel _labelModel = new();
+    private readonly DensityDemoModel _densityModel = new();
+
+    private bool _directSuccess;
+    private bool _directFailed;
+    private bool _passwordSuccess;
+
+    // Direct validation model with For parameter
+    public class DirectFormModel
+    {
+        [Required(ErrorMessage = "Full Name is required")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "Full Name must be 3-100 characters")]
+        public string? FullName { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string? Email { get; set; }
+
+        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        public string? Phone { get; set; }
+
+        [Required(ErrorMessage = "Birth date is required")]
+        public DateTime? BirthDate { get; set; }
+
+        [Required(ErrorMessage = "Please select a country")]
+        public string? Country { get; set; }
+
+        public TimeSpan? PreferredTime { get; set; }
+
+        [StringLength(500, ErrorMessage = "Bio can be maximum 500 characters")]
+        public string? Bio { get; set; }
+
+        [Range(1, 5, ErrorMessage = "Satisfaction must be between 1-5")]
+        public double Satisfaction { get; set; } = 3;
+
+        [Range(0, 10000, ErrorMessage = "Budget must be between 0-10000")]
+        public double Budget { get; set; } = 5000;
+
+        public bool AcceptTerms { get; set; }
+        public bool Newsletter { get; set; }
+    }
+
+    public class PasswordModel
+    {
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters")]
+        public string? Password { get; set; }
+
+        [Required(ErrorMessage = "Password confirmation is required")]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string? ConfirmPassword { get; set; }
+    }
+
+    public class LabelDemoModel
+    {
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+    }
+
+    public class DensityDemoModel
+    {
+        public string? Field1 { get; set; }
+        public string? Field2 { get; set; }
+        public string? Field3 { get; set; }
+    }
+
+    private void HandleDirectSubmit(EditContext context)
+    {
+        _directSuccess = true;
+        _directFailed = false;
+    }
+
+    private void HandleDirectInvalid(EditContext context)
+    {
+        _directSuccess = false;
+        _directFailed = true;
+    }
+
+    private void HandlePasswordSubmit(EditContext context)
+    {
+        _passwordSuccess = true;
+    }
+
+    private void ClearDirectForm()
+    {
+        _directModel = new DirectFormModel();
+        _directSuccess = false;
+        _directFailed = false;
+    }
+
+}

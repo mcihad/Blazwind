@@ -1,0 +1,149 @@
+@using Blazwind.Components.Shared
+@using System.Threading
+@namespace Blazwind.Components.ImagePreview
+
+<div class="@Class">
+    @if (Images == null || !Images.Any())
+    {
+        <div class="text-gray-400 dark:text-gray-500 text-sm">Görüntülenecek resim yok.</div>
+    }
+    else
+    {
+        <div class="flex flex-wrap gap-4">
+            @for (int i = 0; i < Images.Count; i++)
+            {
+                var index = i;
+                var image = Images[index];
+                
+                if (MaxCount > 0 && index >= MaxCount)
+                {
+                    if (index == MaxCount)
+                    {
+                        @* +N More indicator *@
+                        <div class="relative cursor-pointer group rounded-lg overflow-hidden @ThumbnailClass" 
+                             style="width: @ThumbnailWidth; height: @ThumbnailHeight;"
+                             @onclick="() => OpenLightbox(index)">
+                            <img src="@image" class="w-full h-full object-cover opacity-50 transition-opacity" />
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-lg group-hover:bg-black/50 transition-colors">
+                                +@(Images.Count - MaxCount)
+                            </div>
+                        </div>
+                    }
+                    continue;
+                }
+
+                <div class="relative cursor-pointer group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all @ThumbnailClass"
+                     style="width: @ThumbnailWidth; height: @ThumbnailHeight;"
+                     @onclick="() => OpenLightbox(index)">
+                    <img src="@image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Preview @index" />
+                    
+                    @* Overlay Icon on Hover *@
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <i class="fa-solid fa-expand text-white text-xl drop-shadow-md"></i>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* Lightbox Modal *@
+    @if (_isOpen)
+    {
+        <div class="fixed inset-0 z-[1100] bg-black/90 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300"
+             role="dialog" aria-modal="true" @onkeydown="@HandleKeyDown" tabindex="0" @ref="_lightboxRef">
+            
+            @* Close Button *@
+            <button class="absolute top-4 right-4 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-2 w-10 h-10 flex items-center justify-center transition-colors z-[1110]"
+                    @onclick="CloseLightbox">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            @* Counter *@
+            <div class="absolute top-6 left-6 text-white/80 font-medium z-[1110]">
+                @(_currentIndex + 1) / @Images?.Count
+            </div>
+
+            @* Image Container *@
+            <div class="relative w-full h-full flex items-center justify-center p-4 md:p-12">
+                @if (Images != null && Images.Count > 0)
+                {
+                    <img src="@Images[_currentIndex]" class="max-w-full max-h-full object-contain rounded-md shadow-2xxl animate-fade-in" />
+                }
+            </div>
+
+            @* Navigation Buttons *@
+            @if (Images?.Count > 1)
+            {
+                <button class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/20 hover:bg-black/60 rounded-full w-12 h-12 flex items-center justify-center transition-all z-[1110] disabled:opacity-30 disabled:cursor-not-allowed"
+                        @onclick="PrevImage" disabled="@(_currentIndex == 0 && !Loop)">
+                    <i class="fa-solid fa-chevron-left text-xl"></i>
+                </button>
+                
+                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/20 hover:bg-black/60 rounded-full w-12 h-12 flex items-center justify-center transition-all z-[1110] disabled:opacity-30 disabled:cursor-not-allowed"
+                        @onclick="NextImage" disabled="@(_currentIndex == Images.Count - 1 && !Loop)">
+                    <i class="fa-solid fa-chevron-right text-xl"></i>
+                </button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<string>? Images { get; set; }
+    [Parameter] public int MaxCount { get; set; } = 0; // 0 means show all
+    [Parameter] public string ThumbnailWidth { get; set; } = "100px";
+    [Parameter] public string ThumbnailHeight { get; set; } = "100px";
+    [Parameter] public string? ThumbnailClass { get; set; }
+    [Parameter] public bool Loop { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+
+    private bool _isOpen = false;
+    private int _currentIndex = 0;
+    private ElementReference _lightboxRef;
+
+    private void OpenLightbox(int index)
+    {
+        _currentIndex = index;
+        _isOpen = true;
+        // Ideally focus the lightbox for keyboard support, might need simple JS
+    }
+
+    private void CloseLightbox()
+    {
+        _isOpen = false;
+    }
+
+    private void NextImage()
+    {
+        if (Images == null) return;
+        if (_currentIndex < Images.Count - 1)
+        {
+            _currentIndex++;
+        }
+        else if (Loop)
+        {
+            _currentIndex = 0;
+        }
+    }
+
+    private void PrevImage()
+    {
+        if (Images == null) return;
+        if (_currentIndex > 0)
+        {
+            _currentIndex--;
+        }
+        else if (Loop)
+        {
+            _currentIndex = Images.Count - 1;
+        }
+    }
+    
+    // Very simple keyboard support hack for native Blazor without Focus interop
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape") CloseLightbox();
+        else if (e.Key == "ArrowRight") NextImage();
+        else if (e.Key == "ArrowLeft") PrevImage();
+    }
+}

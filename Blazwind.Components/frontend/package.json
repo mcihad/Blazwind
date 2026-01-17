@@ -1,0 +1,33 @@
+{
+  "name": "blazwind-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && vite build -c vite.maplibre.config.ts && vite build -c vite.chart.config.ts",
+    "build:maplibre": "vite build -c vite.maplibre.config.ts",
+    "build:chart": "vite build -c vite.chart.config.ts",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/maplibre-gl": "^1.13.2",
+    "@types/node": "^25.0.3",
+    "@types/qrcode": "^1.5.6",
+    "echarts": "^6.0.0",
+    "jsbarcode": "^3.12.1",
+    "jspdf": "^3.0.4",
+    "maplibre-gl": "^5.15.0",
+    "orgchart.js": "^0.0.4",
+    "pdfjs-dist": "^5.4.530",
+    "qrcode": "^1.5.4",
+    "signature_pad": "^5.1.3",
+    "tailwindcss": "^4.1.18"
+  }
+}

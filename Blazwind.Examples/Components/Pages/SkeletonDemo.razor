@@ -1,0 +1,75 @@
+@page "/components/skeleton"
+@using Blazwind.Components.Typography
+
+<PageTitle>Skeleton Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Skeleton"
+            Description="Skeleton animations to be displayed while loading."
+            Icon="fa-solid fa-spinner"
+            Color="BwColor.Secondary"/>
+
+    @* Shapes *@
+    <BwCard Title="Shapes" Subtitle="Rectangle, Circle, Text" Icon="fa-solid fa-shapes" Color="BwColor.Primary">
+        <div class="flex items-center gap-6">
+            <div>
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Rectangle</BwTypography>
+                <BwSkeleton Shape="BwSkeletonShape.Rectangle" Width="120px" Height="80px"/>
+            </div>
+            <div>
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Circle</BwTypography>
+                <BwSkeleton Shape="BwSkeletonShape.Circle" Width="60px" Height="60px"/>
+            </div>
+            <div class="flex-1">
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Text</BwTypography>
+                <BwSkeleton Shape="BwSkeletonShape.Text" Width="200px"/>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Multi-line Text *@
+    <BwCard Title="Multi-line" Subtitle="Lines parameter for paragraphs" Icon="fa-solid fa-paragraph"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">3 Lines</BwTypography>
+                <BwSkeleton Lines="3"/>
+            </div>
+            <div>
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">5 Lines</BwTypography>
+                <BwSkeleton Lines="5"/>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Card Skeleton *@
+    <BwCard Title="Card Skeleton" Subtitle="Real-world example" Icon="fa-solid fa-id-card" Color="BwColor.Warning">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @* Skeleton card *@
+            <div class="border border-gray-200 rounded p-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <BwSkeleton Shape="BwSkeletonShape.Circle" Width="48px" Height="48px"/>
+                    <div class="flex-1">
+                        <BwSkeleton Shape="BwSkeletonShape.Text" Width="60%" Class="mb-2"/>
+                        <BwSkeleton Shape="BwSkeletonShape.Text" Width="40%"/>
+                    </div>
+                </div>
+                <BwSkeleton Lines="3"/>
+                <div class="flex gap-2 mt-4">
+                    <BwSkeleton Shape="BwSkeletonShape.Rectangle" Width="80px" Height="32px"/>
+                    <BwSkeleton Shape="BwSkeletonShape.Rectangle" Width="80px" Height="32px"/>
+                </div>
+            </div>
+
+            @* Another skeleton card *@
+            <div class="border border-gray-200 rounded p-4">
+                <BwSkeleton Shape="BwSkeletonShape.Rectangle" Height="120px" Class="mb-4"/>
+                <BwSkeleton Shape="BwSkeletonShape.Text" Width="80%" Class="mb-2"/>
+                <BwSkeleton Shape="BwSkeletonShape.Text" Width="60%"/>
+            </div>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+}

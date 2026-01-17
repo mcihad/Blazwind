@@ -1,0 +1,136 @@
+@page "/charts/calendar"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Calendar Chart - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Takvim Grafiği (Calendar Chart)" 
+            Description="Tarih bazlı aktivite ve yoğunluk görselleştirmesi."
+            Icon="fa-solid fa-calendar-days"
+            Color="BwColor.Info" />
+
+    @* Başvuru Aktivitesi *@
+    <BwCard Title="Yıllık Başvuru Aktivitesi" Subtitle="GitHub tarzı aktivite haritası." Icon="fa-solid fa-file-alt" Color="BwColor.Primary">
+        <BwChart Options="_yearlyActivity" Height="220px" />
+    </BwCard>
+
+    @* Aylık Detay *@
+    <BwCard Title="Aylık İşlem Yoğunluğu" Subtitle="Haziran 2025 işlem sayıları." Icon="fa-solid fa-calendar" Color="BwColor.Success">
+        <BwChart Options="_monthlyDetail" Height="250px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _yearlyActivity = new
+    {
+        title = new { text = "2025 Başvuru Aktivitesi", left = ChartPosition.Center, top = "0" },
+        tooltip = new { formatter = "{c} başvuru" },
+        visualMap = new
+        {
+            min = 0,
+            max = 50,
+            type = "piecewise",
+            orient = ChartLegendOrient.Horizontal,
+            left = ChartPosition.Center,
+            bottom = "0",
+            pieces = new object[]
+            {
+                new { min = 0, max = 10, color = "#ebedf0" },
+                new { min = 11, max = 20, color = "#9be9a8" },
+                new { min = 21, max = 35, color = "#40c463" },
+                new { min = 36, max = 50, color = "#216e39" }
+            }
+        },
+        calendar = new
+        {
+            top = "40",
+            left = "50",
+            right = "30",
+            cellSize = 13,
+            range = "2025",
+            itemStyle = new { borderWidth = 1, borderColor = "#fff" },
+            yearLabel = new { show = false }
+        },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Heatmap,
+                coordinateSystem = "calendar",
+                data = GenerateYearData()
+            }
+        }
+    };
+
+    private object _monthlyDetail = new
+    {
+        title = new { text = "Haziran 2025 Günlük İşlemler", left = ChartPosition.Center },
+        tooltip = new { formatter = "{c} işlem" },
+        visualMap = new
+        {
+            min = 0,
+            max = 100,
+            calculable = true,
+            orient = ChartLegendOrient.Horizontal,
+            left = ChartPosition.Center,
+            bottom = "0",
+            inRange = new { color = new[] { "#ebedf0", "#3b82f6", "#1d4ed8" } }
+        },
+        calendar = new
+        {
+            top = "60",
+            left = "50",
+            right = "30",
+            cellSize = new[] { 40, 40 },
+            range = "2025-06",
+            itemStyle = new { borderWidth = 1, borderColor = "#ccc" },
+            dayLabel = new { firstDay = 1, nameMap = new[] { "Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt" } },
+            monthLabel = new { show = false }
+        },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Heatmap,
+                coordinateSystem = "calendar",
+                data = GenerateMonthData()
+            }
+        }
+    };
+
+    private static List<object[]> GenerateYearData()
+    {
+        var data = new List<object[]>();
+        var random = new Random(42);
+        var start = new DateTime(2025, 1, 1);
+        var end = new DateTime(2025, 12, 31);
+
+        for (var date = start; date <= end; date = date.AddDays(1))
+        {
+            var value = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday
+                ? random.Next(0, 15)
+                : random.Next(5, 50);
+            data.Add(new object[] { date.ToString("yyyy-MM-dd"), value });
+        }
+        return data;
+    }
+
+    private static List<object[]> GenerateMonthData()
+    {
+        var data = new List<object[]>();
+        var random = new Random(123);
+
+        for (var day = 1; day <= 30; day++)
+        {
+            var date = new DateTime(2025, 6, day);
+            var value = date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday
+                ? random.Next(10, 40)
+                : random.Next(40, 100);
+            data.Add(new object[] { date.ToString("yyyy-MM-dd"), value });
+        }
+        return data;
+    }
+}

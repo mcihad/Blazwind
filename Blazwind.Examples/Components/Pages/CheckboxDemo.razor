@@ -1,0 +1,91 @@
+@page "/components/checkbox"
+@using Blazwind.Components.Input
+
+<PageTitle>Checkbox Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Checkbox Component" Description="Label, size options and two-way binding enabled checkbox."
+            Icon="fa-solid fa-check-square" Color="BwColor.Success"/>
+
+    @* Basic & Sizes *@
+    @inject ToastService ToastService
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Checkbox" Subtitle="Labeled standard usage" Icon="fa-solid fa-square-check"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-3">
+                    <BwCheckbox Label="I accept the terms" IsChecked="_terms"
+                                IsCheckedChanged="@(v =>
+                                                  {
+                                                      _terms = v;
+                                                      ToastService.InfoAsync(v ? "Accepted" : "Rejected");
+                                                  })"/>
+                    <BwCheckbox Label="Receive newsletter emails" @bind-IsChecked="_newsletter"/>
+                    <BwCheckbox Label="Remember me" @bind-IsChecked="_remember"/>
+                </div>
+
+                <div class="mt-4 p-3 bg-blue-50 rounded text-sm text-blue-700">
+                    <strong>Selections:</strong>
+                    Terms: @(_terms ? "✓" : "✗"),
+                    Newsletter: @(_newsletter ? "✓" : "✗"),
+                    Remember: @(_remember ? "✓" : "✗")
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Colors and Sizes" Subtitle="Different color and size options" Icon="fa-solid fa-palette"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <BwCheckbox Label="Small" Size="BwSize.Small" IsChecked="true"/>
+                    <BwCheckbox Label="Medium" Size="BwSize.Medium" IsChecked="true"/>
+                    <BwCheckbox Label="Large" Size="BwSize.Large" IsChecked="true"/>
+                </div>
+
+                <div class="space-y-2">
+                    <BwCheckbox Label="Primary (Blue)" Color="BwColor.Primary" IsChecked="true"/>
+                    <BwCheckbox Label="Success (Green)" Color="BwColor.Success" IsChecked="true"/>
+                    <BwCheckbox Label="Danger (Red)" Color="BwColor.Danger" IsChecked="true"/>
+                    <BwCheckbox Label="Warning (Orange)" Color="BwColor.Warning" IsChecked="true"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Disabled & Custom Content *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Disabled" Subtitle="Interaction disabled states" Icon="fa-solid fa-ban" Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-3">
+                    <BwCheckbox Label="Disabled (not selected)" IsDisabled="true" IsChecked="false"/>
+                    <BwCheckbox Label="Disabled (selected)" IsDisabled="true" IsChecked="true"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Rich Content" Subtitle="Custom labeling with ChildContent" Icon="fa-solid fa-code"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-3">
+                    <BwCheckbox @bind-IsChecked="_privacy">
+                        <a href="#" class="text-blue-600 hover:underline">Privacy policy</a> I have read and accept.
+                    </BwCheckbox>
+
+                    <BwCheckbox @bind-IsChecked="_marketing">
+                        <span class="font-medium">Marketing communications</span> I want to receive.
+                        <span class="text-gray-500 text-xs block">Including emails, SMS and notifications.</span>
+                    </BwCheckbox>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private bool _terms;
+    private bool _newsletter = true;
+    private bool _remember;
+    private bool _privacy;
+    private bool _marketing;
+}

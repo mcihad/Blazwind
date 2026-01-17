@@ -1,0 +1,267 @@
+/* ========================================
+   Blazwind Design System
+   Kurumsal Modernizm Tasarım Dili
+   ======================================== */
+
+@import "tailwindcss";
+
+/* Enable dark mode with BOTH class AND system preference */
+/** @custom-variant dark (&:where(.dark, .dark *)), @media (prefers-color-scheme: dark); **/
+/* Font Awesome */
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/* Component-specific styles */
+@import "./styles/timeline.css";
+@import "./styles/stepper.css";
+@import "./styles/padding.css";
+@import "./styles/margin.css";
+@import "./styles/drawer.css";
+@import "./styles/slider.css";
+@import "./styles/tree.css";
+@import "./styles/marquee.css";
+@import "./styles/flow.css";
+
+
+
+/* 
+ * Tailwind CSS 4 - Content sources for class detection
+ * Scan both Components and Examples projects
+ */
+@source "../../**/*.razor";
+@source "../../../Blazwind.Examples/**/*.razor";
+
+
+
+/* CSS Custom Properties for theming */
+@theme {
+    /* Ana Renkler */
+    --color-primary: #0055AA;
+    --color-primary-dark: #004488;
+    --color-primary-light: #0077CC;
+
+    --color-secondary: #64748B;
+    --color-secondary-dark: #475569;
+    --color-secondary-light: #94A3B8;
+
+    /* Durum Renkleri */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+    --color-info: #3B82F6;
+
+    /* Nötr Tonlar */
+    --color-background: #F9FAFB;
+    --color-surface: #FFFFFF;
+    --color-text: #111827;
+    --color-text-secondary: #6B7280;
+    --color-border: #E5E7EB;
+
+    /* Border Radius (max 4px) */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+    --radius-lg: 4px;
+    /* Z-Index Hierarchy */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-modal: 1050;
+    --z-tooltip: 1080;
+
+    /* Typography */
+    --font-sans: 'Inter', 'Roboto', system-ui, -apple-system, sans-serif;
+}
+
+/* Base Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px !important;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-sans);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Custom Scrollbar for Dark Mode */
+.dark ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #1f2937;
+    /* gray-800 */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    /* gray-600 */
+    border-radius: 5px;
+    border: 2px solid #1f2937;
+    /* Match track for padding effect */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+    /* gray-500 */
+}
+
+/* Firefox */
+.dark * {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #1f2937;
+}
+
+/* Focus Ring Styles - Fixed for inputs */
+:focus-visible {
+    outline: none;
+}
+
+/* Input Focus Style */
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none !important;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(0, 85, 170, 0.15);
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.2s ease-out forwards;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.2s ease-out forwards;
+}
+
+
+
+.animate-progress-stripes {
+    animation: progress-stripes 1s linear infinite;
+}
+
+
+/* Custom animations for Toast and Dialog */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+@keyframes shrink {
+    from {
+        width: 100%;
+    }
+
+    to {
+        width: 0%;
+    }
+}
+
+@keyframes progress-stripes {
+    from {
+        background-position: 1rem 0;
+    }
+
+    to {
+        background-position: 0 0;
+    }
+}

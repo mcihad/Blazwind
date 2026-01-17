@@ -1,0 +1,133 @@
+@page "/charts/heatmap"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Isı Haritası - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Isı Haritası (Heatmap)" 
+            Description="Yoğunluk ve dağılım gösterimi için ideal grafik tipi."
+            Icon="fa-solid fa-fire"
+            Color="BwColor.Danger" />
+
+    @* Haftalık Aktivite *@
+    <BwCard Title="Haftalık Aktivite Haritası" Subtitle="Weekly activity heatmap." Icon="fa-solid fa-calendar-week" Color="BwColor.Primary">
+        <BwChart Options="_weeklyHeatmap" Height="350px" />
+    </BwCard>
+
+    @* Aylık Özet *@
+    <BwCard Title="Aylık Başvuru Yoğunluğu" Subtitle="Monthly application heatmap." Icon="fa-solid fa-calendar" Color="BwColor.Info">
+        <BwChart Options="_monthlyHeatmap" Height="400px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _weeklyHeatmap = new
+    {
+        title = new { text = "Haftalık Çalışma Saatleri", left = ChartPosition.Center },
+        tooltip = new { position = ChartPosition.Top },
+        grid = new { height = "50%", top = "20%" },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "00:00", "02:00", "04:00", "06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00" },
+            splitArea = new { show = true }
+        },
+        yAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" },
+            splitArea = new { show = true }
+        },
+        visualMap = new
+        {
+            min = 0,
+            max = 100,
+            calculable = true,
+            orient = ChartLegendOrient.Horizontal,
+            left = ChartPosition.Center,
+            bottom = "5%"
+        },
+        series = new[]
+        {
+            new
+            {
+                name = "Aktivite",
+                type = ChartSeriesType.Heatmap,
+                data = GenerateWeeklyData(),
+                label = new { show = false },
+                emphasis = new { itemStyle = new { shadowBlur = 10, shadowColor = "rgba(0, 0, 0, 0.5)" } }
+            }
+        }
+    };
+
+    private object _monthlyHeatmap = new
+    {
+        title = new { text = "Aylık Başvuru Dağılımı", left = ChartPosition.Center },
+        tooltip = new { position = ChartPosition.Top },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" },
+            splitArea = new { show = true }
+        },
+        yAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara" },
+            splitArea = new { show = true }
+        },
+        visualMap = new
+        {
+            min = 0,
+            max = 50,
+            calculable = true,
+            orient = ChartLegendOrient.Horizontal,
+            left = ChartPosition.Center,
+            bottom = "5%",
+            inRange = new { color = new[] { "#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39" } }
+        },
+        series = new[]
+        {
+            new
+            {
+                name = "Başvuru",
+                type = ChartSeriesType.Heatmap,
+                data = GenerateMonthlyData(),
+                label = new { show = false }
+            }
+        }
+    };
+
+    private static List<List<int>> GenerateWeeklyData()
+    {
+        var data = new List<List<int>>();
+        var random = new Random(42);
+        for (int day = 0; day < 7; day++)
+        {
+            for (int hour = 0; hour < 12; hour++)
+            {
+                var value = day < 5 && hour >= 4 && hour <= 9 ? random.Next(50, 100) : random.Next(0, 40);
+                data.Add(new List<int> { hour, day, value });
+            }
+        }
+        return data;
+    }
+
+    private static List<List<int>> GenerateMonthlyData()
+    {
+        var data = new List<List<int>>();
+        var random = new Random(42);
+        for (int month = 0; month < 12; month++)
+        {
+            for (int day = 0; day < 31; day++)
+            {
+                var value = random.Next(0, 50);
+                data.Add(new List<int> { day, month, value });
+            }
+        }
+        return data;
+    }
+}

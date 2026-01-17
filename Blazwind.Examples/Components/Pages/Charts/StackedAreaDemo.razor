@@ -1,0 +1,84 @@
+@page "/charts/stacked-area"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Stacked Area Chart - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Stacked Area Chart" 
+            Description="Kümülatif verileri katmanlar halinde gösteren yığılmış alan grafiği."
+            Icon="fa-solid fa-layer-group"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Belediye Hizmet Talepleri" Subtitle="Yıllık hizmet türü dağılımı." Icon="fa-solid fa-chart-area" Color="BwColor.Primary">
+        <BwChart Options="_stackedArea" Height="450px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _stackedArea = new()
+    {
+        Title = new ChartTitle { Text = "Aylık Hizmet Talepleri", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip 
+        { 
+            Trigger = ChartTooltipTrigger.Axis,
+            AxisPointer = new { type = "cross", label = new { backgroundColor = "#6a7985" } }
+        },
+        Legend = new ChartLegend { Data = new List<string> { "Temizlik", "İmar", "Ulaşım", "Park Bahçe", "Altyapı" } },
+        Grid = new ChartGrid { Left = "3%", Right = "4%", Bottom = "3%", ContainLabel = true },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            BoundaryGap = false,
+            Data = new List<string> { "Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new() 
+            { 
+                Name = "Temizlik", 
+                Type = ChartSeriesType.Line, 
+                Stack = "Total", 
+                AreaStyle = new { }, 
+                Data = new List<int> { 120, 132, 101, 134, 90, 230, 210, 182, 191, 234, 290, 330 } 
+            },
+            new() 
+            { 
+                Name = "İmar", 
+                Type = ChartSeriesType.Line, 
+                Stack = "Total", 
+                AreaStyle = new { }, 
+                Data = new List<int> { 220, 182, 191, 234, 290, 330, 310, 123, 442, 321, 90, 149 } 
+            },
+            new() 
+            { 
+                Name = "Ulaşım", 
+                Type = ChartSeriesType.Line, 
+                Stack = "Total", 
+                AreaStyle = new { }, 
+                Data = new List<int> { 150, 232, 201, 154, 190, 330, 410, 234, 290, 130, 310, 120 } 
+            },
+            new() 
+            { 
+                Name = "Park Bahçe", 
+                Type = ChartSeriesType.Line, 
+                Stack = "Total", 
+                AreaStyle = new { }, 
+                Data = new List<int> { 320, 332, 301, 334, 390, 330, 320, 334, 390, 430, 420, 410 } 
+            },
+            new() 
+            { 
+                Name = "Altyapı", 
+                Type = ChartSeriesType.Line, 
+                Stack = "Total", 
+                Label = new ChartLabel { Show = true, Position = "top" },
+                AreaStyle = new { }, 
+                Data = new List<int> { 820, 932, 901, 934, 1290, 1330, 1320, 820, 932, 901, 934, 1290 } 
+            }
+        },
+        Color = new List<string> { "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de" }
+    };
+}

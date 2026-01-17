@@ -1,0 +1,122 @@
+@page "/charts/gauge"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Gösterge - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Gösterge (Gauge Chart)" 
+            Description="KPI ve performans göstergeleri için ideal grafik tipi."
+            Icon="fa-solid fa-gauge-high"
+            Color="BwColor.Success" />
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-3">
+        @* Temel Gauge *@
+        <BwCard Title="Temel Gösterge" Subtitle="Basic gauge." Icon="fa-solid fa-gauge" Color="BwColor.Primary">
+            <BwChart Options="_basicGauge" Height="280px" />
+        </BwCard>
+
+        @* Hız Göstergesi *@
+        <BwCard Title="Hız Göstergesi" Subtitle="Speed gauge." Icon="fa-solid fa-tachometer-alt" Color="BwColor.Info">
+            <BwChart Options="_speedGauge" Height="280px" />
+        </BwCard>
+
+        @* İlerleme Göstergesi *@
+        <BwCard Title="İlerleme" Subtitle="Progress gauge." Icon="fa-solid fa-signal" Color="BwColor.Success">
+            <BwChart Options="_progressGauge" Height="280px" />
+        </BwCard>
+    </BwRow>
+
+    @* Multi Gauge *@
+    <BwCard Title="Çoklu Gösterge" Subtitle="Multiple gauges in one." Icon="fa-solid fa-chart-simple" Color="BwColor.Warning">
+        <BwChart Options="_multiGauge" Height="300px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _basicGauge = new
+    {
+        tooltip = new { formatter = "{a} <br/>{b} : {c}%" },
+        series = new[]
+        {
+            new
+            {
+                name = "İlerleme",
+                type = ChartSeriesType.Gauge,
+                detail = new { formatter = "{value}%" },
+                data = new[] { new { value = 72, name = "Tamamlanma" } }
+            }
+        }
+    };
+
+    private object _speedGauge = new
+    {
+        series = new[]
+        {
+            new
+            {
+                name = "Hız",
+                type = ChartSeriesType.Gauge,
+                min = 0,
+                max = 220,
+                splitNumber = 11,
+                detail = new { formatter = "{value} km/h" },
+                data = new[] { new { value = 85 } }
+            }
+        }
+    };
+
+    private object _progressGauge = new
+    {
+        series = new[]
+        {
+            new
+            {
+                name = "İlerleme",
+                type = ChartSeriesType.Gauge,
+                progress = new { show = true },
+                detail = new { valueAnimation = true, formatter = "{value}" },
+                data = new[] { new { value = 87, name = "Puan" } }
+            }
+        }
+    };
+
+    private object _multiGauge = new
+    {
+        series = new[]
+        {
+            new
+            {
+                name = "Performans",
+                type = ChartSeriesType.Gauge,
+                radius = "50%",
+                center = new[] { "25%", "55%" },
+                detail = new { formatter = "{value}%" },
+                data = new[] { new { value = 92, name = "CPU" } },
+                title = new { offsetCenter = new[] { "0%", "90%" } }
+            },
+            new
+            {
+                name = "Performans",
+                type = ChartSeriesType.Gauge,
+                radius = "50%",
+                center = new[] { "50%", "55%" },
+                detail = new { formatter = "{value}%" },
+                data = new[] { new { value = 68, name = "RAM" } },
+                title = new { offsetCenter = new[] { "0%", "90%" } }
+            },
+            new
+            {
+                name = "Performans",
+                type = ChartSeriesType.Gauge,
+                radius = "50%",
+                center = new[] { "75%", "55%" },
+                detail = new { formatter = "{value}%" },
+                data = new[] { new { value = 45, name = "Disk" } },
+                title = new { offsetCenter = new[] { "0%", "90%" } }
+            }
+        }
+    };
+}

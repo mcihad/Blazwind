@@ -1,0 +1,161 @@
+@page "/maps/context-menu"
+@using Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@using Blazwind.Components.ContextMenu
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Services
+@inject ToastService ToastService
+
+<PageTitle>Map Context Menu - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Map Context Menu" 
+            Description="Integration of right-click context menu on the map."
+            Icon="fa-solid fa-computer-mouse"
+            Color="BwColor.Primary" />
+
+    <div class="h-[500px] w-full relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+        <BwMapLibre @ref="_map" 
+                    StyleUrl="osm_style.json" 
+                    Center="@(new[] { 37.015, 39.75 })" 
+                    Zoom="12"
+                    Class="w-full h-full"
+                    OnContextMenu="OnMapContextMenu"
+                    OnClick="OnMapClick">
+            
+            @foreach (var marker in _markers)
+            {
+                <BwMapLibreMarker @key="marker.Id" 
+                                  Longitude="@marker.Lng" 
+                                  Latitude="@marker.Lat" 
+                                  Color="@marker.Color" />
+            }
+        </BwMapLibre>
+        
+        <!-- Context Menu -->
+        <BwContextMenu @ref="_contextMenu">
+            <MenuContent>
+                <BwContextMenuItem OnClick="AddMarker" Icon="fa-solid fa-location-dot" Text="Add Marker" />
+                <BwContextMenuItem OnClick="ZoomIn" Icon="fa-solid fa-magnifying-glass-plus" Text="Zoom In" />
+                <BwContextMenuItem OnClick="CopyCoordinates" Icon="fa-solid fa-copy" Text="Copy Coordinates" />
+                
+                
+                <BwContextMenuItem Text="Layers" Icon="fa-solid fa-layer-group">
+                    <SubMenu>
+                        <BwContextMenuItem Text="OpenStreetMap" Icon="fa-solid fa-map" OnClick="@(() => ToggleLayer("osm"))" />
+                        <BwContextMenuItem Text="Satellite" Icon="fa-solid fa-satellite" OnClick="@(() => ToggleLayer("satellite"))" />
+                        <BwContextMenuItem IsDivider="true" />
+                        <BwContextMenuItem Text="Traffic" Icon="fa-solid fa-car" OnClick="@(() => ToggleLayer("traffic"))" />
+                    </SubMenu>
+                </BwContextMenuItem>
+
+                <BwContextMenuItem IsDivider="true" />
+                <BwContextMenuItem OnClick="CenterMap" Icon="fa-solid fa-crosshairs" Text="Center Map" />
+            </MenuContent>
+        </BwContextMenu>
+    </div>
+
+    <BwCard Title="How to Use?" Icon="fa-solid fa-code" Color="BwColor.Info">
+        <div class="space-y-4">
+            <BwTypography>
+                Use MapLibre's <code>OnContextMenu</code> event to get the <code>ClientPoint</code> and call 
+                <code>BwContextMenu.ShowAsync(x, y)</code>.
+            </BwTypography>
+            
+            <pre class="bg-gray-100 dark:bg-gray-900 p-4 rounded text-sm overflow-x-auto"><code>
+private async Task OnMapContextMenu(MapMouseEventArgs e)
+{
+    _clickedLngLat = e.LngLat;
+    // e.ClientPoint contains [clientX, clientY]
+    await _contextMenu.ShowAsync(e.ClientPoint[0], e.ClientPoint[1]);
+}
+            </code></pre>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwMapLibre? _map;
+    private BwContextMenu? _contextMenu;
+    private LngLat? _clickedLngLat;
+    
+    private record MarkerInfo(string Id, double Lng, double Lat, string Color);
+    private List<MarkerInfo> _markers = new();
+
+    private async Task OnMapContextMenu(MapMouseEventArgs e)
+    {
+        _clickedLngLat = e.LngLat;
+        if (_contextMenu != null)
+        {
+            await _contextMenu.ShowAsync(e.ClientPoint[0], e.ClientPoint[1]);
+        }
+    }
+
+    private void OnMapClick(MapMouseEventArgs e)
+    {
+        // Close context menu on click
+        _contextMenu?.Hide();
+    }
+
+    private async Task AddMarker()
+    {
+        if (_clickedLngLat == null) return;
+        
+        _markers.Add(new MarkerInfo(
+            Guid.NewGuid().ToString(), 
+            _clickedLngLat.Lng, 
+            _clickedLngLat.Lat, 
+            "#ec4899")); // Pink
+            
+        await ToastService.ShowAsync(new ToastOptions 
+        { 
+            Title = "Success", 
+            Message = "Marker added", 
+            Color = BwColor.Success 
+        });
+        _clickedLngLat = null;
+    }
+
+    private async Task ZoomIn()
+    {
+        if (_map == null) return;
+        await _map.ZoomInAsync();
+    }
+
+    private async Task CopyCoordinates()
+    {
+        if (_clickedLngLat == null) return;
+        var coords = $"{_clickedLngLat.Lat:F5}, {_clickedLngLat.Lng:F5}";
+        
+        await ToastService.ShowAsync(new ToastOptions 
+        { 
+            Title = "Info", 
+            Message = $"Coordinates: {coords}", 
+            Color = BwColor.Info 
+        });
+    }
+
+    private async Task CenterMap()
+    {
+        if (_map == null || _clickedLngLat == null) return;
+        await _map.FlyToAsync(new FlyToOptions 
+        { 
+            Center = _clickedLngLat,
+            Zoom = 14
+        });
+    }
+
+    private void ToggleLayer(string layerName)
+    {
+        ToastService.ShowAsync(new ToastOptions 
+        { 
+            Title = "Layer Changed", 
+            Message = $"{layerName} layer selected (Demo)", 
+            Color = BwColor.Primary 
+        });
+    }
+}

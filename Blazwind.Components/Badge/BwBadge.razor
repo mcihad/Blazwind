@@ -1,0 +1,116 @@
+@using Blazwind.Components.Shared
+@namespace Blazwind.Components.Badge
+
+@{
+    var baseClass = "inline-flex items-center justify-center font-medium transition-colors";
+
+    var sizeClass = Size switch
+    {
+        BwSize.ExtraSmall => "px-1.5 py-0.5 text-[10px]",
+        BwSize.Small => "px-2 py-0.5 text-xs",
+        BwSize.Medium => "px-2.5 py-1 text-xs",
+        BwSize.Large => "px-3 py-1.5 text-sm",
+        _ => "px-2 py-0.5 text-xs"
+    };
+
+    var roundedClass = IsPill ? "rounded-full" : "rounded";
+    
+    var variantClass = (Variant, Color) switch
+    {
+        // Outline
+        (BwVariant.Outline, BwColor.Primary) => "border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 bg-transparent",
+        (BwVariant.Outline, BwColor.Secondary) => "border border-gray-600 dark:border-gray-400 text-gray-600 dark:text-gray-400 bg-transparent",
+        (BwVariant.Outline, BwColor.Success) => "border border-green-600 dark:border-green-400 text-green-600 dark:text-green-400 bg-transparent",
+        (BwVariant.Outline, BwColor.Danger) => "border border-red-600 dark:border-red-400 text-red-600 dark:text-red-400 bg-transparent",
+        (BwVariant.Outline, BwColor.Warning) => "border border-yellow-600 dark:border-yellow-400 text-yellow-600 dark:text-yellow-400 bg-transparent",
+        (BwVariant.Outline, BwColor.Info) => "border border-sky-600 dark:border-sky-400 text-sky-600 dark:text-sky-400 bg-transparent",
+        (BwVariant.Outline, BwColor.Dark) => "border border-gray-800 dark:border-gray-500 text-gray-800 dark:text-gray-300 bg-transparent",
+        
+        // Soft (Default)
+        (BwVariant.Soft, BwColor.Primary) => "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300",
+        (BwVariant.Soft, BwColor.Secondary) => "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300",
+        (BwVariant.Soft, BwColor.Success) => "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300",
+        (BwVariant.Soft, BwColor.Danger) => "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-300",
+        (BwVariant.Soft, BwColor.Warning) => "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300",
+        (BwVariant.Soft, BwColor.Info) => "bg-sky-100 dark:bg-sky-900/40 text-sky-800 dark:text-sky-300",
+        (BwVariant.Soft, BwColor.Dark) => "bg-gray-800 dark:bg-gray-700 text-gray-100 dark:text-gray-200",
+        
+         // Filled
+        (BwVariant.Filled, BwColor.Primary) => "bg-blue-600 text-white",
+        (BwVariant.Filled, BwColor.Secondary) => "bg-gray-600 text-white",
+        (BwVariant.Filled, BwColor.Success) => "bg-green-600 text-white",
+        (BwVariant.Filled, BwColor.Danger) => "bg-red-600 text-white",
+        (BwVariant.Filled, BwColor.Warning) => "bg-yellow-500 text-white",
+        (BwVariant.Filled, BwColor.Info) => "bg-sky-600 text-white",
+        (BwVariant.Filled, BwColor.Dark) => "bg-gray-900 dark:bg-gray-700 text-white",
+
+        // Ghost (Hover bg)
+        (BwVariant.Ghost, BwColor.Primary) => "hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400",
+        (BwVariant.Ghost, BwColor.Secondary) => "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400",
+        (BwVariant.Ghost, BwColor.Success) => "hover:bg-green-100 dark:hover:bg-green-900/40 text-green-600 dark:text-green-400",
+        (BwVariant.Ghost, BwColor.Danger) => "hover:bg-red-100 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400",
+        (BwVariant.Ghost, BwColor.Warning) => "hover:bg-yellow-100 dark:hover:bg-yellow-900/40 text-yellow-600 dark:text-yellow-400",
+        (BwVariant.Ghost, BwColor.Info) => "hover:bg-sky-100 dark:hover:bg-sky-900/40 text-sky-600 dark:text-sky-400",
+        (BwVariant.Ghost, BwColor.Dark) => "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-300",
+
+        _ => "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300"
+    };
+    
+    var dotColorClass = Color switch
+    {
+        BwColor.Primary => "bg-blue-500",
+        BwColor.Secondary => "bg-gray-500",
+        BwColor.Success => "bg-green-500",
+        BwColor.Danger => "bg-red-500",
+        BwColor.Warning => "bg-yellow-500",
+        BwColor.Info => "bg-sky-500",
+        BwColor.Dark => "bg-gray-900 dark:bg-gray-400",
+        _ => "bg-gray-500"
+    };
+}
+
+<span class="@baseClass @sizeClass @roundedClass @variantClass @Class">
+    @if (ShowDot)
+    {
+        <span class="w-1.5 h-1.5 rounded-full @dotColorClass @(HasContent ? "mr-1.5" : "")"></span>
+    }
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <i class="@Icon @(HasContent ? "mr-1" : "")"></i>
+    }
+    @if (!string.IsNullOrEmpty(Text))
+    {
+        @Text
+    }
+    @ChildContent
+    @if (Dismissible)
+    {
+        <button type="button" 
+                class="ml-1.5 -mr-0.5 hover:opacity-70 transition-opacity" 
+                @onclick="HandleDismiss"
+                @onclick:stopPropagation="true">
+            <i class="fa-solid fa-xmark text-[0.65em]"></i>
+        </button>
+    }
+</span>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Soft;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Small;
+    [Parameter] public bool IsPill { get; set; }
+    [Parameter] public bool ShowDot { get; set; }
+    [Parameter] public bool Dismissible { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public EventCallback OnDismiss { get; set; }
+    
+    private bool HasContent => !string.IsNullOrEmpty(Text) || ChildContent != null;
+    
+    private async Task HandleDismiss()
+    {
+        await OnDismiss.InvokeAsync();
+    }
+}

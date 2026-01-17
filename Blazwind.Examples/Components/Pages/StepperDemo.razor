@@ -1,0 +1,176 @@
+@page "/components/stepper"
+@using Blazwind.Components.Input
+
+<PageTitle>Stepper Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Stepper Component"
+            Description="Wizard-style step indicator for multi-step processes. Horizontal, vertical, and progress bar variants."
+            Icon="fa-solid fa-shoe-prints"
+            Color="BwColor.Primary"/>
+
+    @* Basic Horizontal Stepper *@
+    <BwCard Title="Basic Horizontal Stepper" Subtitle="Step-by-step progress indicator"
+            Icon="fa-solid fa-arrows-left-right" Color="BwColor.Primary">
+        <BwStepper @bind-ActiveStep="_basicStep" AlternativeLabel="true">
+            <BwStepperItem Title="Account" Description="Account details"/>
+            <BwStepperItem Title="Profile" Description="Personal information"/>
+            <BwStepperItem Title="Settings" Description="Preferences"/>
+            <BwStepperItem Title="Complete" Description="Confirmation"/>
+        </BwStepper>
+
+        <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.SpaceBetween" Class="mt-6 pt-4 border-t">
+            <BwButton Color="BwColor.Secondary"
+                      IsDisabled="@(_basicStep == 0)"
+                      OnClick="() => { if (_basicStep > 0) _basicStep--; }">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back
+            </BwButton>
+            <BwButton Color="BwColor.Primary"
+                      OnClick="() => { if (_basicStep < 3) _basicStep++; }">
+                @(_basicStep == 3 ? "Complete" : "Next") <i class="fa-solid fa-arrow-right ml-2"></i>
+            </BwButton>
+        </BwRow>
+    </BwCard>
+
+    @* Progress Bar Variant *@
+    <BwCard Title="Progress Bar" Subtitle="Visual progress bar indicator" Icon="fa-solid fa-bars-progress"
+            Color="BwColor.Success">
+        <BwStepper @bind-ActiveStep="_progressStep" Variant="BwStepperVariant.Progress" AlternativeLabel="true">
+            <BwStepperItem Title="Payment Method" Icon="fa-solid fa-credit-card"/>
+            <BwStepperItem Title="Shipping Address" Icon="fa-solid fa-truck"/>
+            <BwStepperItem Title="Order Summary" Icon="fa-solid fa-receipt"/>
+            <BwStepperItem Title="Confirmation" Icon="fa-solid fa-check-circle"/>
+        </BwStepper>
+
+        <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.Center" Class="mt-6">
+            <BwButton Color="BwColor.Secondary"
+                      IsDisabled="@(_progressStep == 0)"
+                      OnClick="() => { if (_progressStep > 0) _progressStep--; }">
+                Back
+            </BwButton>
+            <BwButton Color="BwColor.Primary"
+                      OnClick="() => { if (_progressStep < 3) _progressStep++; }">
+                @(_progressStep == 3 ? "Place Order" : "Continue")
+            </BwButton>
+        </BwRow>
+    </BwCard>
+
+    @* Vertical & Error States *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Vertical Stepper" Subtitle="Ideal for form wizards" Icon="fa-solid fa-list-ol"
+                Color="BwColor.Primary">
+            <BwStepper @bind-ActiveStep="_verticalStep" Orientation="BwOrientation.Vertical">
+                <BwStepperItem Title="Personal Info" Description="Name, surname, and birth date">
+                    <ChildContent>
+                        <BwColumn Spacing="BwSpacing.Sm">
+                            <BwInput Label="Full Name" Placeholder="Enter your name"/>
+                            <BwInput Label="Email" Type="email" Placeholder="example@email.com"/>
+                            <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.End" Class="mt-4">
+                                <BwButton Size="BwSize.Small" OnClick="() => _verticalStep++">
+                                    Continue
+                                </BwButton>
+                            </BwRow>
+                        </BwColumn>
+                    </ChildContent>
+                </BwStepperItem>
+                <BwStepperItem Title="Contact Info" Description="Phone and address" IsOptional="true">
+                    <ChildContent>
+                        <BwColumn Spacing="BwSpacing.Sm">
+                            <BwInput Label="Phone" Placeholder="+1 5XX XXX XX XX"/>
+                            <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.End" Class="mt-4">
+                                <BwButton Size="BwSize.Small" Color="BwColor.Secondary"
+                                          OnClick="() => { if (_verticalStep > 0) _verticalStep--; }">
+                                    Back
+                                </BwButton>
+                                <BwButton Size="BwSize.Small" OnClick="() => _verticalStep++">
+                                    Continue
+                                </BwButton>
+                            </BwRow>
+                        </BwColumn>
+                    </ChildContent>
+                </BwStepperItem>
+                <BwStepperItem Title="Verification" Description="Confirm your information">
+                    <ChildContent>
+                        <BwColumn CrossAxisAlignment="BwCrossAxisAlignment.Center" Class="py-4">
+                            <i class="fa-solid fa-circle-check text-4xl text-emerald-500 mb-3"></i>
+                            <p class="text-gray-700 dark:text-gray-300">All information verified!</p>
+                            <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.Center" Class="mt-4">
+                                <BwButton Size="BwSize.Small" Color="BwColor.Secondary"
+                                          OnClick="() => { if (_verticalStep > 0) _verticalStep--; }">
+                                    Back
+                                </BwButton>
+                                <BwButton Size="BwSize.Small" Color="BwColor.Success">
+                                    Complete
+                                </BwButton>
+                            </BwRow>
+                        </BwColumn>
+                    </ChildContent>
+                </BwStepperItem>
+            </BwStepper>
+        </BwCard>
+
+        <BwCard Title="Status Indicators" Subtitle="Error and optional steps" Icon="fa-solid fa-circle-exclamation"
+                Color="BwColor.Danger">
+            <BwStepper ActiveStep="1" Orientation="BwOrientation.Vertical" Linear="false">
+                <BwStepperItem Title="Create Account" Description="Completed" Icon="fa-solid fa-user"/>
+                <BwStepperItem Title="Payment Info" Description="Card info missing" IsError="true"/>
+                <BwStepperItem Title="Address Info" Description="Optional" IsOptional="true"/>
+                <BwStepperItem Title="Place Order" Description="Pending" IsDisabled="true"/>
+            </BwStepper>
+        </BwCard>
+    </BwRow>
+
+    @* Non-Linear Navigation *@
+    <BwCard Title="Non-Linear Navigation" Subtitle="Navigate by clicking any step" Icon="fa-solid fa-hand-pointer"
+            Color="BwColor.Warning">
+        <BwStepper @bind-ActiveStep="_nonLinearStep" Linear="false" AlternativeLabel="true">
+            <BwStepperItem Title="General" Icon="fa-solid fa-sliders"/>
+            <BwStepperItem Title="Security" Icon="fa-solid fa-shield"/>
+            <BwStepperItem Title="Notifications" Icon="fa-solid fa-bell"/>
+            <BwStepperItem Title="Privacy" Icon="fa-solid fa-lock"/>
+            <BwStepperItem Title="Appearance" Icon="fa-solid fa-palette"/>
+        </BwStepper>
+
+        <BwAlert Color="BwColor.Secondary" Variant="BwVariant.Soft" Class="mt-6 text-center">
+            <p class="text-gray-600 dark:text-gray-300">Selected step: <strong>@(_nonLinearStep + 1)</strong></p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">You can navigate by clicking on any step.</p>
+        </BwAlert>
+    </BwCard>
+
+    @* Size Options *@
+    <BwCard Title="Size Options" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwColumn>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Small</p>
+                <BwStepper ActiveStep="1" Size="BwSize.Small">
+                    <BwStepperItem Title="Step 1"/>
+                    <BwStepperItem Title="Step 2"/>
+                    <BwStepperItem Title="Step 3"/>
+                </BwStepper>
+            </BwColumn>
+            <BwColumn>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Medium (Default)</p>
+                <BwStepper ActiveStep="1" Size="BwSize.Medium">
+                    <BwStepperItem Title="Step 1"/>
+                    <BwStepperItem Title="Step 2"/>
+                    <BwStepperItem Title="Step 3"/>
+                </BwStepper>
+            </BwColumn>
+            <BwColumn>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Large</p>
+                <BwStepper ActiveStep="1" Size="BwSize.Large">
+                    <BwStepperItem Title="Step 1"/>
+                    <BwStepperItem Title="Step 2"/>
+                    <BwStepperItem Title="Step 3"/>
+                </BwStepper>
+            </BwColumn>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private int _basicStep = 1;
+    private int _progressStep = 2;
+    private int _verticalStep;
+    private int _nonLinearStep = 2;
+}

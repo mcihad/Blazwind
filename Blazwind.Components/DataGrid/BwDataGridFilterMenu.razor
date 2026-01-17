@@ -1,0 +1,103 @@
+@using Blazwind.Components.DataGrid.Models
+@using Blazwind.Components.Popover
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@namespace Blazwind.Components.DataGrid
+
+<div class="relative inline-block ml-2" @onclick:stopPropagation="true">
+    <button type="button" 
+            class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors @(IsActive ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30" : "text-gray-400 dark:text-gray-500")"
+            @onclick="TogglePopover">
+        <i class="fa-solid fa-filter text-xs"></i>
+    </button>
+    
+    @if (_isOpen)
+    {
+        <div class="absolute right-0 top-full mt-1 z-50 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-3" @onclick:stopPropagation="true">
+            <div class="mb-3">
+                <BwDataGridFilter FilterType="@FilterType"
+                                  CurrentFilter="@CurrentFilter"
+                                  FilterOptions="@FilterOptions"
+                                  OnFilterChanged="HandleFilterChanged" />
+            </div>
+            
+            <div class="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+                <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" OnClick="ClearFilter">
+                    Temizle
+                </BwButton>
+                <BwButton Size="BwSize.Small" Variant="BwVariant.Filled" Color="BwColor.Primary" OnClick="ApplyFilter">
+                    Uygula
+                </BwButton>
+            </div>
+        </div>
+        
+        <div class="fixed inset-0 z-40" @onclick="ClosePopover"></div>
+    }
+</div>
+
+@code {
+    [Parameter] public FilterType FilterType { get; set; }
+    [Parameter] public FilterDescriptor? CurrentFilter { get; set; }
+    [Parameter] public IEnumerable<FilterOption>? FilterOptions { get; set; }
+    [Parameter] public EventCallback<FilterDescriptor?> OnFilterChanged { get; set; }
+
+    private bool _isOpen;
+    private bool IsActive => CurrentFilter?.Value != null;
+    
+    // Temporary state to hold changes before Apply
+    private FilterDescriptor? _tempFilter;
+
+    protected override void OnParametersSet()
+    {
+        // sync temp filter with current filter when valid
+        if (!_isOpen)
+        {
+            _tempFilter = CurrentFilter != null ? new FilterDescriptor 
+            { 
+                Field = CurrentFilter.Field, 
+                Operator = CurrentFilter.Operator, 
+                Value = CurrentFilter.Value,
+                Logic = CurrentFilter.Logic 
+            } : null;
+        }
+    }
+
+    private void TogglePopover()
+    {
+        _isOpen = !_isOpen;
+        if (_isOpen)
+        {
+            // Reset temp to current when opening
+             _tempFilter = CurrentFilter != null ? new FilterDescriptor 
+            { 
+                Field = CurrentFilter.Field, 
+                Operator = CurrentFilter.Operator, 
+                Value = CurrentFilter.Value,
+                Logic = CurrentFilter.Logic 
+            } : null;
+        }
+    }
+
+    private void ClosePopover()
+    {
+        _isOpen = false;
+    }
+    
+    private void HandleFilterChanged(FilterDescriptor? descriptor)
+    {
+        _tempFilter = descriptor;
+    }
+
+    private async Task ApplyFilter()
+    {
+        await OnFilterChanged.InvokeAsync(_tempFilter);
+        _isOpen = false;
+    }
+
+    private async Task ClearFilter()
+    {
+        _tempFilter = null;
+        await OnFilterChanged.InvokeAsync(null);
+        _isOpen = false;
+    }
+}

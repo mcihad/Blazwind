@@ -1,0 +1,19 @@
+@namespace Blazwind.Examples.Components.Shared
+
+<div class="py-3 flex items-center justify-between border-b border-gray-100 last:border-0 @Class">
+    <div>
+        <p class="font-medium text-gray-900">@Title</p>
+        @if (!string.IsNullOrEmpty(Description))
+        {
+            <p class="text-sm text-gray-500">@Description</p>
+        }
+    </div>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+}

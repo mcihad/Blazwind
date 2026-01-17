@@ -1,0 +1,103 @@
+@page "/components/border"
+@using Blazwind.Components.Border
+@using Blazwind.Components.Typography
+
+<PageTitle>Border - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwBorder"
+            Description="Advanced border component for grouping and highlighting content."
+            Icon="fa-regular fa-square"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="Basic Usage" Subtitle="Simple borders." Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="6">
+                <BwBorder>
+                    <BwTypography>Default thin gray border, automatic padding.</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <BwBorder Color="BwColor.Primary" Width="BwSize.Medium">
+                    <BwTypography>Thick blue border.</BwTypography>
+                </BwBorder>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Titled Borders" Subtitle="Fieldset-like appearance." Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Md" Class="mt-2">
+            <BwColumn Span="12" Md="6">
+                <BwBorder Title="Personal Information" Color="BwColor.Primary">
+                    <BwTypography>Area for entering name, surname, etc. information.</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <BwBorder Title="Security Settings" Color="BwColor.Danger" TitlePosition="BwDirection.Right"
+                          IsDashed="true">
+                    <BwTypography>Sensitive settings in this area. Title on the right!</BwTypography>
+                </BwBorder>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Padding Options" Subtitle="Different inner spacing sizes." Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="4">
+                <BwBorder Color="BwColor.Info" Padding="BwSize.Small">
+                    <BwTypography Size="BwSize.Small">Small Padding</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <BwBorder Color="BwColor.Success" Padding="BwSize.Medium">
+                    <BwTypography>Medium Padding (Default)</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <BwBorder Color="BwColor.Warning" Padding="BwSize.Large">
+                    <BwTypography>Large Padding</BwTypography>
+                </BwBorder>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Style Options" Subtitle="Different styles, shadows and radii." Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="4">
+                <BwBorder IsDashed="true" Color="BwColor.Secondary">
+                    <BwTypography>Dashed (Dashed)</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <BwBorder IsDotted="true" Color="BwColor.Warning" Width="BwSize.Medium">
+                    <BwTypography>Dotted (Dotted)</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <BwBorder Radius="BwSize.Large" Color="BwColor.Info" HasShadow="true">
+                    <BwTypography>Shadowed and Rounded Corner</BwTypography>
+                </BwBorder>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Color Options" Subtitle="All color variants." Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="4">
+                <BwBorder Title="Primary" Color="BwColor.Primary" Padding="BwSize.Small">
+                    <BwTypography Size="BwSize.Small">Blue highlighted border</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <BwBorder Title="Success" Color="BwColor.Success" Padding="BwSize.Small">
+                    <BwTypography Size="BwSize.Small">Green highlighted border</BwTypography>
+                </BwBorder>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <BwBorder Title="Danger" Color="BwColor.Danger" Padding="BwSize.Small">
+                    <BwTypography Size="BwSize.Small">Red highlighted border</BwTypography>
+                </BwBorder>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+</BwColumn>

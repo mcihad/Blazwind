@@ -1,0 +1,66 @@
+/* BwFlow component styles */
+
+.bw-flow-container {
+    position: relative;
+    width: 100%;
+}
+
+.bw-flow-with-arrows {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bw-flow-with-arrows>.flex {
+    flex: 1;
+    min-width: 0;
+}
+
+.bw-flow-arrow {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s, opacity 0.15s;
+}
+
+.bw-flow-arrow:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.bw-flow-arrow:disabled {
+    cursor: not-allowed;
+}
+
+/* Hide scrollbar for arrow navigation */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    /* Touch support */
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Smooth touch scrolling for all flow containers */
+.bw-flow-container .flex {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Touch-friendly scrolling without arrows */
+.bw-flow-touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
+}

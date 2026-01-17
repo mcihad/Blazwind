@@ -1,0 +1,198 @@
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+@using Blazwind.Components.Input
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+@typeparam TItem
+@namespace Blazwind.Components.Input
+
+<div class="bw-transfer flex flex-col md:flex-row items-stretch gap-4 @Class">
+    @* Source List *@
+    @RenderList(GetSourceItems(), Titles.ElementAtOrDefault(0) ?? "Source", _sourceSearchText, (val) => _sourceSearchText = val, _checkedSourceKeys, "source")
+
+    @* Actions *@
+    <div class="flex md:flex-col items-center justify-center gap-3 py-2">
+        <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" 
+                  Disabled="@(!_checkedTargetKeys.Any())"
+                  OnClick="MoveToSource"
+                  Class="rtl:rotate-180">
+            <i class="fa-solid fa-angle-left"></i>
+        </BwButton>
+        <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" 
+                  Disabled="@(!_checkedSourceKeys.Any())"
+                  OnClick="MoveToTarget"
+                  Class="rtl:rotate-180">
+            <i class="fa-solid fa-angle-right"></i>
+        </BwButton>
+    </div>
+
+    @* Target List *@
+    @RenderList(TargetItems, Titles.ElementAtOrDefault(1) ?? "Target", _targetSearchText, (val) => _targetSearchText = val, _checkedTargetKeys, "target")
+</div>
+
+@code {
+    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+    
+    [Parameter] public IEnumerable<TItem> DataSource { get; set; } = new List<TItem>();
+    [Parameter] public IList<TItem> TargetItems { get; set; } = new List<TItem>();
+    [Parameter] public EventCallback<IList<TItem>> TargetItemsChanged { get; set; }
+    
+    [Parameter] public Func<TItem, string> TextSelector { get; set; } = x => x?.ToString() ?? "";
+    [Parameter] public Func<TItem, object> ValueSelector { get; set; } = x => x!;
+    
+    [Parameter] public IEnumerable<string> Titles { get; set; } = new[] { "Kaynak", "Hedef" };
+    [Parameter] public bool ShowSearch { get; set; } = false;
+    [Parameter] public string SearchPlaceholder { get; set; } = "Ara...";
+    [Parameter] public string Height { get; set; } = "300px";
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Expression for validation binding</summary>
+    [Parameter] public Expression<Func<IList<TItem>>>? For { get; set; }
+    
+    private FieldIdentifier _fieldIdentifier;
+
+    private string _sourceSearchText = "";
+    private string _targetSearchText = "";
+    
+    private HashSet<object> _checkedSourceKeys = new();
+    private HashSet<object> _checkedTargetKeys = new();
+    
+    protected override void OnInitialized()
+    {
+        if (CascadedEditContext != null && For != null)
+        {
+            _fieldIdentifier = FieldIdentifier.Create(For);
+        }
+    }
+
+    private IEnumerable<TItem> GetSourceItems()
+    {
+        if (DataSource == null) return Enumerable.Empty<TItem>();
+        // Exclude items that are already in TargetItems
+        // We use ValueSelector to match
+        var targetKeys = TargetItems.Select(ValueSelector).ToHashSet();
+        return DataSource.Where(x => !targetKeys.Contains(ValueSelector(x)));
+    }
+
+    private RenderFragment RenderList(IEnumerable<TItem> items, string title, string searchValue, Action<string> onSearch, HashSet<object> checkedKeys, string side) => __builder =>
+    {
+        var filteredItems = items.Where(x => string.IsNullOrEmpty(searchValue) || 
+                                             TextSelector(x).Contains(searchValue, StringComparison.OrdinalIgnoreCase))
+                                 .ToList();
+        
+        var allFilteredKeys = filteredItems.Select(ValueSelector).ToList();
+        var isAllChecked = allFilteredKeys.Count > 0 && allFilteredKeys.All(k => checkedKeys.Contains(k));
+        var isIndeterminate = !isAllChecked && allFilteredKeys.Any(k => checkedKeys.Contains(k));
+
+        <div class="flex-1 flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm min-w-[250px]">
+            @* Header *@
+            <div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-2">
+                     <input type="checkbox" 
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                            checked="@isAllChecked"
+                            @onchange="@(e => ToggleAll(e, filteredItems, checkedKeys))" />
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-200">@title</span>
+                </div>
+                <span class="text-xs text-gray-400">@filteredItems.Count item</span>
+            </div>
+            
+            @* Search *@
+            @if(ShowSearch)
+            {
+                <div class="p-2 border-b border-gray-100 dark:border-gray-700">
+                    <div class="relative">
+                         <input value="@searchValue"
+                                @oninput="@(e => onSearch(e.Value?.ToString() ?? ""))"
+                                placeholder="@SearchPlaceholder"
+                                class="w-full text-sm border-gray-300 dark:border-gray-600 rounded-md pl-8 focus:ring-blue-500 focus:border-blue-500 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+                         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+            }
+            
+            @* List *@
+            <div class="overflow-y-auto p-1 space-y-0.5 custom-scrollbar" style="height: @Height">
+                @if (filteredItems.Any())
+                {
+                    @foreach (var item in filteredItems)
+                    {
+                        var key = ValueSelector(item);
+                        var isChecked = checkedKeys.Contains(key);
+                        var itemId = $"bw-transfer-{side}-{key}";
+                        
+                        <div class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer @(isChecked ? "bg-blue-50 dark:bg-blue-900/20" : "")"
+                             @onclick="@(() => ToggleItem(key, checkedKeys))">
+                             <input type="checkbox" 
+                                    id="@itemId"
+                                    checked="@isChecked"
+                                    readonly
+                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 pointer-events-none" />
+                            <label class="text-sm text-gray-700 dark:text-gray-200 cursor-pointer pointer-events-none truncate flex-1 block select-none">@TextSelector(item)</label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 py-8">
+                         <span class="text-sm">Veri Yok</span>
+                    </div>
+                }
+            </div>
+        </div>
+    };
+
+    private void ToggleItem(object key, HashSet<object> checkedKeys)
+    {
+        if (checkedKeys.Contains(key))
+            checkedKeys.Remove(key);
+        else
+            checkedKeys.Add(key);
+    }
+    
+    private void ToggleAll(ChangeEventArgs e, List<TItem> items, HashSet<object> checkedKeys)
+    {
+        var isChecked = (bool)(e.Value ?? false);
+        if (isChecked)
+        {
+            foreach (var item in items)
+                checkedKeys.Add(ValueSelector(item));
+        }
+        else
+        {
+            foreach (var item in items)
+                checkedKeys.Remove(ValueSelector(item));
+        }
+    }
+
+    private async Task MoveToTarget()
+    {
+        if (!_checkedSourceKeys.Any()) return;
+        
+        var sourceItems = GetSourceItems().ToList(); // Snapshot
+        var itemsToMove = sourceItems.Where(x => _checkedSourceKeys.Contains(ValueSelector(x))).ToList();
+        
+        foreach (var item in itemsToMove)
+        {
+            TargetItems.Add(item);
+        }
+        
+        _checkedSourceKeys.Clear();
+        await TargetItemsChanged.InvokeAsync(TargetItems);
+    }
+
+    private async Task MoveToSource()
+    {
+        if (!_checkedTargetKeys.Any()) return;
+        
+        var itemsToRemove = TargetItems.Where(x => _checkedTargetKeys.Contains(ValueSelector(x))).ToList();
+        
+        foreach (var item in itemsToRemove)
+        {
+            TargetItems.Remove(item);
+        }
+        
+        _checkedTargetKeys.Clear();
+        await TargetItemsChanged.InvokeAsync(TargetItems);
+    }
+}

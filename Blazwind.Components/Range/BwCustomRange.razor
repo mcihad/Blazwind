@@ -1,0 +1,212 @@
+@namespace Blazwind.Components.Range
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@typeparam TValue
+@implements IAsyncDisposable
+
+<div id="@_elementId" class="bw-custom-range @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
+    }
+
+    @* Custom Content Area (Chart, etc.) *@
+    @if (ChildContent != null)
+    {
+        <div class="relative mb-1">
+            @ChildContent
+        </div>
+    }
+
+    @* Brush Track *@
+    <div
+        class="bw-brush-track relative h-8 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden cursor-pointer select-none">
+        @* Inactive Left *@
+        <div class="absolute inset-y-0 left-0 bg-gray-300/60 dark:bg-gray-900/70 transition-all"
+            style="width: @(StartPercent)%;"></div>
+        @* Inactive Right *@
+        <div class="absolute inset-y-0 right-0 bg-gray-300/60 dark:bg-gray-900/70 transition-all"
+            style="width: @(100 - EndPercent)%;"></div>
+
+        @* Selection Brush *@
+        <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
+                    @GetBrushBgClass() shadow hover:shadow-md transition-all"
+            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+
+            @* Left Handle *@
+            <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-3 cursor-ew-resize @GetHandleClass()
+                        flex items-center justify-center rounded-l">
+                <div class="w-0.5 h-4 bg-white/60 rounded-full"></div>
+            </div>
+
+            @* Center Grip Pattern *@
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+                <div class="flex gap-1">
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        <div class="w-0.5 h-3 bg-white rounded-full"></div>
+                    }
+                </div>
+            </div>
+
+            @* Right Handle *@
+            <div class="bw-brush-handle-right absolute right-0 inset-y-0 w-3 cursor-ew-resize @GetHandleClass()
+                        flex items-center justify-center rounded-r">
+                <div class="w-0.5 h-4 bg-white/60 rounded-full"></div>
+            </div>
+        </div>
+
+        @* Scale Markers *@
+        @if (ShowScale && ScaleLabels?.Any() == true)
+        {
+            <div class="absolute -bottom-4 inset-x-0 flex justify-between text-[9px] text-gray-400 px-1">
+                @foreach (var label in ScaleLabels)
+                {
+                    <span>@label</span>
+                }
+            </div>
+        }
+    </div>
+
+    @* Custom Value Display *@
+    @if (ShowValues && ValueTemplate != null)
+    {
+        <div class="mt-5 flex items-center justify-center">
+            @ValueTemplate((StartPercent, EndPercent))
+        </div>
+    }
+    else if (ShowValues && FormatStart != null && FormatEnd != null)
+    {
+        <div class="mt-5 flex items-center justify-center gap-3">
+            <div class="px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">@FormatStart(StartPercent)</span>
+            </div>
+            <i class="fa-solid fa-arrow-right text-gray-400 text-xs"></i>
+            <div class="px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">@FormatEnd(EndPercent)</span>
+            </div>
+        </div>
+    }
+
+    @* Action Buttons *@
+    @if (Actions != null)
+    {
+        <div class="mt-3 flex justify-center">
+            @Actions
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public double StartPercent { get; set; } = 20;
+    [Parameter] public double EndPercent { get; set; } = 80;
+    [Parameter] public double MinWidthPercent { get; set; } = 5;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool ShowValues { get; set; } = true;
+    [Parameter] public bool ShowScale { get; set; } = true;
+    [Parameter] public List<string>? ScaleLabels { get; set; }
+    [Parameter] public Func<double, string>? FormatStart { get; set; }
+    [Parameter] public Func<double, string>? FormatEnd { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment<(double Start, double End)>? ValueTemplate { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<(double StartPercent, double EndPercent)> OnBrushChanged { get; set; }
+    [Parameter] public EventCallback<(TValue Start, TValue End)> OnValueChanged { get; set; }
+    [Parameter] public Func<double, TValue>? ConvertFromPercent { get; set; }
+
+    private string _elementId = "";
+    private DotNetObjectReference<BwCustomRange<TValue>>? _dotNetRef;
+    private double _startPercent;
+    private double _endPercent;
+
+    protected override void OnInitialized()
+    {
+        _elementId = $"bw-custom-range-{Guid.NewGuid():N}";
+        _startPercent = StartPercent;
+        _endPercent = EndPercent;
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Allow external control of position
+        if (Math.Abs(_startPercent - StartPercent) > 0.1 || Math.Abs(_endPercent - EndPercent) > 0.1)
+        {
+            _startPercent = StartPercent;
+            _endPercent = EndPercent;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
+            MinWidthPercent);
+        }
+    }
+
+    [JSInvokable]
+    public async Task HandleBrushChanged(double startPercent, double endPercent)
+    {
+        _startPercent = Math.Round(startPercent, 2);
+        _endPercent = Math.Round(endPercent, 2);
+
+        await OnBrushChanged.InvokeAsync((_startPercent, _endPercent));
+
+        if (ConvertFromPercent != null)
+        {
+            var startValue = ConvertFromPercent(_startPercent);
+            var endValue = ConvertFromPercent(_endPercent);
+            await OnValueChanged.InvokeAsync((startValue, endValue));
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task UpdatePositionAsync(double startPercent, double endPercent)
+    {
+        _startPercent = startPercent;
+        _endPercent = endPercent;
+
+        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, _startPercent, _endPercent);
+        StateHasChanged();
+    }
+
+    private string GetBrushBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-gradient-to-r from-blue-500/90 to-blue-600/90",
+        BwColor.Success => "bg-gradient-to-r from-green-500/90 to-green-600/90",
+        BwColor.Danger => "bg-gradient-to-r from-red-500/90 to-red-600/90",
+        BwColor.Warning => "bg-gradient-to-r from-amber-500/90 to-amber-600/90",
+        BwColor.Info => "bg-gradient-to-r from-cyan-500/90 to-cyan-600/90",
+        BwColor.Secondary => "bg-gradient-to-r from-gray-500/90 to-gray-600/90",
+        _ => "bg-gradient-to-r from-blue-500/90 to-blue-600/90"
+    };
+
+    private string GetHandleClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-700",
+        BwColor.Success => "bg-green-700",
+        BwColor.Danger => "bg-red-700",
+        BwColor.Warning => "bg-amber-700",
+        BwColor.Info => "bg-cyan-700",
+        BwColor.Secondary => "bg-gray-700",
+        _ => "bg-blue-700"
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
+        }
+        catch { }
+
+        _dotNetRef?.Dispose();
+    }
+}

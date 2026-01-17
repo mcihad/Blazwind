@@ -1,0 +1,706 @@
+@page "/components/datagrid"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.ContextMenu
+@using Blazwind.Components.DataGrid
+@using Blazwind.Components.DataGrid.Models
+@using Blazwind.Components.EmptyState
+@using Blazwind.Components.Table
+@using Blazwind.Components.Tabs
+@using Blazwind.Components.Typography
+@inject ToastService ToastService
+@inject IJSRuntime JS
+
+<PageTitle>DataGrid Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+
+    <BwHero Title="DataGrid"
+            Description="Enterprise-level data grid component. Advanced filtering, sorting, pagination, selection, export and more."
+            Icon="fa-solid fa-table-list" Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic DataGrid" Subtitle="Sorting, pagination and click to select" Icon="fa-solid fa-table"
+            Color="BwColor.Primary">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnablePagination="true" PageSize="10" Striped="true"
+                    Hoverable="true" Height="350px" SelectionMode="BwSelectionMode.SingleRow"
+                    SelectedRowClass="!bg-purple-100 !text-purple-900 border-l-4 !border-l-purple-500"
+                    OnRowClick="HandleRowSelectBasic" @bind-SelectedItems="_basicSelectedItems">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.HireDate)" Title="Hire Date" Format="dd.MM.yyyy"/>
+            </ChildContent>
+        </BwDataGrid>
+    </BwCard>
+
+    @* Advanced Filtering *@
+    <BwCard Title="Advanced Filtering" Subtitle="Text, Number, Boolean and Selection filter types"
+            Icon="fa-solid fa-filter" Color="BwColor.Info">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnableFiltering="true" EnablePagination="true" PageSize="10"
+                    Height="400px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"
+                                  FilterType="FilterType.Number"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"
+                                  FilterType="FilterType.Text"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"
+                                  FilterType="FilterType.Select" FilterOptions="@_departmentOptions"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right" FilterType="FilterType.Number"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.IsActive)" Title="Active"
+                                  FilterType="FilterType.Boolean">
+                    <Template Context="emp">
+                        <BwBadge Color="@(emp.IsActive ? BwColor.Success : BwColor.Danger)">
+                            @(emp.IsActive ? "Active" : "Inactive")
+                        </BwBadge>
+                    </Template>
+                </BwDataGridColumn>
+            </ChildContent>
+        </BwDataGrid>
+    </BwCard>
+
+    @* Selection and Frozen Columns *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Multiple Selection" Subtitle="Row selection with checkbox" Icon="fa-solid fa-square-check"
+                Color="BwColor.Success">
+            <BwDataGrid TItem="Employee" Items="@_employees.Take(8)" SelectionMode="BwSelectionMode.Multiple"
+                        SelectedItems="@_selectedEmployees" SelectedItemsChanged="@HandleSelectionChanged"
+                        Compact="true"
+                        Height="280px">
+                <ChildContent>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                      Align="TextAlign.Right"/>
+                </ChildContent>
+            </BwDataGrid>
+
+            <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Class="mt-4">
+                <strong>Selected:</strong> @_selectedEmployees.Count() people
+                @if (_selectedEmployees.Any())
+                {
+                    <span class="ml-2">(@string.Join(", ", _selectedEmployees.Take(3).Select(e =>
+                                                e.FullName))@(_selectedEmployees.Count() > 3 ? "..." : ""))</span>
+                }
+            </BwAlert>
+        </BwCard>
+
+        <BwCard Title="Frozen Columns" Subtitle="Fixed columns during horizontal scrolling" Icon="fa-solid fa-thumbtack"
+                Color="BwColor.Warning">
+            <BwDataGrid TItem="Employee" Items="@_employees.Take(8)" Compact="true" Height="280px"
+                        Class="[&_table]:min-w-[900px]">
+                <ChildContent>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="70px"
+                                      Frozen="FrozenPosition.Left"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name" Width="160px"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Email)" Title="Email" Width="200px"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Phone)" Title="Phone" Width="140px"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department" Width="130px"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Position)" Title="Position" Width="150px"/>
+                    <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Width="110px" Format="C0"
+                                      Align="TextAlign.Right"/>
+                    <BwDataGridColumn TItem="Employee" Title="Action" Width="80px" Frozen="FrozenPosition.Right"
+                                      Sortable="false">
+                        <Template Context="emp">
+                            <div class="flex gap-1">
+                                <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" Color="BwColor.Primary"
+                                          Class="!p-1">
+                                    <i class="fa-solid fa-edit"></i>
+                                </BwButton>
+                                <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" Color="BwColor.Danger"
+                                          Class="!p-1">
+                                    <i class="fa-solid fa-trash"></i>
+                                </BwButton>
+                            </div>
+                        </Template>
+                    </BwDataGridColumn>
+                </ChildContent>
+            </BwDataGrid>
+
+            <BwAlert Color="BwColor.Warning" Variant="BwVariant.Soft" Title="Usage Tip" Icon="fa-solid fa-lightbulb"
+                     Class="mt-4">
+                Scroll the grid horizontally. <strong>ID</strong> column will be fixed on the left,
+                <strong>Action</strong> column on the right.
+            </BwAlert>
+        </BwCard>
+    </BwRow>
+
+    @* Row Expansion *@
+    <BwCard Title="Row Expansion" Subtitle="Expandable detail area for each row" Icon="fa-solid fa-expand"
+            Color="BwColor.Primary">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnableRowExpansion="true" EnablePagination="true" PageSize="10"
+                    Height="400px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right"/>
+            </ChildContent>
+            <DetailRowTemplate Context="emp">
+                <BwPadding Left="BwSpacing.Xxl" Vertical="BwSpacing.Md" Right="BwSpacing.Md" Class="bg-gray-50/50">
+                    <BwTable TItem="DetailItem" Items="@GetEmployeeDetails(emp)" Bordered="true"
+                             Class="bg-white shadow-sm rounded-lg">
+                        <BwTableColumn TItem="DetailItem" Title="Detail Information" Field="@(x => x.Label)"
+                                       Width="200px">
+                            <Template Context="detail">
+                                <span class="font-medium text-gray-700">@detail.Label</span>
+                            </Template>
+                        </BwTableColumn>
+                        <BwTableColumn TItem="DetailItem" Title="Value" Field="@(x => x.Value)"/>
+                    </BwTable>
+                </BwPadding>
+            </DetailRowTemplate>
+        </BwDataGrid>
+    </BwCard>
+
+    @* Export *@
+    <BwCard Title="Export" Subtitle="Excel, CSV, TSV and JSON formats" Icon="fa-solid fa-file-export"
+            Color="BwColor.Success">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnableExport="true" EnablePagination="true" PageSize="10"
+                    Height="300px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="60px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right"/>
+            </ChildContent>
+            <FooterContent>
+                <span class="text-sm text-gray-500">Total: @_employees.Sum(e => e.Salary).ToString("C0")</span>
+            </FooterContent>
+        </BwDataGrid>
+    </BwCard>
+
+    @* Ellipsis (Long Text) *@
+    <BwCard Title="Ellipsis (Long Text)" Subtitle="Truncate long texts with ... and tooltip" Icon="fa-solid fa-ellipsis"
+            Color="BwColor.Info">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnablePagination="true" PageSize="8" Height="300px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="60px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name" Ellipsis="true"
+                                  EllipsisMaxWidth="100px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Email)" Title="Email" Ellipsis="true"
+                                  EllipsisMaxWidth="150px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Address)" Title="Address" Ellipsis="true"
+                                  EllipsisMaxWidth="180px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Notes)" Title="Notes" Ellipsis="true"
+                                  EllipsisMaxWidth="120px"/>
+            </ChildContent>
+        </BwDataGrid>
+
+        <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Icon="fa-solid fa-info-circle" Class="mt-4">
+            With the <strong>Ellipsis="true"</strong> parameter, long texts are truncated with <code
+                class="bg-gray-200 dark:bg-gray-700 px-1 rounded">...</code>.
+            Maximum width is determined with <strong>EllipsisMaxWidth</strong>. Full text is shown in tooltip on hover.
+        </BwAlert>
+    </BwCard>
+
+    @* Loading / Empty State *@
+    <BwCard Title="Loading / Empty State" Subtitle="Loading and empty data states" Icon="fa-solid fa-spinner"
+            Color="BwColor.Info">
+        <div class="flex gap-2 mb-4">
+            <BwButton Color="BwColor.Primary" Variant="BwVariant.Outline" Size="BwSize.Small" OnClick="@ToggleLoading">
+                <i class="fa-solid @(_isLoading ? "fa-stop" : "fa-play") mr-1"></i>
+                @(_isLoading ? "Stop" : "Load")
+            </BwButton>
+            <BwButton Color="BwColor.Warning" Variant="BwVariant.Outline" Size="BwSize.Small" OnClick="@ToggleEmpty">
+                <i class="fa-solid @(_showEmpty ? "fa-eye" : "fa-eye-slash") mr-1"></i>
+                @(_showEmpty ? "Show" : "Empty")
+            </BwButton>
+        </div>
+        <BwDataGrid TItem="Employee" Items="@(_showEmpty ? Array.Empty<Employee>() : _employees.Take(10))"
+                    IsLoading="@_isLoading" Height="250px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="60px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right"/>
+            </ChildContent>
+            <EmptyContent>
+                <BwColumn CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm" Class="py-8">
+                    <i class="fa-solid fa-folder-open text-4xl text-gray-300 dark:text-gray-600"></i>
+                    <p class="text-gray-500 dark:text-gray-400">No records to display</p>
+                    <BwButton Size="BwSize.Small" Color="BwColor.Primary" Variant="BwVariant.Outline"
+                              OnClick="@ToggleEmpty">
+                        Load Data
+                    </BwButton>
+                </BwColumn>
+            </EmptyContent>
+        </BwDataGrid>
+    </BwCard>
+
+    @* Conditional Row Styles *@
+    <BwCard Title="Conditional Row Styles" Subtitle="Color rows based on data status" Icon="fa-solid fa-paintbrush"
+            Color="BwColor.Primary">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnablePagination="true" PageSize="10" RowClass="@GetRowClass"
+                    Bordered="true" Height="350px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.IsActive)" Title="Status" Sortable="false">
+                    <Template Context="emp">
+                        @if (emp.IsActive)
+                        {
+                            <span class="text-green-600 font-medium">Active</span>
+                        }
+                        else
+                        {
+                            <span class="text-red-600 font-medium">Inactive</span>
+                        }
+                    </Template>
+                </BwDataGridColumn>
+            </ChildContent>
+        </BwDataGrid>
+
+        <BwRow Spacing="BwSpacing.Md" Class="mt-4 text-sm">
+            <span class="flex items-center gap-2">
+                <span
+                    class="w-4 h-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded"></span>
+                <span class="text-gray-700 dark:text-gray-300">Inactive employee</span>
+            </span>
+            <span class="flex items-center gap-2">
+                <span
+                    class="w-4 h-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded"></span>
+                <span class="text-gray-700 dark:text-gray-300">High salary (&gt;15K)</span>
+            </span>
+        </BwRow>
+    </BwCard>
+
+    @* Column Management and State Persistence *@
+    <BwCard Title="Column Management and State Saving"
+            Subtitle="Column resizing, hiding, reordering and saving to LocalStorage" Icon="fa-solid fa-sliders"
+            Color="BwColor.Success">
+
+
+        <BwDataGrid TItem="Employee" Items="@_employees" EnablePagination="true" PageSize="10" EnableColumnResize="true"
+                    EnableColumnToggle="true" EnableColumnReorder="true" AutoFit="true" Height="350px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name" Width="180px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Email)" Title="Email" Width="200px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department" Width="130px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Position)" Title="Position" Width="150px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Width="120px" Format="C0"
+                                  Align="TextAlign.Right"/>
+            </ChildContent>
+        </BwDataGrid>
+
+    </BwCard>
+
+    @* AutoFit *@
+    <BwCard Title="AutoFit" Subtitle="Automatic horizontal scrolling based on content without manual width"
+            Icon="fa-solid fa-text-width" Color="BwColor.Warning">
+
+        <BwDataGrid TItem="Employee" Items="@_employees" EnablePagination="true" PageSize="10" Height="350px"
+                    AutoFit="true">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Ad Soyad"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Email)" Title="E-posta"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Phone)" Title="Phone"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Position)" Title="Position"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.HireDate)" Title="Hire Date" Format="dd.MM.yyyy"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Address)" Title="Address"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.IsActive)" Title="Status">
+                    <Template Context="emp">
+                        @(emp.IsActive ? "Active" : "Inactive")
+                    </Template>
+                </BwDataGridColumn>
+            </ChildContent>
+        </BwDataGrid>
+
+        <BwAlert Color="BwColor.Warning" Variant="BwVariant.Soft" Icon="fa-solid fa-lightbulb" Class="mt-4">
+            When <strong>AutoFit="true"</strong> is used, the table width is automatically adjusted according to the
+            total width of the contents.
+            If the content does not fit on the screen, a horizontal scroll bar appears. In this mode, columns take up as
+            much space as their content even without manual width.
+        </BwAlert>
+    </BwCard>
+
+    @* Horizontal Scroll *@
+    <BwCard Title="Horizontal Scroll" Subtitle="Horizontal scrolling for wide tables and TableMinWidth usage"
+            Icon="fa-solid fa-arrows-left-right" Color="BwColor.Info">
+
+        <BwDataGrid TItem="Employee" Items="@_employees" EnablePagination="true" PageSize="10" EnableColumnResize="true"
+                    Height="350px" TableMinWidth="1300px">
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="80px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Ad Soyad" Width="180px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Email)" Title="E-posta" Width="200px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Phone)" Title="Telefon" Width="150px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Departman" Width="150px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Position)" Title="Pozisyon" Width="180px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Width="120px" Format="C0"
+                                  Align="TextAlign.Right"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.HireDate)" Title="Hire Date" Width="120px"
+                                  Format="dd.MM.yyyy"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Address)" Title="Address" Width="250px"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.IsActive)" Title="Status" Width="100px">
+                    <Template Context="emp">
+                        @(emp.IsActive ? "Active" : "Inactive")
+                    </Template>
+                </BwDataGridColumn>
+            </ChildContent>
+        </BwDataGrid>
+
+        <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Icon="fa-solid fa-info-circle" Class="mt-4">
+            In this grid, horizontal scrolling is forced using the <strong>TableMinWidth="1300px"</strong> parameter.
+            You can resize columns by dragging or scroll to see the columns on the right side of the table.
+        </BwAlert>
+    </BwCard>
+
+    @* All Features *@
+    <BwCard Title="All Features" Subtitle="Toolbar, Filtering, Export, Row Details, Context Menu and Row Click"
+            Icon="fa-solid fa-layer-group" Color="BwColor.Dark">
+        <BwDataGrid TItem="Employee" Items="@_employees" EnableSorting="true" EnableFiltering="true"
+                    FilterMode="FilterMode.Menu" EnablePagination="true" EnableColumnResize="true"
+                    EnableColumnToggle="true"
+                    EnableColumnReorder="true" EnableExport="true" EnableRowExpansion="true" EnableContextMenu="true"
+                    SelectionMode="BwSelectionMode.Multiple" SelectedItems="@_selectedEmployees"
+                    SelectedItemsChanged="@HandleSelectionChanged" OnRowClick="@HandleRowClick" PageSize="10"
+                    Striped="true"
+                    Hoverable="true" Height="500px">
+            <ToolbarContent>
+                <div class="flex items-center gap-2">
+                    <BwButton Size="BwSize.Small" Color="BwColor.Primary" Variant="BwVariant.Filled"
+                              OnClick='@(() => ToastService.InfoAsync("New Add clicked"))'>
+                        <i class="fa-solid fa-plus mr-1"></i> New
+                    </BwButton>
+                    @if (_selectedEmployees.Any())
+                    {
+                        <BwButton Size="BwSize.Small" Color="BwColor.Danger" Variant="BwVariant.Outline"
+                                  OnClick='@(() => ToastService.WarningAsync($"{_selectedEmployees.Count()} records deleted"))'>
+                            <i class="fa-solid fa-trash mr-1"></i> Delete (@_selectedEmployees.Count())
+                        </BwButton>
+                    }
+                </div>
+            </ToolbarContent>
+            <ContextMenuContent Context="emp">
+                <BwContextMenuItem Text="Edit" Icon="fa-solid fa-edit" OnClick="@(() => HandleEdit(emp))"/>
+                <BwContextMenuItem Text="Details" Icon="fa-solid fa-eye" OnClick="@(() => HandleViewDetails(emp))"/>
+                <BwContextMenuItem IsDivider="true"/>
+                <BwContextMenuItem Text="Delete" Icon="fa-solid fa-trash" IconClass="text-red-500"
+                                   OnClick="@(() => HandleDelete(emp))"/>
+            </ContextMenuContent>
+            <ChildContent>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Id)" Title="ID" Width="70px"
+                                  Frozen="FrozenPosition.Left" FilterType="FilterType.Number"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.FullName)" Title="Full Name"
+                                  FilterType="FilterType.Text"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Department)" Title="Department"
+                                  FilterType="FilterType.Select" FilterOptions="@_departmentOptions"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.Salary)" Title="Salary" Format="C0"
+                                  Align="TextAlign.Right" FilterType="FilterType.Number"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.HireDate)" Title="Hire Date" Format="dd.MM.yyyy"
+                                  FilterType="FilterType.Date"/>
+                <BwDataGridColumn TItem="Employee" Field="@(e => e.IsActive)" Title="Active"
+                                  FilterType="FilterType.Boolean">
+                    <Template Context="emp">
+                        <BwBadge Color="@(emp.IsActive ? BwColor.Success : BwColor.Danger)">
+                            @(emp.IsActive ? "Active" : "Inactive")
+                        </BwBadge>
+                    </Template>
+                </BwDataGridColumn>
+            </ChildContent>
+            <DetailRowTemplate Context="emp">
+                <BwPadding All="BwSpacing.Md" Class="bg-gray-50/50">
+                    <BwCard Class="bg-white border text-sm" BodyClass="p-0">
+                        <BwTabs Variant="BwVariant.Ghost" Class="p-4">
+                            <BwTabItem Title="Profile Summary" Icon="fa-solid fa-user">
+                                <ChildContent>
+                                    <BwPadding All="BwSpacing.Md" Class="bg-white p-4">
+                                        <BwRow Class="items-start">
+                                            <!-- Identity Section -->
+                                            <BwColumn Class="flex-none pr-6 border-r border-gray-100 mr-6 w-auto">
+                                                <div class="flex items-center gap-4">
+                                                    <BwAvatar Name="@emp.FullName" Size="BwSize.Large"
+                                                              StatusColor="@(emp.IsActive ? BwColor.Success : BwColor.Secondary)"/>
+
+                                                    <div>
+                                                        <div class="flex items-center gap-2 mb-1">
+                                                            <BwTypography Tag="BwTypographyTag.H4"
+                                                                          Weight="BwFontWeight.Semibold"
+                                                                          Color="BwColor.Dark"
+                                                                          Class="text-base">@emp.FullName</BwTypography>
+                                                            <BwBadge Variant="BwVariant.Soft" Color="BwColor.Primary"
+                                                                     IsPill="true" Class="text-[10px] px-2 py-0.5">
+                                                                @emp.Department</BwBadge>
+                                                        </div>
+                                                        <div class="flex items-center gap-3 text-gray-500">
+                                                            <div class="flex items-center gap-1.5" title="Email">
+                                                                <i class="fa-solid fa-envelope text-xs"></i>
+                                                                <span class="text-xs">@emp.Email</span>
+                                                            </div>
+                                                            <div class="flex items-center gap-1.5" title="Phone">
+                                                                <i class="fa-solid fa-phone text-xs"></i>
+                                                                <span class="text-xs">@emp.Phone</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </BwColumn>
+
+                                            <!-- Stats Section -->
+                                            <BwColumn Class="flex-grow">
+                                                <BwRow GutterX="6" GutterY="2">
+                                                    <BwColumn Span="3">
+                                                        <span
+                                                            class="block text-[10px] font-bold text-gray-400 uppercase">Hire
+                                                            Date</span>
+                                                        <span
+                                                            class="text-sm font-medium text-gray-700">@emp.HireDate.ToShortDateString()</span>
+                                                    </BwColumn>
+                                                    <BwColumn Span="3">
+                                                        <span
+                                                            class="block text-[10px] font-bold text-gray-400 uppercase">Total
+                                                            Salary</span>
+                                                        <span
+                                                            class="text-sm font-medium text-gray-700">@emp.Salary.ToString("C2")</span>
+                                                    </BwColumn>
+                                                    <BwColumn Span="3">
+                                                        <span
+                                                            class="block text-[10px] font-bold text-gray-400 uppercase">Seniority</span>
+                                                        <span
+                                                            class="text-sm font-medium text-gray-700">
+                                                            @(DateTime.Now.Year
+                                                            - emp.HireDate.Year) Years</span>
+                                                    </BwColumn>
+                                                    <BwColumn Span="3">
+                                                        <span
+                                                            class="block text-[10px] font-bold text-gray-400 uppercase">Status</span>
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 text-xs font-medium text-gray-700">
+                                                            <span
+                                                                class="w-1.5 h-1.5 rounded-full @(emp.IsActive ? "bg-green-500" : "bg-red-500")"></span>
+                                                            @(emp.IsActive ? "Active" : "Inactive")
+                                                        </span>
+                                                    </BwColumn>
+
+                                                    <!-- Notes (Compact Line) -->
+                                                    <BwColumn Span="12" Class="mt-2 pt-2 border-t border-gray-50">
+                                                        <div class="flex items-start gap-2">
+                                                            <span
+                                                                class="text-[10px] font-bold text-gray-400 uppercase mt-0.5 whitespace-nowrap">NOTE:</span>
+                                                            <p class="text-xs text-gray-500 line-clamp-1 italic">
+                                                                @(emp.Notes ?? "No manager note available.")
+                                                            </p>
+                                                        </div>
+                                                    </BwColumn>
+                                                </BwRow>
+                                            </BwColumn>
+                                        </BwRow>
+                                    </BwPadding>
+                                </ChildContent>
+                            </BwTabItem>
+
+                            <BwTabItem Title="Project History" Icon="fa-solid fa-list-check">
+                                <Badge>
+                                    @(emp.Id % 5 + 1)
+                                </Badge>
+                                <ChildContent>
+                                    <div class="pt-2">
+                                        <BwTable TItem="ProjectInfo" Items="@(GetProjectHistory(emp))" Compact="true"
+                                                 Bordered="true" Striped="true">
+                                            <BwTableColumn TItem="ProjectInfo" Title="Project Name"
+                                                           Field="@(p => (object)p.Proje)"/>
+                                            <BwTableColumn TItem="ProjectInfo" Title="Start Date"
+                                                           Field="@(p => (object)p.Tarih)" Format="dd.MM.yyyy"/>
+                                            <BwTableColumn TItem="ProjectInfo" Title="Status"
+                                                           Field="@(p => (object)p.Durum)">
+                                                <Template Context="p">
+                                                    <BwBadge Variant="BwVariant.Soft"
+                                                             Color="@(p.Durum == "Devam Ediyor" ? BwColor.Info : BwColor.Success)">
+                                                        @p.Durum
+                                                    </BwBadge>
+                                                </Template>
+                                            </BwTableColumn>
+                                        </BwTable>
+                                    </div>
+                                </ChildContent>
+                            </BwTabItem>
+
+                            <BwTabItem Title="Leave Movements" Icon="fa-solid fa-calendar-day">
+                                <BwEmptyState Icon="fa-solid fa-folder-open" Title="No Leave Record Found"
+                                              Description="There are no recorded leave movements in this period."/>
+                            </BwTabItem>
+                        </BwTabs>
+                    </BwCard>
+                </BwPadding>
+            </DetailRowTemplate>
+            <FooterContent>
+                <div class="flex items-center gap-4 text-sm text-gray-600">
+                    <span>Total: <strong>@_employees.Count</strong></span>
+                    <span>Salary: <strong>@_employees.Sum(e => e.Salary).ToString("C0")</strong></span>
+                    <span>Avg: <strong>@_employees.Average(e => e.Salary).ToString("C0")</strong></span>
+                </div>
+            </FooterContent>
+        </BwDataGrid>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<Employee> _employees = new();
+    private IEnumerable<Employee> _selectedEmployees = Enumerable.Empty<Employee>();
+    private IEnumerable<Employee> _basicSelectedItems = new HashSet<Employee>();
+    private List<FilterOption> _departmentOptions = new();
+    private bool _isLoading;
+    private bool _showEmpty;
+
+    private class ProjectInfo
+    {
+        public string Proje { get; set; } = "";
+        public DateTime Tarih { get; set; }
+        public string Durum { get; set; } = "";
+    }
+
+    private IEnumerable<ProjectInfo> GetProjectHistory(Employee emp)
+    {
+        return Enumerable.Range(1, emp.Id % 5 + 1).Select(i => new ProjectInfo
+        {
+            Proje = $"Project {char.ConvertFromUtf32(65 + i)}",
+            Tarih = DateTime.Now.AddMonths(-i * 2),
+            Durum = i == 1 ? "Ongoing" : "Completed"
+        });
+    }
+
+    protected override void OnInitialized()
+    {
+        _employees = GenerateSampleData();
+        _departmentOptions = _employees
+            .Select(e => e.Department)
+            .Distinct()
+            .OrderBy(d => d)
+            .Select(d => new FilterOption { Text = d, Value = d })
+            .ToList();
+
+        // Add welcome notification
+        // Note: ToastService might need rendering to complete first, but usually JSInterop works if called after render or via
+
+        // Putting it in OnAfterRender might be safer, but let's try calling it here or just removing it if it fails on init.
+        // For now, I will comment it out or remove it to be safe, or just leave it for user interaction events where it is
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ToastService.InfoAsync("Welcome to DataGrid Demos!", "Hello", 3000);
+        }
+    }
+
+    private void HandleSelectionChanged(IEnumerable<Employee> selected)
+    {
+        _selectedEmployees = selected;
+        StateHasChanged();
+    }
+
+    private async Task HandleRowSelectBasic(Employee emp)
+    {
+        await ToastService.InfoAsync($"Selected: {emp.FullName}");
+    }
+
+    private async Task HandleRowClick(Employee emp)
+    {
+        await ToastService.InfoAsync($"Row clicked: {emp.FullName}");
+    }
+
+    private async Task HandleEdit(Employee emp)
+    {
+        await ToastService.InfoAsync($"Edit: {emp.FullName}");
+    }
+
+    private async Task HandleViewDetails(Employee emp)
+    {
+        await ToastService.SuccessAsync($"Details viewed: {emp.FullName}");
+    }
+
+    private async Task HandleDelete(Employee emp)
+    {
+        await ToastService.ErrorAsync($"Deleted: {emp.FullName}");
+        _employees.Remove(emp);
+        StateHasChanged();
+    }
+
+    public record DetailItem(string Label, string Value);
+
+    private List<DetailItem> GetEmployeeDetails(Employee emp)
+    {
+        return new List<DetailItem>
+        {
+            new("Email Address", emp.Email),
+            new("Phone Number", emp.Phone),
+            new("Title / Position", emp.Position),
+            new("Hire Date", emp.HireDate.ToShortDateString())
+        };
+    }
+
+    private void ToggleLoading()
+    {
+        _isLoading = !_isLoading;
+        StateHasChanged();
+    }
+
+    private void ToggleEmpty()
+    {
+        _showEmpty = !_showEmpty;
+        StateHasChanged();
+    }
+
+    private string GetRowClass(Employee emp)
+    {
+        if (!emp.IsActive) return "!bg-red-50";
+        if (emp.Salary > 15000) return "!bg-green-50";
+        return "";
+    }
+
+
+    private List<Employee> GenerateSampleData()
+    {
+        var departments = new[] { "Software", "Human Resources", "Accounting", "Marketing", "Sales", "R&D", "Support" };
+        var positions = new[] { "Specialist", "Senior Specialist", "Manager", "Director", "Analyst", "Engineer", "Coordinator" };
+        var firstNames = new[] { "Ahmet", "Mehmet", "Ayşe", "Fatma", "Ali", "Veli", "Zeynep", "Elif", "Mustafa", "Hüseyin" };
+        var lastNames = new[] { "Yılmaz", "Kaya", "Demir", "Çelik", "Şahin", "Öztürk", "Aydın", "Arslan", "Doğan", "Kılıç" };
+
+        var random = new Random(42);
+        return Enumerable.Range(1, 50).Select(i => new Employee
+        {
+            Id = i,
+            FullName = $"{firstNames[random.Next(firstNames.Length)]} {lastNames[random.Next(lastNames.Length)]}",
+            Email = $"calisan{i}@sirket.com",
+            Phone = $"+90 555 {random.Next(100, 999)} {random.Next(10, 99)} {random.Next(10, 99)}",
+            Department = departments[random.Next(departments.Length)],
+            Position = positions[random.Next(positions.Length)],
+            Salary = random.Next(8000, 25000),
+            HireDate = DateTime.Now.AddDays(-random.Next(30, 2000)),
+            IsActive = random.Next(100) > 15,
+            Address = $"İstanbul, {random.Next(1, 40)}. Bölge",
+            Notes = i % 5 == 0 ? "Önemli çalışan" : null
+        }).ToList();
+    }
+
+    public class Employee
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Phone { get; set; } = "";
+        public string Department { get; set; } = "";
+        public string Position { get; set; } = "";
+        public decimal Salary { get; set; }
+        public DateTime HireDate { get; set; }
+        public bool IsActive { get; set; } = true;
+        public string Address { get; set; } = "";
+        public string? Notes { get; set; }
+    }
+
+}

@@ -1,0 +1,155 @@
+@page "/components/approval-chain"
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Shared
+@using Blazwind.Components.ApprovalChain
+@using Blazwind.Components.Typography
+@inject ToastService ToastService
+
+<PageTitle>Approval Chain - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwApprovalChain"
+            Description="Component that visualizes municipal approval processes. Gradient colors, animated statuses and different sizes."
+            Icon="fa-solid fa-check-double" Color="BwColor.Success"/>
+
+    @* Yatay Görünüm *@
+    <BwCard Title="Horizontal Approval Chain" Subtitle="Petition approval process example."
+            Icon="fa-solid fa-arrow-right" Color="BwColor.Primary">
+        <BwApprovalChain Steps="_horizontalSteps" Direction="ApprovalDirection.Horizontal"
+                         OnStepClick="HandleStepClick"/>
+    </BwCard>
+
+    @* Dikey Görünüm *@
+    <BwCard Title="Vertical Approval Chain" Subtitle="Construction permit process example."
+            Icon="fa-solid fa-arrow-down" Color="BwColor.Info">
+        <BwApprovalChain Steps="_verticalSteps" Direction="ApprovalDirection.Vertical" OnStepClick="HandleStepClick"/>
+    </BwCard>
+
+    @* Farklı Boyutlar *@
+    <BwCard Title="Size Options" Subtitle="Small, Medium and Large sizes." Icon="fa-solid fa-ruler"
+            Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.ExtraSmall" Weight="BwFontWeight.Semibold"
+                              Class="text-gray-500 uppercase tracking-wide">Small
+                </BwTypography>
+                <BwApprovalChain Steps="_sizeSteps" Size="BwSize.Small" OnStepClick="HandleStepClick"/>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.ExtraSmall" Weight="BwFontWeight.Semibold"
+                              Class="text-gray-500 uppercase tracking-wide">Medium (Default)
+                </BwTypography>
+                <BwApprovalChain Steps="_sizeSteps" Size="BwSize.Medium" OnStepClick="HandleStepClick"/>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.ExtraSmall" Weight="BwFontWeight.Semibold"
+                              Class="text-gray-500 uppercase tracking-wide">Large
+                </BwTypography>
+                <BwApprovalChain Steps="_sizeSteps" Size="BwSize.Large" OnStepClick="HandleStepClick"/>
+            </BwColumn>
+        </BwColumn>
+    </BwCard>
+
+    @* Farklı Durumlar *@
+    <BwCard Title="Approval Statuses" Subtitle="All status displays." Icon="fa-solid fa-list-check"
+            Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Lg" Wrap="true">
+            <BwColumn Span="12" Md="6">
+                <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.Small" Weight="BwFontWeight.Semibold"
+                              Color="BwColor.Secondary" Class="mb-3">Approved
+                </BwTypography>
+                <BwApprovalChain Steps="@(new List<ApprovalStep>
+                                        {
+                                            new() { Id = "1", Title = "Application", Status = ApprovalStatus.Approved, ApproverName = "System", Date = DateTime.Now.AddDays(-5) },
+                                            new() { Id = "2", Title = "Review", Status = ApprovalStatus.Approved, ApproverName = "Ali Veli", ApproverRole = "Clerk", Date = DateTime.Now.AddDays(-3) },
+                                            new() { Id = "3", Title = "Result", Status = ApprovalStatus.Approved, ApproverName = "Manager", Date = DateTime.Now.AddDays(-1) }
+                                        })" Direction="ApprovalDirection.Horizontal" OnStepClick="HandleStepClick"/>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.Small" Weight="BwFontWeight.Semibold"
+                              Color="BwColor.Secondary" Class="mb-3">Rejected
+                </BwTypography>
+                <BwApprovalChain Steps="@(new List<ApprovalStep>
+                                        {
+                                            new() { Id = "1", Title = "Application", Status = ApprovalStatus.Approved, ApproverName = "System" },
+                                            new() { Id = "2", Title = "Review", Status = ApprovalStatus.Rejected, ApproverName = "Commission", Comment = "Missing documents" },
+                                            new() { Id = "3", Title = "Result", Status = ApprovalStatus.Skipped }
+                                        })" Direction="ApprovalDirection.Horizontal" OnStepClick="HandleStepClick"/>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+</BwColumn>
+
+@code {
+
+    private List<ApprovalStep> _horizontalSteps = new()
+    {
+        new()
+        {
+            Id = "1", Title = "Application Received", Status = ApprovalStatus.Approved, ApproverName = "System", Date =
+                DateTime.Now.AddDays(-7)
+        },
+        new()
+        {
+            Id = "2", Title = "Document Control", Status = ApprovalStatus.Approved, ApproverName = "Zeynep Kaya",
+            ApproverRole = "Clerk", Date = DateTime.Now.AddDays(-5)
+        },
+        new()
+        {
+            Id = "3", Title = "Unit Review", Status = ApprovalStatus.Approved, ApproverName = "Ahmet Yılmaz", ApproverRole =
+                "Chief",
+            Date = DateTime.Now.AddDays(-3), Comment = "Found suitable"
+        },
+        new()
+        {
+            Id = "4", Title = "Manager Approval", Status = ApprovalStatus.Pending, ApproverName = "Fatma Demir",
+            ApproverRole = "Manager"
+        },
+        new() { Id = "5", Title = "Finalization", Status = ApprovalStatus.Pending }
+    };
+
+    private List<ApprovalStep> _verticalSteps = new()
+    {
+        new()
+        {
+            Id = "1", Title = "Construction Application", Status = ApprovalStatus.Approved, ApproverName = "Online System",
+            Date = DateTime.Now.AddDays(-14)
+        },
+        new()
+        {
+            Id = "2", Title = "Technical Review", Status = ApprovalStatus.Approved, ApproverName = "Mimar Ali", ApproverRole
+                = "Technical Expert",
+            Date = DateTime.Now.AddDays(-10), Comment = "Project suitable"
+        },
+        new()
+        {
+            Id = "3", Title = "Commission Evaluation", Status = ApprovalStatus.Approved, ApproverName = "İmar Komisyonu",
+            Date = DateTime.Now.AddDays(-5)
+        },
+        new() { Id = "4", Title = "Council Decision", Status = ApprovalStatus.Pending, ApproverName = "Belediye Encümeni" },
+        new() { Id = "5", Title = "Permit Preparation", Status = ApprovalStatus.Pending }
+    };
+
+    private List<ApprovalStep> _sizeSteps = new()
+    {
+        new() { Id = "1", Title = "Application", Status = ApprovalStatus.Approved, ApproverName = "System" },
+        new() { Id = "2", Title = "Review", Status = ApprovalStatus.Approved, ApproverName = "Expert" },
+        new() { Id = "3", Title = "Approval", Status = ApprovalStatus.Pending }
+    };
+
+    private async Task HandleStepClick(ApprovalStep step)
+    {
+        var statusText = step.Status switch
+        {
+            ApprovalStatus.Approved => "✓ Approved",
+            ApprovalStatus.Rejected => "✗ Rejected",
+            ApprovalStatus.Skipped => "⏭ Skipped",
+            _ => "⏳ Waiting"
+        };
+
+        await ToastService.InfoAsync($"{step.Title}", $"{statusText} • {step.ApproverName ?? "Unassigned"}");
+    }
+
+}

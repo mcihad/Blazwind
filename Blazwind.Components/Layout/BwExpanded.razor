@@ -1,0 +1,17 @@
+@namespace Blazwind.Components.Layout
+
+@{
+    var flexClass = Expanded ? "flex-1" : "";
+    var growClass = Flex > 0 ? $"grow-[{Flex}]" : "";
+}
+
+<div class="@flexClass @Class" style="@(Flex > 0 ? $"flex-grow: {Flex};" : "")">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Expanded { get; set; } = false;
+    [Parameter] public int Flex { get; set; } = 0;
+    [Parameter] public string? Class { get; set; }
+}

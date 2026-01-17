@@ -1,0 +1,81 @@
+@page "/charts/effect-scatter"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Effect Scatter - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Effect Scatter" 
+            Description="Vurgulanması gereken noktalar için animasyonlu scatter grafiği. Genellikle haritalarda veya AI dikkat (attention) noktalarında kullanılır."
+            Icon="fa-solid fa-bullseye"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="AI Attention Map" Subtitle="Ripple efekti ile dikkat noktaları" Icon="fa-solid fa-wave-square" Color="BwColor.Info">
+        <BwChart Options="_scatterOptions" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _scatterOptions = new()
+    {
+        Title = new ChartTitle { Text = "Attention Map", Subtext = "Focus Areas" },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        XAxis = new ChartAxis { Type = ChartAxisType.Value, BoundaryGap = false },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value, BoundaryGap = false },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Type = ChartSeriesType.EffectScatter,
+                SymbolSize = 20,
+                Data = new List<object>
+                {
+                    new List<double> { 10.0, 8.04 },
+                    new List<double> { 8.0, 6.95 },
+                    new List<double> { 13.0, 7.58 },
+                    new List<double> { 9.0, 8.81 },
+                    new List<double> { 11.0, 8.33 },
+                    new List<double> { 14.0, 9.96 },
+                    new List<double> { 6.0, 7.24 },
+                    new List<double> { 4.0, 4.26 },
+                    new List<double> { 12.0, 10.84 },
+                    new List<double> { 7.0, 4.82 },
+                    new List<double> { 5.0, 5.68 }
+                },
+                RippleEffect = new 
+                {
+                    brushType = "stroke",
+                    scale = 4 // Ripple büyüklüğü
+                },
+                ItemStyle = new ChartItemStyle
+                {
+                    Color = "#3b82f6",
+                    ShadowBlur = 10,
+                    ShadowColor = "#3b82f6"
+                }
+            },
+            // Arka plan için normal scatter
+            new()
+            {
+                Type = ChartSeriesType.Scatter,
+                Data = new List<object>
+                {
+                    new List<double> { 10.0, 8.04 },
+                    new List<double> { 8.0, 6.95 },
+                    new List<double> { 13.0, 7.58 },
+                    new List<double> { 9.0, 8.81 },
+                    new List<double> { 11.0, 8.33 },
+                    new List<double> { 14.0, 9.96 },
+                    new List<double> { 6.0, 7.24 },
+                    new List<double> { 4.0, 4.26 },
+                    new List<double> { 12.0, 10.84 },
+                    new List<double> { 7.0, 4.82 },
+                    new List<double> { 5.0, 5.68 }
+                },
+                ItemStyle = new ChartItemStyle { Color = "#93c5fd" } 
+            }
+        }
+    };
+}

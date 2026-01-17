@@ -1,0 +1,114 @@
+@page "/components/progress"
+@using Blazwind.Components.Progress
+
+<PageTitle>Progress Bar Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Progress Bar"
+            Description="Components used to visualize progress states, uploads, and steps."
+            Icon="fa-solid fa-bars-progress"
+            Color="BwColor.Warning"/>
+
+    @* Basic Examples & Sizes *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Different color variations" Icon="fa-solid fa-palette"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Primary (50%)</label>
+                    <BwProgress Value="50" Color="BwColor.Primary"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Success (75%)</label>
+                    <BwProgress Value="75" Color="BwColor.Success"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Warning (40%)</label>
+                    <BwProgress Value="40" Color="BwColor.Warning"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Danger (20%)</label>
+                    <BwProgress Value="20" Color="BwColor.Danger"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large options" Icon="fa-solid fa-text-height"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Small (h-2)</label>
+                    <BwProgress Value="40" Size="BwSize.Small" Color="BwColor.Primary"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Medium (h-4) - Default</label>
+                    <BwProgress Value="60" Size="BwSize.Medium" Color="BwColor.Primary"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Large (h-6)</label>
+                    <BwProgress Value="80" Size="BwSize.Large" Color="BwColor.Primary"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Labels & Effects *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Labels" Subtitle="Showing progress percentage and custom texts" Icon="fa-solid fa-tag"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Percentage Display (ShowLabel)</label>
+                    <BwProgress Value="65" ShowLabel="true" Size="BwSize.Medium" Color="BwColor.Success"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Custom Format ({0} / 100 Completed)</label>
+                    <BwProgress Value="85" ShowLabel="true" LabelFormat="{0} / 100 Completed" Size="BwSize.Large"
+                                Color="BwColor.Info"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Effects" Subtitle="Striped and animated states" Icon="fa-solid fa-wand-magic-sparkles"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Striped</label>
+                    <BwProgress Value="50" Striped="true" Color="BwColor.Warning"/>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700">Animated (Moving Stripes)</label>
+                    <BwProgress Value="75" Animated="true" Striped="true" Color="BwColor.Primary"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Dynamic Example *@
+    <BwCard Title="Live Example" Subtitle="Change value with buttons" Icon="fa-solid fa-play" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwProgress Value="@currentValue" Max="100" Animated="true" ShowLabel="true" Color="BwColor.Info"
+                        Size="BwSize.Large"/>
+
+            <div class="flex gap-2">
+                <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        @onclick="() => currentValue = Math.Max(0, currentValue - 10)">-10
+                </button>
+                <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+                        @onclick="() => currentValue = Math.Min(100, currentValue + 10)">+10
+                </button>
+            </div>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private double currentValue = 50;
+}

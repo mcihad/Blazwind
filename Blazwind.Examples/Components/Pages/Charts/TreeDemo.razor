@@ -1,0 +1,169 @@
+@page "/charts/tree"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Tree - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Ağaç Grafik (Tree Chart)" 
+            Description="Hiyerarşik yapıları ve karar ağaçlarını görselleştirmek için ideal."
+            Icon="fa-solid fa-folder-tree"
+            Color="BwColor.Success" />
+
+    @* Organizasyon Ağacı *@
+    <BwCard Title="Organizasyon Yapısı" Subtitle="Belediye organizasyon şeması." Icon="fa-solid fa-sitemap" Color="BwColor.Primary">
+        <BwChart Options="_orgTree" Height="500px" />
+    </BwCard>
+
+    @* Karar Ağacı *@
+    <BwCard Title="Başvuru Karar Ağacı" Subtitle="Başvuru değerlendirme süreci." Icon="fa-solid fa-code-branch" Color="BwColor.Info">
+        <BwChart Options="_decisionTree" Height="450px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _orgTree = new
+    {
+        title = new { text = "Belediye Organizasyon Yapısı", left = "center" },
+        tooltip = new { trigger = ChartTooltipTrigger.Item, triggerOn = "mousemove" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Tree,
+                data = new object[]
+                {
+                    new
+                    {
+                        name = "Belediye Başkanı",
+                        children = new object[]
+                        {
+                            new
+                            {
+                                name = "Genel Sekreter",
+                                children = new object[]
+                                {
+                                    new { name = "Yazı İşleri Müd." },
+                                    new { name = "İnsan Kaynakları Müd." },
+                                    new { name = "Hukuk İşleri Müd." }
+                                }
+                            },
+                            new
+                            {
+                                name = "Teknik Başkan Yrd.",
+                                children = new object[]
+                                {
+                                    new { name = "Fen İşleri Müd." },
+                                    new { name = "İmar Müd." },
+                                    new { name = "Park Bahçe Müd." },
+                                    new { name = "Yapı Kontrol Müd." }
+                                }
+                            },
+                            new
+                            {
+                                name = "Mali Başkan Yrd.",
+                                children = new object[]
+                                {
+                                    new { name = "Mali Hizmetler Müd." },
+                                    new { name = "Gelir Müd." },
+                                    new { name = "Emlak Müd." }
+                                }
+                            },
+                            new
+                            {
+                                name = "Sosyal Başkan Yrd.",
+                                children = new object[]
+                                {
+                                    new { name = "Kültür Müd." },
+                                    new { name = "Sosyal Yard. Müd." },
+                                    new { name = "Sağlık İşleri Müd." }
+                                }
+                            }
+                        }
+                    }
+                },
+                top = "5%",
+                left = "15%",
+                bottom = "5%",
+                right = "15%",
+                symbolSize = 10,
+                label = new
+                {
+                    position = "left",
+                    verticalAlign = "middle",
+                    align = "right",
+                    fontSize = 11
+                },
+                leaves = new
+                {
+                    label = new
+                    {
+                        position = "right",
+                        verticalAlign = "middle",
+                        align = "left"
+                    }
+                },
+                expandAndCollapse = true,
+                animationDuration = 550,
+                animationDurationUpdate = 750
+            }
+        }
+    };
+
+    private object _decisionTree = new
+    {
+        title = new { text = "İmar Başvuru Değerlendirme", left = "center" },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Tree,
+                orient = "TB",
+                data = new object[]
+                {
+                    new
+                    {
+                        name = "Başvuru Alındı",
+                        children = new object[]
+                        {
+                            new
+                            {
+                                name = "Belgeler Tam mı?",
+                                children = new object[]
+                                {
+                                    new
+                                    {
+                                        name = "Evet → İnceleme",
+                                        children = new object[]
+                                        {
+                                            new
+                                            {
+                                                name = "Uygun mu?",
+                                                children = new object[]
+                                                {
+                                                    new { name = "Evet → Onay" },
+                                                    new { name = "Hayır → Red" }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    new { name = "Hayır → Eksik Belge" }
+                                }
+                            }
+                        }
+                    }
+                },
+                top = "10%",
+                left = "10%",
+                bottom = "10%",
+                right = "10%",
+                symbolSize = 12,
+                label = new { fontSize = 11 },
+                expandAndCollapse = false
+            }
+        }
+    };
+}

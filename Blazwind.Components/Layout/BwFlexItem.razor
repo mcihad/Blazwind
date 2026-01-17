@@ -1,0 +1,148 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+@{
+    // Flex Grow - sadece standart değerler, özel değerler inline style ile
+    var growClass = Grow switch
+    {
+        null => "",
+        0 => "grow-0",
+        1 => "grow",
+        _ => "" // Özel değerler inline style ile
+    };
+    
+    // Flex Shrink - sadece standart değerler
+    var shrinkClass = Shrink switch
+    {
+        null => "",
+        0 => "shrink-0",
+        1 => "shrink",
+        _ => "" // Özel değerler inline style ile
+    };
+    
+    // Flex Basis - standart Tailwind değerleri
+    var basisClass = Basis switch
+    {
+        null => "",
+        "auto" => "basis-auto",
+        "0" => "basis-0",
+        "full" => "basis-full",
+        "1/2" => "basis-1/2",
+        "1/3" => "basis-1/3",
+        "2/3" => "basis-2/3",
+        "1/4" => "basis-1/4",
+        "2/4" => "basis-2/4",
+        "3/4" => "basis-3/4",
+        "1/5" => "basis-1/5",
+        "2/5" => "basis-2/5",
+        "3/5" => "basis-3/5",
+        "4/5" => "basis-4/5",
+        "1/6" => "basis-1/6",
+        "5/6" => "basis-5/6",
+        "1/12" => "basis-1/12",
+        "2/12" => "basis-2/12",
+        "3/12" => "basis-3/12",
+        "4/12" => "basis-4/12",
+        "5/12" => "basis-5/12",
+        "6/12" => "basis-6/12",
+        "7/12" => "basis-7/12",
+        "8/12" => "basis-8/12",
+        "9/12" => "basis-9/12",
+        "10/12" => "basis-10/12",
+        "11/12" => "basis-11/12",
+        _ => "" // Özel değerler inline style ile
+    };
+    
+    // Align Self
+    var alignSelfClass = AlignSelf switch
+    {
+        BwAlignSelf.Auto => "self-auto",
+        BwAlignSelf.Start => "self-start",
+        BwAlignSelf.Center => "self-center",
+        BwAlignSelf.End => "self-end",
+        BwAlignSelf.Stretch => "self-stretch",
+        BwAlignSelf.Baseline => "self-baseline",
+        null => "",
+        _ => ""
+    };
+    
+    // Order - standart Tailwind değerleri
+    var orderClass = Order switch
+    {
+        null => "",
+        -9999 => "order-first",
+        9999 => "order-last",
+        0 => "order-none",
+        1 => "order-1",
+        2 => "order-2",
+        3 => "order-3",
+        4 => "order-4",
+        5 => "order-5",
+        6 => "order-6",
+        7 => "order-7",
+        8 => "order-8",
+        9 => "order-9",
+        10 => "order-10",
+        11 => "order-11",
+        12 => "order-12",
+        _ => "" // Özel değerler inline style ile
+    };
+    
+    // Inline style for non-standard values
+    var styleList = new List<string>();
+    
+    if (Grow.HasValue && Grow.Value > 1)
+        styleList.Add($"flex-grow: {Grow.Value}");
+    
+    if (Shrink.HasValue && Shrink.Value > 1)
+        styleList.Add($"flex-shrink: {Shrink.Value}");
+    
+    if (!string.IsNullOrEmpty(Basis) && string.IsNullOrEmpty(basisClass))
+        styleList.Add($"flex-basis: {Basis}");
+    
+    if (Order.HasValue && string.IsNullOrEmpty(orderClass))
+        styleList.Add($"order: {Order.Value}");
+    
+    var inlineStyle = styleList.Count > 0 ? string.Join("; ", styleList) : null;
+}
+
+<div class="@growClass @shrinkClass @basisClass @alignSelfClass @orderClass @Class" style="@inlineStyle">
+    @ChildContent
+</div>
+
+@code {
+    /// <summary>
+    /// Child content
+    /// </summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Flex grow factor. 0 = don't grow, 1 = grow to fill
+    /// </summary>
+    [Parameter] public int? Grow { get; set; }
+    
+    /// <summary>
+    /// Flex shrink factor. 0 = don't shrink, 1 = shrink if needed
+    /// </summary>
+    [Parameter] public int? Shrink { get; set; }
+    
+    /// <summary>
+    /// Flex basis. Use "auto", "0", fractions like "1/2", "1/3", or custom values like "200px"
+    /// </summary>
+    [Parameter] public string? Basis { get; set; }
+    
+    /// <summary>
+    /// Override alignment for this specific item
+    /// </summary>
+    [Parameter] public BwAlignSelf? AlignSelf { get; set; }
+    
+    /// <summary>
+    /// Visual order. Use -9999 for first, 9999 for last, or any number 1-12
+    /// </summary>
+    [Parameter] public int? Order { get; set; }
+    
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+}

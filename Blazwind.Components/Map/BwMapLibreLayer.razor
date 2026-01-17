@@ -1,0 +1,301 @@
+@namespace Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@implements IAsyncDisposable
+
+@code {
+    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+    [CascadingParameter(Name = "LayerGroup")] public BwMapLibreLayerGroup? LayerGroup { get; set; }
+
+    #region Required Parameters
+
+    /// <summary>
+    /// Unique layer identifier
+    /// </summary>
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    /// Layer type: fill, line, symbol, circle, heatmap, fill-extrusion, raster, hillshade, background, sky
+    /// </summary>
+    [Parameter] public string Type { get; set; } = MapLayerType.Fill;
+
+    /// <summary>
+    /// Source ID (required for all types except background and sky)
+    /// </summary>
+    [Parameter] public string? SourceId { get; set; }
+
+    #endregion
+
+    #region Layer Configuration
+
+    /// <summary>
+    /// Source layer (for vector tile sources)
+    /// </summary>
+    [Parameter] public string? SourceLayer { get; set; }
+
+    /// <summary>
+    /// Paint properties (fill-color, line-width, etc.)
+    /// </summary>
+    [Parameter] public object? Paint { get; set; }
+
+    /// <summary>
+    /// Layout properties (visibility, text-field, icon-image, etc.)
+    /// </summary>
+    [Parameter] public object? Layout { get; set; }
+
+    /// <summary>
+    /// Filter expression
+    /// </summary>
+    [Parameter] public object[]? Filter { get; set; }
+
+    /// <summary>
+    /// Minimum zoom level (0-24)
+    /// </summary>
+    [Parameter] public float? MinZoom { get; set; }
+
+    /// <summary>
+    /// Maximum zoom level (0-24)
+    /// </summary>
+    [Parameter] public float? MaxZoom { get; set; }
+
+    /// <summary>
+    /// Whether the layer is initially visible
+    /// </summary>
+    [Parameter] public bool Visible { get; set; } = true;
+
+    /// <summary>
+    /// Layer metadata (custom properties)
+    /// </summary>
+    [Parameter] public Dictionary<string, object>? Metadata { get; set; }
+
+    /// <summary>
+    /// ID of an existing layer to insert this layer before
+    /// </summary>
+    [Parameter] public string? BeforeId { get; set; }
+
+    #endregion
+
+    #region Interaction
+
+    /// <summary>
+    /// Whether the layer is interactive (receives click/hover events)
+    /// </summary>
+    [Parameter] public bool Interactive { get; set; }
+
+    /// <summary>
+    /// Click order/priority - higher value = clicked first when layers overlap (like z-index)
+    /// </summary>
+    [Parameter] public int ClickOrder { get; set; }
+
+    /// <summary>
+    /// Fired when the layer is clicked
+    /// </summary>
+    [Parameter] public EventCallback<MapLayerClickEventArgs> OnClick { get; set; }
+
+    /// <summary>
+    /// Fired when mouse enters the layer
+    /// </summary>
+    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseEnter { get; set; }
+
+    /// <summary>
+    /// Fired when mouse leaves the layer
+    /// </summary>
+    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseLeave { get; set; }
+
+    #endregion
+
+    #region Display Metadata
+
+    /// <summary>
+    /// Display name for layer (for UI/legend)
+    /// </summary>
+    [Parameter] public string? Name { get; set; }
+
+    /// <summary>
+    /// Layer description
+    /// </summary>
+    [Parameter] public string? Description { get; set; }
+
+    /// <summary>
+    /// Layer group for organization
+    /// </summary>
+    [Parameter] public string? Group { get; set; }
+
+    /// <summary>
+    /// Layer order for sorting
+    /// </summary>
+    [Parameter] public int Order { get; set; }
+
+    /// <summary>
+    /// Legend configuration
+    /// </summary>
+    [Parameter] public LayerLegend? Legend { get; set; }
+
+    #endregion
+
+    private bool _isAdded;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_isAdded && ParentMap != null)
+        {
+            await ParentMap.UpdateLayerClickOrderAsync(Id, ClickOrder);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && ParentMap != null)
+        {
+            await AddLayerAsync();
+        }
+    }
+
+    private async Task AddLayerAsync()
+    {
+        if (ParentMap == null || _isAdded) return;
+
+        // Calculate effective click order (inherit from group if not explicitly set)
+        var effectiveClickOrder = ClickOrder;
+        if (ClickOrder == 0 && LayerGroup != null)
+        {
+            effectiveClickOrder = LayerGroup.GetBaseClickOrder();
+        }
+
+        // Determine effective visibility (group can override)
+        var effectiveVisible = Visible && (LayerGroup?.Visible ?? true);
+
+        var layer = new MapLayer
+        {
+            Id = Id,
+            Type = Type,
+            SourceId = SourceId,
+            SourceLayer = SourceLayer,
+            Paint = Paint,
+            Layout = Layout,
+            Filter = Filter,
+            MinZoom = MinZoom,
+            MaxZoom = MaxZoom,
+            Visible = effectiveVisible,
+            Interactive = Interactive || OnClick.HasDelegate || OnMouseEnter.HasDelegate || OnMouseLeave.HasDelegate 
+                         || (LayerGroup != null && (LayerGroup.OnClick.HasDelegate || LayerGroup.OnMouseEnter.HasDelegate || LayerGroup.OnMouseLeave.HasDelegate)),
+            ClickOrder = effectiveClickOrder,
+            BeforeId = BeforeId,
+            Name = Name ?? Id,
+            Description = Description,
+            Group = Group ?? LayerGroup?.Id,
+            Order = Order,
+            Legend = Legend,
+            Metadata = Metadata
+        };
+
+        await ParentMap.AddLayerAsync(layer, BeforeId);
+        _isAdded = true;
+
+        // Register with layer group if present
+        LayerGroup?.RegisterChildLayer(Id);
+
+        // Register layer event handlers with parent map
+        var hasEvents = OnClick.HasDelegate || OnMouseEnter.HasDelegate || OnMouseLeave.HasDelegate;
+        var groupHasEvents = LayerGroup != null && (LayerGroup.OnClick.HasDelegate || LayerGroup.OnMouseEnter.HasDelegate || LayerGroup.OnMouseLeave.HasDelegate);
+        
+        if (hasEvents || groupHasEvents)
+        {
+            ParentMap.RegisterLayerEvents(Id, effectiveClickOrder, 
+                (hasEvents || groupHasEvents) ? HandleClick : null,
+                (OnMouseEnter.HasDelegate || (LayerGroup?.OnMouseEnter.HasDelegate ?? false)) ? HandleMouseEnter : null,
+                (OnMouseLeave.HasDelegate || (LayerGroup?.OnMouseLeave.HasDelegate ?? false)) ? HandleMouseLeave : null);
+        }
+    }
+
+    private async Task HandleClick(MapLayerClickEventArgs e)
+    {
+        // Fire individual layer event first
+        await OnClick.InvokeAsync(e);
+        
+        // Then route to group if present
+        if (LayerGroup != null)
+        {
+            await LayerGroup.HandleChildClick(e);
+        }
+    }
+
+    private async Task HandleMouseEnter(MapLayerEventArgs e)
+    {
+        await OnMouseEnter.InvokeAsync(e);
+        
+        if (LayerGroup != null)
+        {
+            await LayerGroup.HandleChildMouseEnter(e);
+        }
+    }
+
+    private async Task HandleMouseLeave(MapLayerEventArgs e)
+    {
+        await OnMouseLeave.InvokeAsync(e);
+        
+        if (LayerGroup != null)
+        {
+            await LayerGroup.HandleChildMouseLeave(e);
+        }
+    }
+
+    /// <summary>
+    /// Update layer visibility
+    /// </summary>
+    public async Task SetVisibilityAsync(bool visible)
+    {
+        Visible = visible;
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.SetLayerVisibilityAsync(Id, visible);
+        }
+    }
+
+    /// <summary>
+    /// Update paint property
+    /// </summary>
+    public async Task SetPaintPropertyAsync(string name, object value)
+    {
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.SetPaintPropertyAsync(Id, name, value);
+        }
+    }
+
+    /// <summary>
+    /// Update layout property
+    /// </summary>
+    public async Task SetLayoutPropertyAsync(string name, object value)
+    {
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.SetLayoutPropertyAsync(Id, name, value);
+        }
+    }
+
+    /// <summary>
+    /// Update filter
+    /// </summary>
+    public async Task SetFilterAsync(object[] filter)
+    {
+        Filter = filter;
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.SetFilterAsync(Id, filter);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (ParentMap != null && _isAdded)
+        {
+            try
+            {
+                LayerGroup?.UnregisterChildLayer(Id);
+                ParentMap.UnregisterLayerEvents(Id);
+                await ParentMap.RemoveLayerAsync(Id);
+            }
+            catch { }
+        }
+    }
+}

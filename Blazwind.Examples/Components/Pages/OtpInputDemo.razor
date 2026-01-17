@@ -1,0 +1,111 @@
+@page "/components/otp-input"
+@using Blazwind.Components.OtpInput
+
+<PageTitle>OTP Input Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="OTP Input Component" Description="PIN/OTP input component for verification code entry."
+            Icon="fa-solid fa-lock" Color="BwColor.Success"/>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="6-digit verification code" Icon="fa-solid fa-key" Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwOtpInput Id="otp1" @bind-Value="_otpValue" OnComplete="HandleComplete"/>
+
+                <p class="text-sm text-gray-600">Entered value: <strong>@_otpValue</strong></p>
+
+                @if (_isComplete)
+                {
+                    <BwAlert Color="BwColor.Success" Icon="fa-solid fa-check-circle">
+                        Code completed!
+                    </BwAlert>
+                }
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Different Lengths" Subtitle="4 and 8 digit codes" Icon="fa-solid fa-ruler"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">4 Digits</p>
+                    <BwOtpInput Id="otp2" Length="4"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">8 Digits</p>
+                    <BwOtpInput Id="otp3" Length="8"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Small</p>
+                    <BwOtpInput Id="otp4" Size="BwSize.Small" Length="4"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Medium</p>
+                    <BwOtpInput Id="otp5" Size="BwSize.Medium" Length="4"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Large</p>
+                    <BwOtpInput Id="otp6" Size="BwSize.Large" Length="4"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Variants and Colors" Subtitle="Outline and Filled styles" Icon="fa-solid fa-palette"
+                Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Outline + Success</p>
+                    <BwOtpInput Id="otp7" Variant="BwVariant.Outline" Color="BwColor.Success" Length="4"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Filled</p>
+                    <BwOtpInput Id="otp8" Variant="BwVariant.Filled" Length="4"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Special Cases" Subtitle="Masked, disabled, error" Icon="fa-solid fa-cog"
+                Color="BwColor.Secondary">
+            <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Masked (like password)</p>
+                    <BwOtpInput Id="otp9" IsMasked="true" Length="4"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Disabled</p>
+                    <BwOtpInput Id="otp10" IsDisabled="true" Length="4"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Error</p>
+                    <BwOtpInput Id="otp11" HasError="true" ErrorMessage="Invalid code" Length="4"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Labeled" Subtitle="Label and helper text" Icon="fa-solid fa-tag" Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwOtpInput Id="otp12" Label="Enter the code sent via SMS"
+                            HelperText="Your code will expire in 60 seconds." Length="6"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private string _otpValue = "";
+    private bool _isComplete;
+
+    private void HandleComplete(string value)
+    {
+        _isComplete = true;
+    }
+
+}

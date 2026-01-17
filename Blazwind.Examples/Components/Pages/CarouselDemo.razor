@@ -1,0 +1,125 @@
+@page "/components/carousel"
+@using Blazwind.Components.Carousel
+
+<PageTitle>Carousel Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Carousel Component" Description="Image and content slider component." Icon="fa-solid fa-images"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="Basic Usage" Subtitle="Image gallery" Icon="fa-solid fa-photo-film" Color="BwColor.Primary">
+        <BwCarousel Items="_images" ShowArrows="true" ShowIndicators="true">
+            <ItemTemplate Context="item">
+                <div class="h-80 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                    <span class="text-white text-4xl font-bold">@item</span>
+                </div>
+            </ItemTemplate>
+        </BwCarousel>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Auto Play" Subtitle="Switches every 5 seconds" Icon="fa-solid fa-play"
+                Color="BwColor.Success">
+            <BwCarousel Items="_colors" AutoPlay="true" Interval="3000" Loop="true">
+                <ItemTemplate Context="item">
+                    @{
+                        var colorData = (ColorItem)item;
+                    }
+                    <div class="h-48 flex items-center justify-center" style="background-color: @colorData.Bg;">
+                        <span class="text-2xl font-bold" style="color: @colorData.Text;">@colorData.Name</span>
+                    </div>
+                </ItemTemplate>
+            </BwCarousel>
+        </BwCard>
+
+        <BwCard Title="Arrowless Display" Subtitle="Only with indicator" Icon="fa-solid fa-circle"
+                Color="BwColor.Warning">
+            <BwCarousel Items="_images" ShowArrows="false" ShowIndicators="true">
+                <ItemTemplate Context="item">
+                    <div class="h-48 bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                        <span class="text-white text-2xl font-bold">@item</span>
+                    </div>
+                </ItemTemplate>
+            </BwCarousel>
+        </BwCard>
+    </BwRow>
+
+    <BwCard Title="Card Carousel" Subtitle="Content card slider" Icon="fa-solid fa-id-card" Color="BwColor.Info">
+        <BwCarousel Items="_cards">
+            <ItemTemplate Context="item">
+                @{
+                    var card = (CardItem)item;
+                }
+                <div
+                    class="p-8 bg-gradient-to-br @card.Gradient h-64 flex flex-col justify-center items-center text-white">
+                    <i class="@card.Icon text-5xl mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">@card.Title</h3>
+                    <p class="text-center opacity-90">@card.Description</p>
+                </div>
+            </ItemTemplate>
+        </BwCarousel>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Loopless" Subtitle="Stops at the end" Icon="fa-solid fa-stop" Color="BwColor.Danger">
+            <BwCarousel Items="_images.Take(3).ToList<object>()" Loop="false">
+                <ItemTemplate Context="item">
+                    <div class="h-40 bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                        <span class="text-white text-xl font-bold">@item</span>
+                    </div>
+                </ItemTemplate>
+            </BwCarousel>
+        </BwCard>
+
+        <BwCard Title="No Indicator" Subtitle="Only with arrows" Icon="fa-solid fa-arrows-left-right"
+                Color="BwColor.Secondary">
+            <BwCarousel Items="_images.Take(3).ToList<object>()" ShowIndicators="false">
+                <ItemTemplate Context="item">
+                    <div class="h-40 bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center">
+                        <span class="text-white text-xl font-bold">@item</span>
+                    </div>
+                </ItemTemplate>
+            </BwCarousel>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private readonly List<object> _images = new() { "Slide 1", "Slide 2", "Slide 3", "Slide 4", "Slide 5" };
+
+    private readonly List<object> _colors = new()
+    {
+        new ColorItem { Name = "Blue", Bg = "#3B82F6", Text = "#FFFFFF" },
+        new ColorItem { Name = "Green", Bg = "#10B981", Text = "#FFFFFF" },
+        new ColorItem { Name = "Red", Bg = "#EF4444", Text = "#FFFFFF" },
+        new ColorItem { Name = "Purple", Bg = "#8B5CF6", Text = "#FFFFFF" }
+    };
+
+    private readonly List<object> _cards = new()
+    {
+        new CardItem
+        {
+            Title = "Fast Development", Description = "Develop your projects much faster with Blazwind.", Icon =
+                "fa-solid fa-rocket",
+            Gradient = "from-blue-500 to-blue-700"
+        },
+        new CardItem { Title = "Modern Design", Description = "Modern and stylish interfaces with Tailwind CSS.", Icon = "fa-solid fa-palette", Gradient = "from-purple-500 to-purple-700" },
+        new CardItem { Title = "Easy Usage", Description = "Quick integration with simple API.", Icon = "fa-solid fa-thumbs-up", Gradient = "from-emerald-500 to-emerald-700" }
+    };
+
+    private class ColorItem
+    {
+        public string Name { get; set; } = "";
+        public string Bg { get; set; } = "";
+        public string Text { get; set; } = "";
+    }
+
+    private class CardItem
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public string Gradient { get; set; } = "";
+    }
+
+}

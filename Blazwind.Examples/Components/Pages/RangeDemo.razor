@@ -1,0 +1,223 @@
+@page "/components/range"
+@using Blazwind.Components.Range
+
+<PageTitle>Range Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Range"
+            Description="Advanced components for range selection. Slider and input components for number, date and time ranges."
+            Icon="fa-solid fa-sliders" Color="BwColor.Primary"/>
+
+    @* BwRange - Basic *@
+    <BwCard Title="BwRange - Basic Range Selector" Subtitle="Slider range selection with dual thumbs"
+            Icon="fa-solid fa-sliders" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <div>
+                <BwRange Min="0" Max="100" Start="@_basicStart" End="@_basicEnd" Label="Price Range"
+                         Color="BwColor.Primary" OnRangeChanged="OnBasicRangeChanged"/>
+                <div class="mt-2 flex items-center justify-center gap-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Selected Range:</span>
+                    <span class="font-bold text-blue-600 dark:text-blue-400">@_basicStart.ToString("F0") -
+                        @_basicEnd.ToString("F0")</span>
+                </div>
+            </div>
+
+            <div>
+                <BwRange Min="0" Max="1000" Start="@_budgetStart" End="@_budgetEnd" Step="50" Label="Budget (TL)"
+                         Color="BwColor.Success" ShowTooltip="true" OnRangeChanged="OnBudgetRangeChanged"/>
+                <div
+                    class="mt-2 flex items-center justify-center gap-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Budget:</span>
+                    <span class="font-bold text-green-600 dark:text-green-400">₺@_budgetStart.ToString("N0") -
+                        ₺@_budgetEnd.ToString("N0")</span>
+                </div>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* BwNumberRange *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="BwNumberRange - With Input" Subtitle="Number input and slider" Icon="fa-solid fa-hashtag"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwNumberRange Min="0" Max="10000" Start="@_priceStart" End="@_priceEnd" Label="Price Filter"
+                               Color="BwColor.Primary" Presets="_pricePresets" OnRangeChanged="OnNumberRangeChanged"/>
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Selected:</span>
+                    <span class="font-semibold text-gray-900 dark:text-white">@_priceStart.ToString("N0") -
+                        @_priceEnd.ToString("N0") TL</span>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Age Range" Subtitle="With step value" Icon="fa-solid fa-users" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwNumberRange Min="0" Max="100" Start="@_ageStart" End="@_ageEnd" Step="1" Label="Age Range"
+                               Color="BwColor.Info" ShowSlider="true" OnRangeChanged="OnAgeRangeChanged"/>
+                <div class="flex items-center justify-between p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Age:</span>
+                    <span class="font-semibold text-cyan-600 dark:text-cyan-400">@_ageStart.ToString("F0") -
+                        @_ageEnd.ToString("F0")</span>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* BwDateRange *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="BwDateRange - Date Range" Subtitle="Date selection and presets" Icon="fa-regular fa-calendar"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDateRange Start="@_dateStart" End="@_dateEnd" Label="Report Period" Color="BwColor.Primary"
+                             ShowDuration="true" OnRangeChanged="OnDateRangeChanged"/>
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Period:</span>
+                    <span class="font-semibold text-gray-900 dark:text-white">
+                        @(_dateStart?.ToString("d MMM") ?? "-") - @(_dateEnd?.ToString("d MMM") ?? "-")
+                    </span>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Analysis Period" Subtitle="Quick selection buttons" Icon="fa-solid fa-chart-line"
+                Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDateRange Start="@_analysisStart" End="@_analysisEnd" Label="Analysis Period" Color="BwColor.Success"
+                             ShowPresets="true" OnRangeChanged="OnAnalysisDateChanged"/>
+                <div class="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Analysis:</span>
+                    <span class="font-semibold text-green-600 dark:text-green-400">
+                        @((_analysisEnd - _analysisStart)?.Days ?? 0) day period
+                    </span>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* BwTimeRange *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="BwTimeRange - Time Range" Subtitle="Time selection and duration display"
+                Icon="fa-regular fa-clock" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwTimeRange Start="@_timeStart" End="@_timeEnd" Label="Working Hours" Color="BwColor.Primary"
+                             OnRangeChanged="OnTimeRangeChanged"/>
+                <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Work:</span>
+                    <span class="font-semibold text-blue-600 dark:text-blue-400">
+                        @(_timeStart?.ToString(@"hh\:mm") ?? "-") - @(_timeEnd?.ToString(@"hh\:mm") ?? "-")
+                    </span>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Appointment Time" Subtitle="Preset time selection" Icon="fa-solid fa-calendar-check"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwTimeRange Start="@_appointmentStart" End="@_appointmentEnd" Label="Appointment Time"
+                             Color="BwColor.Warning" ShowPresets="true" OnRangeChanged="OnAppointmentTimeChanged"/>
+                <div
+                    class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Duration:</span>
+                    <span class="font-semibold text-yellow-600 dark:text-yellow-400">
+                        @(((_appointmentEnd ?? TimeSpan.Zero) - (_appointmentStart ??
+                                                                 TimeSpan.Zero)).TotalMinutes.ToString("F0")) minutes
+                    </span>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Color Variants *@
+    <BwCard Title="Color Variants" Subtitle="All color options" Icon="fa-solid fa-palette" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRange Min="0" Max="100" Start="30" End="70" Label="Primary" Color="BwColor.Primary"
+                     ShowSelection="false"/>
+            <BwRange Min="0" Max="100" Start="30" End="70" Label="Success" Color="BwColor.Success"
+                     ShowSelection="false"/>
+            <BwRange Min="0" Max="100" Start="30" End="70" Label="Warning" Color="BwColor.Warning"
+                     ShowSelection="false"/>
+            <BwRange Min="0" Max="100" Start="30" End="70" Label="Danger" Color="BwColor.Danger"
+                     ShowSelection="false"/>
+            <BwRange Min="0" Max="100" Start="30" End="70" Label="Info" Color="BwColor.Info" ShowSelection="false"/>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    // Number Range Presets
+    private readonly List<BwNumberRange.NumberRangePreset> _pricePresets = new()
+    {
+        new BwNumberRange.NumberRangePreset { Label = "Low", Start = 0, End = 2000 },
+        new BwNumberRange.NumberRangePreset { Label = "Medium", Start = 2000, End = 5000 },
+        new BwNumberRange.NumberRangePreset { Label = "High", Start = 5000, End = 10000 }
+    };
+
+    // State variables for labels
+    private double _basicStart = 20;
+    private double _basicEnd = 80;
+    private double _budgetStart = 100;
+    private double _budgetEnd = 500;
+    private double _priceStart = 1000;
+    private double _priceEnd = 5000;
+    private double _ageStart = 18;
+    private double _ageEnd = 65;
+    private DateTime? _dateStart = DateTime.Today.AddDays(-7);
+    private DateTime? _dateEnd = DateTime.Today;
+    private DateTime? _analysisStart = DateTime.Today.AddMonths(-1);
+    private DateTime? _analysisEnd = DateTime.Today;
+    private TimeSpan? _timeStart = TimeSpan.FromHours(9);
+    private TimeSpan? _timeEnd = TimeSpan.FromHours(18);
+    private TimeSpan? _appointmentStart = TimeSpan.FromHours(12);
+    private TimeSpan? _appointmentEnd = TimeSpan.FromHours(14);
+
+    // Event Handlers - update state only
+    private void OnBasicRangeChanged(RangeChangedEventArgs<double> args)
+    {
+        _basicStart = args.Start;
+        _basicEnd = args.End;
+    }
+
+    private void OnBudgetRangeChanged(RangeChangedEventArgs<double> args)
+    {
+        _budgetStart = args.Start;
+        _budgetEnd = args.End;
+    }
+
+    private void OnNumberRangeChanged(RangeChangedEventArgs<double> args)
+    {
+        _priceStart = args.Start;
+        _priceEnd = args.End;
+    }
+
+    private void OnAgeRangeChanged(RangeChangedEventArgs<double> args)
+    {
+        _ageStart = args.Start;
+        _ageEnd = args.End;
+    }
+
+    private void OnDateRangeChanged(RangeChangedEventArgs<DateTime?> args)
+    {
+        _dateStart = args.Start;
+        _dateEnd = args.End;
+    }
+
+    private void OnAnalysisDateChanged(RangeChangedEventArgs<DateTime?> args)
+    {
+        _analysisStart = args.Start;
+        _analysisEnd = args.End;
+    }
+
+    private void OnTimeRangeChanged(RangeChangedEventArgs<TimeSpan?> args)
+    {
+        _timeStart = args.Start;
+        _timeEnd = args.End;
+    }
+
+    private void OnAppointmentTimeChanged(RangeChangedEventArgs<TimeSpan?> args)
+    {
+        _appointmentStart = args.Start;
+        _appointmentEnd = args.End;
+    }
+
+}

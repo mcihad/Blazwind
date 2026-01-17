@@ -1,0 +1,436 @@
+/* ========================================
+   BwTimeline Component - Pure CSS Design
+   Premium Timeline with continuous lines
+   ======================================== */
+
+/* === Timeline Container === */
+.bw-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.bw-timeline.horizontal {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+/* === Timeline Item === */
+.bw-timeline-item {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    padding-bottom: 24px;
+    z-index: 1;
+}
+
+.bw-timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+/* === Item-based Connector Line (Vertical) === */
+.bw-timeline.vertical .bw-timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    /* Center of 32px dot: (32/2) - (2/2) = 15 */
+    top: 32px;
+    /* Start after the dot */
+    bottom: 0;
+    width: 2px;
+    background-color: #e5e7eb;
+    z-index: 0;
+}
+
+.dark .bw-timeline.vertical .bw-timeline-item:not(:last-child)::before {
+    background-color: #4b5563;
+}
+
+.bw-timeline.vertical.small .bw-timeline-item:not(:last-child)::before {
+    left: 11px;
+    /* Center of 24px dot: (24/2) - (2/2) = 11 */
+    top: 24px;
+}
+
+.bw-timeline.vertical.large .bw-timeline-item:not(:last-child)::before {
+    left: 19px;
+    /* Center of 40px dot: (40/2) - (2/2) = 19 */
+    top: 40px;
+}
+
+/* Minimal variant connector */
+.bw-timeline.vertical.minimal .bw-timeline-item:not(:last-child)::before {
+    left: 5px;
+    /* Center of 12px dot: (12/2) - (2/2) = 5 */
+    top: 12px;
+}
+
+/* === Alternate Layout === */
+.bw-timeline.alternate .bw-timeline-item:not(:last-child)::before {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* === Horizontal Connector Line (Container-based) === */
+.bw-timeline.horizontal::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    /* Center of 32px dot */
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background-color: #e5e7eb;
+    z-index: 0;
+}
+
+.dark .bw-timeline.horizontal::before {
+    background-color: #4b5563;
+}
+
+.bw-timeline.horizontal.small::before {
+    top: 11px;
+    /* Center of 24px dot */
+}
+
+.bw-timeline.horizontal.large::before {
+    top: 19px;
+    /* Center of 40px dot */
+}
+
+/* Hide horizontal line before first item */
+.bw-timeline.horizontal .bw-timeline-item:first-child::before {
+    content: '';
+    position: absolute;
+    top: 14px;
+    /* Position at line level */
+    height: 4px;
+    /* Just enough to cover the 2px line */
+    left: -16px;
+    right: 50%;
+    background-color: white;
+    z-index: 1;
+}
+
+.dark .bw-timeline.horizontal .bw-timeline-item:first-child::before {
+    background-color: #111827;
+}
+
+/* Hide horizontal line after last item */
+.bw-timeline.horizontal .bw-timeline-item:last-child::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    /* Position at line level */
+    height: 4px;
+    /* Just enough to cover the 2px line */
+    left: 50%;
+    right: -16px;
+    background-color: white;
+    z-index: 1;
+}
+
+.dark .bw-timeline.horizontal .bw-timeline-item:last-child::after {
+    background-color: #111827;
+}
+
+/* === Timeline Dot === */
+.bw-timeline-dot {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3b82f6;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 0 0 4px white;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.dark .bw-timeline-dot {
+    box-shadow: 0 0 0 4px #111827;
+}
+
+.bw-timeline-dot:hover {
+    transform: scale(1.1);
+}
+
+/* Dot Sizes */
+.bw-timeline.small .bw-timeline-dot {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    font-size: 12px;
+}
+
+.bw-timeline.large .bw-timeline-dot {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    font-size: 16px;
+}
+
+/* Dot States */
+.bw-timeline-dot.completed {
+    background-color: #10b981;
+}
+
+.bw-timeline-dot.active {
+    background-color: #3b82f6;
+    box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(59, 130, 246, 0.2);
+    animation: timeline-dot-pulse 2s ease-in-out infinite;
+}
+
+.dark .bw-timeline-dot.active {
+    box-shadow: 0 0 0 4px #111827, 0 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.bw-timeline-dot.pending {
+    background-color: #9ca3af;
+}
+
+.dark .bw-timeline-dot.pending {
+    background-color: #4b5563;
+}
+
+/* Dot Variants */
+.bw-timeline-dot.primary {
+    background-color: #3b82f6;
+}
+
+.bw-timeline-dot.success {
+    background-color: #10b981;
+}
+
+.bw-timeline-dot.warning {
+    background-color: #f59e0b;
+}
+
+.bw-timeline-dot.danger {
+    background-color: #ef4444;
+}
+
+.bw-timeline-dot.info {
+    background-color: #0ea5e9;
+}
+
+.bw-timeline-dot.secondary {
+    background-color: #6b7280;
+}
+
+/* Minimal Variant */
+.bw-timeline.minimal .bw-timeline-dot {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    box-shadow: 0 0 0 3px white;
+    /* Smaller shadow for minimal */
+}
+
+.dark .bw-timeline.minimal .bw-timeline-dot {
+    box-shadow: 0 0 0 3px #111827;
+}
+
+/* === Timeline Content === */
+.bw-timeline-content {
+    flex: 1;
+    padding-top: 4px;
+}
+
+.bw-timeline-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #111827;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.dark .bw-timeline-title {
+    color: #f3f4f6;
+}
+
+.bw-timeline-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.dark .bw-timeline-subtitle {
+    color: #9ca3af;
+}
+
+.bw-timeline-body {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.dark .bw-timeline-body {
+    color: #d1d5db;
+}
+
+/* Cards Variant */
+.bw-timeline.cards .bw-timeline-content {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.dark .bw-timeline.cards .bw-timeline-content {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+.bw-timeline.cards .bw-timeline-content:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.dark .bw-timeline.cards .bw-timeline-content:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* === Alternate Layout === */
+.bw-timeline.alternate .bw-timeline-item {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    padding-bottom: 0;
+}
+
+.bw-timeline.alternate .bw-timeline-left {
+    text-align: right;
+    padding: 12px 0;
+}
+
+.bw-timeline.alternate .bw-timeline-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bw-timeline.alternate .bw-timeline-right {
+    text-align: left;
+    padding: 12px 0;
+}
+
+.bw-timeline.alternate .bw-timeline-connector {
+    width: 2px;
+    flex: 1;
+    min-height: 16px;
+    background-color: #e5e7eb;
+}
+
+.dark .bw-timeline.alternate .bw-timeline-connector {
+    background-color: #4b5563;
+}
+
+.bw-timeline.alternate .bw-timeline-connector.completed {
+    background-color: #10b981;
+}
+
+/* === Horizontal Layout === */
+.bw-timeline.horizontal .bw-timeline-item {
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    padding-bottom: 0;
+    gap: 12px;
+}
+
+.bw-timeline.horizontal .bw-timeline-content {
+    text-align: center;
+    max-width: 120px;
+    padding-top: 0;
+}
+
+/* === Animations === */
+@keyframes timeline-dot-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(59, 130, 246, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 0 4px white, 0 0 0 12px rgba(59, 130, 246, 0);
+    }
+}
+
+/* === Dashed/Dotted Connectors === */
+.bw-timeline.dashed::before {
+    background: repeating-linear-gradient(to bottom,
+            #e5e7eb 0,
+            #e5e7eb 6px,
+            transparent 6px,
+            transparent 12px);
+}
+
+.dark .bw-timeline.dashed::before {
+    background: repeating-linear-gradient(to bottom,
+            #4b5563 0,
+            #4b5563 6px,
+            transparent 6px,
+            transparent 12px);
+}
+
+.bw-timeline.dotted::before {
+    background: repeating-linear-gradient(to bottom,
+            #e5e7eb 0,
+            #e5e7eb 2px,
+            transparent 2px,
+            transparent 8px);
+}
+
+.dark .bw-timeline.dotted::before {
+    background: repeating-linear-gradient(to bottom,
+            #4b5563 0,
+            #4b5563 2px,
+            transparent 2px,
+            transparent 8px);
+}
+
+/* === Responsive === */
+@media (max-width: 640px) {
+    .bw-timeline.alternate .bw-timeline-item {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .bw-timeline.alternate::before {
+        left: 15px;
+        transform: none;
+    }
+
+    .bw-timeline.horizontal {
+        flex-direction: column;
+    }
+
+    .bw-timeline.horizontal::before {
+        top: 16px;
+        bottom: 16px;
+        left: 15px;
+        right: auto;
+        width: 2px;
+        height: auto;
+    }
+
+    .bw-timeline.horizontal .bw-timeline-item {
+        flex-direction: row;
+    }
+
+    .bw-timeline.horizontal .bw-timeline-content {
+        text-align: left;
+        max-width: none;
+    }
+}

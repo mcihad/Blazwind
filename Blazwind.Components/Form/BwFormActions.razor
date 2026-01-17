@@ -1,0 +1,42 @@
+@namespace Blazwind.Components.Form
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+
+@{
+    var densityClass = Density switch
+    {
+        BwFormDensity.Compact => "mt-3 gap-2",
+        BwFormDensity.Relaxed => "mt-8 gap-4",
+        _ => "mt-6 gap-3"
+    };
+    
+    var alignClass = Align switch
+    {
+        BwAlignment.Left => "justify-start",
+        BwAlignment.Center => "justify-center",
+        BwAlignment.Right => "justify-end",
+        _ => "justify-end"
+    };
+}
+
+<div class="flex flex-wrap @alignClass @densityClass @Class">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
+    
+    /// <summary>Button alignment</summary>
+    [Parameter] public BwAlignment Align { get; set; } = BwAlignment.Right;
+    
+    /// <summary>Density override</summary>
+    [Parameter] public BwFormDensity? DensityOverride { get; set; }
+    
+    /// <summary>Additional CSS class</summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Child content (buttons)</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    private BwFormDensity Density => DensityOverride ?? CascadedDensity ?? BwFormDensity.Normal;
+}

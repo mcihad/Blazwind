@@ -1,0 +1,107 @@
+@page "/components/transfer"
+@using Blazwind.Components.Input
+
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Transfer"
+            Description="Used to move and select data between two lists."
+            Icon="fa-solid fa-arrow-right-arrow-left"
+            Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="List Transfer" Subtitle="Simple usage for string lists" Icon="fa-solid fa-list-ul"
+            Color="BwColor.Secondary">
+        <BwPadding All="BwSpacing.Lg"
+                   Class="bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-xl shadow-sm">
+            <BwTransfer DataSource="@_basicItems"
+                        @bind-TargetItems="@_selectedBasicItems"/>
+
+            <BwPadding Top="BwSpacing.Lg"
+                       Class="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg mt-4 border border-dashed border-gray-200 dark:border-gray-700">
+                <i class="fa-solid fa-circle-check text-green-500 mr-2"></i>
+                <span class="font-semibold text-gray-700 dark:text-gray-300">Selected Items:</span>
+                @if (_selectedBasicItems.Any())
+                {
+                    <span class="ml-1 text-gray-600 dark:text-gray-400">@string.Join(", ", _selectedBasicItems)</span>
+                }
+                else
+                {
+                    <span class="ml-1 text-gray-400 italic">No items selected yet</span>
+                }
+            </BwPadding>
+        </BwPadding>
+    </BwCard>
+
+    @* Complex Usage with Search *@
+    <BwCard Title="Advanced Team Management" Subtitle="Object-based usage with search" Icon="fa-solid fa-users-gear"
+            Color="BwColor.Info">
+        <BwPadding All="BwSpacing.Lg"
+                   Class="bg-white border border-gray-200 dark:bg_gray-800 dark:border-gray-700 rounded-xl shadow-sm">
+            <BwTransfer DataSource="@_allUsers"
+                        @bind-TargetItems="@_selectedUsers"
+                        TextSelector="@(u => u.FullName)"
+                        ValueSelector="@(u => u.Id)"
+                        Titles="@(new[] { "All Personnel Pool", "Selected Project Team" })"
+                        ShowSearch="true"
+                        SearchPlaceholder="Search personnel..."
+                        Height="350px"/>
+
+            <BwPadding Top="BwSpacing.Lg"
+                       Class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg mt-4 border border-blue-100 dark:border-blue-900/30">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                    @_selectedUsers.Count
+                </div>
+                <div>
+                    <div class="font-bold text-blue-800 dark:text-blue-300">Team size</div>
+                    <div class="text-blue-600/80 dark:text-blue-400/80">
+                        @if (_selectedUsers.Any())
+                        {
+                            <span>IDs: @string.Join(", ", _selectedUsers.Select(u => u.Id))</span>
+                        }
+                        else
+                        {
+                            <span>Team not created yet</span>
+                        }
+                    </div>
+                </div>
+            </BwPadding>
+        </BwPadding>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    // Basic Example Data
+    private readonly List<string> _basicItems = Enumerable.Range(1, 10).Select(i => $"Option {i}").ToList();
+    private IList<string> _selectedBasicItems = new List<string>();
+
+    // Complex Example Data
+    private class User
+    {
+        public int Id { get; set; }
+        public string FullName { get; set; } = "";
+    }
+
+    private readonly List<User> _allUsers = new()
+    {
+        new User { Id = 1, FullName = "Ahmet Yılmaz" },
+        new User { Id = 2, FullName = "Ayşe Kaya" },
+        new User { Id = 3, FullName = "Mehmet Demir" },
+        new User { Id = 4, FullName = "Zeynep Çelik" },
+        new User { Id = 5, FullName = "Caner Erkin" },
+        new User { Id = 6, FullName = "Burak Yılmaz" },
+        new User { Id = 7, FullName = "Selin Şekerci" },
+        new User { Id = 8, FullName = "Oğuzhan Koç" },
+        new User { Id = 9, FullName = "Hadise Açıkgöz" },
+        new User { Id = 10, FullName = "Murat Boz" }
+    };
+
+    private IList<User> _selectedUsers = new List<User>();
+
+    protected override void OnInitialized()
+    {
+        // Pre-select some users
+        _selectedUsers.Add(_allUsers[1]); // Ayşe
+    }
+
+}

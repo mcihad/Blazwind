@@ -1,0 +1,195 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+@typeparam TValue where TValue : notnull
+
+@{
+    var hasError = !IsValid || !string.IsNullOrEmpty(ErrorMessage) || _validationMessages.Any();
+    var hasLabel = !string.IsNullOrEmpty(Label);
+    var hasHelper = !string.IsNullOrEmpty(HelperText);
+    var displayError = ErrorMessage ?? _validationMessages.FirstOrDefault();
+    
+    var marginClass = EffectiveDensity switch
+    {
+        BwFormDensity.Compact => "mb-2",
+        BwFormDensity.Relaxed => "mb-6",
+        _ => "mb-4"
+    };
+    
+    var labelSpacingClass = EffectiveDensity switch
+    {
+        BwFormDensity.Compact => "mb-0.5",
+        BwFormDensity.Relaxed => "mb-2",
+        _ => "mb-1.5"
+    };
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @if (hasLabel)
+    {
+        <div class="flex items-center gap-1 @labelSpacingClass">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                @Label
+                @if (IsRequired)
+                {
+                    <span class="text-red-500 ml-0.5">*</span>
+                }
+            </label>
+            @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+            {
+                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+            }
+        </div>
+    }
+    
+    <div class="@_orientationClass" role="radiogroup">
+        <CascadingValue Value="this">
+            @if (Items != null)
+            {
+                @foreach (var item in Items)
+                {
+                    <BwRadio TValue="TValue" 
+                             Value="@item.Value" 
+                             Label="@item.Text" 
+                             IsDisabled="@item.IsDisabled" />
+                }
+            }
+            @ChildContent
+        </CascadingValue>
+    </div>
+    
+    @* Error/Helper Messages *@
+    @if (hasError)
+    {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @displayError
+        </p>
+    }
+    else if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+    {
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+    }
+</div>
+
+@code {
+    #region Cascading Parameters
+    
+    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+    [CascadingParameter] private BwLabelPosition? CascadedLabelPosition { get; set; }
+    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
+    [CascadingParameter] private BwHelpTextMode? CascadedHelpTextMode { get; set; }
+    
+    #endregion
+
+    #region Parameters
+    
+    [Parameter] public TValue Value { get; set; } = default!;
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Vertical;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>Validation state</summary>
+    [Parameter] public bool IsValid { get; set; } = true;
+    
+    /// <summary>Error message</summary>
+    [Parameter] public string? ErrorMessage { get; set; }
+    
+    /// <summary>Data source for radio options</summary>
+    [Parameter] public IEnumerable<BwSelectItem<TValue>>? Items { get; set; }
+    
+    /// <summary>Help text display mode</summary>
+    [Parameter] public BwHelpTextMode? HelpTextMode { get; set; }
+    
+    /// <summary>Label position</summary>
+    [Parameter] public BwLabelPosition? LabelPosition { get; set; }
+    
+    /// <summary>Form density</summary>
+    [Parameter] public BwFormDensity? Density { get; set; }
+    
+    /// <summary>Expression for validation binding</summary>
+    [Parameter] public Expression<Func<TValue>>? For { get; set; }
+    
+    /// <summary>Fired when value changes</summary>
+    [Parameter] public EventCallback<TValue> OnChange { get; set; }
+    
+    #endregion
+
+    #region Private Fields
+    
+    private string _name = default!;
+    private FieldIdentifier _fieldIdentifier;
+    private IEnumerable<string> _validationMessages = Enumerable.Empty<string>();
+    
+    #endregion
+
+    #region Computed Properties
+    
+    private BwLabelPosition EffectiveLabelPosition => LabelPosition ?? CascadedLabelPosition ?? BwLabelPosition.Top;
+    private BwFormDensity EffectiveDensity => Density ?? CascadedDensity ?? BwFormDensity.Normal;
+    private BwHelpTextMode EffectiveHelpTextMode => HelpTextMode ?? CascadedHelpTextMode ?? BwHelpTextMode.Inline;
+    
+    private string _orientationClass => Orientation == BwOrientation.Horizontal 
+        ? "flex flex-row flex-wrap gap-4" 
+        : "flex flex-col gap-2";
+    
+    public string GroupName => _name;
+    
+    #endregion
+
+    #region Lifecycle
+    
+    protected override void OnInitialized()
+    {
+        _name = Name ?? $"bw-radio-group-{Guid.NewGuid():N}";
+        if (CascadedEditContext != null && For != null)
+        {
+            _fieldIdentifier = FieldIdentifier.Create(For);
+            CascadedEditContext.OnValidationStateChanged += HandleValidationStateChanged;
+        }
+    }
+    
+    private void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
+    {
+        _validationMessages = CascadedEditContext!.GetValidationMessages(_fieldIdentifier);
+        StateHasChanged();
+    }
+    
+    #endregion
+
+    #region Public Methods
+    
+    public async Task OnRadioChange(TValue selectedValue)
+    {
+        if (!EqualityComparer<TValue>.Default.Equals(Value, selectedValue))
+        {
+            Value = selectedValue;
+            await ValueChanged.InvokeAsync(selectedValue);
+            await OnChange.InvokeAsync(selectedValue);
+            StateHasChanged();
+            
+            if (CascadedEditContext != null && For != null)
+            {
+                CascadedEditContext.NotifyFieldChanged(_fieldIdentifier);
+            }
+        }
+    }
+    
+    #endregion
+    
+    public void Dispose()
+    {
+        if (CascadedEditContext != null)
+        {
+            CascadedEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
+        }
+    }
+}

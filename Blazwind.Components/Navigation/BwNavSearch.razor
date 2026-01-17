@@ -1,0 +1,55 @@
+@namespace Blazwind.Components.Navigation
+@using Microsoft.JSInterop
+
+<div class="p-3 border-b border-gray-100 dark:border-gray-800 @Class">
+    <div class="relative">
+        <i class="@Icon absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-xs pointer-events-none"></i>
+        <input type="text" 
+               class="w-full pl-8 @(HasValue ? "pr-8" : "pr-3") py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+               placeholder="@Placeholder"
+               @bind="SearchValue"
+               @oninput="OnInput"/>
+        
+        @if (HasValue && Clearable)
+        {
+            <button type="button" 
+                    class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    @onclick="ClearSearch"
+                    title="Temizle">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Placeholder { get; set; } = "Ara...";
+    [Parameter] public string Icon { get; set; } = "fa-solid fa-magnifying-glass";
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string SearchValue { get; set; } = "";
+    [Parameter] public EventCallback<string> SearchValueChanged { get; set; }
+    [Parameter] public EventCallback<string> OnSearch { get; set; }
+    
+    /// <summary>
+    /// Show clear button when input has value (default: true)
+    /// </summary>
+    [Parameter] public bool Clearable { get; set; } = true;
+    
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    private bool HasValue => !string.IsNullOrEmpty(SearchValue);
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        SearchValue = e.Value?.ToString() ?? "";
+        await SearchValueChanged.InvokeAsync(SearchValue);
+        await JS.InvokeVoidAsync("Blazwind.Nav.filterNav", SearchValue);
+    }
+    
+    private async Task ClearSearch()
+    {
+        SearchValue = "";
+        await SearchValueChanged.InvokeAsync(SearchValue);
+        await JS.InvokeVoidAsync("Blazwind.Nav.filterNav", SearchValue);
+    }
+}

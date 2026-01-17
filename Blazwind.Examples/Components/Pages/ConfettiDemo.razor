@@ -1,0 +1,119 @@
+@page "/components/confetti"
+@using Blazwind.Components.Confetti
+
+<PageTitle>Confetti Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Confetti 🎊"
+            Description="Celebration animation. Perfect for successful operations!"
+            Icon="fa-solid fa-gift"
+            Color="BwColor.Success"/>
+
+    <BwCard Title="Basic Usage" Subtitle="Click the button and celebrate!" Icon="fa-solid fa-star">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwButton Variant="BwVariant.Filled" Color="BwColor.Success" OnClick="LaunchBasic" Icon="fa-solid fa-gift"
+                      Text="Celebrate! 🎉"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Customization" Subtitle="Try with different settings" Icon="fa-solid fa-sliders-h"
+            Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Variant="BwVariant.Outline" OnClick="LaunchFew" Text="Few Particles (30)"/>
+            <BwButton Variant="BwVariant.Outline" OnClick="LaunchMany" Text="Many Particles (200)"/>
+            <BwButton Variant="BwVariant.Outline" OnClick="LaunchSlow" Text="Slow (5s)"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Custom Colors" Subtitle="Theme-based color palettes" Icon="fa-solid fa-palette"
+            Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" OnClick="LaunchBlue" Text="Blue Theme"/>
+            <BwButton Variant="BwVariant.Filled" Color="BwColor.Success" OnClick="LaunchGreen" Text="Green Theme"/>
+            <BwButton Variant="BwVariant.Filled" Color="BwColor.Warning" OnClick="LaunchGold" Text="Gold Theme"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="🏆 Achievement Unlocked!" Subtitle="You completed all tasks" Icon="fa-solid fa-trophy"
+            Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md" MainAxisAlignment="BwMainAxisAlignment.Center">
+            <BwButton Variant="BwVariant.Outline" OnClick="LaunchAchievement" Icon="fa-solid fa-gift"
+                      Text="Claim Reward"/>
+        </BwRow>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Form Submission" Subtitle="After successful registration" Icon="fa-solid fa-check"
+                Color="BwColor.Success"/>
+        <BwCard Title="Success Notification" Subtitle="Milestone completion" Icon="fa-solid fa-trophy"
+                Color="BwColor.Warning"/>
+        <BwCard Title="Celebrations" Subtitle="Birthday, anniversary" Icon="fa-solid fa-birthday-cake"
+                Color="BwColor.Danger"/>
+        <BwCard Title="Launch" Subtitle="Project went live" Icon="fa-solid fa-rocket" Color="BwColor.Info"/>
+    </BwRow>
+</BwColumn>
+
+<BwConfetti @ref="_basicConfetti" ParticleCount="100"/>
+<BwConfetti @ref="_fewConfetti" ParticleCount="30"/>
+<BwConfetti @ref="_manyConfetti" ParticleCount="200"/>
+<BwConfetti @ref="_slowConfetti" ParticleCount="100" Duration="5000"/>
+<BwConfetti @ref="_blueConfetti" ParticleCount="80" Colors="@_blueColors"/>
+<BwConfetti @ref="_greenConfetti" ParticleCount="80" Colors="@_greenColors"/>
+<BwConfetti @ref="_goldConfetti" ParticleCount="80" Colors="@_goldColors"/>
+<BwConfetti @ref="_achievementConfetti" ParticleCount="150" Duration="4000"/>
+
+@code {
+    private BwConfetti? _basicConfetti;
+    private BwConfetti? _fewConfetti;
+    private BwConfetti? _manyConfetti;
+    private BwConfetti? _slowConfetti;
+    private BwConfetti? _blueConfetti;
+    private BwConfetti? _greenConfetti;
+    private BwConfetti? _goldConfetti;
+    private BwConfetti? _achievementConfetti;
+
+    private readonly string[] _blueColors = new[] { "#3b82f6", "#60a5fa", "#93c5fd", "#1e40af" };
+    private readonly string[] _greenColors = new[] { "#10b981", "#34d399", "#6ee7b7", "#047857" };
+    private readonly string[] _goldColors = new[] { "#f59e0b", "#fbbf24", "#fcd34d", "#d97706" };
+
+    private async Task LaunchBasic()
+    {
+        await _basicConfetti?.Launch()!;
+    }
+
+    private async Task LaunchFew()
+    {
+        await _fewConfetti?.Launch()!;
+    }
+
+    private async Task LaunchMany()
+    {
+        await _manyConfetti?.Launch()!;
+    }
+
+    private async Task LaunchSlow()
+    {
+        await _slowConfetti?.Launch()!;
+    }
+
+    private async Task LaunchBlue()
+    {
+        await _blueConfetti?.Launch()!;
+    }
+
+    private async Task LaunchGreen()
+    {
+        await _greenConfetti?.Launch()!;
+    }
+
+    private async Task LaunchGold()
+    {
+        await _goldConfetti?.Launch()!;
+    }
+
+    private async Task LaunchAchievement()
+    {
+        await _achievementConfetti?.Launch()!;
+    }
+
+}

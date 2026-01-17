@@ -1,0 +1,127 @@
+@namespace Blazwind.Components.Dialog
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@{
+    var fullscreenClass = FullScreen ? "!w-screen !h-screen !max-w-none !max-h-none !rounded-none !m-0 !inset-0" : "";
+    var draggableClass = Draggable ? "cursor-move" : "";
+    var dialogId = $"bw-dialog-{Id}";
+    var handleId = $"bw-dialog-handle-{Id}";
+    
+    // Header height (padding) based on TitleSize
+    var headerPaddingClass = TitleSize switch
+    {
+        BwSize.ExtraSmall => "px-3 py-1.5",
+        BwSize.Small => "px-4 py-2",
+        BwSize.Large => "px-6 py-4",
+        BwSize.ExtraLarge => "px-6 py-4", // Same as Large
+        _ => "px-5 py-3" // Medium (default)
+    };
+    
+    // Header background & text colors based on TitleColor
+    var (headerBgClass, headerTextClass, headerBorderClass, closeBtnClass) = TitleColor switch
+    {
+        BwColor.Success => ("bg-green-600 dark:bg-green-700", "text-white", "border-green-700 dark:border-green-800", "w-6 h-6 flex items-center justify-center text-green-200 hover:text-white hover:bg-green-700 dark:hover:bg-green-800"),
+        BwColor.Danger => ("bg-red-600 dark:bg-red-700", "text-white", "border-red-700 dark:border-red-800", "w-6 h-6 flex items-center justify-center text-red-200 hover:text-white hover:bg-red-700 dark:hover:bg-red-800"),
+        BwColor.Warning => ("bg-amber-500 dark:bg-amber-600", "text-white", "border-amber-600 dark:border-amber-700", "w-6 h-6 flex items-center justify-center text-amber-100 hover:text-white hover:bg-amber-600 dark:hover:bg-amber-700"),
+        BwColor.Info => ("bg-blue-600 dark:bg-blue-700", "text-white", "border-blue-700 dark:border-blue-800", "w-6 h-6 flex items-center justify-center text-blue-200 hover:text-white hover:bg-blue-700 dark:hover:bg-blue-800"),
+        BwColor.Secondary => ("bg-gray-500 dark:bg-gray-600", "text-white", "border-gray-600 dark:border-gray-700", "w-6 h-6 flex items-center justify-center text-gray-200 hover:text-white hover:bg-gray-600 dark:hover:bg-gray-700"),
+        BwColor.Dark => ("bg-gray-800 dark:bg-gray-900", "text-white", "border-gray-900 dark:border-black", "w-6 h-6 flex items-center justify-center text-gray-300 hover:text-white hover:bg-gray-900 dark:hover:bg-black"),
+        _ => ("bg-gray-50 dark:bg-gray-800", "text-gray-900 dark:text-gray-100", "border-gray-200 dark:border-gray-700", "w-6 h-6 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700") // Primary (default - no color)
+    };
+}
+
+<div class="fixed inset-0 z-[1050] flex items-center justify-center p-4 @(FullScreen ? "!p-0" : "")" style="background-color: rgba(0,0,0,0.5)">
+    @if (IsRaw)
+    {
+         <div id="@dialogId" 
+             class="flex flex-col @AnimationClass @fullscreenClass @Class" 
+             style="@Style">
+            @ChildContent
+         </div>
+    }
+    else
+    {
+        @* Dialog Frame *@
+        <div id="@dialogId" 
+             class="bg-white dark:bg-gray-800 rounded shadow-xl flex flex-col w-full max-h-[90vh] @AnimationClass @fullscreenClass @Class"
+             style="@Style">
+            
+            @* Header *@
+            <div id="@handleId" 
+                 class="flex items-center justify-between @headerPaddingClass border-b @headerBorderClass rounded-t select-none @headerBgClass @draggableClass">
+                <h3 class="text-lg font-semibold @headerTextClass">@Title</h3>
+                
+                @if (ShowClose)
+                {
+                    <button type="button" 
+                            class="@closeBtnClass transition-colors p-1 rounded-full"
+                            @onclick="OnClose">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                }
+            </div>
+            
+            @* Content *@
+            <div class="overflow-y-auto p-6 flex-1 relative">
+                @ChildContent
+            </div>
+
+            @* Resize Handlers *@
+            @if (Resizable && !FullScreen)
+            {
+                @* Bottom Right Corner Handle *@
+                <div id="@dialogId-resize-handle" 
+                     class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize text-gray-400 dark:text-gray-500 hover:text-gray-600 flex items-center justify-center select-none z-10">
+                    <i class="fa-solid fa-signal fa-rotate-270 text-xs opacity-50"></i>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString("N");
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool ShowClose { get; set; } = true;
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public string? Height { get; set; }
+    [Parameter] public string? MaxWidth { get; set; }
+    [Parameter] public string? AnimationClass { get; set; } = "animate-scale-in";
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    
+    /// <summary>Title text color. Default is Primary (gray-900).</summary>
+    [Parameter] public BwColor TitleColor { get; set; } = BwColor.Primary;
+    
+    /// <summary>Title text size. Default is Medium (text-lg).</summary>
+    [Parameter] public BwSize TitleSize { get; set; } = BwSize.Medium;
+    
+    // New Features
+    [Parameter] public bool Draggable { get; set; }
+    [Parameter] public bool Resizable { get; set; }
+    [Parameter] public bool FullScreen { get; set; }
+    [Parameter] public bool IsRaw { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (Draggable && !FullScreen)
+            {
+                await JS.InvokeVoidAsync("Blazwind.Dialog.makeDraggable", $"bw-dialog-{Id}", $"bw-dialog-handle-{Id}");
+            }
+            
+            if (Resizable && !FullScreen)
+            {
+                await JS.InvokeVoidAsync("Blazwind.Dialog.makeResizable", $"bw-dialog-{Id}");
+            }
+        }
+    }
+    
+    private string Style => FullScreen ? "" : $"width: {Width ?? "500px"}; max-width: {MaxWidth ?? "90vw"}; height: {Height ?? "auto"};";
+}

@@ -1,0 +1,107 @@
+@namespace Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+@{
+    var buttonClasses = "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium rounded border transition-all";
+    var stateClasses = _copied 
+        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
+        : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700";
+}
+
+<button type="button"
+        class="@buttonClasses @stateClasses @Class"
+        style="@Style"
+        title="@(_copied ? CopiedTooltip : Tooltip)"
+        disabled="@(_copying)"
+        @onclick="HandleCopy">
+    @if (_copying)
+    {
+        <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+    }
+    else if (_copied)
+    {
+        <i class="fa-solid fa-check text-xs"></i>
+        @if (ShowText)
+        {
+            <span>@CopiedText</span>
+        }
+    }
+    else
+    {
+        <i class="@Icon text-xs"></i>
+        @if (ShowText)
+        {
+            <span>@Text</span>
+        }
+    }
+</button>
+
+@code {
+    /// <summary>Text content to copy to clipboard</summary>
+    [Parameter, EditorRequired] public string Content { get; set; } = "";
+    
+    /// <summary>Button text</summary>
+    [Parameter] public string Text { get; set; } = "Kopyala";
+    
+    /// <summary>Text shown after copying</summary>
+    [Parameter] public string CopiedText { get; set; } = "Kopyalandı";
+    
+    /// <summary>Button icon</summary>
+    [Parameter] public string Icon { get; set; } = "fa-regular fa-copy";
+    
+    /// <summary>Tooltip text</summary>
+    [Parameter] public string Tooltip { get; set; } = "Panoya kopyala";
+    
+    /// <summary>Tooltip after copying</summary>
+    [Parameter] public string CopiedTooltip { get; set; } = "Kopyalandı!";
+    
+    /// <summary>Show text label</summary>
+    [Parameter] public bool ShowText { get; set; } = true;
+    
+    /// <summary>Duration to show copied state (ms)</summary>
+    [Parameter] public int CopiedDuration { get; set; } = 2000;
+    
+    /// <summary>Additional CSS classes</summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Inline styles</summary>
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>Callback when content is copied</summary>
+    [Parameter] public EventCallback OnCopied { get; set; }
+    
+    private bool _copying = false;
+    private bool _copied = false;
+    
+    private async Task HandleCopy()
+    {
+        if (_copying || string.IsNullOrEmpty(Content)) return;
+        
+        _copying = true;
+        StateHasChanged();
+        
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", Content);
+            _copied = true;
+            _copying = false;
+            StateHasChanged();
+            
+            await OnCopied.InvokeAsync();
+            
+            // Reset after duration
+            await Task.Delay(CopiedDuration);
+            _copied = false;
+            StateHasChanged();
+        }
+        catch
+        {
+            _copying = false;
+            _copied = false;
+            StateHasChanged();
+        }
+    }
+}

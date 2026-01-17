@@ -1,0 +1,11 @@
+@namespace Blazwind.Examples.Components.Shared
+
+<span class="px-3 text-gray-500 text-sm flex items-center h-full bg-gray-50 border-gray-300 @(IsPrepend ? "border-r" : "border-l") @Class">
+    @ChildContent
+</span>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool IsPrepend { get; set; } = false;
+    [Parameter] public string? Class { get; set; }
+}

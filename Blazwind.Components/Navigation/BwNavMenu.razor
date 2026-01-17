@@ -1,0 +1,49 @@
+@namespace Blazwind.Components.Navigation
+
+<div class="flex flex-col h-full @Width @Class">
+    @* Header Slot *@
+    @if (Header != null)
+    {
+        @Header
+    }
+    
+    @* Search Slot *@
+    @if (Search != null)
+    {
+        @Search
+    }
+    
+    @* Navigation Items *@
+    <nav class="flex-1 overflow-y-auto p-2">
+        <CascadingValue Value="this">
+            <CascadingValue Value="ItemTemplate" Name="NavItemTemplate">
+                <CascadingValue Value="GroupHeaderTemplate" Name="NavGroupHeaderTemplate">
+                    @ChildContent
+                </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    </nav>
+    
+    @* Footer Slot *@
+    @if (Footer != null)
+    {
+        @Footer
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? Search { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Width of the navigation menu. Default: w-64 (256px). Use Tailwind width classes.</summary>
+    [Parameter] public string Width { get; set; } = "w-64";
+    
+    /// <summary>Custom template for menu items. Cascaded to all BwNavMenuItem children.</summary>
+    [Parameter] public RenderFragment<BwNavMenuItemContext>? ItemTemplate { get; set; }
+    
+    /// <summary>Custom template for group headers. Cascaded to all BwNavMenuGroup children.</summary>
+    [Parameter] public RenderFragment<BwNavMenuGroupContext>? GroupHeaderTemplate { get; set; }
+}

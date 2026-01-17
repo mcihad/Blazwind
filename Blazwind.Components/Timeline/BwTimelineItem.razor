@@ -1,0 +1,198 @@
+@namespace Blazwind.Components.Timeline
+@using Blazwind.Components.Shared
+
+@{
+    var parent = ParentTimeline;
+    var isHorizontal = parent?.Horizontal ?? false;
+    var isAlternate = parent?.Alternate ?? false;
+    var variant = parent?.Variant ?? BwVariant.Filled;
+    var itemIndex = _itemIndex;
+    var isEven = itemIndex % 2 == 0;
+    var isLast = parent?.IsLastItem(itemIndex) ?? false;
+    
+    // State class
+    var stateClass = IsCompleted ? "completed" : IsActive ? "active" : "pending";
+    
+    // Variant color class
+    var variantClass = Color switch
+    {
+        BwColor.Success => "success",
+        BwColor.Warning => "warning",
+        BwColor.Danger => "danger",
+        BwColor.Info => "info",
+        BwColor.Secondary => "secondary",
+        _ => "primary"
+    };
+    
+    var dotClass = $"bw-timeline-dot {stateClass} {variantClass}";
+    var connectorClass = IsCompleted ? "bw-timeline-connector completed" : "bw-timeline-connector";
+}
+
+@if (isAlternate)
+{
+    @* Alternate (Zig-Zag) Layout *@
+    <div class="bw-timeline-item">
+        <div class="bw-timeline-left">
+            @if (isEven)
+            {
+                @if (OppositeContent != null)
+                {
+                    @OppositeContent
+                }
+                else if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <span class="bw-timeline-subtitle">@Subtitle</span>
+                }
+            }
+            else
+            {
+                <div class="bw-timeline-content">
+                    @if (!string.IsNullOrEmpty(Title))
+                    {
+                        <p class="bw-timeline-title">@Title</p>
+                    }
+                    @if (ChildContent != null)
+                    {
+                        <div class="bw-timeline-body">@ChildContent</div>
+                    }
+                </div>
+            }
+        </div>
+        
+        <div class="bw-timeline-center">
+            @if (itemIndex > 0)
+            {
+                <div class="@connectorClass"></div>
+            }
+            else
+            {
+                <div style="flex: 1; min-height: 16px;"></div>
+            }
+            
+            <div class="@dotClass">
+                @if (IsCompleted)
+                {
+                    <i class="fa-solid fa-check"></i>
+                }
+                else if (IconContent != null)
+                {
+                    @IconContent
+                }
+                else if (!string.IsNullOrEmpty(Icon))
+                {
+                    <i class="@Icon"></i>
+                }
+            </div>
+            
+            @if (!isLast)
+            {
+                <div class="@connectorClass"></div>
+            }
+            else
+            {
+                <div style="flex: 1; min-height: 16px;"></div>
+            }
+        </div>
+        
+        <div class="bw-timeline-right">
+            @if (!isEven)
+            {
+                @if (OppositeContent != null)
+                {
+                    @OppositeContent
+                }
+                else if (!string.IsNullOrEmpty(Subtitle))
+                {
+                    <span class="bw-timeline-subtitle">@Subtitle</span>
+                }
+            }
+            else
+            {
+                <div class="bw-timeline-content">
+                    @if (!string.IsNullOrEmpty(Title))
+                    {
+                        <p class="bw-timeline-title">@Title</p>
+                    }
+                    @if (ChildContent != null)
+                    {
+                        <div class="bw-timeline-body">@ChildContent</div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    @* Default Vertical or Horizontal Layout *@
+    <div class="bw-timeline-item">
+        <div class="@dotClass">
+            @if (IsCompleted)
+            {
+                <i class="fa-solid fa-check"></i>
+            }
+            else if (IconContent != null)
+            {
+                @IconContent
+            }
+            else if (!string.IsNullOrEmpty(Icon))
+            {
+                <i class="@Icon"></i>
+            }
+        </div>
+        
+        <div class="bw-timeline-content">
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <p class="bw-timeline-title">@Title</p>
+            }
+            @if (!string.IsNullOrEmpty(Subtitle))
+            {
+                <p class="bw-timeline-subtitle">@Subtitle</p>
+            }
+            @if (ChildContent != null)
+            {
+                <div class="bw-timeline-body">@ChildContent</div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [CascadingParameter] public BwTimeline? ParentTimeline { get; set; }
+    
+    /// <summary>Item title</summary>
+    [Parameter] public string? Title { get; set; }
+    
+    /// <summary>Secondary text (date/time)</summary>
+    [Parameter] public string? Subtitle { get; set; }
+    
+    /// <summary>FontAwesome icon class</summary>
+    [Parameter] public string? Icon { get; set; }
+    
+    /// <summary>Custom marker content (overrides Icon)</summary>
+    [Parameter] public RenderFragment? IconContent { get; set; }
+    
+    /// <summary>Color theme for this item</summary>
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    
+    /// <summary>Highlighted state</summary>
+    [Parameter] public bool IsActive { get; set; }
+    
+    /// <summary>Completed state (shows checkmark)</summary>
+    [Parameter] public bool IsCompleted { get; set; }
+    
+    /// <summary>Content on opposite side (for alternate layout)</summary>
+    [Parameter] public RenderFragment? OppositeContent { get; set; }
+    
+    /// <summary>Main content</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    private int _itemIndex;
+    
+    protected override void OnInitialized()
+    {
+        _itemIndex = ParentTimeline?.GetNextItemIndex() ?? 0;
+        ParentTimeline?.IncrementTotalItems();
+    }
+}

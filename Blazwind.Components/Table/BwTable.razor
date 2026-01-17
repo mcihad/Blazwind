@@ -1,0 +1,413 @@
+@namespace Blazwind.Components.Table
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Pagination
+@using Blazwind.Components.Input
+@typeparam TItem where TItem : notnull
+
+<CascadingValue Value="this">
+    @* Hidden column definitions collector *@
+    <div style="display: none;">
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@{
+    var tableClass = "w-full text-left border-collapse";
+    var headerClass = "bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700";
+    var cellPadding = Compact ? "px-3 py-2" : "px-4 py-3";
+    var headerCellClass = $"font-semibold text-gray-700 dark:text-gray-300 text-sm {cellPadding}";
+    var bodyCellClass = $"text-gray-600 dark:text-gray-400 text-sm {cellPadding}";
+    var borderClass = Bordered ? "border border-gray-200 dark:border-gray-700" : "";
+    var hoverClass = Hoverable ? "hover:bg-gray-50 dark:hover:bg-gray-800/50" : "";
+    
+    var processedItems = GetProcessedItems();
+    var visibleColumns = _columns.Where(c => c.Visible).ToList();
+}
+
+<div class="@Class">
+    @if (ShowColumnSelector && _columns.Any())
+    {
+        <div class="flex justify-end mb-3 relative">
+            <button type="button" 
+                    class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    @onclick="ToggleColumnSelector">
+                <i class="fa-solid fa-table-columns"></i>
+                <span>Kolonlar</span>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 ml-1 transition-transform @(_showColumnSelector ? "rotate-180" : "")"></i>
+            </button>
+            
+            @if (_showColumnSelector)
+            {
+                <div class="absolute right-0 top-full mt-1 z-50 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
+                    <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input type="text" 
+                                   placeholder="Kolon ara..." 
+                                   class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                   @bind="_columnSearchQuery"
+                                   @bind:event="oninput" />
+                        </div>
+                    </div>
+                    <div class="py-1 max-h-64 overflow-y-auto">
+                        @{
+                            var filteredColumns = string.IsNullOrWhiteSpace(_columnSearchQuery) 
+                                ? _columns 
+                                : _columns.Where(c => c.Title?.Contains(_columnSearchQuery, StringComparison.OrdinalIgnoreCase) == true).ToList();
+                        }
+                        @if (filteredColumns.Any())
+                        {
+                            @foreach (var col in filteredColumns)
+                            {
+                                <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                                     @onclick="@(() => ToggleColumnVisibility(col))">
+                                    <BwCheckbox IsChecked="@col.Visible" 
+                                                IsCheckedChanged="@((e) => {/* Already handled by row click */})"
+                                                Size="BwSize.Small"
+                                                Class="!m-0 pointer-events-none" />
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">@col.Title</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="px-3 py-4 text-center text-sm text-gray-400 dark:text-gray-500">
+                                <i class="fa-solid fa-search mb-1"></i>
+                                <p>Kolon bulunamadı</p>
+                            </div>
+                        }
+                    </div>
+                    <div class="px-3 py-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 rounded-b flex justify-between items-center">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">@_columns.Count(c => c.Visible) / @_columns.Count görünür</span>
+                        <button type="button" 
+                                class="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                @onclick="ToggleColumnSelector">
+                            Kapat
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="overflow-x-auto">
+        <table class="@tableClass @borderClass">
+            <thead class="@headerClass">
+                <tr>
+                    @if (SelectionMode != BwSelectionMode.None)
+                    {
+                        <th class="@headerCellClass w-12">
+                            @if (SelectionMode == BwSelectionMode.Multiple)
+                            {
+                                <BwCheckbox IsChecked="@IsAllSelected()" Size="BwSize.Small"
+                                            IsCheckedChanged="ToggleSelectAll" />
+                            }
+                        </th>
+                    }
+                    @foreach (var column in visibleColumns)
+                    {
+                        var isSorted = _sortColumn == column.GetFieldName();
+                        var sortIcon = isSorted ? (_sortDescending ? "fa-sort-down" : "fa-sort-up") : "fa-sort";
+                        var sortColor = isSorted ? "text-blue-600" : "text-gray-400";
+                        var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
+                        
+                        <th class="@headerCellClass" style="@widthStyle">
+                            @if (column.HeaderTemplate != null)
+                            {
+                                @column.HeaderTemplate
+                            }
+                            else if (EnableSorting && column.Sortable)
+                            {
+                                <button type="button" 
+                                        class="flex items-center gap-2 hover:text-gray-900 transition-colors"
+                                        @onclick="() => HandleSort(column)">
+                                    <span>@column.Title</span>
+                                    <i class="fa-solid @sortIcon @sortColor text-xs"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                @column.Title
+                            }
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (processedItems.Any())
+                {
+                    var rowIndex = 0;
+                    foreach (var item in processedItems)
+                    {
+                        var isSelected = _selectedItems.Contains(item);
+                        var stripedClass = Striped && rowIndex % 2 == 1 ? "bg-gray-50/50 dark:bg-gray-800/30" : "";
+                        var selectedClass = isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "";
+                        var customRowClass = RowClass?.Invoke(item) ?? "";
+                        
+                        <tr class="border-b border-gray-100 dark:border-gray-700 @stripedClass @selectedClass @hoverClass @customRowClass transition-colors">
+                            @if (SelectionMode != BwSelectionMode.None)
+                            {
+                                <td class="@bodyCellClass w-12 text-center">
+                                    @if (SelectionMode == BwSelectionMode.Multiple)
+                                    {
+                                        <BwCheckbox IsChecked="@isSelected" Size="BwSize.Small"
+                                                    IsCheckedChanged="@((_) => ToggleSelection(item))" />
+                                    }
+                                    else
+                                    {
+                                        <BwRadio TValue="TItem"
+                                                 Value="@item"
+                                                 IsChecked="@isSelected" 
+                                                 OnClick="@(() => ToggleSelection(item))" />
+                                    }
+                                </td>
+                            }
+                            @foreach (var column in visibleColumns)
+                            {
+                                var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
+                                <td class="@bodyCellClass" style="@widthStyle">
+                                    @if (column.Template != null)
+                                    {
+                                        @column.Template(item)
+                                    }
+                                    else if (column.Ellipsis)
+                                    {
+                                        <div class="truncate" style="max-width: @(column.EllipsisMaxWidth ?? "200px");" 
+                                             title="@(column.GetValue(item)?.ToString() ?? "")">
+                                            @(column.GetValue(item)?.ToString() ?? "")
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @(column.GetValue(item)?.ToString() ?? "")
+                                    }
+                                </td>
+                            }
+                        </tr>
+                        rowIndex++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0))" 
+                            class="@bodyCellClass text-center text-gray-400 py-8">
+                            <i class="fa-solid fa-inbox text-3xl mb-2"></i>
+                            <p>Veri bulunamadı</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (EnablePagination && !ServerSide)
+    {
+        var totalItems = GetFilteredItems().Count();
+        <div class="mt-4">
+            <BwPagination TotalItems="@totalItems"
+                          PageSize="@PageSize"
+                          CurrentPage="@CurrentPage"
+                          CurrentPageChanged="OnPageChanged"
+                          PageSizeChanged="OnPageSizeChanged"
+                          ShowPageSizeSelector="true"
+                          ShowInfo="true" />
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
+    [Parameter] public IEnumerable<TItem> SelectedItems { get; set; } = Enumerable.Empty<TItem>();
+    [Parameter] public EventCallback<IEnumerable<TItem>> SelectedItemsChanged { get; set; }
+    [Parameter] public Func<TItem, string>? RowClass { get; set; }
+    [Parameter] public bool Striped { get; set; } = true;
+    [Parameter] public bool Hoverable { get; set; } = true;
+    [Parameter] public bool Bordered { get; set; } = false;
+    [Parameter] public bool Compact { get; set; } = false;
+    [Parameter] public bool ShowColumnSelector { get; set; } = false;
+    [Parameter] public string? Class { get; set; }
+    
+    // Pagination
+    [Parameter] public bool EnablePagination { get; set; } = false;
+    [Parameter] public int PageSize { get; set; } = 10;
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    
+    // Sorting
+    [Parameter] public bool EnableSorting { get; set; } = true;
+    [Parameter] public string? DefaultSortColumn { get; set; }
+    [Parameter] public bool DefaultSortDescending { get; set; } = false;
+    
+    // Server-side
+    [Parameter] public bool ServerSide { get; set; } = false;
+    [Parameter] public EventCallback<BwTableState> OnStateChanged { get; set; }
+
+    private List<BwTableColumn<TItem>> _columns = new();
+    private HashSet<TItem> _selectedItems = new();
+    private string? _sortColumn;
+    private bool _sortDescending;
+    private bool _showColumnSelector;
+    private string _columnSearchQuery = "";
+
+    protected override void OnInitialized()
+    {
+        _sortColumn = DefaultSortColumn;
+        _sortDescending = DefaultSortDescending;
+        _selectedItems = new HashSet<TItem>(SelectedItems);
+    }
+
+    protected override void OnParametersSet()
+    {
+        _selectedItems = new HashSet<TItem>(SelectedItems);
+    }
+
+    internal void RegisterColumn(BwTableColumn<TItem> column)
+    {
+        if (!_columns.Contains(column))
+        {
+            _columns.Add(column);
+            StateHasChanged();
+        }
+    }
+
+    private IEnumerable<TItem> GetFilteredItems()
+    {
+        var items = Items ?? Enumerable.Empty<TItem>();
+        
+        if (ServerSide) return items;
+        
+        // Client-side sorting
+        if (!string.IsNullOrEmpty(_sortColumn))
+        {
+            var column = _columns.FirstOrDefault(c => c.GetFieldName() == _sortColumn);
+            if (column?.Field != null)
+            {
+                items = _sortDescending 
+                    ? items.OrderByDescending(column.Field)
+                    : items.OrderBy(column.Field);
+            }
+        }
+        
+        return items;
+    }
+
+    private IEnumerable<TItem> GetProcessedItems()
+    {
+        var items = GetFilteredItems();
+        
+        if (ServerSide) return items;
+        
+        // Client-side pagination
+        if (EnablePagination)
+        {
+            items = items.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+        }
+        
+        return items;
+    }
+
+    private async Task HandleSort(BwTableColumn<TItem> column)
+    {
+        var fieldName = column.GetFieldName();
+        
+        if (_sortColumn == fieldName)
+        {
+            _sortDescending = !_sortDescending;
+        }
+        else
+        {
+            _sortColumn = fieldName;
+            _sortDescending = false;
+        }
+        
+        if (ServerSide)
+        {
+            await OnStateChanged.InvokeAsync(GetState());
+        }
+    }
+
+    private async Task OnPageChanged(int page)
+    {
+        CurrentPage = page;
+        
+        if (ServerSide)
+        {
+            await OnStateChanged.InvokeAsync(GetState());
+        }
+    }
+
+    private async Task OnPageSizeChanged(int size)
+    {
+        PageSize = size;
+        CurrentPage = 1;
+        
+        if (ServerSide)
+        {
+            await OnStateChanged.InvokeAsync(GetState());
+        }
+    }
+
+    private BwTableState GetState() => new BwTableState
+    {
+        CurrentPage = CurrentPage,
+        PageSize = PageSize,
+        SortColumn = _sortColumn,
+        SortDescending = _sortDescending
+    };
+
+    private async Task ToggleSelection(TItem item)
+    {
+        if (SelectionMode == BwSelectionMode.Single)
+        {
+            _selectedItems.Clear();
+            _selectedItems.Add(item);
+        }
+        else if (SelectionMode == BwSelectionMode.Multiple)
+        {
+            if (_selectedItems.Contains(item))
+                _selectedItems.Remove(item);
+            else
+                _selectedItems.Add(item);
+        }
+        
+        await SelectedItemsChanged.InvokeAsync(_selectedItems);
+    }
+
+    private async Task ToggleSelectAll(bool isChecked)
+    {
+        var allItems = GetFilteredItems().ToList();
+        
+        if (!isChecked)
+        {
+            _selectedItems.Clear();
+        }
+        else
+        {
+            foreach (var item in allItems)
+                _selectedItems.Add(item);
+        }
+        
+        await SelectedItemsChanged.InvokeAsync(_selectedItems);
+    }
+
+    private bool IsAllSelected()
+    {
+        var allItems = GetFilteredItems().ToList();
+        return allItems.Any() && allItems.All(i => _selectedItems.Contains(i));
+    }
+
+    private void ToggleColumnSelector()
+    {
+        _showColumnSelector = !_showColumnSelector;
+    }
+
+    private void ToggleColumnVisibility(BwTableColumn<TItem> column)
+    {
+#pragma warning disable BL0005
+        column.Visible = !column.Visible;
+#pragma warning restore BL0005
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,85 @@
+@namespace Blazwind.Components.Card
+@using Blazwind.Components.Shared
+
+<div class="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 @Class" @attributes="AdditionalAttributes">
+    @if (Header != null || !string.IsNullOrEmpty(Title))
+    {
+        <div class="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 dark:border-gray-700 @HeaderClass">
+            @if (Header != null)
+            {
+                @Header
+            }
+            else
+            {
+                <div class="flex items-center gap-3">
+                    @if (!string.IsNullOrEmpty(Icon))
+                    {
+                        <div class="w-10 h-10 @IconBgClass rounded flex items-center justify-center">
+                            <i class="@Icon @IconClass"></i>
+                        </div>
+                    }
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-gray-100">@Title</h3>
+                        @if (!string.IsNullOrEmpty(Subtitle))
+                        {
+                            <p class="text-sm text-gray-500 dark:text-gray-400">@Subtitle</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    
+    <div class="@BodyClass">
+        @ChildContent
+    </div>
+    
+    @if (Footer != null)
+    {
+        <div class="px-4 py-3 md:px-6 md:py-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 @FooterClass">
+            @Footer
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+    
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary; // Using Primary as default (Blue)
+    
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? HeaderClass { get; set; }
+    [Parameter] public string BodyClass { get; set; } = "p-4 md:p-6";
+    [Parameter] public string? FooterClass { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    
+    // Computed properties for styling
+    private string IconBgClass => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 dark:bg-blue-900/30",
+        BwColor.Secondary => "bg-gray-100 dark:bg-gray-700/30",
+        BwColor.Success => "bg-green-100 dark:bg-green-900/30",
+        BwColor.Danger => "bg-red-100 dark:bg-red-900/30",
+        BwColor.Warning => "bg-amber-100 dark:bg-amber-900/30",
+        BwColor.Info => "bg-sky-100 dark:bg-sky-900/30",
+        BwColor.Dark => "bg-gray-100 dark:bg-gray-700/30", 
+        _ => "bg-gray-100 dark:bg-gray-700/30"
+    };
+
+    private string IconClass => Color switch
+    {
+        BwColor.Primary => "text-blue-600 dark:text-blue-400",
+        BwColor.Secondary => "text-gray-600 dark:text-gray-400",
+        BwColor.Success => "text-green-600 dark:text-green-400",
+        BwColor.Danger => "text-red-600 dark:text-red-400",
+        BwColor.Warning => "text-amber-600 dark:text-amber-400",
+        BwColor.Info => "text-sky-600 dark:text-sky-400",
+        BwColor.Dark => "text-gray-800 dark:text-gray-200",
+        _ => "text-gray-600 dark:text-gray-400"
+    };
+}

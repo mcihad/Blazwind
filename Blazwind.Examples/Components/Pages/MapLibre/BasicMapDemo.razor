@@ -1,0 +1,118 @@
+@page "/maps/basic"
+@using Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Card
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+
+<PageTitle>Basic Map - MapLibre</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Basic Map" 
+            Description="Simple map usage, zoom, center and control examples."
+            Icon="fa-solid fa-image"
+            Color="BwColor.Primary" />
+
+    <div class="h-[500px] w-full relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+        <BwMapLibre @ref="_map" StyleUrl="osm_style.json" Center="@SivasCenter" Zoom="@((double)13)"
+            Pitch="@((double)0)" Bearing="@((double)0)" NavigationControl="true" ScaleControl="true"
+            FullscreenControl="true" OnLoad="OnMapLoaded" OnClick="OnMapClick">
+
+            @* Merkez Marker *@
+            <BwMapLibreMarker Id="sivas-merkez" Longitude="37.0150" Latitude="39.7505" Color="#3b82f6"
+                PopupContent="<strong>Sivas Meydan</strong><br/>Tarihi şehir merkezi" />
+        </BwMapLibre>
+
+        @* Kontrol Paneli *@
+        <div class="absolute top-4 left-4 z-[1000] w-64">
+            <BwCard Class="bg-white/95 dark:bg-gray-800/95 backdrop-blur">
+                <BwTypography Tag="BwTypographyTag.H6" Weight="BwFontWeight.Bold" Class="mb-3">
+                    <i class="fa-solid fa-map mr-2 text-primary-500"></i>Controls
+                </BwTypography>
+
+                <div class="space-y-2">
+                    <BwButton Text="Go to Center" Icon="fa-solid fa-crosshairs" Color="BwColor.Primary"
+                        Size="BwSize.Small" Class="w-full" OnClick="GoToCenter" />
+                    <BwButton Text="Zoom In" Icon="fa-solid fa-plus" Color="BwColor.Secondary"
+                        Variant="BwVariant.Outline" Size="BwSize.Small" Class="w-full" OnClick="ZoomIn" />
+                    <BwButton Text="Zoom Out" Icon="fa-solid fa-minus" Color="BwColor.Secondary"
+                        Variant="BwVariant.Outline" Size="BwSize.Small" Class="w-full" OnClick="ZoomOut" />
+                </div>
+                
+                <div class="mt-3 text-xs text-gray-500">
+                    <div>Center: <strong>@_currentCenter</strong></div>
+                    <div>Zoom: <strong>@_currentZoom.ToString("F1")</strong></div>
+                </div>
+            </BwCard>
+        </div>
+    </div>
+
+    <BwCard Title="Usage" Subtitle="Simple map example" Icon="fa-solid fa-code" Color="BwColor.Info">
+        <pre class="bg-gray-100 dark:bg-gray-900 p-4 rounded text-sm overflow-x-auto"><code>&lt;BwMapLibre StyleUrl="osm_style.json"
+            Center="@@(new[] { 37.015, 39.7505 })" 
+            Zoom="13"
+            NavigationControl="true"&gt;
+    &lt;BwMapLibreMarker Longitude="37.015" Latitude="39.7505" Color="#3b82f6" /&gt;
+&lt;/BwMapLibre&gt;</code></pre>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwMapLibre? _map;
+    private double[] SivasCenter => [37.0150, 39.7505];
+    private string _currentCenter = "37.015, 39.7505";
+    private double _currentZoom = 13;
+
+    private async Task OnMapLoaded()
+    {
+        if (_map != null)
+        {
+            var center = await _map.GetCenterAsync();
+            var zoom = await _map.GetZoomAsync();
+            if (center != null)
+            {
+                _currentCenter = $"{center.Lng:F4}, {center.Lat:F4}";
+            }
+            _currentZoom = zoom ?? 13;
+            StateHasChanged();
+        }
+    }
+
+    private void OnMapClick(MapMouseEventArgs e)
+    {
+        if (e.LngLat != null)
+        {
+            _currentCenter = $"{e.LngLat.Lng:F4}, {e.LngLat.Lat:F4}";
+            StateHasChanged();
+        }
+    }
+
+    private async Task GoToCenter()
+    {
+        if (_map == null) return;
+        await _map.FlyToAsync(new FlyToOptions
+        {
+            Center = new LngLat(37.0150, 39.7505),
+            Zoom = 13,
+            Duration = 1500
+        });
+    }
+
+    private async Task ZoomIn()
+    {
+        if (_map == null) return;
+        await _map.ZoomInAsync();
+        _currentZoom = await _map.GetZoomAsync() ?? _currentZoom;
+        StateHasChanged();
+    }
+
+    private async Task ZoomOut()
+    {
+        if (_map == null) return;
+        await _map.ZoomOutAsync();
+        _currentZoom = await _map.GetZoomAsync() ?? _currentZoom;
+        StateHasChanged();
+    }
+}

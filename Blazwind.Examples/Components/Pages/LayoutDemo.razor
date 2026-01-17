@@ -1,0 +1,183 @@
+@page "/components/layout"
+
+<PageTitle>Layout Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Row & Column Layout"
+        Description="Flutter-like flexbox-based layout components. Row provides horizontal, Column provides vertical layout."
+        Icon="fa-solid fa-table-columns" Color="BwColor.Primary" />
+
+    @* BwRow Examples *@
+    <BwCard Title="BwRow - Horizontal Layout" Subtitle="Arranges items horizontally (flex-row)."
+        Icon="fa-solid fa-arrows-left-right" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Default (MainAxisAlignment: Start)</p>
+                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-blue-500 text-white px-4 py-2 rounded">1</div>
+                    <div class="bg-blue-500 text-white px-4 py-2 rounded">2</div>
+                    <div class="bg-blue-500 text-white px-4 py-2 rounded">3</div>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">MainAxisAlignment: Center</p>
+                <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.Center"
+                    Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-emerald-500 text-white px-4 py-2 rounded">1</div>
+                    <div class="bg-emerald-500 text-white px-4 py-2 rounded">2</div>
+                    <div class="bg-emerald-500 text-white px-4 py-2 rounded">3</div>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">MainAxisAlignment: SpaceBetween</p>
+                <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.SpaceBetween"
+                    Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-amber-500 text-white px-4 py-2 rounded">1</div>
+                    <div class="bg-amber-500 text-white px-4 py-2 rounded">2</div>
+                    <div class="bg-amber-500 text-white px-4 py-2 rounded">3</div>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">MainAxisAlignment: SpaceEvenly</p>
+                <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.SpaceEvenly"
+                    Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-red-500 text-white px-4 py-2 rounded">1</div>
+                    <div class="bg-red-500 text-white px-4 py-2 rounded">2</div>
+                    <div class="bg-red-500 text-white px-4 py-2 rounded">3</div>
+                </BwRow>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* BwColumn Examples *@
+    <BwCard Title="BwColumn - Vertical Layout" Subtitle="Arranges items vertically (flex-col)."
+        Icon="fa-solid fa-arrows-up-down" Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Lg" Wrap="true" Class="grid md:grid-cols-3">
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Spacing: Sm</p>
+                <BwColumn Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-indigo-500 text-white px-4 py-2 rounded text-center">A</div>
+                    <div class="bg-indigo-500 text-white px-4 py-2 rounded text-center">B</div>
+                    <div class="bg-indigo-500 text-white px-4 py-2 rounded text-center">C</div>
+                </BwColumn>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Spacing: Md</p>
+                <BwColumn Spacing="BwSpacing.Md" Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-sky-500 text-white px-4 py-2 rounded text-center">A</div>
+                    <div class="bg-sky-500 text-white px-4 py-2 rounded text-center">B</div>
+                    <div class="bg-sky-500 text-white px-4 py-2 rounded text-center">C</div>
+                </BwColumn>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Spacing: Lg</p>
+                <BwColumn Spacing="BwSpacing.Lg" Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-pink-500 text-white px-4 py-2 rounded text-center">A</div>
+                    <div class="bg-pink-500 text-white px-4 py-2 rounded text-center">B</div>
+                    <div class="bg-pink-500 text-white px-4 py-2 rounded text-center">C</div>
+                </BwColumn>
+            </div>
+        </BwRow>
+    </BwCard>
+
+    @* CrossAxisAlignment *@
+    <BwCard Title="CrossAxisAlignment" Subtitle="Cross-axis alignment (align-items)." Icon="fa-solid fa-align-center"
+        Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm text-gray-500 mb-2">CrossAxisAlignment: Start</p>
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Start"
+                    Class="bg-gray-100 p-3 rounded h-24">
+                    <div class="bg-purple-500 text-white px-4 py-2 rounded">Short</div>
+                    <div class="bg-purple-500 text-white px-4 py-6 rounded">Long</div>
+                    <div class="bg-purple-500 text-white px-4 py-2 rounded">Short</div>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">CrossAxisAlignment: Center</p>
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center"
+                    Class="bg-gray-100 p-3 rounded h-24">
+                    <div class="bg-teal-500 text-white px-4 py-2 rounded">Short</div>
+                    <div class="bg-teal-500 text-white px-4 py-6 rounded">Long</div>
+                    <div class="bg-teal-500 text-white px-4 py-2 rounded">Short</div>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">CrossAxisAlignment: Stretch</p>
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Stretch"
+                    Class="bg-gray-100 p-3 rounded h-24">
+                    <div class="bg-orange-500 text-white px-4 py-2 rounded flex items-center">Stretch</div>
+                    <div class="bg-orange-500 text-white px-4 py-2 rounded flex items-center">Stretch</div>
+                    <div class="bg-orange-500 text-white px-4 py-2 rounded flex items-center">Stretch</div>
+                </BwRow>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* BwExpanded *@
+    <BwCard Title="BwExpanded" Subtitle="Flexible element that fills remaining space (flex-1)."
+        Icon="fa-solid fa-expand" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm text-gray-500 mb-2">One Expanded element</p>
+                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-blue-500 text-white px-4 py-2 rounded">Fixed</div>
+                    <BwExpanded Expanded="true" Class="bg-emerald-500 text-white px-4 py-2 rounded text-center">
+                        Expanded (Fills Remaining Space)
+                    </BwExpanded>
+                    <div class="bg-blue-500 text-white px-4 py-2 rounded">Fixed</div>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Two Expanded elements (equal distribution)</p>
+                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
+                    <BwExpanded Expanded="true" Class="bg-indigo-500 text-white px-4 py-2 rounded text-center">
+                        Left (1/2)
+                    </BwExpanded>
+                    <BwExpanded Expanded="true" Class="bg-pink-500 text-white px-4 py-2 rounded text-center">
+                        Right (1/2)
+                    </BwExpanded>
+                </BwRow>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Flex ratios (1:2:1)</p>
+                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
+                    <BwExpanded Flex="1" Class="bg-amber-500 text-white px-4 py-2 rounded text-center">
+                        Flex 1
+                    </BwExpanded>
+                    <BwExpanded Flex="2" Class="bg-red-500 text-white px-4 py-2 rounded text-center">
+                        Flex 2
+                    </BwExpanded>
+                    <BwExpanded Flex="1" Class="bg-amber-500 text-white px-4 py-2 rounded text-center">
+                        Flex 1
+                    </BwExpanded>
+                </BwRow>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Wrap *@
+    <BwCard Title="Wrap (Wrapping)" Subtitle="Items move to next line when they don't fit."
+        Icon="fa-solid fa-text-width" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Wrap: true</p>
+                <BwRow Spacing="BwSpacing.Sm" Wrap="true" Class="bg-gray-100 p-3 rounded">
+                    @for (var i = 1; i <= 12; i++)
+                    {
+                        <div class="bg-cyan-500 text-white px-6 py-3 rounded">@i</div>
+                    }
+                </BwRow>
+            </div>
+        </BwColumn>
+    </BwCard>
+</BwColumn>

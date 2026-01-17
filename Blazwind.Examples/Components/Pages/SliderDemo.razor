@@ -1,0 +1,48 @@
+@page "/components/slider"
+@using Blazwind.Components.Input
+
+<PageTitle>Slider Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Slider"
+            Description="Slider component for selecting values by sliding."
+            Icon="fa-solid fa-sliders"
+            Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Min, Max, Step" Icon="fa-solid fa-sliders" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwSlider Label="Volume Level" @bind-Value="_volume"/>
+            <BwSlider Label="Brightness" Min="0" Max="255" Step="5" @bind-Value="_brightness"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Variants *@
+    <BwCard Title="Variants" Subtitle="Color options" Icon="fa-solid fa-palette" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwSlider Label="Primary" Color="BwColor.Primary" Value="60"/>
+            <BwSlider Label="Success" Color="BwColor.Success" Value="80"/>
+            <BwSlider Label="Warning" Color="BwColor.Warning" Value="40"/>
+            <BwSlider Label="Danger" Color="BwColor.Danger" Value="20"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwSlider Label="Small" Size="BwSize.Small" Value="50"/>
+            <BwSlider Label="Medium" Size="BwSize.Medium" Value="50"/>
+            <BwSlider Label="Large" Size="BwSize.Large" Value="50"/>
+        </BwColumn>
+    </BwCard>
+
+    @* States *@
+    <BwCard Title="States" Subtitle="Disabled" Icon="fa-solid fa-toggle-on" Color="BwColor.Secondary">
+        <BwSlider Label="Disabled" Value="70" IsDisabled="true"/>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private double _volume = 50;
+    private double _brightness = 128;
+}

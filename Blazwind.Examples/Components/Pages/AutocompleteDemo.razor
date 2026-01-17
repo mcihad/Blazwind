@@ -1,0 +1,490 @@
+@page "/components/autocomplete"
+@using Blazwind.Components.Input
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Typography
+
+<PageTitle>Autocomplete Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Autocomplete"
+            Description="Smart input component with search and filtering features, allowing single or multiple selection."
+            Icon="fa-solid fa-magnifying-glass-location"
+            Color="BwColor.Info"/>
+
+    @* Single Selection *@
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Single Selection" Subtitle="Select one item from list" Icon="fa-solid fa-crosshairs"
+                    Color="BwColor.Primary">
+                <Header>
+                    <BwTypography Tag="BwTypographyTag.H3" Weight="BwFontWeight.Semibold">Single Selection
+                    </BwTypography>
+                </Header>
+                <ChildContent>
+                    <BwColumn Spacing="BwSpacing.Md">
+                        <BwAutocomplete TItem="string"
+                                        Label="City"
+                                        Placeholder="Search city..."
+                                        Items="_cities"
+                                        SelectedItem="_selectedCity"
+                                        SelectedItemChanged="@(city =>
+                                                             {
+                                                                 _selectedCity = city;
+                                                                 StateHasChanged();
+                                                             })"
+                                        ItemText="@(x => x)"/>
+                    </BwColumn>
+                </ChildContent>
+                <Footer>
+                    @if (!string.IsNullOrEmpty(_selectedCity))
+                    {
+                        <div class="text-sm">
+                            <strong>Selected:</strong> @_selectedCity
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-sm text-gray-400">No selection made</div>
+                    }
+                </Footer>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Multiple Selection" Subtitle="Select multiple items" Icon="fa-solid fa-list-check"
+                    Color="BwColor.Success">
+                <ChildContent>
+                    <BwColumn Spacing="BwSpacing.Md">
+                        <BwAutocomplete TItem="string"
+                                        Label="Skills"
+                                        Placeholder="Add skill..."
+                                        Multiple="true"
+                                        Items="_skills"
+                                        SelectedItems="_selectedSkills"
+                                        SelectedItemsChanged="@(skills =>
+                                                              {
+                                                                  _selectedSkills = skills;
+                                                                  StateHasChanged();
+                                                              })"
+                                        ItemText="@(x => x)"/>
+                    </BwColumn>
+                </ChildContent>
+                <Footer>
+                    @if (_selectedSkills.Any())
+                    {
+                        <div class="text-sm">
+                            <strong>Selected (@_selectedSkills.Count):</strong> @string.Join(", ", _selectedSkills)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-sm text-gray-400">No selection made</div>
+                    }
+                </Footer>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Async Search & Grouped Items *@
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Async API Search" Subtitle="Search results from server" Icon="fa-solid fa-server"
+                    Color="BwColor.Warning">
+                <ChildContent>
+                    <BwColumn Spacing="BwSpacing.Md">
+                        <p class="text-xs text-gray-500 mb-2">
+                            <i class="fa-solid fa-info-circle mr-1"></i>
+                            Enter at least 2 characters. API search with 500ms delay simulation.
+                        </p>
+                        <BwAutocomplete TItem="User"
+                                        Label="Search User"
+                                        Placeholder="Search by name or email..."
+                                        SearchFunc="SearchUsersAsync"
+                                        DebounceMs="500"
+                                        MinChars="2"
+                                        SelectedItem="_selectedUser"
+                                        SelectedItemChanged="@(u =>
+                                                             {
+                                                                 _selectedUser = u;
+                                                                 StateHasChanged();
+                                                             })"
+                                        ItemText="@(u => u.Name)"
+                                        ItemDescription="@(u => u.Email)"
+                                        ItemIcon="@(u => u.IsOnline ? "fa-solid fa-circle text-green-400" : "fa-solid fa-circle text-gray-300")"/>
+                    </BwColumn>
+                </ChildContent>
+                <Footer>
+                    @if (_selectedUser != null)
+                    {
+                        <div class="flex items-center gap-3 text-sm">
+                            <div
+                                class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+                                @_selectedUser.Name[0]
+                            </div>
+                            <div>
+                                <div class="font-medium">@_selectedUser.Name</div>
+                                <div class="text-gray-500 text-xs">@_selectedUser.Email</div>
+                            </div>
+                            <span
+                                class="ml-auto text-xs px-2 py-1 rounded-full @(_selectedUser.IsOnline ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600")">
+                                @(_selectedUser.IsOnline ? "Online" : "Offline")
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-sm text-gray-400">No user selected</div>
+                    }
+                </Footer>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Grouped Items" Subtitle="Grouping by category" Icon="fa-solid fa-layer-group"
+                    Color="BwColor.Info">
+                <ChildContent>
+                    <BwColumn Spacing="BwSpacing.Md">
+                        <BwAutocomplete TItem="Product"
+                                        Label="Select Product"
+                                        Placeholder="Search product..."
+                                        Items="_products"
+                                        SelectedItem="_selectedProduct"
+                                        SelectedItemChanged="@(p =>
+                                                             {
+                                                                 _selectedProduct = p;
+                                                                 StateHasChanged();
+                                                             })"
+                                        ItemText="@(p => p.Name)"
+                                        ItemDescription="@(p => $"{p.Price:C0}")"
+                                        ItemIcon="@(p => p.Icon)"
+                                        GroupBy="@(p => p.Category)"/>
+                    </BwColumn>
+                </ChildContent>
+                <Footer>
+                    @if (_selectedProduct != null)
+                    {
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-white rounded flex items-center justify-center text-lg shadow-sm">
+                                <i class="@_selectedProduct.Icon text-blue-500"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-sm">@_selectedProduct.Name</div>
+                                <div class="text-xs text-gray-500">@_selectedProduct.Category</div>
+                            </div>
+                            <div class="text-base font-bold text-blue-600">@_selectedProduct.Price.ToString("C0")</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-sm text-gray-400">No product selected</div>
+                    }
+                </Footer>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Creatable & Custom Template *@
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Create New Item" Subtitle="Create if not in list" Icon="fa-solid fa-plus-circle"
+                    Color="BwColor.Success">
+                <ChildContent>
+                    <BwColumn Spacing="BwSpacing.Md">
+                        <p class="text-xs text-gray-500 mb-2">
+                            <i class="fa-solid fa-lightbulb mr-1"></i>
+                            You can add new tags by typing.
+                        </p>
+                        <BwAutocomplete TItem="string"
+                                        Label="Tags"
+                                        Placeholder="Search or create tag..."
+                                        Multiple="true"
+                                        Items="_tags"
+                                        SelectedItems="_selectedTags"
+                                        SelectedItemsChanged="@(t =>
+                                                              {
+                                                                  _selectedTags = t;
+                                                                  StateHasChanged();
+                                                              })"
+                                        AllowCreate="true"
+                                        OnCreateNew="HandleCreateTag"
+                                        ItemText="@(x => x)"
+                                        ItemIcon="@(x => "fa-solid fa-tag")"/>
+                    </BwColumn>
+                </ChildContent>
+                <Footer>
+                    @if (_selectedTags.Any())
+                    {
+                        <div class="flex flex-wrap gap-2">
+                            @foreach (var tag in _selectedTags)
+                            {
+                                <span
+                                    class="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full flex items-center gap-1.5">
+                                    <i class="fa-solid fa-tag text-xs"></i>
+                                    @tag
+                                </span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-sm text-gray-400">No tag selected</div>
+                    }
+
+                    <div class="text-xs text-gray-400 mt-2 pt-2 border-t border-gray-200">
+                        Existing tags: @string.Join(", ", _tags)
+                    </div>
+                </Footer>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Custom Template" Subtitle="Rich item display" Icon="fa-solid fa-palette"
+                    Color="BwColor.Danger">
+                <ChildContent>
+                    <BwColumn Spacing="BwSpacing.Md">
+                        <BwAutocomplete TItem="Country"
+                                        Label="Select Country"
+                                        Placeholder="Search country..."
+                                        Items="_countries"
+                                        SelectedItem="_selectedCountry"
+                                        SelectedItemChanged="@(c =>
+                                                             {
+                                                                 _selectedCountry = c;
+                                                                 StateHasChanged();
+                                                             })"
+                                        ItemText="@(c => c.Name)">
+                            <ItemTemplate Context="country">
+                                <div class="flex items-center gap-3 py-1">
+                                    <span class="text-2xl">@country.Flag</span>
+                                    <div class="flex-1">
+                                        <div class="font-medium">@country.Name</div>
+                                        <div class="text-xs text-gray-400">@country.Capital • @country.Continent</div>
+                                    </div>
+                                    <span class="text-xs text-gray-500 font-mono">@country.Code</span>
+                                </div>
+                            </ItemTemplate>
+                        </BwAutocomplete>
+                    </BwColumn>
+                </ChildContent>
+                <Footer>
+                    @if (_selectedCountry != null)
+                    {
+                        <div class="flex items-center gap-4">
+                            <span class="text-4xl">@_selectedCountry.Flag</span>
+                            <div>
+                                <div class="text-lg font-bold">@_selectedCountry.Name</div>
+                                <div class="text-gray-600 text-sm">Capital: @_selectedCountry.Capital</div>
+                                <div
+                                    class="text-xs text-gray-500">@_selectedCountry.Continent • @_selectedCountry.Code</div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-sm text-gray-400">No country selected</div>
+                    }
+                </Footer>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Sizes & States *@
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Sizes" Subtitle="Small, Medium, Large options" Icon="fa-solid fa-text-height"
+                    Color="BwColor.Primary">
+                <BwColumn Spacing="BwSpacing.Md">
+                    <BwAutocomplete TItem="string"
+                                    Label="Small"
+                                    Size="BwSize.Small"
+                                    Placeholder="Search..."
+                                    Items="_cities"
+                                    ItemText="@(x => x)"/>
+
+                    <BwAutocomplete TItem="string"
+                                    Label="Medium (Default)"
+                                    Size="BwSize.Medium"
+                                    Placeholder="Search..."
+                                    Items="_cities"
+                                    ItemText="@(x => x)"/>
+
+                    <BwAutocomplete TItem="string"
+                                    Label="Large"
+                                    Size="BwSize.Large"
+                                    Placeholder="Search..."
+                                    Items="_cities"
+                                    ItemText="@(x => x)"/>
+                </BwColumn>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="States" Subtitle="Error, Helper Text and Disabled" Icon="fa-solid fa-toggle-on"
+                    Color="BwColor.Danger">
+                <BwColumn Spacing="BwSpacing.Md">
+                    <BwAutocomplete TItem="string"
+                                    Label="With Helper Text"
+                                    Placeholder="Select..."
+                                    Items="_cities"
+                                    HelperText="Select from Turkish cities"
+                                    ItemText="@(x => x)"/>
+
+                    <BwAutocomplete TItem="string"
+                                    Label="Error State"
+                                    Placeholder="Select..."
+                                    Items="_cities"
+                                    Error="This field is required"
+                                    ItemText="@(x => x)"/>
+
+                    <BwAutocomplete TItem="string"
+                                    Label="Disabled"
+                                    Placeholder="Select..."
+                                    Items="_cities"
+                                    IsDisabled="true"
+                                    ItemText="@(x => x)"/>
+                </BwColumn>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Virtualization Test *@
+    <BwCard Title="Virtual Loading" Subtitle="10,000 item list performance" Icon="fa-solid fa-gauge-high"
+            Color="BwColor.Primary">
+        <ChildContent>
+            <BwColumn Spacing="BwSpacing.Md">
+                <p class="text-xs text-gray-500 mb-2">
+                    <i class="fa-solid fa-info-circle mr-1"></i>
+                    The list is virtualized. Only visible items are rendered in the DOM.
+                </p>
+                <BwAutocomplete TItem="string"
+                                Label="Large List (10k)"
+                                Placeholder="Select item..."
+                                Items="_largeItems"
+                                SelectedItem="_largeSelectedItem"
+                                SelectedItemChanged="@(i =>
+                                                     {
+                                                         _largeSelectedItem = i;
+                                                         StateHasChanged();
+                                                     })"
+                                ItemText="@(x => x)"/>
+            </BwColumn>
+        </ChildContent>
+        <Footer>
+            @if (!string.IsNullOrEmpty(_largeSelectedItem))
+            {
+                <div class="text-sm text-green-600">
+                    Selected: <strong>@_largeSelectedItem</strong>
+                </div>
+            }
+            else
+            {
+                <div class="text-sm text-gray-400">No item selected</div>
+            }
+        </Footer>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string? _selectedCity;
+    private List<string> _selectedSkills = new();
+    private User? _selectedUser;
+    private Product? _selectedProduct;
+    private List<string> _selectedTags = new();
+    private Country? _selectedCountry;
+    private string? _largeSelectedItem;
+    private List<string> _largeItems = Enumerable.Range(1, 10000).Select(i => $"Öğe {i} - {Guid.NewGuid().ToString().Substring(0, 5)}").ToList();
+
+    private List<string> _cities = new()
+    {
+        "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya",
+        "Gaziantep", "Mersin", "Diyarbakır", "Kayseri", "Eskişehir", "Samsun",
+        "Denizli", "Şanlıurfa", "Malatya", "Trabzon", "Erzurum", "Van", "Batman"
+    };
+
+    private List<string> _skills = new()
+    {
+        "C#", "JavaScript", "TypeScript", "Python", "Java", "Go", "Rust",
+        "React", "Angular", "Vue.js", "Blazor", ".NET", "Node.js",
+        "SQL", "MongoDB", "PostgreSQL", "Redis", "Docker", "Kubernetes"
+    };
+
+    private List<string> _tags = new() { "Frontend", "Backend", "DevOps", "UI/UX", "Mobile" };
+
+    // Simulated user database for async search
+    private List<User> _allUsers = new()
+    {
+        new("Ahmet Yılmaz", "ahmet@company.com", true),
+        new("Ayşe Demir", "ayse@company.com", false),
+        new("Mehmet Kaya", "mehmet@company.com", true),
+        new("Fatma Şahin", "fatma@company.com", true),
+        new("Ali Çelik", "ali@company.com", false),
+        new("Zeynep Aydın", "zeynep@company.com", true),
+        new("Mustafa Özkan", "mustafa@company.com", false),
+        new("Elif Arslan", "elif@company.com", true),
+        new("Burak Koç", "burak@company.com", false),
+        new("Selin Doğan", "selin@company.com", true),
+        new("Can Öztürk", "can@company.com", true),
+        new("Deniz Yıldız", "deniz@company.com", false)
+    };
+
+    private List<Product> _products = new()
+    {
+        new("iPhone 15 Pro", "Elektronik", 74999m, "fa-brands fa-apple"),
+        new("MacBook Air M3", "Elektronik", 54999m, "fa-solid fa-laptop"),
+        new("AirPods Pro", "Elektronik", 9999m, "fa-solid fa-headphones"),
+        new("Koşu Ayakkabısı", "Spor", 2499m, "fa-solid fa-shoe-prints"),
+        new("Yoga Matı", "Spor", 799m, "fa-solid fa-dumbbell"),
+        new("Protein Tozu", "Spor", 1299m, "fa-solid fa-blender"),
+        new("Akıllı Saat", "Aksesuar", 4999m, "fa-solid fa-clock"),
+        new("Güneş Gözlüğü", "Aksesuar", 1999m, "fa-solid fa-glasses"),
+        new("Deri Cüzdan", "Aksesuar", 899m, "fa-solid fa-wallet")
+    };
+
+    private List<Country> _countries = new()
+    {
+        new("Türkiye", "TR", "Ankara", "Avrupa/Asya", "🇹🇷"),
+        new("Almanya", "DE", "Berlin", "Avrupa", "🇩🇪"),
+        new("Fransa", "FR", "Paris", "Avrupa", "🇫🇷"),
+        new("İtalya", "IT", "Roma", "Avrupa", "🇮🇹"),
+        new("İspanya", "ES", "Madrid", "Avrupa", "🇪🇸"),
+        new("İngiltere", "GB", "Londra", "Avrupa", "🇬🇧"),
+        new("ABD", "US", "Washington", "Amerika", "🇺🇸"),
+        new("Japonya", "JP", "Tokyo", "Asya", "🇯🇵"),
+        new("Güney Kore", "KR", "Seul", "Asya", "🇰🇷"),
+        new("Çin", "CN", "Pekin", "Asya", "🇨🇳"),
+        new("Brezilya", "BR", "Brasília", "Amerika", "🇧🇷"),
+        new("Avustralya", "AU", "Canberra", "Okyanusya", "🇦🇺")
+    };
+
+    private async Task<IEnumerable<User>> SearchUsersAsync(string searchText, CancellationToken ct)
+    {
+        // Simulate API delay
+        await Task.Delay(500, ct);
+
+        if (string.IsNullOrWhiteSpace(searchText))
+            return _allUsers.Take(5);
+
+        var search = searchText.ToLowerInvariant();
+        return _allUsers.Where(u =>
+            u.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+            u.Email.Contains(search, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void HandleCreateTag(string newTag)
+    {
+        if (!_tags.Contains(newTag, StringComparer.OrdinalIgnoreCase))
+        {
+            _tags.Add(newTag);
+        }
+    }
+
+    // Models
+    private record User(string Name, string Email, bool IsOnline);
+
+    private record Product(string Name, string Category, decimal Price, string Icon);
+
+    private record Country(string Name, string Code, string Capital, string Continent, string Flag);
+
+}

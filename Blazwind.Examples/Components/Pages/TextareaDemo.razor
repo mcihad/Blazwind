@@ -1,0 +1,82 @@
+@page "/components/textarea"
+@using Blazwind.Components.Input
+
+<PageTitle>Textarea Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Textarea"
+            Description="Advanced textarea component for multi-line text input."
+            Icon="fa-solid fa-align-left"
+            Color="BwColor.Success"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Label, placeholder and helper text" Icon="fa-solid fa-font"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTextarea Label="Description"
+                        Placeholder="Type your description here..."
+                        HelperText="Maximum 500 characters"
+                        @bind-Value="_basicValue"/>
+
+            <BwTextarea Label="Required Field"
+                        Placeholder="This field is required"
+                        IsRequired="true"
+                        @bind-Value="_requiredValue"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Character Counter *@
+    <BwCard Title="Character Counter" Subtitle="MaxLength and ShowCounter" Icon="fa-solid fa-calculator"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTextarea Label="Biography"
+                        Placeholder="Introduce yourself..."
+                        MaxLength="200"
+                        ShowCounter="true"
+                        @bind-Value="_bioValue"/>
+
+            <BwTextarea Label="Tweet"
+                        Placeholder="What's on your mind?"
+                        MaxLength="280"
+                        ShowCounter="true"
+                        Rows="2"
+                        @bind-Value="_tweetValue"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Auto Resize *@
+    <BwCard Title="Auto Resize" Subtitle="AutoResize, MinRows, MaxRows"
+            Icon="fa-solid fa-up-right-and-down-left-from-center" Color="BwColor.Success">
+        <BwTextarea Label="Notes"
+                    Placeholder="Expands as you type..."
+                    AutoResize="true"
+                    MinRows="2"
+                    MaxRows="8"
+                    @bind-Value="_autoResizeValue"/>
+    </BwCard>
+
+    @* States *@
+    <BwCard Title="States" Subtitle="Disabled, ReadOnly, Error" Icon="fa-solid fa-toggle-on" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTextarea Label="Disabled"
+                        Value="This field is disabled"
+                        IsDisabled="true"/>
+
+            <BwTextarea Label="Read Only"
+                        Value="This field is in read-only mode"
+                        IsReadOnly="true"/>
+
+            <BwTextarea Label="Error"
+                        Value="Invalid content"
+                        ErrorMessage="This field must be at least 10 characters."/>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _basicValue = "";
+    private string _requiredValue = "";
+    private string _bioValue = "";
+    private string _tweetValue = "";
+    private string _autoResizeValue = "";
+}

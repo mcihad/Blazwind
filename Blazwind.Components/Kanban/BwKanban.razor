@@ -1,0 +1,218 @@
+@namespace Blazwind.Components.Kanban
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+
+<div class="@CombineClasses("flex gap-4 overflow-x-auto pb-4")" style="@Style" id="@Id"
+    @attributes="AdditionalAttributes">
+    @foreach (var column in Columns)
+    {
+        var columnColor = column.Color ?? BwColor.Secondary;
+        var headerColorClass = columnColor switch
+        {
+            BwColor.Primary => "border-blue-500",
+            BwColor.Success => "border-emerald-500",
+            BwColor.Danger => "border-red-500",
+            BwColor.Warning => "border-amber-500",
+            BwColor.Info => "border-sky-500",
+            _ => "border-gray-300 dark:border-gray-600"
+        };
+
+        <div class="flex-shrink-0 w-72 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" @ondragover="HandleDragOverColumn"
+            @ondragover:preventDefault @ondrop="() => HandleDrop(column)">
+            <div class="@headerColorClass border-t-4 bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    @if (!string.IsNullOrEmpty(column.Icon))
+                    {
+                        <i class="@column.Icon text-gray-400 dark:text-gray-500"></i>
+                    }
+                    <h3 class="font-semibold text-gray-800 dark:text-gray-200">@column.Title</h3>
+                    <span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full">
+                        @(column.Items?.Count ?? 0)
+                    </span>
+                </div>
+                @if (column.HeaderExtra != null)
+                {
+                    @column.HeaderExtra
+                }
+            </div>
+
+            <div class="p-3 space-y-3 min-h-[200px] max-h-[calc(100vh-200px)] overflow-y-auto">
+                @if (column.Items != null)
+                {
+                    foreach (var item in column.Items)
+                    {
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 cursor-move hover:shadow-md transition-shadow"
+                            draggable="true" @ondragstart="() => HandleDragStart(item, column)"
+                            @onclick="() => HandleItemClick(item)">
+                            @if (ItemTemplate != null)
+                            {
+                                @ItemTemplate(item)
+                            }
+                            else
+                            {
+                                <div class="space-y-2">
+                                    @if (!string.IsNullOrEmpty(item.Title))
+                                    {
+                                        <h4 class="font-medium text-gray-900 dark:text-gray-100">@item.Title</h4>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.Description))
+                                    {
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">@item.Description</p>
+                                    }
+                                    @if (item.Tags?.Any() == true)
+                                    {
+                                        <div class="flex flex-wrap gap-1">
+                                            @foreach (var tag in item.Tags)
+                                            {
+                                                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">@tag</span>
+                                            }
+                                        </div>
+                                    }
+                                    @if (item.Assignee != null || item.DueDate != null)
+                                    {
+                                        <div class="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                                            @if (item.Assignee != null)
+                                            {
+                                                <div class="flex items-center gap-1">
+                                                    @if (!string.IsNullOrEmpty(item.Assignee.Avatar))
+                                                    {
+                                                        <img src="@item.Assignee.Avatar" class="w-6 h-6 rounded-full" alt="@item.Assignee.Name" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <div
+                                                            class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-medium text-gray-600 dark:text-gray-300">
+                                                            @item.Assignee.Name?.FirstOrDefault()
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                            @if (item.DueDate != null)
+                                            {
+                                                var isOverdue = item.DueDate < DateTime.Today;
+                                                <span class="text-xs @(isOverdue ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500")">
+                                                    <i class="fa-regular fa-calendar mr-1"></i>@item.DueDate.Value.ToString("dd MMM")
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+
+            @if (ShowAddButton)
+            {
+                <div class="p-3 pt-0">
+                    <button type="button"
+                        class="w-full py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors flex items-center justify-center gap-1"
+                        @onclick="() => HandleAddClick(column)">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Kart Ekle</span>
+                    </button>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<KanbanColumn> Columns { get; set; } = new();
+    [Parameter] public RenderFragment<KanbanItem>? ItemTemplate { get; set; }
+    [Parameter] public bool ShowAddButton { get; set; } = true;
+
+    [Parameter] public EventCallback<KanbanMoveEvent> OnItemMoved { get; set; }
+    [Parameter] public EventCallback<KanbanItem> OnItemClick { get; set; }
+    [Parameter] public EventCallback<KanbanColumn> OnAddClick { get; set; }
+
+    private KanbanItem? _draggedItem;
+    private KanbanColumn? _sourceColumn;
+
+    private void HandleDragStart(KanbanItem item, KanbanColumn column)
+    {
+        _draggedItem = item;
+        _sourceColumn = column;
+    }
+
+    private void HandleDragOverColumn(DragEventArgs e)
+    {
+        // Allow drop - this enables dropping anywhere in the column
+    }
+
+    private async Task HandleDrop(KanbanColumn targetColumn)
+    {
+        if (_draggedItem != null && _sourceColumn != null && _sourceColumn != targetColumn)
+        {
+            var movedItem = _draggedItem;
+            var sourceCol = _sourceColumn;
+
+            _sourceColumn.Items?.Remove(_draggedItem);
+            targetColumn.Items ??= new List<KanbanItem>();
+            targetColumn.Items.Add(_draggedItem);
+
+            _draggedItem = null;
+            _sourceColumn = null;
+
+            StateHasChanged();
+
+            await OnItemMoved.InvokeAsync(new KanbanMoveEvent
+            {
+                Item = movedItem,
+                SourceColumn = sourceCol,
+                TargetColumn = targetColumn
+            });
+        }
+        else
+        {
+            _draggedItem = null;
+            _sourceColumn = null;
+        }
+    }
+
+    private async Task HandleItemClick(KanbanItem item)
+    {
+        await OnItemClick.InvokeAsync(item);
+    }
+
+    private async Task HandleAddClick(KanbanColumn column)
+    {
+        await OnAddClick.InvokeAsync(column);
+    }
+
+    public class KanbanColumn
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string? Title { get; set; }
+        public string? Icon { get; set; }
+        public BwColor? Color { get; set; }
+        public List<KanbanItem>? Items { get; set; }
+        public RenderFragment? HeaderExtra { get; set; }
+    }
+
+    public class KanbanItem
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public List<string>? Tags { get; set; }
+        public KanbanAssignee? Assignee { get; set; }
+        public DateTime? DueDate { get; set; }
+        public object? Data { get; set; }
+    }
+
+    public class KanbanAssignee
+    {
+        public string? Name { get; set; }
+        public string? Avatar { get; set; }
+    }
+
+    public class KanbanMoveEvent
+    {
+        public KanbanItem? Item { get; set; }
+        public KanbanColumn? SourceColumn { get; set; }
+        public KanbanColumn? TargetColumn { get; set; }
+    }
+}

@@ -1,0 +1,36 @@
+@namespace Blazwind.Components.Icon
+@using Blazwind.Components.Shared
+@inherits BwBase
+
+<i class="@Name @SizeClass @ColorClass @(Spin ? "fa-spin" : "") @Class" style="@Style" @attributes="AdditionalAttributes"></i>
+
+@code {
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Dark;
+    [Parameter] public bool Spin { get; set; }
+
+    private string SizeClass => Size switch
+    {
+        BwSize.ExtraSmall => "text-xs",
+        BwSize.Small => "text-sm",
+        BwSize.Medium => "text-base",
+        BwSize.Large => "text-lg",
+        BwSize.ExtraLarge => "text-xl",
+        _ => "text-base"
+    };
+
+    private string ColorClass => Color switch
+    {
+        BwColor.Primary => "text-blue-600",
+        BwColor.Secondary => "text-gray-500 dark:text-gray-400",
+        BwColor.Success => "text-emerald-500",
+        BwColor.Danger => "text-red-500",
+        BwColor.Warning => "text-amber-500",
+        BwColor.Info => "text-cyan-500",
+        BwColor.Dark => "text-gray-900 dark:text-gray-100",
+        BwColor.Gray => "text-gray-400 dark:text-gray-500",
+        BwColor.White => "text-white",
+        _ => "text-gray-900 dark:text-gray-100"
+    };
+}

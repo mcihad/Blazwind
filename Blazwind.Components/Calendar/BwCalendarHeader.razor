@@ -1,0 +1,130 @@
+@namespace Blazwind.Components.Calendar
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+
+@{
+    var headerTitle = View switch
+    {
+        BwCalendarView.Daily => SelectedDate.ToString("d MMMM yyyy, dddd", new System.Globalization.CultureInfo("tr-TR")),
+        BwCalendarView.Weekly => $"{WeekStart:d MMM} - {WeekEnd:d MMM yyyy}",
+        BwCalendarView.Monthly => SelectedDate.ToString("MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")),
+        BwCalendarView.Agenda => "Ajanda",
+        _ => ""
+    };
+}
+
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+    @* Left - Navigation and Title *@
+    <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+        @* Today Button *@
+        <button type="button" 
+                class="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                @onclick="OnToday">
+            Bugün
+        </button>
+        
+        @* Navigation Buttons *@
+        <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+            <button type="button" 
+                    class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    @onclick="PreviousPeriod">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button type="button" 
+                    class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-l border-gray-300 dark:border-gray-600"
+                    @onclick="NextPeriod">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
+        </div>
+        
+        @* Title *@
+        <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+            @headerTitle
+        </h2>
+    </div>
+    
+    @* Right - View Selector & Fullscreen *@
+    <div class="flex items-center gap-2 w-full sm:w-auto">
+        @* View Selector *@
+        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 p-1 rounded flex-1 sm:flex-none overflow-x-auto">
+            @foreach (var view in Enum.GetValues<BwCalendarView>())
+            {
+                var isActive = view == View;
+                var btnClass = isActive 
+                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" 
+                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white";
+                
+                <button type="button" 
+                        class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded transition-all whitespace-nowrap @btnClass"
+                        @onclick="() => ChangeView(view)">
+                    @GetViewName(view)
+                </button>
+            }
+        </div>
+        
+        @* Fullscreen Button *@
+        @if (ShowFullscreenButton)
+        {
+            <button type="button"
+                    class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                    title="Tam Ekran"
+                    @onclick="OnFullscreenToggle">
+                <i class="fa-solid fa-expand text-sm"></i>
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime SelectedDate { get; set; }
+    [Parameter] public BwCalendarView View { get; set; }
+    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
+    [Parameter] public bool ShowFullscreenButton { get; set; } = true;
+    [Parameter] public EventCallback<DateTime> OnDateChanged { get; set; }
+    [Parameter] public EventCallback<BwCalendarView> OnViewChanged { get; set; }
+    [Parameter] public EventCallback OnToday { get; set; }
+    [Parameter] public EventCallback OnFullscreenToggle { get; set; }
+    
+    private DateTime WeekStart => SelectedDate.AddDays(-(((int)SelectedDate.DayOfWeek + 6) % 7));
+    private DateTime WeekEnd => WeekStart.AddDays(6);
+    
+    private string GetViewName(BwCalendarView view) => view switch
+    {
+        BwCalendarView.Agenda => "Ajanda",
+        BwCalendarView.Daily => "Gün",
+        BwCalendarView.Weekly => "Hafta",
+        BwCalendarView.Monthly => "Ay",
+        _ => ""
+    };
+    
+    private async Task PreviousPeriod()
+    {
+        var newDate = View switch
+        {
+            BwCalendarView.Daily => SelectedDate.AddDays(-1),
+            BwCalendarView.Weekly => SelectedDate.AddDays(-7),
+            BwCalendarView.Monthly => SelectedDate.AddMonths(-1),
+            BwCalendarView.Agenda => SelectedDate.AddDays(-7),
+            _ => SelectedDate
+        };
+        await OnDateChanged.InvokeAsync(newDate);
+    }
+    
+    private async Task NextPeriod()
+    {
+        var newDate = View switch
+        {
+            BwCalendarView.Daily => SelectedDate.AddDays(1),
+            BwCalendarView.Weekly => SelectedDate.AddDays(7),
+            BwCalendarView.Monthly => SelectedDate.AddMonths(1),
+            BwCalendarView.Agenda => SelectedDate.AddDays(7),
+            _ => SelectedDate
+        };
+        await OnDateChanged.InvokeAsync(newDate);
+    }
+    
+    private async Task ChangeView(BwCalendarView newView)
+    {
+        await OnViewChanged.InvokeAsync(newView);
+    }
+}

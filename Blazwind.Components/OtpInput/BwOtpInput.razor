@@ -1,0 +1,185 @@
+@namespace Blazwind.Components.OtpInput
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@{
+    var sizeClasses = Size switch
+    {
+        BwSize.Small => "w-8 h-10 text-lg",
+        BwSize.Large => "w-14 h-16 text-3xl",
+        _ => "w-12 h-14 text-2xl"
+    };
+
+    var gapClasses = Size switch
+    {
+        BwSize.Small => "gap-1.5",
+        BwSize.Large => "gap-4",
+        _ => "gap-2"
+    };
+
+    var colorClasses = Color switch
+    {
+        BwColor.Success => "focus:border-emerald-500 focus:ring-emerald-500",
+        BwColor.Danger => "focus:border-red-500 focus:ring-red-500",
+        BwColor.Warning => "focus:border-amber-500 focus:ring-amber-500",
+        BwColor.Info => "focus:border-sky-500 focus:ring-sky-500",
+        BwColor.Secondary => "focus:border-gray-500 focus:ring-gray-500",
+        _ => "focus:border-blue-500 focus:ring-blue-500"
+    };
+
+    var variantClasses = Variant switch
+    {
+        BwVariant.Filled => "bg-gray-100 border-gray-100 dark:bg-gray-900/50 dark:border-gray-800",
+        BwVariant.Outline => "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700",
+        _ => "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700"
+    };
+
+    var inputClasses = $"{sizeClasses} {variantClasses} {colorClasses} text-center font-mono font-bold border-2 rounded-lg focus:outline-none focus:ring-2 transition-all dark:text-white";
+    var disabledClasses = IsDisabled ? "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800" : "";
+    var errorClasses = HasError ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "";
+}
+
+<div class="@CombineClasses("flex flex-col")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
+    }
+
+    <div class="flex @gapClasses">
+        @for (int i = 0; i < Length; i++)
+        {
+            var index = i;
+            <input type="@(IsMasked ? "password" : "text")" maxlength="1" inputmode="@(NumericOnly ? "numeric" : "text")"
+                pattern="@(NumericOnly ? "[0-9]" : null)" class="@inputClasses @disabledClasses @errorClasses"
+                value="@GetCharAt(index)" disabled="@IsDisabled" @oninput="e => HandleInput(index, e)"
+                @onkeydown="e => HandleKeyDown(index, e)" @onfocus="() => HandleFocus(index)" @ref="_inputRefs[index]" />
+        }
+    </div>
+
+    @if (HasError && !string.IsNullOrEmpty(ErrorMessage))
+    {
+        <span class="text-sm text-red-500 mt-1">@ErrorMessage</span>
+    }
+
+    @if (!string.IsNullOrEmpty(HelperText) && !HasError)
+    {
+        <span class="text-sm text-gray-500 mt-1">@HelperText</span>
+    }
+</div>
+
+@code {
+    [Parameter] public int Length { get; set; } = 6;
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public bool NumericOnly { get; set; } = true;
+    [Parameter] public bool IsMasked { get; set; } = false;
+    [Parameter] public bool IsDisabled { get; set; } = false;
+    [Parameter] public bool AutoFocus { get; set; } = false;
+    [Parameter] public bool HasError { get; set; } = false;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? ErrorMessage { get; set; }
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
+
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string> OnComplete { get; set; }
+
+    private ElementReference[] _inputRefs = new ElementReference[10];
+    private string _internalValue = "";
+
+    protected override void OnInitialized()
+    {
+        _internalValue = Value.PadRight(Length).Substring(0, Length);
+        _inputRefs = new ElementReference[Length];
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && AutoFocus)
+        {
+            await FocusInput(0);
+        }
+    }
+
+    private string GetCharAt(int index)
+    {
+        if (index < _internalValue.Length)
+        {
+            var c = _internalValue[index];
+            return c == ' ' ? "" : c.ToString();
+        }
+        return "";
+    }
+
+    private async Task HandleInput(int index, ChangeEventArgs e)
+    {
+        var inputValue = e.Value?.ToString() ?? "";
+
+        if (NumericOnly && !string.IsNullOrEmpty(inputValue) && !char.IsDigit(inputValue[0]))
+        {
+            return;
+        }
+
+        var chars = _internalValue.ToCharArray();
+        chars[index] = string.IsNullOrEmpty(inputValue) ? ' ' : inputValue[0];
+        _internalValue = new string(chars);
+
+        await UpdateValue();
+
+        if (!string.IsNullOrEmpty(inputValue) && index < Length - 1)
+        {
+            await FocusInput(index + 1);
+        }
+
+        if (!_internalValue.Contains(' ') && _internalValue.Trim().Length == Length)
+        {
+            await OnComplete.InvokeAsync(_internalValue.Trim());
+        }
+    }
+
+    private async Task HandleKeyDown(int index, KeyboardEventArgs e)
+    {
+        if (e.Key == "Backspace" && index > 0 && string.IsNullOrEmpty(GetCharAt(index)))
+        {
+            await FocusInput(index - 1);
+        }
+        else if (e.Key == "ArrowLeft" && index > 0)
+        {
+            await FocusInput(index - 1);
+        }
+        else if (e.Key == "ArrowRight" && index < Length - 1)
+        {
+            await FocusInput(index + 1);
+        }
+    }
+
+    private void HandleFocus(int index)
+    {
+        // Handle focus
+    }
+
+    private async Task FocusInput(int index)
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", $"document.querySelectorAll('[id=\"{Id}\"] input')[{index}]?.focus()");
+        }
+        catch { }
+    }
+
+    private async Task UpdateValue()
+    {
+        var trimmed = _internalValue.Replace(" ", "");
+        await ValueChanged.InvokeAsync(trimmed);
+    }
+
+    public void Clear()
+    {
+        _internalValue = new string(' ', Length);
+        StateHasChanged();
+    }
+}

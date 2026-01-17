@@ -1,0 +1,139 @@
+@page "/components/drawer"
+@using Blazwind.Components.Drawer
+@using Blazwind.Components.Typography
+@using Blazwind.Examples.Components.Samples
+
+@inject DrawerService DrawerService
+@inject ToastService ToastService
+
+<PageTitle>Drawer Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Drawer"
+            Description="Panel component that can open from four directions, resizable and supports dynamic content."
+            Icon="fa-solid fa-bars-staggered" Color="BwColor.Info"/>
+
+    @* Position Demo *@
+    <BwCard Title="Position" Subtitle="Drawer opening directions" Icon="fa-solid fa-arrows-up-down-left-right"
+            Color="BwColor.Primary">
+        <div class="flex flex-wrap gap-3">
+            <BwButton Color="BwColor.Primary" Icon="fa-solid fa-arrow-right" Text="Open from Left"
+                      OnClick="() => OpenDrawer(BwDirection.Left)"/>
+            <BwButton Color="BwColor.Primary" Icon="fa-solid fa-arrow-left" Text="Open from Right"
+                      OnClick="() => OpenDrawer(BwDirection.Right)"/>
+            <BwButton Color="BwColor.Info" Icon="fa-solid fa-arrow-down" Text="Open from Top"
+                      OnClick="() => OpenDrawer(BwDirection.Top)"/>
+            <BwButton Color="BwColor.Info" Icon="fa-solid fa-arrow-up" Text="Open from Bottom"
+                      OnClick="() => OpenDrawer(BwDirection.Bottom)"/>
+        </div>
+    </BwCard>
+
+    @* Size Demo *@
+    <BwCard Title="Sizes" Subtitle="Predefined size options" Icon="fa-solid fa-text-height" Color="BwColor.Success">
+        <div class="flex flex-wrap gap-3">
+            <BwButton Color="BwColor.Secondary" Text="Small" OnClick="() => OpenDrawerWithSize(BwSize.Small)"/>
+            <BwButton Color="BwColor.Secondary" Text="Medium" OnClick="() => OpenDrawerWithSize(BwSize.Medium)"/>
+            <BwButton Color="BwColor.Secondary" Text="Large" OnClick="() => OpenDrawerWithSize(BwSize.Large)"/>
+            <BwButton Color="BwColor.Secondary" Text="Extra Large"
+                      OnClick="() => OpenDrawerWithSize(BwSize.ExtraLarge)"/>
+            <BwButton Color="BwColor.Secondary" Text="Full" OnClick="() => OpenDrawerWithSize(BwSize.Full)"/>
+        </div>
+    </BwCard>
+
+    @* Resizable Demo *@
+    <BwCard Title="Resizable" Subtitle="Resize by dragging from edge"
+            Icon="fa-solid fa-up-right-and-down-left-from-center" Color="BwColor.Warning">
+        <BwButton Color="BwColor.Warning" Icon="fa-solid fa-arrows-left-right" Text="Resizable Drawer"
+                  OnClick="OpenResizableDrawer"/>
+    </BwCard>
+
+    @* Dynamic Content Demo *@
+    <BwCard Title="Dynamic Content" Subtitle="Opening with Razor component and returning results"
+            Icon="fa-solid fa-code" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwButton Color="BwColor.Primary" Icon="fa-solid fa-user" Text="Open User Form"
+                      OnClick="OpenUserFormDrawer"/>
+            <BwTypography Size="BwSize.Small" Class="text-gray-500 mt-2">If you click the save button, the result will
+                be shown with Toast.
+            </BwTypography>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private async Task OpenDrawer(BwDirection position)
+    {
+        var options = new DrawerOptions
+        {
+            Position = position,
+            Size = BwSize.Medium
+        };
+
+        await DrawerService.ShowAsync<SimpleDrawerContent>(
+            $"{position} Drawer",
+            new Dictionary<string, object> { { "Message", $"This drawer opened from {position}." } },
+            options
+        );
+    }
+
+    private async Task OpenDrawerWithSize(BwSize size)
+    {
+        var options = new DrawerOptions
+        {
+            Position = BwDirection.Right,
+            Size = size
+        };
+
+        await DrawerService.ShowAsync<SimpleDrawerContent>(
+            $"{size} Size Drawer",
+            new Dictionary<string, object> { { "Message", $"This drawer is {size} size." } },
+            options
+        );
+    }
+
+    private async Task OpenResizableDrawer()
+    {
+        var options = new DrawerOptions
+        {
+            Position = BwDirection.Right,
+            Size = BwSize.Medium,
+            Resizable = true,
+            MinSize = "200px",
+            MaxSize = "600px"
+        };
+
+        await DrawerService.ShowAsync<SimpleDrawerContent>(
+            "Resizable Drawer",
+            new Dictionary<string, object> { { "Message", "You can change its size by dragging from the edge." } },
+            options
+        );
+    }
+
+    private async Task OpenUserFormDrawer()
+    {
+        var options = new DrawerOptions
+        {
+            Position = BwDirection.Right,
+            Size = BwSize.ExtraLarge
+        };
+
+        var result = await DrawerService.ShowAsync<UserFormDrawerContent>(
+            "User Information",
+            null,
+            options
+        );
+
+        if (!result.Canceled && result.Data != null)
+        {
+            // Cast to dynamic to access properties of the returned object
+            dynamic data = result.Data;
+            await ToastService.SuccessAsync($"User: {data.Name}, Department: {data.Department}", "User Saved");
+        }
+        else
+        {
+            await ToastService.InfoAsync("User form was canceled.", "Canceled");
+        }
+    }
+
+}

@@ -1,0 +1,60 @@
+@namespace Blazwind.Components.Navigation
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Badge
+@inject NavigationManager NavigationManager
+
+@{
+    var isActive = ParentNav?.ActiveItemId == _itemId || 
+                   (!string.IsNullOrEmpty(Href) && NavigationManager.Uri.EndsWith(Href));
+    var activeClasses = isActive ? "text-blue-600 dark:text-blue-500" : "text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30";
+    var disabledClasses = IsDisabled ? "opacity-40 cursor-not-allowed pointer-events-none" : "";
+}
+
+<a href="@Href" 
+   class="flex flex-col items-center justify-center flex-1 h-full py-2 no-underline transition-all relative @activeClasses @disabledClasses"
+   @onclick="HandleClick"
+   @onclick:preventDefault="@IsDisabled">
+    <div class="relative flex items-center justify-center">
+        <i class="@Icon text-xl transition-transform @(isActive ? "scale-110" : "")"></i>
+        @if (BadgeCount > 0)
+        {
+            <span class="absolute -top-1.5 -right-2.5 min-w-[18px] h-[18px] px-1.5 bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center">
+                @(BadgeCount > 99 ? "99+" : BadgeCount)
+            </span>
+        }
+        @if (ShowDot)
+        {
+            <span class="absolute -top-0.5 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+        }
+    </div>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="text-[11px] font-medium mt-1 text-center max-w-16 overflow-hidden text-ellipsis whitespace-nowrap">@Label</span>
+    }
+    @if (isActive)
+    {
+        <span class="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-blue-600 dark:bg-blue-500 rounded-b"></span>
+    }
+</a>
+
+@code {
+    [CascadingParameter] public BwBottomNav? ParentNav { get; set; }
+    
+    [Parameter] public string Icon { get; set; } = "fa-solid fa-home";
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public int BadgeCount { get; set; } = 0;
+    [Parameter] public bool ShowDot { get; set; } = false;
+    [Parameter] public bool IsDisabled { get; set; } = false;
+    [Parameter] public EventCallback OnClick { get; set; }
+    
+    private string _itemId = Guid.NewGuid().ToString();
+    
+    private async Task HandleClick()
+    {
+        if (IsDisabled) return;
+        
+        ParentNav?.SetActiveItem(_itemId);
+        await OnClick.InvokeAsync();
+    }
+}

@@ -1,0 +1,121 @@
+@page "/charts/geo-choropleth"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@inject HttpClient Http
+
+<PageTitle>Geo Choropleth - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Geo Choropleth & Scatter" 
+            Description="Harita üzerinde renk kodlu bölgeler ve scatter noktaları."
+            Icon="fa-solid fa-map"
+            Color="BwColor.Success" />
+
+    <BwCard Title="İsviçre Kanton Nüfus Dağılımı" Subtitle="Choropleth ile nüfus yoğunluğu + Scatter ile şehir merkezleri." Icon="fa-solid fa-map-location-dot" Color="BwColor.Primary">
+        @if (_isLoading)
+        {
+            <div class="flex items-center justify-center h-96">
+                <span class="text-gray-500">Harita yükleniyor...</span>
+            </div>
+        }
+        else
+        {
+            <BwChart Options="_geoChoropleth" Height="600px" />
+        }
+    </BwCard>
+</BwColumn>
+
+@code {
+    private bool _isLoading = true;
+    private object? _geoChoropleth;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var geoJson = await Http.GetStringAsync("ch.geo.json");
+
+            _geoChoropleth = new
+            {
+                title = new { text = "İsviçre Kanton Analizi", left = ChartPosition.Center },
+                tooltip = new 
+                { 
+                    trigger = ChartTooltipTrigger.Item,
+                    formatter = "{b}: {c}"
+                },
+                visualMap = new
+                {
+                    min = 100000,
+                    max = 1500000,
+                    text = new[] { "Yüksek", "Düşük" },
+                    realtime = false,
+                    calculable = true,
+                    inRange = new { color = new[] { "#e0f2fe", "#0284c7", "#0c4a6e" } }
+                },
+                geo = new
+                {
+                    map = "switzerland",
+                    roam = true,
+                    label = new { show = true, fontSize = 8 },
+                    itemStyle = new { borderColor = "#333", borderWidth = 1 },
+                    emphasis = new
+                    {
+                        label = new { show = true, fontSize = 12, fontWeight = "bold" },
+                        itemStyle = new { areaColor = "#fbbf24" }
+                    }
+                },
+                series = new object[]
+                {
+                    // Choropleth series
+                    new
+                    {
+                        name = "Nüfus",
+                        type = "map",
+                        geoIndex = 0,
+                        data = new object[]
+                        {
+                            new { name = "Zürich", value = 1520000 },
+                            new { name = "Bern", value = 1034000 },
+                            new { name = "Vaud", value = 799000 },
+                            new { name = "Aargau", value = 678000 },
+                            new { name = "St. Gallen", value = 510000 },
+                            new { name = "Genève", value = 499000 },
+                            new { name = "Luzern", value = 410000 },
+                            new { name = "Ticino", value = 351000 },
+                            new { name = "Valais", value = 343000 },
+                            new { name = "Basel-Landschaft", value = 289000 }
+                        }
+                    },
+                    // Scatter series (major cities)
+                    new
+                    {
+                        name = "Şehir Merkezleri",
+                        type = ChartSeriesType.Scatter,
+                        coordinateSystem = "geo",
+                        symbol = ChartSymbol.Pin,
+                        symbolSize = 30,
+                        data = new object[]
+                        {
+                            new { name = "Zürich", value = new object[] { 8.5417, 47.3769, 420000 } },
+                            new { name = "Genève", value = new object[] { 6.1432, 46.2044, 200000 } },
+                            new { name = "Basel", value = new object[] { 7.5886, 47.5596, 175000 } },
+                            new { name = "Bern", value = new object[] { 7.4474, 46.9480, 140000 } },
+                            new { name = "Lausanne", value = new object[] { 6.6323, 46.5197, 140000 } }
+                        },
+                        itemStyle = new { color = "#ef4444" },
+                        label = new { show = true, formatter = "{b}", position = ChartPosition.Top }
+                    }
+                },
+                registerMap = new { name = "switzerland", geoJSON = geoJson }
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"GeoJSON yükleme hatası: {ex.Message}");
+        }
+
+        _isLoading = false;
+    }
+}

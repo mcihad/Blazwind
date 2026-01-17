@@ -1,0 +1,97 @@
+@page "/charts/boxplot"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Boxplot - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Boxplot (Kutu Grafik)" 
+            Description="İstatistiksel dağılımları ve aykırı değerleri göstermek için ideal grafik tipi."
+            Icon="fa-solid fa-chart-gantt"
+            Color="BwColor.Info" />
+
+    @* Temel Boxplot *@
+    <BwCard Title="Maaş Dağılımı" Subtitle="Departman bazlı maaş kutu grafik." Icon="fa-solid fa-money-bill-wave" Color="BwColor.Primary">
+        <BwChart Options="_salaryBoxplot" Height="400px" />
+    </BwCard>
+
+    @* Açıklama *@
+    <div class="p-4 bg-gray-50 border border-gray-200 rounded">
+        <h4 class="font-semibold text-gray-800 mb-2">Boxplot Nasıl Okunur?</h4>
+        <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
+            <div>
+                <p><strong>Kutu:</strong> Verilerin %25 ile %75 arasındaki kısmı (IQR)</p>
+                <p><strong>Orta çizgi:</strong> Medyan (ortanca değer)</p>
+            </div>
+            <div>
+                <p><strong>Bıyıklar:</strong> Minimum ve maksimum değerler</p>
+                <p><strong>Noktalar:</strong> Aykırı değerler (outliers)</p>
+            </div>
+        </div>
+    </div>
+
+    @* Yatay Boxplot *@
+    <BwCard Title="Performans Dağılımı" Subtitle="Yatay kutu grafik." Icon="fa-solid fa-chart-bar" Color="BwColor.Success">
+        <BwChart Options="_horizontalBoxplot" Height="350px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _salaryBoxplot = new
+    {
+        title = new { text = "Departman Maaş Dağılımı (x1000 TL)", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item, axisPointer = new { type = ChartAxisPointerType.Shadow } },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Bilgi İşlem", "Fen İşleri", "İmar", "Mali Hiz.", "Yazı İşleri" },
+            boundaryGap = true
+        },
+        yAxis = new { type = ChartAxisType.Value, name = "Maaş (x1000 TL)" },
+        series = new object[]
+        {
+            new
+            {
+                name = "Maaş",
+                type = ChartSeriesType.Boxplot,
+                data = new object[]
+                {
+                    new[] { 35, 42, 48, 55, 68 },  // Bilgi İşlem: min, Q1, median, Q3, max
+                    new[] { 28, 34, 38, 44, 52 },  // Fen İşleri
+                    new[] { 30, 36, 41, 47, 58 },  // İmar
+                    new[] { 32, 38, 43, 50, 62 },  // Mali Hizmetler
+                    new[] { 25, 30, 35, 40, 48 }   // Yazı İşleri
+                }
+            }
+        }
+    };
+
+    private object _horizontalBoxplot = new
+    {
+        title = new { text = "Çalışan Performans Puanları", left = ChartPosition.Center },
+        tooltip = new { trigger = "item" },
+        yAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Q1", "Q2", "Q3", "Q4" }
+        },
+        xAxis = new { type = ChartAxisType.Value, name = "Puan" },
+        series = new object[]
+        {
+            new
+            {
+                name = "Performans",
+                type = ChartSeriesType.Boxplot,
+                data = new object[]
+                {
+                    new[] { 60, 72, 78, 85, 95 },
+                    new[] { 55, 68, 75, 82, 92 },
+                    new[] { 62, 74, 80, 88, 98 },
+                    new[] { 58, 70, 77, 84, 94 }
+                }
+            }
+        }
+    };
+}

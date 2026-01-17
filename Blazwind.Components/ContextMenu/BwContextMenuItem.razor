@@ -1,0 +1,145 @@
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+@using Blazwind.Components.Shared
+@inherits BwBase
+
+@if (IsDivider)
+{
+    <div class="h-px margin-y-1 bg-gray-200 dark:bg-gray-700" role="separator"></div>
+}
+else
+{
+    @* Wrapper div for relative positioning of submenu *@
+    <div class="relative w-full group" 
+         @onmouseenter="HandleMouseEnter" 
+         @onmouseleave="HandleMouseLeave">
+         
+        <button type="button" 
+                class="flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white @Class"
+                role="menuitem"
+                @onclick="HandleClick"
+                style="@Style"
+                @ref="_triggerElement">
+            @if (!string.IsNullOrEmpty(Icon))
+            {
+                <i class="@Icon mr-3 h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300 @IconClass" aria-hidden="true"></i>
+            }
+            <span class="flex-grow text-left">@Text</span>
+            
+            @if (SubMenu != null)
+            {
+                <i class="fa-solid fa-chevron-right ml-2 text-xs text-gray-400"></i>
+            }
+            
+            @ChildContent
+        </button>
+
+        @if (SubMenu != null && _isSubMenuOpen)
+        {
+            <div class="absolute min-w-[160px] bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 dark:ring-white/10 py-1 z-50 animate-in fade-in zoom-in-95 duration-75"
+                 style="top: 0; left: 100%; opacity: 0;"
+                 @ref="_submenuElement">
+                 <CascadingValue Value="ContextMenu">
+                    @SubMenu
+                 </CascadingValue>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter] public BwContextMenu? ContextMenu { get; set; }
+
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? IconClass { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? SubMenu { get; set; }
+    [Parameter] public bool IsDivider { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public bool CloseOnClick { get; set; } = true;
+
+    private bool _isSubMenuOpen;
+    private ElementReference _triggerElement;
+    private ElementReference _submenuElement;
+    private CancellationTokenSource? _closeCts;
+
+    private async Task HandleClick()
+    {
+        // If has submenu, clicking might toggle it or do nothing (hover handles it)
+        // Usually, clicking triggers action. If submenu, it acts as a folder. 
+        // Let's assume on desktop hover opens it. On mobile click opens it.
+
+        if (SubMenu != null)
+        {
+             // Toggle or open
+             _isSubMenuOpen = !_isSubMenuOpen;
+             if (_isSubMenuOpen)
+             {
+                 await AdjustPositionAsync();
+             }
+             return;
+        }
+
+        if (CloseOnClick && ContextMenu != null)
+        {
+            ContextMenu.Close();
+        }
+
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+        }
+    }
+
+    private async Task HandleMouseEnter()
+    {
+        if (SubMenu != null)
+        {
+            _closeCts?.Cancel();
+            _isSubMenuOpen = true;
+            await AdjustPositionAsync();
+        }
+    }
+
+    private void HandleMouseLeave()
+    {
+        if (SubMenu != null)
+        {
+             // Delay closing to allow moving mouse diagonally
+             _closeCts = new CancellationTokenSource();
+             var token = _closeCts.Token;
+             
+             Task.Delay(100, token).ContinueWith(t => 
+             {
+                 if (!t.IsCanceled)
+                 {
+                     _isSubMenuOpen = false;
+                     InvokeAsync(StateHasChanged);
+                 }
+             });
+        }
+    }
+
+    private async Task AdjustPositionAsync()
+    {
+        // Wait for render
+        await Task.Yield(); 
+        
+        try
+        {
+            await InvokeAsync(StateHasChanged); // Ensure rendered
+            if (_isSubMenuOpen)
+            {
+                 // We access the global Blazwind object effectively
+                 // Use JS to adjust position
+                 await JSRuntime.InvokeVoidAsync("Blazwind.ContextMenu.adjustSubmenuPosition", _triggerElement, _submenuElement);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adjusting submenu: {ex.Message}");
+        }
+    }
+}

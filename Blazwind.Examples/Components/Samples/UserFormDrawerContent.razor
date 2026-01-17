@@ -1,0 +1,67 @@
+@using Blazwind.Components.Drawer
+@using Blazwind.Components.Form
+@using Blazwind.Components.Input
+@using Blazwind.Components.Button
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+@inject DrawerService DrawerService
+
+<BwForm Model="@_model" OnValidSubmit="Save" Density="BwFormDensity.Compact">
+    <BwColumn Spacing="BwSpacing.Md">
+        <BwInput @bind-Value="_model.Name" Label="Full Name" LabelPosition="BwLabelPosition.Left"
+            HelperText="Please enter your full name." HelpTextMode="BwHelpTextMode.Popup" Placeholder="Your name..."
+            IsRequired="true" />
+
+        <BwInput @bind-Value="_model.Email" Label="Email Address" LabelPosition="BwLabelPosition.Left"
+            HelperText="Please use your corporate email address." HelpTextMode="BwHelpTextMode.Popup" Type="email"
+            Placeholder="example@company.com" IsRequired="true" />
+
+        <BwInput @bind-Value="_model.Phone" Label="Phone" LabelPosition="BwLabelPosition.Left"
+            HelperText="Your active mobile phone number for contact." HelpTextMode="BwHelpTextMode.Popup"
+            Placeholder="+1 555 123 4567" />
+
+        <BwSelect @bind-Value="_model.Department" Label="Department" LabelPosition="BwLabelPosition.Left"
+            HelperText="Select the department you belong to." HelpTextMode="BwHelpTextMode.Popup"
+            Items="@_departmentItems" IsRequired="true" />
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+            <BwButton Color="BwColor.Secondary" Variant="BwVariant.Outline" Text="Cancel" OnClick="Cancel" />
+            <BwButton Color="BwColor.Primary" HtmlType="submit" Text="Save" />
+        </div>
+    </BwColumn>
+</BwForm>
+
+@code {
+    private UserModel _model = new()
+    {
+        Department = "Software Development"
+    };
+
+    private List<BwSelectItem<string>> _departmentItems = new()
+{
+new("Software Development", "Software Development"),
+new("Human Resources", "Human Resources"),
+new("Accounting", "Accounting"),
+new("Sales & Marketing", "Sales & Marketing"),
+new("Operations", "Operations")
+};
+
+    private void Cancel()
+    {
+        DrawerService.Close();
+    }
+
+    private void Save()
+    {
+        DrawerService.CloseWithResult(_model);
+    }
+
+    public class UserModel
+    {
+        public string Name { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Phone { get; set; } = "";
+        public string Department { get; set; } = "";
+    }
+}

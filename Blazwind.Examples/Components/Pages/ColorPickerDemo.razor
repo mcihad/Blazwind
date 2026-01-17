@@ -1,0 +1,48 @@
+@page "/components/color-picker"
+@using Blazwind.Components.Input
+@using Blazwind.Components.Typography
+
+<PageTitle>Color Picker Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Color Picker" Description="Color picker component." Icon="fa-solid fa-palette"
+            Color="BwColor.Danger"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Color preview and HEX input" Icon="fa-solid fa-palette"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwColorPicker Label="Brand Color" @bind-Value="_brandColor"/>
+            <BwTypography Size="BwSize.Small" Class="text-gray-500">Seçilen renk: @_brandColor</BwTypography>
+        </BwColumn>
+    </BwCard>
+
+    @* Preset Colors *@
+    <BwCard Title="Custom Palette" Subtitle="Corporate colors" Icon="fa-solid fa-swatchbook" Color="BwColor.Success">
+        <BwColorPicker Label="Theme Color" PresetColors="@_corporateColors" @bind-Value="_themeColor"/>
+    </BwCard>
+
+    @* No Presets *@
+    <BwCard Title="Picker Only" Subtitle="Without presets" Icon="fa-solid fa-eye-dropper" Color="BwColor.Warning">
+        <BwColorPicker Label="Custom Color" PresetColors="@(Array.Empty<string>())" @bind-Value="_customColor"/>
+    </BwCard>
+
+    @* States *@
+    <BwCard Title="States" Subtitle="Disabled" Icon="fa-solid fa-toggle-on" Color="BwColor.Secondary">
+        <BwColorPicker Label="Disabled" Value="#6B7280" IsDisabled="true"/>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _brandColor = "#3B82F6";
+    private string _themeColor = "#0055AA";
+    private string _customColor = "#10B981";
+
+    private readonly string[] _corporateColors = new[]
+    {
+        "#0055AA", "#004488", "#0077CC",
+        "#64748B", "#475569", "#94A3B8",
+        "#10B981", "#F59E0B", "#EF4444"
+    };
+
+}

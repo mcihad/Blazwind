@@ -1,0 +1,85 @@
+@namespace Blazwind.Components.Confetti
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+@ChildContent
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public int ParticleCount { get; set; } = 100;
+    [Parameter] public int Duration { get; set; } = 3000;
+    [Parameter] public double Gravity { get; set; } = 0.3;
+    [Parameter] public int Spread { get; set; } = 70;
+    [Parameter] public string[]? Colors { get; set; }
+    [Parameter] public bool AutoLaunch { get; set; } = false;
+    [Parameter] public string? TriggerElementId { get; set; }
+    
+    private bool _isInitialized = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isInitialized = true;
+            
+            if (AutoLaunch)
+            {
+                await Launch();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Launch the confetti animation
+    /// </summary>
+    public async Task Launch()
+    {
+        if (!_isInitialized) return;
+        
+        try
+        {
+            var options = new
+            {
+                particleCount = ParticleCount,
+                duration = Duration,
+                gravity = Gravity,
+                spread = Spread,
+                colors = Colors
+            };
+            
+            if (!string.IsNullOrEmpty(TriggerElementId))
+            {
+                await JS.InvokeVoidAsync("Blazwind.confetti.launchConfettiFromElement", TriggerElementId, options);
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("Blazwind.confetti.launchConfetti", options);
+            }
+        }
+        catch (JSException)
+        {
+            // JS not ready yet, ignore
+        }
+    }
+    
+    /// <summary>
+    /// Stop any running confetti animation
+    /// </summary>
+    public async Task Stop()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.confetti.stopConfetti");
+        }
+        catch (JSException)
+        {
+            // JS not ready yet, ignore
+        }
+    }
+    
+    public ValueTask DisposeAsync()
+    {
+        return ValueTask.CompletedTask;
+    }
+}

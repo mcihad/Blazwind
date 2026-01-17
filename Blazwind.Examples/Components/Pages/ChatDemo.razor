@@ -1,0 +1,123 @@
+@page "/components/chat"
+@using Blazwind.Components.Chat
+
+<PageTitle>Chat - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwChat" Description="Internal messaging and live support component." Icon="fa-solid fa-message"
+            Color="BwColor.Primary"/>
+
+    @* Temel Chat *@
+    <BwCard Title="Messaging Window" Subtitle="Standard view." Icon="fa-solid fa-comments" Color="BwColor.Primary">
+        <BwChat Messages="_messages" Participant="_participant" Mentions="_mentions" Height="400px"
+                OnSend="HandleSend"/>
+    </BwCard>
+
+    @* Kompakt Chat *@
+    <BwRow Spacing="BwSpacing.Lg" Wrap="true">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Compact View" Subtitle="Header hidden." Icon="fa-solid fa-compress" Color="BwColor.Info">
+                <BwChat Messages="_messages" ShowHeader="false" ShowAvatars="false" Mentions="_mentions" Height="300px"
+                        OnSend="HandleSend"/>
+            </BwCard>
+        </BwColumn>
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Group Chat" Subtitle="Names visible." Icon="fa-solid fa-users" Color="BwColor.Success">
+                <BwChat Messages="_groupMessages" ShowHeader="false" ShowSenderName="true" Mentions="_mentions"
+                        Height="300px" OnSend="HandleSend"/>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+</BwColumn>
+
+@* Floating Chat Widget Widget *@
+@if (_isWidgetOpen)
+{
+    <div
+        class="fixed bottom-24 right-6 z-[60] w-80 md:w-96 shadow-2xl rounded-lg animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <BwChat Messages="_messages" Participant="_participant" Mentions="_mentions" Height="500px"
+                Class="border-none !rounded-lg" OnSend="HandleSend"/>
+    </div>
+}
+
+<BwFloatingActionButton Icon="@(_isWidgetOpen ? "fa-solid fa-xmark" : "fa-solid fa-comment-dots")"
+                        Color="BwColor.Primary" Size="BwSize.Medium" OnClick="ToggleWidget">
+    <BadgeContent>
+        <span class="flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+        </span>
+    </BadgeContent>
+</BwFloatingActionButton>
+
+@code {
+    private bool _isWidgetOpen;
+
+    private readonly ChatParticipant _participant = new()
+    {
+        Id = "u1",
+        Name = "Ahmet Yılmaz",
+        IsOnline = true,
+        IsTyping = false
+    };
+
+    private readonly List<ChatMessage> _messages = new()
+    {
+        new ChatMessage
+        {
+            Id = "1", SenderName = "Ahmet Yılmaz", Content = "Hello, I have a question.", Timestamp =
+                DateTime.Now.AddHours(-1),
+            IsOwn = false
+        },
+        new ChatMessage
+        {
+            Id = "2", SenderName = "Support", Content = "Hello Ahmet Bey, how can I help you?", Timestamp =
+                DateTime.Now.AddHours(-1).AddMinutes(2),
+            IsOwn = true
+        },
+        new ChatMessage
+        {
+            Id = "3", SenderName = "Ahmet Yılmaz", Content = "Where can I see my invoice?", Timestamp =
+                DateTime.Now.AddHours(-1).AddMinutes(3),
+            IsOwn = false
+        }
+    };
+
+    private readonly List<ChatMessage> _groupMessages = new()
+    {
+        new ChatMessage
+        {
+            SenderName = "Ali", Content = "Has the meeting started?", Timestamp = DateTime.Now.AddMinutes(-10), IsOwn =
+                false
+        },
+        new ChatMessage { SenderName = "Ayşe", Content = "Yes, we're in room 2.", Timestamp = DateTime.Now.AddMinutes(-8), IsOwn = false },
+        new ChatMessage { SenderName = "Me", Content = "Coming.", Timestamp = DateTime.Now.AddMinutes(-5), IsOwn = true }
+    };
+
+    private void HandleSend(string text)
+    {
+        var msg = new ChatMessage
+        {
+            SenderName = "Destek",
+            Content = text,
+            IsOwn = true,
+            Timestamp = DateTime.Now
+        };
+        _messages.Add(msg);
+        _groupMessages.Add(msg);
+    }
+
+    private void ToggleWidget()
+    {
+        _isWidgetOpen = !_isWidgetOpen;
+    }
+
+    private readonly List<BwMentionItem> _mentions = new()
+    {
+        new BwMentionItem { Label = "Ahmet Yılmaz", Value = "ahmet", Description = "Customer" },
+        new BwMentionItem { Label = "Mehmet Demir", Value = "mehmet", Description = "Manager" },
+        new BwMentionItem { Label = "Ayşe Kaya", Value = "ayse", Description = "HR" },
+        new BwMentionItem { Label = "Ali Veli", Value = "ali", Description = "Developer" }
+    };
+
+}

@@ -1,0 +1,174 @@
+@page "/components/signature-pad"
+@using Blazwind.Components.SignaturePad
+
+<PageTitle>SignaturePad Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Signature Pad Component"
+            Description="Digital signature capture component for e-Government and enterprise applications."
+            Icon="fa-solid fa-signature"
+            Color="BwColor.Primary"/>
+
+    @* Temel Kullanım *@
+    <BwCard Title="Basic Usage" Subtitle="Digital signature capture and clearing." Icon="fa-solid fa-pen-nib"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwSignaturePad @ref="_basicPad"
+                            Label="Draw Your Signature"
+                            HelperText="Draw your signature in the area above."
+                            Height="200px"
+                            @bind-Value="_signatureData"/>
+
+            <BwRow Spacing="BwSpacing.Sm">
+                <BwButton Text="Get Signature Data" Icon="fa-solid fa-download" Color="BwColor.Info"
+                          OnClick="GetSignatureDataAsync"/>
+                @if (!string.IsNullOrEmpty(_signatureData))
+                {
+                    <BwButton Text="Show Signature" Icon="fa-solid fa-eye" Color="BwColor.Success"
+                              Variant="BwVariant.Outline" OnClick="ShowSignature"/>
+                }
+            </BwRow>
+
+            @if (_showSignaturePreview && !string.IsNullOrEmpty(_signatureData))
+            {
+                <div class="p-4 bg-gray-50 rounded border border-gray-200">
+                    <p class="text-sm text-gray-600 mb-2">Saved Signature:</p>
+                    <img src="@_signatureData" alt="Signature"
+                         class="max-h-[100px] border border-gray-300 rounded bg-white"/>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Özelleştirme *@
+        <BwCard Title="Customization" Subtitle="Pen color and background." Icon="fa-solid fa-palette"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSignaturePad Label="Blue Pen"
+                                PenColor="#1d4ed8"
+                                BackgroundColor="#eff6ff"
+                                Height="150px"/>
+
+                <BwSignaturePad Label="Red Pen"
+                                PenColor="#dc2626"
+                                Height="150px"
+                                ShowUndoButton="false"/>
+            </BwColumn>
+        </BwCard>
+
+        @* Varyantlar *@
+        <BwCard Title="Variants" Subtitle="Outline and Filled style." Icon="fa-solid fa-border-all"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSignaturePad Label="Outline (Default)"
+                                Variant="BwVariant.Outline"
+                                Height="120px"/>
+
+                <BwSignaturePad Label="Filled"
+                                Variant="BwVariant.Filled"
+                                Height="120px"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Kurumsal Kullanım Senaryosu *@
+    <BwCard Title="Enterprise Usage" Subtitle="Contract approval form example." Icon="fa-solid fa-file-contract"
+            Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div class="p-4 bg-blue-50 border border-blue-200 rounded">
+                <h4 class="font-semibold text-blue-800 mb-2">Municipal Service Application Form</h4>
+                <p class="text-sm text-blue-700">
+                    I have read and accept the terms above. I confirm the accuracy of the information I have provided.
+                </p>
+            </div>
+
+            <BwSignaturePad @ref="_contractPad"
+                            Label="Applicant's Signature"
+                            HelperText="Confirm your application by signing below."
+                            Height="180px"
+                            Error="@_contractError"
+                            @bind-Value="_contractSignature"/>
+
+            <BwRow Spacing="BwSpacing.Sm">
+                <BwButton Text="Approve Application"
+                          Icon="fa-solid fa-check"
+                          Color="BwColor.Success"
+                          OnClick="SubmitContractAsync"/>
+                <BwButton Text="Clear Signature"
+                          Icon="fa-solid fa-eraser"
+                          Color="BwColor.Secondary"
+                          Variant="BwVariant.Outline"
+                          OnClick="ClearContractAsync"/>
+            </BwRow>
+
+            @if (_contractSubmitted)
+            {
+                <div class="p-3 bg-green-50 border border-green-200 rounded text-green-800 text-sm">
+                    <i class="fa-solid fa-circle-check mr-2"></i>
+                    Your application has been received. Your application number:
+                    <strong>BVR-2026-@_applicationNumber</strong>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwSignaturePad? _basicPad;
+    private BwSignaturePad? _contractPad;
+    private string? _signatureData;
+    private string? _contractSignature;
+    private string? _contractError;
+    private bool _showSignaturePreview;
+    private bool _contractSubmitted;
+    private readonly int _applicationNumber = Random.Shared.Next(10000, 99999);
+
+    private async Task GetSignatureDataAsync()
+    {
+        if (_basicPad != null)
+        {
+            var isEmpty = await _basicPad.IsEmptyAsync();
+            if (isEmpty)
+            {
+                _signatureData = null;
+            }
+            else
+            {
+                _signatureData = await _basicPad.ToDataUrlAsync();
+            }
+        }
+    }
+
+    private void ShowSignature()
+    {
+        _showSignaturePreview = !_showSignaturePreview;
+    }
+
+    private async Task SubmitContractAsync()
+    {
+        if (_contractPad != null)
+        {
+            var isEmpty = await _contractPad.IsEmptyAsync();
+            if (isEmpty)
+            {
+                _contractError = "Please sign the document.";
+                return;
+            }
+
+            _contractError = null;
+            _contractSubmitted = true;
+        }
+    }
+
+    private async Task ClearContractAsync()
+    {
+        if (_contractPad != null)
+        {
+            await _contractPad.ClearAsync();
+            _contractError = null;
+            _contractSubmitted = false;
+        }
+    }
+
+}

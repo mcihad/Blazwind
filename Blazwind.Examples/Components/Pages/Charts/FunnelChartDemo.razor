@@ -1,0 +1,113 @@
+@page "/charts/funnel"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Huni Grafik - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Huni Grafik (Funnel Chart)" 
+            Description="Dönüşüm ve süreç aşamalarını göstermek için ideal grafik tipi."
+            Icon="fa-solid fa-filter"
+            Color="BwColor.Warning" />
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Temel Funnel *@
+        <BwCard Title="Satış Hunisi" Subtitle="Sales funnel." Icon="fa-solid fa-filter" Color="BwColor.Primary">
+            <BwChart Options="_salesFunnel" Height="350px" />
+        </BwCard>
+
+        @* İşe Alım Hunisi *@
+        <BwCard Title="İşe Alım Süreci" Subtitle="Recruitment funnel." Icon="fa-solid fa-users" Color="BwColor.Info">
+            <BwChart Options="_recruitFunnel" Height="350px" />
+        </BwCard>
+    </BwRow>
+
+    @* Başvuru Hunisi *@
+    <BwCard Title="Başvuru Süreci" Subtitle="Vatandaş başvuru dönüşüm hunisi." Icon="fa-solid fa-file-alt" Color="BwColor.Success">
+        <BwChart Options="_applicationFunnel" Height="350px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _salesFunnel = new
+    {
+        title = new { text = "Satış Hunisi", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item, formatter = "{a} <br/>{b} : {c}%" },
+        legend = new { data = new[] { "Ziyaret", "İlgi", "Teklif", "Görüşme", "Satış" }, bottom = "0" },
+        series = new[]
+        {
+            new
+            {
+                name = "Satış",
+                type = ChartSeriesType.Funnel,
+                left = "10%",
+                width = "80%",
+                label = new { formatter = "{b}: {c}%" },
+                data = new[]
+                {
+                    new { value = 100, name = "Ziyaret" },
+                    new { value = 60, name = "İlgi" },
+                    new { value = 40, name = "Teklif" },
+                    new { value = 20, name = "Görüşme" },
+                    new { value = 8, name = "Satış" }
+                }
+            }
+        },
+        color = new[] { "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6" }
+    };
+
+    private object _recruitFunnel = new
+    {
+        title = new { text = "İşe Alım Süreci", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        series = new[]
+        {
+            new
+            {
+                name = "İşe Alım",
+                type = ChartSeriesType.Funnel,
+                left = "10%",
+                width = "80%",
+                data = new[]
+                {
+                    new { value = 500, name = "Başvuru" },
+                    new { value = 200, name = "CV İnceleme" },
+                    new { value = 80, name = "Telefon Görüşme" },
+                    new { value = 30, name = "Yüz Yüze Mülakat" },
+                    new { value = 10, name = "Teklif" },
+                    new { value = 5, name = "İşe Alım" }
+                }
+            }
+        },
+        color = new[] { "#6366f1", "#8b5cf6", "#a855f7", "#d946ef", "#ec4899", "#f43f5e" }
+    };
+
+    private object _applicationFunnel = new
+    {
+        title = new { text = "Vatandaş Başvuru Süreci", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        legend = new { bottom = "0" },
+        series = new[]
+        {
+            new
+            {
+                name = "Başvuru",
+                type = ChartSeriesType.Funnel,
+                left = "10%",
+                width = "80%",
+                label = new { formatter = "{b}\n{c} adet" },
+                data = new[]
+                {
+                    new { value = 1200, name = "Başvuru Yapıldı" },
+                    new { value = 1050, name = "Belge Kontrolü" },
+                    new { value = 980, name = "İnceleme" },
+                    new { value = 850, name = "Onay Bekleniyor" },
+                    new { value = 800, name = "Tamamlandı" }
+                }
+            }
+        },
+        color = new[] { "#0ea5e9", "#06b6d4", "#14b8a6", "#10b981", "#22c55e" }
+    };
+}

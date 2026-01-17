@@ -1,0 +1,47 @@
+@namespace Blazwind.Components.Navigation
+@using Microsoft.AspNetCore.Components
+
+<div class="border-t border-gray-200 dark:border-gray-800 p-3 flex items-center gap-3 @Class">
+    @if (AvatarContent != null)
+    {
+         @AvatarContent
+    }
+    else if (!string.IsNullOrEmpty(AvatarUrl))
+    {
+         <img src="@AvatarUrl" alt="@Title" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700" />
+    }
+    else if (!string.IsNullOrEmpty(Icon))
+    {
+         <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400">
+             <i class="@Icon"></i>
+         </div>
+    }
+
+    <div class="flex-1 min-w-0">
+         @if (!string.IsNullOrEmpty(Title))
+         {
+             <div class="font-medium text-sm text-gray-900 dark:text-gray-200 truncate">@Title</div>
+         }
+         @if (!string.IsNullOrEmpty(Subtitle))
+         {
+             <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@Subtitle</div>
+         }
+    </div>
+
+    @if (ChildContent != null)
+    {
+         <div class="flex items-center gap-1">
+             @ChildContent
+         </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? AvatarUrl { get; set; }
+    [Parameter] public RenderFragment? AvatarContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+}

@@ -1,0 +1,460 @@
+@page "/components/inputbutton"
+@using Blazwind.Components.Input
+@using Blazwind.Examples.Components.Samples
+
+@inject DialogService DialogService
+@inject ToastService ToastService
+
+<PageTitle>Input Button Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Input Button" Description="Integrated icons, buttons and prefix/suffix content for input fields."
+            Icon="fa-solid fa-keyboard" Color="BwColor.Info"/>
+
+    @* Icon Examples *@
+    <BwCard Title="Icon Inputs" Subtitle="PrefixIcon and SuffixIcon parameters" Icon="fa-solid fa-icons"
+            Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md" Class="grid md:grid-cols-3 gap-4">
+            <BwInputButton Label="Arama" Placeholder="Ara..." PrefixIcon="fa-solid fa-search" ShowClear="true"
+                           @bind-Value="_searchText" OnEnterPressed="HandleSearch">
+                <Buttons>
+                    <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="rounded-l-none h-full px-4"
+                              OnClick="HandleSearch">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+
+            <BwInputButton Label="E-posta" Placeholder="ornek@email.com" PrefixIcon="fa-solid fa-envelope"
+                           ShowClear="true" @bind-Value="_email" Type="email"/>
+
+            <BwInputButton Label="Şifre" Placeholder="••••••••" PrefixIcon="fa-solid fa-lock" ShowPasswordToggle="true"
+                           @bind-Value="_password" Type="password"/>
+        </BwRow>
+    </BwCard>
+
+    @* New Features: Clear, Copy, Password Toggle *@
+    <BwCard Title="New Features" Subtitle="Clear, Copy, Password Toggle, Loading" Icon="fa-solid fa-wand-magic-sparkles"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Md" Class="grid md:grid-cols-2 gap-4">
+                <BwInputButton Label="Temizlenebilir Input" Placeholder="Bir şeyler yazın..." ShowClear="true"
+                               @bind-Value="_clearableText" OnClear="@(() => ToastService.InfoAsync("Alan temizlendi"))"
+                               HelperText="X butonuna tıklayarak temizleyebilirsiniz"/>
+
+                <BwInputButton Label="Kopyalanabilir Input" Placeholder="API anahtarınız..." ShowCopy="true"
+                               @bind-Value="_apiKey" HelperText="Kopyala butonuna tıklayarak panoya kopyalayın"/>
+            </BwRow>
+
+            <BwRow Spacing="BwSpacing.Md" Class="grid md:grid-cols-2 gap-4">
+                <BwInputButton Label="Şifre Alanı" Placeholder="Güçlü şifre..." PrefixIcon="fa-solid fa-lock"
+                               ShowPasswordToggle="true" Type="password" @bind-Value="_newPassword"
+                               HelperText="Göz ikonuna tıklayarak şifreyi görebilirsiniz"/>
+
+                <BwInputButton Label="Yükleniyor Durumu" Placeholder="Doğrulanıyor..."
+                               PrefixIcon="fa-solid fa-fingerprint" IsLoading="@_isLoading"
+                               @bind-Value="_verificationCode"
+                               HelperText="@(_isLoading ? "Doğrulama yapılıyor..." : "Kodu girin ve doğrula butonuna tıklayın")">
+                    <Buttons>
+                        <BwButton Color="BwColor.Success" Size="BwSize.Small" Class="rounded-l-none h-full px-4"
+                                  IsDisabled="@_isLoading" OnClick="VerifyCode">
+                            @if (_isLoading)
+                            {
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                            }
+                            else
+                            {
+                                <text>Doğrula</text>
+                            }
+                        </BwButton>
+                    </Buttons>
+                </BwInputButton>
+            </BwRow>
+
+            <BwRow Spacing="BwSpacing.Md" Class="grid md:grid-cols-2 gap-4">
+                <BwInputButton Label="Birleşik Özellikler" Placeholder="Token veya şifre..."
+                               PrefixIcon="fa-solid fa-key" ShowClear="true" ShowCopy="true" ShowPasswordToggle="true"
+                               Type="password" @bind-Value="_secretToken"
+                               HelperText="Temizle, kopyala ve göster özellikleri bir arada"/>
+
+                <BwInputButton Label="Anahtar Oluşturucu" Placeholder="Rastgele anahtar..." ShowCopy="true"
+                               IsReadOnly="true" @bind-Value="_generatedKey"
+                               HelperText="Oluştur butonuna tıklayın ve kopyalayın">
+                    <Buttons>
+                        <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="rounded-l-none h-full px-4"
+                                  OnClick="GenerateKey">
+                            <i class="fa-solid fa-rotate mr-1"></i> Oluştur
+                        </BwButton>
+                    </Buttons>
+                </BwInputButton>
+            </BwRow>
+        </BwColumn>
+    </BwCard>
+
+    @* Inline Buttons with Actions *@
+    <BwCard Title="Action Buttons" Subtitle="Integration with Dialog and Toast services" Icon="fa-solid fa-bolt"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInputButton Label="Kupon Kodu" Placeholder="Kupon kodunu girin" @bind-Value="_couponCode"
+                           PrefixIcon="fa-solid fa-ticket" ShowClear="true" OnEnterPressed="ApplyCoupon">
+                <Buttons>
+                    <BwButton Color="BwColor.Success" Size="BwSize.Small" Class="rounded-l-none h-full px-4"
+                              OnClick="ApplyCoupon">
+                        Uygula
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+
+            <BwInputButton Label="Dosya Yolu" Placeholder="Dosya seçin..." @bind-Value="_filePath" IsReadOnly="true"
+                           PrefixIcon="fa-solid fa-folder" ShowClear="true" ShowCopy="true">
+                <Buttons>
+                    <BwButton Color="BwColor.Secondary" Size="BwSize.Small" Class="rounded-l-none h-full px-4"
+                              OnClick="BrowseFile">
+                        <i class="fa-solid fa-folder-open mr-1"></i> Gözat
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+
+            <BwInputButton Label="Sayı Girişi" Placeholder="0" @bind-Value="_quantity" PrefixIcon="fa-solid fa-hashtag">
+                <Buttons>
+                    <BwButton Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Small"
+                              Class="h-full px-2 border-l border-gray-200" OnClick="DecrementQuantity">
+                        <i class="fa-solid fa-minus"></i>
+                    </BwButton>
+                    <BwButton Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Small"
+                              Class="h-full px-2 border-l border-gray-200" OnClick="IncrementQuantity">
+                        <i class="fa-solid fa-plus"></i>
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+        </BwColumn>
+    </BwCard>
+
+    @* Prepend/Append Content *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Prefix/Suffix Areas" Subtitle="PrependContent and AppendContent" Icon="fa-solid fa-puzzle-piece"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwInputButton Label="URL" Placeholder="example.com" @bind-Value="_url" ShowClear="true">
+                    <PrependContent>
+                        <DemoInputDecorator IsPrepend="true">https://</DemoInputDecorator>
+                    </PrependContent>
+                    <Buttons>
+                        <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="rounded-l-none h-full px-3"
+                                  OnClick="OpenUrl">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </BwButton>
+                    </Buttons>
+                </BwInputButton>
+
+                <BwInputButton Label="Email" Placeholder="kullaniciadi" @bind-Value="_username" ShowClear="true">
+                    <AppendContent>
+                        <DemoInputDecorator>@@blazwind.com</DemoInputDecorator>
+                    </AppendContent>
+                </BwInputButton>
+
+                <BwInputButton Label="Fiyat" Placeholder="0.00" @bind-Value="_price" ShowClear="true">
+                    <PrependContent>
+                        <DemoInputDecorator IsPrepend="true">₺</DemoInputDecorator>
+                    </PrependContent>
+                    <AppendContent>
+                        <DemoInputDecorator>.00</DemoInputDecorator>
+                    </AppendContent>
+                </BwInputButton>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Size Options" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwInputButton Label="Small" Placeholder="Küçük boy" Size="BwSize.Small"
+                               PrefixIcon="fa-solid fa-ruler-horizontal" ShowClear="true">
+                    <Buttons>
+                        <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="rounded-l-none h-full px-3 text-xs"
+                                  OnClick='@(() => ShowSizeToast("Small"))'>Go
+                        </BwButton>
+                    </Buttons>
+                </BwInputButton>
+
+                <BwInputButton Label="Medium (Varsayılan)" Placeholder="Orta boy"
+                               PrefixIcon="fa-solid fa-ruler-horizontal" ShowClear="true">
+                    <Buttons>
+                        <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="rounded-l-none h-full px-4"
+                                  OnClick='@(() => ShowSizeToast("Medium"))'>Go
+                        </BwButton>
+                    </Buttons>
+                </BwInputButton>
+
+                <BwInputButton Label="Large" Placeholder="Büyük boy" Size="BwSize.Large"
+                               PrefixIcon="fa-solid fa-ruler-horizontal" ShowClear="true">
+                    <Buttons>
+                        <BwButton Color="BwColor.Primary" Size="BwSize.Medium" Class="rounded-l-none h-full px-5"
+                                  OnClick='@(() => ShowSizeToast("Large"))'>Go
+                        </BwButton>
+                    </Buttons>
+                </BwInputButton>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Product Select Dialog *@
+    <BwCard Title="Product Selection Dialog" Subtitle="Integrated selection input with Dialog service"
+            Icon="fa-solid fa-box-open"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInputButton Label="Ürün Seçimi" Placeholder="Ürün seçmek için tıklayın..." Value="@_selectedProductsText"
+                           IsReadOnly="true" PrefixIcon="fa-solid fa-box" ShowClear="true" OnClear="ClearProducts"
+                           OnClick="OpenProductDialog">
+                <Buttons>
+                    <BwButton Color="BwColor.Primary" Class="rounded-l-none h-full px-4" OnClick="OpenProductDialog">
+                        <i class="fa-solid fa-table-list mr-2"></i>
+                        Seç
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+
+            @if (_selectedProducts.Any())
+            {
+                <div class="p-4 bg-blue-50 rounded border border-blue-200">
+                    <p class="text-sm font-medium text-blue-800 mb-2">Seçilen Ürünler (@_selectedProducts.Count):</p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (var product in _selectedProducts)
+                        {
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
+                                @product.Name
+                                <button type="button" class="hover:text-blue-600"
+                                        @onclick="() => RemoveProduct(product)">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
+
+    @* Multiple Buttons & Icon Variations *@
+    <BwCard Title="Multiple Buttons and Icons" Subtitle="Multiple actions and icon variations"
+            Icon="fa-solid fa-layer-group" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInputButton Label="Çoklu Aksiyon (Ara & Temizle)" Placeholder="Terim girin..." @bind-Value="_searchText"
+                           ShowClear="false">
+                <Buttons>
+                    <BwButton Color="BwColor.Danger" Variant="BwVariant.Ghost" Size="BwSize.Small"
+                              Class="h-full px-3 text-red-500 hover:text-red-700 hover:bg-red-50"
+                              OnClick="@(() =>
+                                       {
+                                           _searchText = "";
+                                           ToastService.InfoAsync("Temizlendi");
+                                       })">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </BwButton>
+                    <div class="w-px h-6 bg-gray-200 my-auto"></div>
+                    <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="rounded-none h-full px-4 font-medium"
+                              OnClick="HandleSearch">
+                        Ara
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+
+            <BwInputButton Label="İkon Butonlar (Ghost)" Placeholder="Yorum yazın..." @bind-Value="_clearableText">
+                <Buttons>
+                    <BwButton Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Small"
+                              Class="h-full px-2 text-gray-400 hover:text-blue-500"
+                              OnClick="@(() => ToastService.InfoAsync("Dosya Eklendi"))" Title="Dosya Ekle">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </BwButton>
+                    <BwButton Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Small"
+                              Class="h-full px-2 text-gray-400 hover:text-green-500"
+                              OnClick="@(() => ToastService.InfoAsync("Resim Eklendi"))" Title="Resim Ekle">
+                        <i class="fa-solid fa-image"></i>
+                    </BwButton>
+                    <BwButton Color="BwColor.Primary" Size="BwSize.Small" Class="ml-1 rounded-l-none h-full px-3"
+                              OnClick="@(() => ToastService.SuccessAsync("Gönderildi"))">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </BwButton>
+                </Buttons>
+            </BwInputButton>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private string _searchText = "";
+    private string _email = "";
+    private string _password = "";
+    private string _couponCode = "";
+    private string _filePath = "";
+    private string _quantity = "1";
+    private string _url = "";
+    private string _username = "";
+    private string _price = "";
+
+    // New feature demos
+    private string _clearableText = "Clearable text";
+    private string _apiKey = "sk-blazwind-abc123xyz789";
+    private string _newPassword = "";
+    private string _verificationCode = "";
+    private string _secretToken = "secret-token-xyz";
+    private string _generatedKey = "";
+    private bool _isLoading;
+
+    private List<ProductDialog.ProductItem> _selectedProducts = new();
+
+    private string _selectedProductsText => _selectedProducts.Any()
+        ? string.Join(", ", _selectedProducts.Select(p => p.Name))
+        : "";
+
+    private async Task HandleSearch()
+    {
+        if (string.IsNullOrWhiteSpace(_searchText))
+        {
+            await ToastService.WarningAsync("Please enter a search term.");
+            return;
+        }
+
+        await ToastService.InfoAsync($"Searching for '{_searchText}'...");
+    }
+
+    private async Task ApplyCoupon()
+    {
+        if (string.IsNullOrWhiteSpace(_couponCode))
+        {
+            await ToastService.WarningAsync("Kupon kodu giriniz.");
+            return;
+        }
+
+        if (_couponCode.ToUpper() == "BLAZWIND20")
+        {
+            await ToastService.SuccessAsync("Coupon applied! You won 20% discount.");
+        }
+        else
+        {
+            await ToastService.ErrorAsync("Invalid coupon code.");
+        }
+    }
+
+    private async Task BrowseFile()
+    {
+        var result = await DialogService.ShowConfirmAsync(
+            "File Selection",
+            "Real file selection cannot be done in this demo environment. Do you want to continue?",
+            "OK",
+            "Cancel"
+        );
+
+        if (result)
+        {
+            _filePath = "/home/user/documents/sample-file.pdf";
+            await ToastService.SuccessAsync("File selected!");
+        }
+    }
+
+    private async Task IncrementQuantity()
+    {
+        if (int.TryParse(_quantity, out var qty))
+        {
+            _quantity = (qty + 1).ToString();
+            await ToastService.InfoAsync($"Miktar: {_quantity}");
+        }
+    }
+
+    private async Task DecrementQuantity()
+    {
+        if (int.TryParse(_quantity, out var qty) && qty > 0)
+        {
+            _quantity = (qty - 1).ToString();
+            await ToastService.InfoAsync($"Miktar: {_quantity}");
+        }
+    }
+
+    private async Task OpenUrl()
+    {
+        if (string.IsNullOrWhiteSpace(_url))
+        {
+            await ToastService.WarningAsync("Please enter a URL.");
+            return;
+        }
+
+        await ToastService.InfoAsync($"Opening https://{_url}...");
+    }
+
+    private async Task ShowSizeToast(string size)
+    {
+        await ToastService.SuccessAsync($"'{size}' size selected!");
+    }
+
+    private async Task VerifyCode()
+    {
+        if (string.IsNullOrWhiteSpace(_verificationCode))
+        {
+            await ToastService.WarningAsync("Please enter verification code.");
+            return;
+        }
+
+        _isLoading = true;
+        StateHasChanged();
+
+        await Task.Delay(2000); // Simulate API call
+
+        _isLoading = false;
+
+        if (_verificationCode == "123456")
+        {
+            await ToastService.SuccessAsync("Verification successful!");
+        }
+        else
+        {
+            await ToastService.ErrorAsync("Invalid verification code. Correct code: 123456");
+        }
+    }
+
+    private async Task GenerateKey()
+    {
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var random = new Random();
+        _generatedKey = "bw-" + new string(Enumerable.Range(0, 24).Select(_ => chars[random.Next(chars.Length)]).ToArray());
+        await ToastService.SuccessAsync("New key generated! Click the copy button to copy.");
+    }
+
+    private async Task OpenProductDialog()
+    {
+        var options = new DialogOptions
+        {
+            Width = "800px",
+            Draggable = true,
+            Resizable = true
+        };
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "InitialSelection", _selectedProducts },
+            { "OnConfirm", EventCallback.Factory.Create<List<ProductDialog.ProductItem>>(this, OnProductsSelected) }
+        };
+
+        await DialogService.ShowAsync<ProductDialog>("Product Selection", parameters, options);
+    }
+
+    private void OnProductsSelected(List<ProductDialog.ProductItem> products)
+    {
+        _selectedProducts = products;
+        _ = ToastService.SuccessAsync($"{products.Count} products selected!");
+        StateHasChanged();
+    }
+
+    private void RemoveProduct(ProductDialog.ProductItem product)
+    {
+        _selectedProducts.Remove(product);
+        _ = ToastService.InfoAsync($"'{product.Name}' removed.");
+    }
+
+    private void ClearProducts()
+    {
+        _selectedProducts.Clear();
+        _ = ToastService.InfoAsync("All products cleared.");
+    }
+
+}

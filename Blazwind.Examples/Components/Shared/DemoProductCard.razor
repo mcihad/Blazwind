@@ -1,0 +1,41 @@
+@using Blazwind.Components.Badge
+
+<div
+    class="group relative bg-white rounded border border-gray-200 hover:border-emerald-400 hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer h-full flex flex-col">
+    <div
+        class="h-32 bg-gray-50 flex items-center justify-center relative overflow-hidden group-hover:bg-emerald-50 transition-colors">
+        <i
+            class="fa-solid @Icon text-4xl text-gray-300 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300"></i>
+        @if (IsHot)
+        {
+            <div class="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm">
+                <i class="fa-solid fa-fire mr-1"></i>Best Seller
+            </div>
+        }
+    </div>
+    <div class="p-4 flex flex-col flex-1">
+        <div class="flex justify-between items-start mb-2">
+            <h4 class="font-semibold text-gray-800 text-lg leading-tight">@Title</h4>
+            <span class="text-xs font-medium bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">#@Number</span>
+        </div>
+        <p class="text-sm text-gray-500 line-clamp-2 mb-3 flex-1">
+            @Description
+        </p>
+        <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+            <span class="text-emerald-600 font-bold text-xl">@Price ₺</span>
+            <button
+                class="h-8 w-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-colors">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Number { get; set; }
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Description { get; set; } = "Carefully prepared with fresh ingredients for a wonderful taste experience.";
+    [Parameter] public decimal Price { get; set; }
+    [Parameter] public string Icon { get; set; } = "fa-burger";
+    [Parameter] public bool IsHot { get; set; }
+}

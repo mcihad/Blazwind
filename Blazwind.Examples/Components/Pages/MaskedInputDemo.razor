@@ -1,0 +1,67 @@
+@page "/components/masked-input"
+@using Blazwind.Components.Input
+@using Blazwind.Components.Typography
+
+<PageTitle>Masked Input Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Masked Input" Description="Formatted input component - phone, credit card, date, etc."
+            Icon="fa-solid fa-hashtag" Color="BwColor.Primary"/>
+
+    @* Presets *@
+    <BwCard Title="Preset Formats" Subtitle="Phone, CreditCard, Date, Time, IBAN" Icon="fa-solid fa-wand-magic-sparkles"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwMaskedInput Label="Phone" Preset="BwMaskPreset.Phone" HelperText="Format: (###) ### ## ##"
+                           @bind-Value="_phone"/>
+
+            <BwMaskedInput Label="Credit Card" Preset="BwMaskPreset.CreditCard" HelperText="Format: #### #### #### ####"
+                           @bind-Value="_creditCard"/>
+
+            <BwMaskedInput Label="Date" Preset="BwMaskPreset.Date" HelperText="Format: DD/MM/YYYY"
+                           @bind-Value="_date"/>
+
+            <BwMaskedInput Label="Time" Preset="BwMaskPreset.Time" HelperText="Format: HH:MM" @bind-Value="_time"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Custom Mask *@
+    <BwCard Title="Custom Mask" Subtitle="Define your own format" Icon="fa-solid fa-code" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwMaskedInput Label="License Plate" Mask="## AAA ###" HelperText="# = Digit, A = Letter"
+                           @bind-Value="_plate"/>
+
+            <BwMaskedInput Label="Zip Code" Mask="#####" @bind-Value="_zipCode"/>
+        </BwColumn>
+    </BwCard>
+
+    @* States *@
+    <BwCard Title="States" Subtitle="Disabled, Error" Icon="fa-solid fa-toggle-on" Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwMaskedInput Label="Disabled" Preset="BwMaskPreset.Phone" Value="5551234567" IsDisabled="true"/>
+
+            <BwMaskedInput Label="Error" Preset="BwMaskPreset.CreditCard" Value="1234"
+                           ErrorMessage="Invalid card number"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Raw Values *@
+    <BwCard Title="Raw Values" Subtitle="Values stored without mask" Icon="fa-solid fa-database"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwTypography>Phone: @_phone</BwTypography>
+            <BwTypography>Credit Card: @_creditCard</BwTypography>
+            <BwTypography>Date: @_date</BwTypography>
+            <BwTypography>License Plate: @_plate</BwTypography>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _phone = "";
+    private string _creditCard = "";
+    private string _date = "";
+    private string _time = "";
+    private string _plate = "";
+    private string _zipCode = "";
+}

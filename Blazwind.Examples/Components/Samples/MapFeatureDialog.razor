@@ -1,0 +1,136 @@
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Drawer
+@using Blazwind.Components.Button
+@using Blazwind.Components.Map.Models
+@inject DialogService DialogService
+@inject DrawerService DrawerService
+
+<div class="flex flex-col gap-4">
+    @if (Feature != null)
+    {
+        @* Genel Bilgiler *@
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+                <i class="fa-solid fa-info-circle text-primary-500"></i>
+                <span class="font-semibold text-gray-700 dark:text-gray-300">General Information</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-sm">
+                <div class="text-gray-500">Type:</div>
+                <div class="font-medium">@Feature.Type</div>
+
+                @if (Feature.Id != null)
+                {
+                    <div class="text-gray-500">ID:</div>
+                    <div class="font-medium font-mono text-xs">@Feature.Id</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Feature.Source))
+                {
+                    <div class="text-gray-500">Source:</div>
+                    <div class="font-medium">@Feature.Source</div>
+                }
+
+                @if (!string.IsNullOrEmpty(Feature.SourceLayer))
+                {
+                    <div class="text-gray-500">Source Layer:</div>
+                    <div class="font-medium">@Feature.SourceLayer</div>
+                }
+            </div>
+        </div>
+
+        @* Geometri Bilgisi *@
+        @if (Feature.Geometry != null)
+        {
+            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-draw-polygon text-blue-500"></i>
+                    <span class="font-semibold text-gray-700 dark:text-gray-300">Geometry</span>
+                </div>
+                <div class="text-sm">
+                    <span class="text-gray-500">Tip:</span>
+                    <span class="ml-2 font-medium">@Feature.Geometry.Type</span>
+                </div>
+            </div>
+        }
+
+        @* Properties *@
+        @if (Feature.Properties != null && Feature.Properties.Count > 0)
+        {
+            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-tags text-green-500"></i>
+                    <span class="font-semibold text-gray-700 dark:text-gray-300">Properties</span>
+                    <span class="ml-auto text-xs text-gray-400">(@Feature.Properties.Count items)</span>
+                </div>
+                <div class="max-h-64 overflow-y-auto">
+                    <table class="w-full text-sm">
+                        <tbody>
+                            @foreach (var prop in Feature.Properties.OrderBy(p => p.Key))
+                            {
+                                <tr class="border-b border-gray-200 dark:border-gray-700 last:border-0">
+                                    <td class="py-2 pr-4 text-gray-500 font-medium whitespace-nowrap">@prop.Key</td>
+                                    <td class="py-2 text-gray-700 dark:text-gray-300 break-all">
+                                        @FormatValue(prop.Value)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center text-gray-400 py-4">
+                <i class="fa-solid fa-inbox text-2xl mb-2"></i>
+                <p class="text-sm">No additional information available for this feature.</p>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center text-gray-400 py-8">
+            <i class="fa-solid fa-exclamation-circle text-3xl mb-2"></i>
+            <p>Feature data not found.</p>
+        </div>
+    }
+
+    @* Footer *@
+    <div class="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <BwButton Text="Close" Color="BwColor.Secondary" OnClick="Close" />
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+    [CascadingParameter] public DrawerInstance? DrawerInstance { get; set; }
+
+    [Parameter] public MapFeature? Feature { get; set; }
+
+    private void Close()
+    {
+        if (DialogInstance != null)
+        {
+            DialogService.Close(DialogInstance, DialogResult.Cancel());
+        }
+        else if (DrawerInstance != null)
+        {
+            DrawerService.Close(DrawerInstance, DrawerResult.Cancel());
+        }
+    }
+
+    private string FormatValue(object? value)
+    {
+        if (value == null) return "-";
+
+        var strValue = value.ToString() ?? "-";
+
+        // Çok uzun değerleri kısalt
+        if (strValue.Length > 100)
+        {
+            return strValue.Substring(0, 100) + "...";
+        }
+
+        return strValue;
+    }
+}

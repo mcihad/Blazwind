@@ -1,0 +1,155 @@
+@namespace Blazwind.Components.Toolbar
+@using Blazwind.Components.Shared
+
+<div class="relative">
+    <button type="button" class="@ButtonClasses" disabled="@Disabled" title="@Tooltip" @onclick="Toggle"
+        @onmouseenter="Open" @onmouseleave="StartCloseTimer">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <i class="@Icon @IconSizeClass"></i>
+        }
+        @if (!string.IsNullOrEmpty(Text))
+        {
+            <span class="@TextClass font-medium">@Text</span>
+        }
+        <i
+            class="fa-solid fa-chevron-down text-[9px] opacity-50 @ChevronRotation transition-transform duration-150"></i>
+    </button>
+
+    @if (_isOpen)
+    {
+        <div class="@DropdownClasses" @onmouseenter="CancelCloseTimer" @onmouseleave="StartCloseTimer">
+            @ChildContent
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter] public BwToolbar? Toolbar { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Tooltip { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
+
+    private bool _isOpen;
+    private CancellationTokenSource? _closeCts;
+
+    private bool IsVertical => Toolbar?.IsVertical ?? false;
+    private bool OpenUpward => Toolbar?.IsAtBottom ?? false;
+
+    private string ChevronRotation => _isOpen ? (OpenUpward ? "" : "rotate-180") : "";
+
+    private string ButtonClasses
+    {
+        get
+        {
+            var size = Toolbar?.Size ?? BwSize.Medium;
+            var classes = new List<string>
+{
+"inline-flex items-center justify-center gap-1.5 rounded-md transition-all duration-150",
+SizeClasses(size),
+_isOpen ? ActiveClasses : HoverClasses,
+Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+};
+            return string.Join(" ", classes);
+        }
+    }
+
+    private string SizeClasses(BwSize size) => size switch
+    {
+        BwSize.Small => "h-7 px-2",
+        BwSize.Large => "h-11 px-3.5",
+        _ => "h-9 px-2.5"
+    };
+
+    private string IconSizeClass => (Toolbar?.Size ?? BwSize.Medium) switch
+    {
+        BwSize.Small => "text-xs",
+        BwSize.Large => "text-lg",
+        _ => "text-sm"
+    };
+
+    private string TextClass => (Toolbar?.Size ?? BwSize.Medium) switch
+    {
+        BwSize.Small => "text-xs",
+        BwSize.Large => "text-sm",
+        _ => "text-xs"
+    };
+
+    private string HoverClasses => "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-white";
+
+    private string ActiveClasses => "bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white";
+
+    private string DropdownClasses
+    {
+        get
+        {
+            var baseClasses = "absolute z-50 min-w-36 p-1.5 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-lg shadow-xl shadow-black/10 dark:shadow-black/30 border border-gray-200/60 dark:border-gray-700/60";
+
+            if (IsVertical)
+            {
+                if (Toolbar?.IsAtRight ?? false)
+                {
+                    return $"{baseClasses} right-full top-0 mr-2";
+                }
+                return $"{baseClasses} left-full top-0 ml-2";
+            }
+            else if (OpenUpward)
+            {
+                var horizontalAlign = (Toolbar?.IsAtRight ?? false) ? "right-0" : "left-0";
+                return $"{baseClasses} {horizontalAlign} bottom-full mb-2";
+            }
+            else
+            {
+                var horizontalAlign = (Toolbar?.IsAtRight ?? false) ? "right-0" : "left-0";
+                return $"{baseClasses} {horizontalAlign} top-full mt-2";
+            }
+        }
+    }
+
+    private void Open()
+    {
+        if (!Disabled)
+        {
+            CancelCloseTimer();
+            _isOpen = true;
+        }
+    }
+
+    private async void StartCloseTimer()
+    {
+        _closeCts?.Cancel();
+        _closeCts = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(150, _closeCts.Token);
+            _isOpen = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    private void CancelCloseTimer()
+    {
+        _closeCts?.Cancel();
+    }
+
+    private void Toggle()
+    {
+        if (!Disabled)
+        {
+            if (_isOpen)
+            {
+                _isOpen = false;
+            }
+            else
+            {
+                Open();
+            }
+        }
+    }
+}

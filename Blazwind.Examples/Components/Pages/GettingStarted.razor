@@ -1,0 +1,72 @@
+@page "/getting-started"
+@using Blazwind.Components.Typography
+
+<PageTitle>Installation - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Installation"
+            Description="Include the Blazwind component library in your project."
+            Icon="fa-solid fa-cloud-arrow-down"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="1. Package Installation" Subtitle="Installation via NuGet" Icon="fa-solid fa-box-open"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTypography>Use the following command to add the package to your project:</BwTypography>
+            <div class="bg-gray-900 text-gray-300 p-4 rounded font-mono text-sm shadow-inner">
+                dotnet add package Blazwind.Components
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    <BwCard Title="2. CSS and Script Definitions" Subtitle="index.html or App.razor configuration"
+            Icon="fa-brands fa-css3-alt" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTypography>Add the Font and CSS file to the head section:</BwTypography>
+            <div class="bg-gray-900 text-gray-300 p-4 rounded font-mono text-sm shadow-inner overflow-x-auto">
+                &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"&gt;<br/>
+                &lt;link href="_content/Blazwind.Components/blazwind.css" rel="stylesheet" /&gt;
+            </div>
+
+            <BwTypography Class="mt-2">Add the Script file at the end of the body:</BwTypography>
+            <div class="bg-gray-900 text-gray-300 p-4 rounded font-mono text-sm shadow-inner overflow-x-auto">
+                &lt;script src="_content/Blazwind.Components/blazwind.js"&gt;&lt;/script&gt;
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    <BwCard Title="3. Service Registration" Subtitle="Program.cs configuration" Icon="fa-solid fa-gear"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTypography>Add services to the DI container:</BwTypography>
+            <div class="bg-gray-900 text-gray-300 p-4 rounded font-mono text-sm shadow-inner">
+                builder.Services.AddBlazwind();
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    <BwCard Title="4. Global Import" Subtitle="_Imports.razor configuration" Icon="fa-solid fa-file-code"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTypography>Add namespaces for ease of use:</BwTypography>
+            <div class="bg-gray-900 text-gray-300 p-4 rounded font-mono text-sm shadow-inner">
+                @@using Blazwind.Components<br/>
+                @@using Blazwind.Components.Services<br/>
+                @@using Blazwind.Components.Button<br/>
+                @@using Blazwind.Components.Input<br/>
+                @@using Blazwind.Components.Layout<br/>
+                @@using Blazwind.Components.Card<br/>
+                @@using Blazwind.Components.Toast<br/>
+                @@using Blazwind.Components.Typography<br/>
+                @@using Blazwind.Components.Shared
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    <div class="flex justify-end mt-4">
+        <BwButton Href="components/button" Color="BwColor.Primary" Size="BwSize.Large">
+            Explore Components <i class="fa-solid fa-arrow-right ml-2"></i>
+        </BwButton>
+    </div>
+
+</BwColumn>

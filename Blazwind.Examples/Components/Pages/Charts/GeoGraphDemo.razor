@@ -1,0 +1,100 @@
+@page "/charts/geo-graph"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@inject HttpClient Http
+
+<PageTitle>Geo Graph - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Geo Graph" 
+            Description="Harita üzerinde uçuş rotaları ve bağlantı ağları görselleştirmesi."
+            Icon="fa-solid fa-plane"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="İzlanda Uçuş Ağı" Subtitle="Havalimanları ve bağlantı rotaları." Icon="fa-solid fa-route" Color="BwColor.Primary">
+        @if (_isLoading)
+        {
+            <div class="flex items-center justify-center h-96">
+                <span class="text-gray-500">Harita yükleniyor...</span>
+            </div>
+        }
+        else
+        {
+            <BwChart Options="_geoGraph" Height="600px" />
+        }
+    </BwCard>
+</BwColumn>
+
+@code {
+    private bool _isLoading = true;
+    private object? _geoGraph;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var geoJson = await Http.GetStringAsync("iceland.geo.json");
+            
+            _geoGraph = new
+            {
+                title = new { text = "İzlanda Uçuş Ağı", left = ChartPosition.Center },
+                tooltip = new { trigger = ChartTooltipTrigger.Item },
+                geo = new
+                {
+                    map = "iceland",
+                    roam = true,
+                    label = new { show = true, color = "#333" },
+                    itemStyle = new { areaColor = "#e7e8ea", borderColor = "#111" },
+                    emphasis = new
+                    {
+                        itemStyle = new { areaColor = "#93c5fd" }
+                    }
+                },
+                series = new object[]
+                {
+                    new
+                    {
+                        type = ChartSeriesType.Graph,
+                        coordinateSystem = "geo",
+                        symbol = ChartSymbol.Circle,
+                        symbolSize = 15,
+                        data = new object[]
+                        {
+                            new { name = "Reykjavik", value = new[] { -21.9426, 64.1466 }, itemStyle = new { color = "#ef4444" } },
+                            new { name = "Akureyri", value = new[] { -18.0878, 65.6885 }, itemStyle = new { color = "#3b82f6" } },
+                            new { name = "Egilsstaðir", value = new[] { -14.3948, 65.2644 }, itemStyle = new { color = "#3b82f6" } },
+                            new { name = "Ísafjörður", value = new[] { -23.1353, 66.0748 }, itemStyle = new { color = "#3b82f6" } },
+                            new { name = "Höfn", value = new[] { -15.2158, 64.2536 }, itemStyle = new { color = "#10b981" } },
+                            new { name = "Vestmannaeyjar", value = new[] { -20.2700, 63.4400 }, itemStyle = new { color = "#10b981" } }
+                        },
+                        links = new object[]
+                        {
+                            new { source = "Reykjavik", target = "Akureyri", lineStyle = new { width = 3, color = "#3b82f6" } },
+                            new { source = "Reykjavik", target = "Egilsstaðir", lineStyle = new { width = 2, color = "#3b82f6" } },
+                            new { source = "Reykjavik", target = "Ísafjörður", lineStyle = new { width = 2, color = "#3b82f6" } },
+                            new { source = "Reykjavik", target = "Höfn", lineStyle = new { width = 1, color = "#10b981" } },
+                            new { source = "Reykjavik", target = "Vestmannaeyjar", lineStyle = new { width = 1, color = "#10b981" } },
+                            new { source = "Akureyri", target = "Egilsstaðir", lineStyle = new { width = 1, color = "#8b5cf6" } }
+                        },
+                        lineStyle = new { curveness = 0.2, opacity = 0.7 },
+                        label = new { show = true, position = ChartPosition.Right, formatter = "{b}" },
+                        emphasis = new
+                        {
+                            focus = "adjacency",
+                            lineStyle = new { width = 5 }
+                        }
+                    }
+                },
+                registerMap = new { name = "iceland", geoJSON = geoJson }
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"GeoJSON yükleme hatası: {ex.Message}");
+        }
+
+        _isLoading = false;
+    }
+}

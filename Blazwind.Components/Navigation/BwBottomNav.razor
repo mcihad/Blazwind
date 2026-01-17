@@ -1,0 +1,23 @@
+@namespace Blazwind.Components.Navigation
+@using Blazwind.Components.Shared
+
+<nav class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] @Class">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</nav>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    
+    private string? _activeItemId;
+    
+    internal string? ActiveItemId => _activeItemId;
+    
+    internal void SetActiveItem(string itemId)
+    {
+        _activeItemId = itemId;
+        StateHasChanged();
+    }
+}

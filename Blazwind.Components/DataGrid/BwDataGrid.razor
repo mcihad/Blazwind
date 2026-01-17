@@ -1,0 +1,475 @@
+@namespace Blazwind.Components.DataGrid
+@using Blazwind.Components.DataGrid.Models
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Input
+@using Blazwind.Components.Pagination
+@using Blazwind.Components.Dropdown
+@typeparam TItem where TItem : notnull
+
+<CascadingValue Value="this">
+    @* Hidden column definitions collector *@
+    <div style="display: none;">
+        @ChildContent
+        @Columns
+    </div>
+</CascadingValue>
+
+@{
+    var cellPadding = Compact ? "px-3 py-2" : "px-4 py-3";
+    var headerCellClass = $"font-semibold text-gray-700 dark:text-gray-300 text-sm {cellPadding} bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 border-r border-gray-200/60 dark:border-gray-700/60 last:border-r-0";
+    var bodyCellClass = $"text-gray-600 dark:text-gray-400 text-sm {cellPadding}";
+    var processedItems = GetProcessedItems().ToList();
+    var visibleColumns = GetVisibleColumns().ToList();
+    var totalCount = GetTotalItemCount();
+    var heightStyle = !string.IsNullOrEmpty(Height) ? $"height: {Height};" : "";
+}
+
+<div class="relative bw-datagrid bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden @Class" id="@_gridId">
+    @* Toolbar *@
+    @if (ToolbarContent != null || EnableSearch || EnableColumnToggle || EnableExport)
+    {
+        <div class="flex items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+            <div class="flex items-center gap-3">
+                @ToolbarContent
+            </div>
+            
+            <div class="flex items-center gap-2">
+                @if (EnableSearch)
+                {
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" 
+                               placeholder="Ara..." 
+                               class="pl-9 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder:text-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-48"
+                               value="@_searchQuery"
+                               @oninput="@(e => HandleSearchChanged(e.Value?.ToString() ?? ""))" />
+                    </div>
+                }
+                
+                @if (EnableColumnToggle)
+                {
+                    <div class="relative">
+                        <button type="button" 
+                                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                                @onclick="ToggleColumnSelector">
+                            <i class="fa-solid fa-table-columns"></i>
+                            <span class="hidden sm:inline">Kolonlar</span>
+                        </button>
+                        
+                        @if (_showColumnSelector)
+                        {
+                            <div class="absolute right-0 top-full mt-1 z-50 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
+                                <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
+                                    <div class="relative">
+                                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                                        <input type="text" 
+                                               placeholder="Kolon ara..." 
+                                               class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                               @bind="_columnSearchQuery"
+                                               @bind:event="oninput" />
+                                    </div>
+                                </div>
+                                <div class="py-1 max-h-64 overflow-y-auto">
+                                    @{
+                                        var filteredColumns = string.IsNullOrWhiteSpace(_columnSearchQuery) 
+                                            ? _columns 
+                                            : _columns.Where(c => c.Title?.Contains(_columnSearchQuery, StringComparison.OrdinalIgnoreCase) == true).ToList();
+                                    }
+                                    @foreach (var col in filteredColumns)
+                                    {
+                                        <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                                             @onclick="@(() => ToggleColumnVisibility(col))">
+                                            <BwCheckbox IsChecked="@col.Visible" 
+                                                        IsCheckedChanged="@((_) => {/* Already handled */})"
+                                                        Size="BwSize.Small"
+                                                        Class="!m-0 pointer-events-none" />
+                                            <span class="text-sm text-gray-700 dark:text-gray-300">@col.Title</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                
+                @if (EnableExport && Exporters?.Any() == true)
+                {
+                    <div class="relative">
+                        <button type="button" 
+                                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                            <i class="fa-solid fa-download"></i>
+                            <span class="hidden sm:inline">Dışa Aktar</span>
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    
+    @* Loading Overlay *@
+    @if (IsLoading)
+    {
+        <div class="absolute inset-0 bg-white/75 dark:bg-gray-900/75 z-40 flex items-center justify-center">
+            @if (LoadingContent != null)
+            {
+                @LoadingContent
+            }
+            else
+            {
+                <div class="flex flex-col items-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600"></i>
+                    <span class="text-sm text-gray-500">Yükleniyor...</span>
+                </div>
+            }
+        </div>
+    }
+    
+    @* Table Container *@
+    <div class="relative overflow-auto" style="@heightStyle">
+        <table class="w-full text-left border-collapse min-w-full" style="@(!string.IsNullOrEmpty(TableMinWidth) ? $"min-width: {TableMinWidth};" : (AutoFit ? "min-width: max-content;" : ""))">
+            @* Header *@
+            <thead class="sticky top-0 z-30 bg-gray-50 dark:bg-gray-800 shadow-xs">
+                <tr class="bg-gray-50 dark:bg-gray-800">
+                    @* Selection Column *@
+                    @if (SelectionMode == BwSelectionMode.Single || SelectionMode == BwSelectionMode.Multiple)
+                    {
+                        <th class="@headerCellClass w-12 text-center sticky left-0 z-30 bg-gray-50 dark:bg-gray-800">
+                            @if (SelectionMode == BwSelectionMode.Multiple)
+                            {
+                                <BwCheckbox IsChecked="@IsAllSelected()" 
+                                            Size="BwSize.Small"
+                                            IsCheckedChanged="ToggleSelectAll" />
+                            }
+                        </th>
+                    }
+                    
+                    @* Expansion Column *@
+                    @if (EnableRowExpansion && DetailRowTemplate != null)
+                    {
+                        <th class="@headerCellClass w-10 bg-gray-50 dark:bg-gray-800"></th>
+                    }
+                    
+                    @* Data Columns *@
+                    @foreach (var column in visibleColumns)
+                    {
+                        var sort = GetSortForColumn(column);
+                        var isSorted = sort != null;
+                        var sortIcon = isSorted 
+                            ? (sort!.Direction == SortDirection.Ascending ? "fa-sort-up" : "fa-sort-down") 
+                            : "fa-sort";
+                        var sortColor = isSorted ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500";
+                        var widthStyle = column.CurrentWidth.HasValue 
+                            ? $"width: {column.CurrentWidth}px;" 
+                            : (!string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "");
+                        var alignClass = column.Align switch 
+                        {
+                            TextAlign.Center => "text-center",
+                            TextAlign.Right => "text-right",
+                            _ => "text-left"
+                        };
+                        var frozenClass = column.Frozen switch
+                        {
+                            FrozenPosition.Left => "sticky left-0 z-30 !bg-gray-50 dark:!bg-gray-800",
+                            FrozenPosition.Right => "sticky right-0 z-30 !bg-gray-50 dark:!bg-gray-800",
+                            _ => ""
+                        };
+                        
+                        var thRelative = EnableColumnResize ? "relative" : "";
+                        
+                        <th class="@headerCellClass @alignClass @frozenClass @column.HeaderClass @thRelative" 
+                            style="@widthStyle"
+                            data-column-id="@column.GetId()">
+                            <div class="flex items-center gap-2 @(column.Align == TextAlign.Right ? "justify-end" : column.Align == TextAlign.Center ? "justify-center" : "")">
+                                @if (column.HeaderTemplate != null)
+                                {
+                                    @column.HeaderTemplate
+                                }
+                                else if (EnableSorting && column.Sortable)
+                                {
+                                    <button type="button" 
+                                            class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                                            @onclick="@(() => HandleSort(column))">
+                                        <span>@column.Title</span>
+                                        <i class="fa-solid @sortIcon @sortColor text-xs"></i>
+                                        @if (EnableMultiSort && isSorted && _sorts.Count > 1)
+                                        {
+                                            <span class="text-[10px] text-blue-600 font-bold">@(sort!.Priority + 1)</span>
+                                        }
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span>@column.Title</span>
+                                }
+                                
+                                @if (EnableColumnResize && column.Resizable)
+                                {
+                                    <div class="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-10 flex justify-center hover:bg-blue-400/10 transition-colors group"
+                                         data-resize-handle="@column.GetId()">
+                                        <div class="w-px h-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    </div>
+                                }
+                                
+                                @if (EnableFiltering && FilterMode == FilterMode.Menu && column.Filterable)
+                                {
+                                    <BwDataGridFilterMenu FilterType="@column.FilterType"
+                                                          CurrentFilter="@GetFilterForColumn(column)"
+                                                          FilterOptions="@column.FilterOptions"
+                                                          OnFilterChanged="@(f => HandleFilterChanged(column.GetFieldName(), f))" />
+                                }
+                            </div>
+                        </th>
+                    }
+                </tr>
+                
+                @* Filter Row *@
+                @if (EnableFiltering && FilterMode == FilterMode.Row && visibleColumns.Any(c => c.Filterable))
+                {
+                    <tr class="bg-gray-50 dark:bg-gray-800">
+                        @if (SelectionMode == BwSelectionMode.Single || SelectionMode == BwSelectionMode.Multiple)
+                        {
+                            <th class="@cellPadding border-b border-gray-200 dark:border-gray-700 sticky left-0 z-30 bg-gray-50 dark:bg-gray-800"></th>
+                        }
+                        
+                        @if (EnableRowExpansion && DetailRowTemplate != null)
+                        {
+                            <th class="@cellPadding border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"></th>
+                        }
+                        
+                        @foreach (var column in visibleColumns)
+                        {
+                            var filter = GetFilterForColumn(column);
+                            var frozenClass = column.Frozen switch
+                            {
+                                FrozenPosition.Left => "sticky left-0 z-30 !bg-gray-50 dark:!bg-gray-800",
+                                FrozenPosition.Right => "sticky right-0 z-30 !bg-gray-50 dark:!bg-gray-800",
+                                _ => ""
+                            };
+                            
+                            <th class="@cellPadding border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 @frozenClass">
+                                @if (column.Filterable)
+                                {
+                                    @if (column.FilterTemplate != null)
+                                    {
+                                        @column.FilterTemplate(new FilterContext
+                                        {
+                                            Field = column.GetFieldName(),
+                                            CurrentFilter = filter,
+                                            OnFilterChanged = f => _ = HandleFilterChanged(column.GetFieldName(), f)
+                                        })
+                                    }
+                                    else
+                                    {
+                                        <BwDataGridFilter FilterType="@column.FilterType"
+                                                          CurrentFilter="@filter"
+                                                          FilterOptions="@column.FilterOptions"
+                                                          OnFilterChanged="@(f => HandleFilterChanged(column.GetFieldName(), f))" />
+                                    }
+                                }
+                            </th>
+                        }
+                    </tr>
+                }
+            </thead>
+            
+            @* Body *@
+            <tbody>
+                @if (processedItems.Any())
+                {
+                    var rowIndex = 0;
+                    foreach (var item in processedItems)
+                    {
+                        var isSelected = IsItemSelected(item);
+                        var isExpanded = IsRowExpanded(item);
+                        var stripedClass = Striped && rowIndex % 2 == 1 && !isSelected ? "bg-gray-50/50 dark:bg-gray-800/30" : "";
+                        var defaultSelectedClass = "!bg-blue-50 dark:!bg-blue-900/30 !text-blue-800 dark:!text-blue-200 font-medium";
+                        var selectedClass = isSelected ? (SelectedRowClass ?? defaultSelectedClass) : "";
+                        var hoverClass = Hoverable && !isSelected ? "hover:bg-gray-100 dark:hover:bg-gray-800" : (Hoverable && isSelected ? "hover:bg-blue-100 dark:hover:bg-blue-900/50" : "");
+                        var customRowClass = RowClass?.Invoke(item) ?? "";
+                        var customRowStyle = RowStyle?.Invoke(item) ?? "";
+                        
+                        <tr class="border-b border-gray-100 @stripedClass @selectedClass @hoverClass @customRowClass transition-colors cursor-pointer"
+                            style="@customRowStyle"
+                            @onclick="@(() => HandleRowClick(item))"
+                            @ondblclick="@(() => HandleRowDoubleClick(item))"
+                            @oncontextmenu="@(e => { if (EnableContextMenu) { ShowContextMenu(item, e.ClientX, e.ClientY); } })"
+                            @oncontextmenu:preventDefault="@EnableContextMenu">
+                            
+                            @* Selection Cell *@
+                            @if (SelectionMode == BwSelectionMode.Single || SelectionMode == BwSelectionMode.Multiple)
+                            {
+                                <td class="@bodyCellClass w-12 text-center sticky left-0 z-20 @(isSelected ? (SelectedRowClass ?? "!bg-blue-50 dark:!bg-blue-900/30") : "bg-white dark:bg-gray-900")" @onclick:stopPropagation="true">
+                                    @if (SelectionMode == BwSelectionMode.Multiple)
+                                    {
+                                        <BwCheckbox IsChecked="@isSelected" 
+                                                    Size="BwSize.Small"
+                                                    IsCheckedChanged="@((_) => ToggleSelection(item))" />
+                                    }
+                                    else
+                                    {
+                                        <BwRadio TValue="bool"
+                                                 Value="true"
+                                                 IsChecked="@isSelected" 
+                                                 OnClick="@(() => ToggleSelection(item))" />
+                                    }
+                                </td>
+                            }
+                            
+                            @* Expansion Cell *@
+                            @if (EnableRowExpansion && DetailRowTemplate != null)
+                            {
+                                var expansionBgClass = isSelected ? (SelectedRowClass ?? "!bg-blue-50 dark:!bg-blue-900/30") : (Striped && rowIndex % 2 == 1 ? "bg-gray-50/50 dark:bg-gray-800/30" : "bg-white dark:bg-gray-900");
+                                <td class="@bodyCellClass w-10 text-center @expansionBgClass" @onclick:stopPropagation="true">
+                                    <button type="button" 
+                                            class="p-1 hover:bg-gray-200 rounded transition-colors"
+                                            @onclick="@(() => ToggleRowExpansion(item))">
+                                        <i class="fa-solid @(isExpanded ? "fa-chevron-down" : "fa-chevron-right") text-gray-400 text-xs"></i>
+                                    </button>
+                                </td>
+                            }
+                            
+                            @* Data Cells *@
+                            @foreach (var column in visibleColumns)
+                            {
+                                var widthStyle = column.CurrentWidth.HasValue 
+                                    ? $"width: {column.CurrentWidth}px;" 
+                                    : (!string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "");
+                                var alignClass = column.Align switch 
+                                {
+                                    TextAlign.Center => "text-center",
+                                    TextAlign.Right => "text-right",
+                                    _ => "text-left"
+                                };
+                                var frozenClass = column.Frozen switch
+                                {
+                                    FrozenPosition.Left => $"sticky left-0 z-20 {(isSelected ? "!bg-blue-50 dark:!bg-blue-900/30" : "!bg-white dark:!bg-gray-900")}",
+                                    FrozenPosition.Right => $"sticky right-0 z-20 {(isSelected ? "!bg-blue-50 dark:!bg-blue-900/30" : "!bg-white dark:!bg-gray-900")}",
+                                    _ => ""
+                                };
+                                
+                                <td class="@bodyCellClass @alignClass @frozenClass @column.CellClass" style="@widthStyle">
+                                    @if (column.Template != null)
+                                    {
+                                        @column.Template(item)
+                                    }
+                                    else if (column.Ellipsis)
+                                    {
+                                        <div class="truncate" style="max-width: @(column.EllipsisMaxWidth ?? "200px");" 
+                                             title="@(column.GetValue(item)?.ToString() ?? "")">
+                                            @(column.GetValue(item)?.ToString() ?? "")
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @(column.GetValue(item)?.ToString() ?? "")
+                                    }
+                                </td>
+                            }
+                        </tr>
+                        
+                        @* Detail Row *@
+                        @if (EnableRowExpansion && DetailRowTemplate != null && isExpanded)
+                        {
+                            <tr class="bg-gray-50 dark:bg-gray-800/50">
+                                <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0) + 1)">
+                                    @DetailRowTemplate(item)
+                                </td>
+                            </tr>
+                        }
+                        
+                        rowIndex++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0) + (EnableRowExpansion && DetailRowTemplate != null ? 1 : 0))" 
+                            class="@bodyCellClass text-center py-12">
+                            @if (EmptyContent != null)
+                            {
+                                @EmptyContent
+                            }
+                            else
+                            {
+                                <div class="text-gray-400 dark:text-gray-500">
+                                    <i class="fa-solid fa-inbox text-4xl mb-3"></i>
+                                    <p class="text-sm">Gösterilecek veri bulunamadı</p>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+    @* Footer / Pagination / Export *@
+    @if (FooterContent != null || EnablePagination || EnableExport)
+    {
+        <div class="flex items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div class="flex items-center gap-4">
+                @FooterContent
+            </div>
+            
+            <div class="flex items-center gap-4">
+                @if (EnablePagination)
+                {
+                    <BwPagination TotalItems="@totalCount"
+                                  PageSize="@_currentPageSize"
+                                  CurrentPage="@_currentPage"
+                                  CurrentPageChanged="HandlePageChanged"
+                                  PageSizeChanged="HandlePageSizeChanged"
+                                  ShowPageSizeSelector="true"
+                                  ShowInfo="true" />
+                }
+                
+                @if (EnableExport)
+                {
+                    <div class="border-l border-gray-300 pl-4">
+                        <BwDropdown Alignment="BwDirection.Right" VPosition="BwDirection.Top">
+                            <TriggerContent>
+                                <button type="button"
+                                        class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 shadow-sm transition-all">
+                                    <i class="fa-solid fa-download text-blue-600 dark:text-blue-400"></i>
+                                    <span>Dışa Aktar</span>
+                                    <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+                                </button>
+                            </TriggerContent>
+                            <ChildContent>
+                                <BwDropdownHeader Title="Dışa Aktarma Formatları" />
+                                <BwDropdownItem Text="Excel (.xlsx)" 
+                                                Icon="fa-solid fa-file-excel" 
+                                                IconClass="text-green-600"
+                                                OnClick="@(() => ExportByFormat("xlsx"))" />
+                                <BwDropdownItem Text="CSV (.csv)"
+                                                Icon="fa-solid fa-file-csv"
+                                                IconClass="text-blue-600"
+                                                OnClick="@(() => ExportByFormat("csv"))" />
+                                <BwDropdownItem Text="TSV (.tsv)"
+                                                Icon="fa-solid fa-file-lines"
+                                                IconClass="text-purple-600"
+                                                OnClick="@(() => ExportByFormat("tsv"))" />
+                                <BwDropdownItem Text="JSON (.json)"
+                                                Icon="fa-solid fa-file-code"
+                                                IconClass="text-orange-500"
+                                                OnClick="@(() => ExportByFormat("json"))" />
+                            </ChildContent>
+                        </BwDropdown>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    
+    @* Context Menu *@
+    @if (_showContextMenu && _contextMenuItem != null && ContextMenuContent != null)
+    {
+        <div class="fixed z-[1070]" style="left: @(_contextMenuX)px; top: @(_contextMenuY)px;">
+            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg py-1 min-w-[160px]"
+                 @onclick="HideContextMenu">
+                @ContextMenuContent(_contextMenuItem)
+            </div>
+        </div>
+        <div class="fixed inset-0 z-[1060]" @onclick="HideContextMenu"></div>
+    }
+</div>

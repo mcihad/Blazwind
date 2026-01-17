@@ -1,0 +1,151 @@
+@page "/components/commandpalette"
+
+<PageTitle>CommandPalette Demo - Blazwind</PageTitle>
+@inject CommandPaletteService CommandService
+@inject ToastService ToastService
+@using Blazwind.Components.CommandPalette
+@implements IDisposable
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Command Palette"
+            Description="Spotlight-style command palette. Opens with Ctrl+K."
+            Icon="fa-solid fa-terminal"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="Quick Open" Subtitle="Click the button or use Ctrl+K" Icon="fa-solid fa-keyboard">
+        <BwRow Spacing="BwSpacing.Sm">
+            <BwButton Variant="BwVariant.Outline" OnClick="OpenPalette" Icon="fa-solid fa-search"
+                      Text="Search Commands... (Ctrl+K)"/>
+        </BwRow>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Keyboard Shortcut" Subtitle="Instant access with Ctrl+K" Icon="fa-solid fa-keyboard"
+                Color="BwColor.Primary"/>
+        <BwCard Title="Fuzzy Search" Subtitle="Smart command filtering" Icon="fa-solid fa-search"
+                Color="BwColor.Success"/>
+        <BwCard Title="Categories" Subtitle="Grouped commands" Icon="fa-solid fa-layer-group" Color="BwColor.Warning"/>
+        <BwCard Title="Keyboard Navigation" Subtitle="Navigate with ↑↓, select with Enter" Icon="fa-solid fa-arrow-up"
+                Color="BwColor.Info"/>
+    </BwRow>
+
+    <BwCard Title="Registered Commands" Subtitle="List of current commands" Icon="fa-solid fa-list"
+            Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Sm">
+            @foreach (var cmd in CommandService.Commands)
+            {
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center"
+                       Class="p-2 bg-gray-50 rounded">
+                    <i class="@cmd.Icon text-blue-600"></i>
+                    <span class="font-medium">@cmd.Label</span>
+                    @if (!string.IsNullOrEmpty(cmd.Description))
+                    {
+                        <span class="text-gray-500 text-sm">@cmd.Description</span>
+                    }
+                </BwRow>
+            }
+        </BwColumn>
+    </BwCard>
+
+    <BwCard Title="Last Action" Subtitle="Result of executed command" Icon="fa-solid fa-bolt" Color="BwColor.Danger">
+        <BwAlert Color="@(_lastAction.Contains("Henüz") ? BwColor.Secondary : BwColor.Success)">
+            @_lastAction
+        </BwAlert>
+    </BwCard>
+</BwColumn>
+
+<BwCommandPalette/>
+
+@code {
+    private string _lastAction = "No command has been executed yet.";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CommandService.RegisterCommands(new[]
+            {
+                new CommandItem
+                {
+                    Id = "cmd-home",
+                    Label = "Home",
+                    Icon = "fa-solid fa-home",
+                    Category = "Navigation",
+                    Shortcut = "G H",
+                    Action = async () =>
+                    {
+                        _lastAction = "Navigated to home";
+                        await ToastService.SuccessAsync("Redirecting to home page...");
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new CommandItem
+                {
+                    Id = "cmd-settings",
+                    Label = "Settings",
+                    Icon = "fa-solid fa-cog",
+                    Category = "Navigation",
+                    Shortcut = "G S",
+                    Action = async () =>
+                    {
+                        _lastAction = "Settings opened";
+                        await ToastService.InfoAsync("Settings page opened");
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new CommandItem
+                {
+                    Id = "cmd-new-file",
+                    Label = "New File",
+                    Icon = "fa-solid fa-file",
+                    Category = "File",
+                    Shortcut = "Ctrl+N",
+                    Action = async () =>
+                    {
+                        _lastAction = "New file created";
+                        await ToastService.SuccessAsync("New file created");
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new CommandItem
+                {
+                    Id = "cmd-save",
+                    Label = "Save",
+                    Icon = "fa-solid fa-save",
+                    Category = "File",
+                    Shortcut = "Ctrl+S",
+                    Action = async () =>
+                    {
+                        _lastAction = "File saved";
+                        await ToastService.SuccessAsync("Changes saved");
+                        await InvokeAsync(StateHasChanged);
+                    }
+                },
+                new CommandItem
+                {
+                    Id = "cmd-theme",
+                    Label = "Change Theme",
+                    Description = "Switch between light and dark theme",
+                    Icon = "fa-solid fa-moon",
+                    Category = "Appearance",
+                    Action = async () =>
+                    {
+                        _lastAction = "Theme changed";
+                        await ToastService.WarningAsync("Changing theme...");
+                        await InvokeAsync(StateHasChanged);
+                    }
+                }
+            });
+        }
+    }
+
+    private void OpenPalette()
+    {
+        CommandService.Show();
+    }
+
+    public void Dispose()
+    {
+    }
+
+}

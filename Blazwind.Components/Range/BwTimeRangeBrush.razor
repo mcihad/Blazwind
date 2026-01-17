@@ -1,0 +1,326 @@
+@namespace Blazwind.Components.Range
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div id="@_elementId" class="bw-time-range-brush @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
+    }
+
+    @* Activity/Usage Chart *@
+    @if (ShowActivityChart && Data?.Any() == true)
+    {
+        <div class="h-8 flex items-end gap-px mb-1">
+            @foreach (var (point, index) in Data.Select((v, i) => (v, i)))
+            {
+                var height = MaxValue > 0 ? (point.Value / MaxValue) * 100 : 0;
+                var isInRange = IsTimeInRange(point.Time);
+                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? GetBarActiveClass() : "bg-gray-200 dark:bg-gray-700")"
+                    style="height: @(Math.Max(2, height))%;" title="@point.Time.ToString(@"hh\:mm") - @point.Value">
+                </div>
+            }
+        </div>
+    }
+
+    @* Brush Track *@
+    <div class="bw-brush-track relative h-8 rounded-lg @GetTrackBgClass() overflow-hidden cursor-pointer select-none">
+        @* Inactive areas *@
+        <div class="absolute inset-y-0 left-0 bg-gray-300/50 dark:bg-gray-900/60 transition-all"
+            style="width: @(StartPercent)%;"></div>
+        <div class="absolute inset-y-0 right-0 bg-gray-300/50 dark:bg-gray-900/60 transition-all"
+            style="width: @(100 - EndPercent)%;"></div>
+
+        @* Selection Brush *@
+        <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
+                    @GetBrushBgClass() shadow hover:shadow-md transition-all"
+            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+
+            @* Left Handle *@
+            <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-2.5 cursor-ew-resize @GetHandleClass()
+                        flex items-center justify-center rounded-l">
+                <div class="w-0.5 h-4 bg-white/50 rounded-full"></div>
+            </div>
+
+            @* Grip *@
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+                <div class="flex gap-0.5">
+                    <div class="w-0.5 h-2.5 bg-white rounded-full"></div>
+                    <div class="w-0.5 h-2.5 bg-white rounded-full"></div>
+                </div>
+            </div>
+
+            @* Right Handle *@
+            <div class="bw-brush-handle-right absolute right-0 inset-y-0 w-2.5 cursor-ew-resize @GetHandleClass()
+                        flex items-center justify-center rounded-r">
+                <div class="w-0.5 h-4 bg-white/50 rounded-full"></div>
+            </div>
+        </div>
+
+        @* Time Scale *@
+        @if (ShowTimeScale)
+        {
+            <div class="absolute -bottom-4 inset-x-0 flex justify-between text-[9px] text-gray-400 px-1">
+                <span>@MinTime.ToString(@"hh\:mm")</span>
+                @if (ShowQuarterMarks)
+                {
+                    <span>@MinTime.Add(TimeSpan.FromMinutes(TotalMinutes / 4)).ToString(@"hh\:mm")</span>
+                    <span>@MinTime.Add(TimeSpan.FromMinutes(TotalMinutes / 2)).ToString(@"hh\:mm")</span>
+                    <span>@MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * 3 / 4)).ToString(@"hh\:mm")</span>
+                }
+                else
+                {
+                    <span>@MinTime.Add(TimeSpan.FromMinutes(TotalMinutes / 2)).ToString(@"hh\:mm")</span>
+                }
+                <span>@MaxTime.ToString(@"hh\:mm")</span>
+            </div>
+        }
+    </div>
+
+    @* Selected Time Display *@
+    @if (ShowSelectedRange)
+    {
+        <div class="mt-5 flex items-center justify-center gap-3">
+            <div
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <i class="fa-regular fa-clock @GetIconColorClass() text-xs"></i>
+                <span
+                    class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300">@CurrentStartTime.ToString(@"hh\:mm")</span>
+            </div>
+            <div class="flex items-center gap-1 text-gray-400">
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+                <span class="text-xs">(@DurationText)</span>
+            </div>
+            <div
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <i class="fa-regular fa-clock @GetIconColorClass() text-xs"></i>
+                <span
+                    class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300">@CurrentEndTime.ToString(@"hh\:mm")</span>
+            </div>
+        </div>
+    }
+
+    @* Quick Time Presets *@
+    @if (Presets?.Any() == true)
+    {
+        <div class="mt-3 flex flex-wrap justify-center gap-2">
+            @foreach (var preset in Presets)
+            {
+                <button type="button"
+                    class="px-2 py-1 text-xs font-medium rounded-md transition-all
+                                                       @(IsPresetActive(preset) ? GetActivePresetClass() : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300")"
+                    @onclick="() => ApplyPreset(preset)">
+                    @preset.Label
+                </button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public TimeSpan MinTime { get; set; } = TimeSpan.Zero;
+    [Parameter] public TimeSpan MaxTime { get; set; } = TimeSpan.FromHours(24);
+    [Parameter] public TimeSpan StartTime { get; set; } = TimeSpan.FromHours(9);
+    [Parameter] public TimeSpan EndTime { get; set; } = TimeSpan.FromHours(17);
+    [Parameter] public TimeSpan Step { get; set; } = TimeSpan.FromMinutes(15);
+    [Parameter] public double MinWidthPercent { get; set; } = 5;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool ShowSelectedRange { get; set; } = true;
+    [Parameter] public bool ShowTimeScale { get; set; } = true;
+    [Parameter] public bool ShowQuarterMarks { get; set; } = true;
+    [Parameter] public bool ShowActivityChart { get; set; } = true;
+    [Parameter] public List<TimeActivityPoint>? Data { get; set; }
+    [Parameter] public List<TimeBrushPreset>? Presets { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<BrushChangedEventArgs<TimeSpan>> OnBrushChanged { get; set; }
+
+    private string _elementId = "";
+    private DotNetObjectReference<BwTimeRangeBrush>? _dotNetRef;
+    private double _startPercent;
+    private double _endPercent;
+
+    private double StartPercent => _startPercent;
+    private double EndPercent => _endPercent;
+    private double TotalMinutes => (MaxTime - MinTime).TotalMinutes;
+    private TimeSpan CurrentStartTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (_startPercent /
+    100))));
+    private TimeSpan CurrentEndTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (_endPercent / 100))));
+    private double MaxValue => Data?.Max(x => x.Value) ?? 0;
+
+    private string DurationText
+    {
+        get
+        {
+            var duration = CurrentEndTime - CurrentStartTime;
+            if (duration.TotalHours >= 1)
+                return $"{(int)duration.TotalHours}s {duration.Minutes}dk";
+            return $"{duration.Minutes}dk";
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        _elementId = $"bw-time-brush-{Guid.NewGuid():N}";
+
+        if (TotalMinutes > 0)
+        {
+            _startPercent = ((StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+            _endPercent = ((EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
+            MinWidthPercent);
+        }
+    }
+
+    [JSInvokable]
+    public async Task HandleBrushChanged(double startPercent, double endPercent)
+    {
+        _startPercent = Math.Round(startPercent, 2);
+        _endPercent = Math.Round(endPercent, 2);
+
+        await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<TimeSpan>
+        {
+            Start = CurrentStartTime,
+            End = CurrentEndTime,
+            Min = MinTime,
+            Max = MaxTime,
+            StartPercent = _startPercent,
+            EndPercent = _endPercent
+        });
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ApplyPreset(TimeBrushPreset preset)
+    {
+        if (TotalMinutes <= 0) return;
+
+        _startPercent = ((preset.StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+        _endPercent = ((preset.EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+
+        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, _startPercent, _endPercent);
+
+        await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<TimeSpan>
+        {
+            Start = preset.StartTime,
+            End = preset.EndTime,
+            Min = MinTime,
+            Max = MaxTime,
+            StartPercent = _startPercent,
+            EndPercent = _endPercent
+        });
+    }
+
+    private bool IsPresetActive(TimeBrushPreset preset)
+    {
+        return Math.Abs((CurrentStartTime - preset.StartTime).TotalMinutes) < Step.TotalMinutes &&
+        Math.Abs((CurrentEndTime - preset.EndTime).TotalMinutes) < Step.TotalMinutes;
+    }
+
+    private bool IsTimeInRange(TimeSpan time)
+    {
+        if (TotalMinutes <= 0) return false;
+        var percent = ((time - MinTime).TotalMinutes / TotalMinutes) * 100;
+        return percent >= _startPercent && percent <= _endPercent;
+    }
+
+    private TimeSpan SnapToStep(TimeSpan time)
+    {
+        var stepMinutes = Step.TotalMinutes;
+        var totalMinutes = Math.Round(time.TotalMinutes / stepMinutes) * stepMinutes;
+        return TimeSpan.FromMinutes(totalMinutes);
+    }
+
+    private string GetTrackBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 dark:bg-blue-950",
+        BwColor.Success => "bg-green-100 dark:bg-green-950",
+        BwColor.Danger => "bg-red-100 dark:bg-red-950",
+        BwColor.Warning => "bg-amber-100 dark:bg-amber-950",
+        BwColor.Info => "bg-cyan-100 dark:bg-cyan-950",
+        _ => "bg-blue-100 dark:bg-blue-950"
+    };
+
+    private string GetBrushBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-gradient-to-r from-blue-500 to-blue-600",
+        BwColor.Success => "bg-gradient-to-r from-green-500 to-green-600",
+        BwColor.Danger => "bg-gradient-to-r from-red-500 to-red-600",
+        BwColor.Warning => "bg-gradient-to-r from-amber-500 to-amber-600",
+        BwColor.Info => "bg-gradient-to-r from-cyan-500 to-cyan-600",
+        _ => "bg-gradient-to-r from-blue-500 to-blue-600"
+    };
+
+    private string GetHandleClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-700",
+        BwColor.Success => "bg-green-700",
+        BwColor.Danger => "bg-red-700",
+        BwColor.Warning => "bg-amber-700",
+        BwColor.Info => "bg-cyan-700",
+        _ => "bg-blue-700"
+    };
+
+    private string GetBarActiveClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-400 dark:bg-blue-500",
+        BwColor.Success => "bg-green-400 dark:bg-green-500",
+        BwColor.Danger => "bg-red-400 dark:bg-red-500",
+        BwColor.Warning => "bg-amber-400 dark:bg-amber-500",
+        BwColor.Info => "bg-cyan-400 dark:bg-cyan-500",
+        _ => "bg-blue-400 dark:bg-blue-500"
+    };
+
+    private string GetIconColorClass() => Color switch
+    {
+        BwColor.Primary => "text-blue-500",
+        BwColor.Success => "text-green-500",
+        BwColor.Danger => "text-red-500",
+        BwColor.Warning => "text-amber-500",
+        BwColor.Info => "text-cyan-500",
+        _ => "text-blue-500"
+    };
+
+    private string GetActivePresetClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-500 text-white shadow-sm",
+        BwColor.Success => "bg-green-500 text-white shadow-sm",
+        BwColor.Danger => "bg-red-500 text-white shadow-sm",
+        _ => "bg-blue-500 text-white shadow-sm"
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
+        }
+        catch { }
+
+        _dotNetRef?.Dispose();
+    }
+
+    public class TimeActivityPoint
+    {
+        public TimeSpan Time { get; set; }
+        public double Value { get; set; }
+    }
+
+    public class TimeBrushPreset
+    {
+        public string Label { get; set; } = "";
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
+    }
+}

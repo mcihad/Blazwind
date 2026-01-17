@@ -1,0 +1,56 @@
+## [Visual Studio / Rider]
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.idea/
+.agent/
+riderModule.iml
+/_ReSharper.Caches/
+*.DotSettings.user
+*.user.g.host
+_ReSharper.*/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vshost.exe
+*.vshost.exe.config
+*.vshost.exe.manifest
+*.manifest
+*.swp
+*~
+*.bak
+*.cache
+*.log
+build_error.log
+build_errors.log
+make.log
+
+## [Node.js / Vite]
+node_modules/
+dist/
+dist-ssr/
+*.local
+.npm
+.eslintcache
+.stylelintcache
+.node_repl_history
+yarn-error.log*
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+## [OS Specific]
+.DS_Store
+Thumbs.db
+
+## [Project Specific]
+*.asax
+*.dll
+*.exe
+*.pdb
+*.suo
+packages/

@@ -1,0 +1,99 @@
+@page "/charts/area"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Alan Grafik - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Alan Grafik (Area Chart)" 
+            Description="Kümülatif değerleri ve trendleri göstermek için ideal grafik tipi."
+            Icon="fa-solid fa-chart-area"
+            Color="BwColor.Info" />
+
+    @* Temel Alan *@
+    <BwCard Title="Temel Alan Grafik" Subtitle="Basic area chart." Icon="fa-solid fa-chart-area" Color="BwColor.Primary">
+        <BwChart Options="_basicArea" Height="350px" />
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Gradient Area *@
+        <BwCard Title="Gradyan Alan" Subtitle="Gradient filled area." Icon="fa-solid fa-paint-brush" Color="BwColor.Info">
+            <BwChart Options="_gradientArea" Height="280px" />
+        </BwCard>
+
+        @* Stacked Area *@
+        <BwCard Title="Yığılmış Alan" Subtitle="Stacked area chart." Icon="fa-solid fa-layer-group" Color="BwColor.Success">
+            <BwChart Options="_stackedArea" Height="280px" />
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private ChartOptions _basicArea = new()
+    {
+        Title = new ChartTitle { Text = "Aylık Gelir Trendi", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            BoundaryGap = false,
+            Data = new List<string> { "Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Type = ChartSeriesType.Line,
+                Smooth = true,
+                AreaStyle = new { },
+                Data = new List<int> { 820, 932, 901, 934, 1290, 1330, 1320, 1450, 1200, 1340, 1500, 1620 }
+            }
+        },
+        Color = new List<string> { "#3b82f6" }
+    };
+
+    private ChartOptions _gradientArea = new()
+    {
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            BoundaryGap = false,
+            Data = new List<string> { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Type = ChartSeriesType.Line,
+                Smooth = true,
+                AreaStyle = new { },
+                Data = new List<int> { 140, 232, 101, 264, 90, 340, 250 }
+            }
+        },
+        Color = new List<string> { "#8b5cf6" }
+    };
+
+    private ChartOptions _stackedArea = new()
+    {
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        Legend = new ChartLegend { Data = new List<string> { "Gelir", "Gider" } },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            BoundaryGap = false,
+            Data = new List<string> { "Oca", "Şub", "Mar", "Nis", "May", "Haz" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new() { Name = "Gelir", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Smooth = true, Data = new List<int> { 820, 932, 901, 934, 1290, 1330 } },
+            new() { Name = "Gider", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Smooth = true, Data = new List<int> { 620, 732, 801, 834, 990, 1030 } }
+        },
+        Color = new List<string> { "#10b981", "#ef4444" }
+    };
+}

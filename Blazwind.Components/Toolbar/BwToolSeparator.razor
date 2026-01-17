@@ -1,0 +1,13 @@
+@namespace Blazwind.Components.Toolbar
+
+<div class="@SeparatorClass"></div>
+
+@code {
+    [CascadingParameter] public BwToolbar? Toolbar { get; set; }
+
+    private bool IsVertical => Toolbar?.IsVertical ?? false;
+
+    private string SeparatorClass => IsVertical
+    ? "w-full h-px bg-gray-200/80 dark:bg-gray-700/80 my-1"
+    : "h-6 w-px bg-gray-200/80 dark:bg-gray-700/80 mx-1";
+}

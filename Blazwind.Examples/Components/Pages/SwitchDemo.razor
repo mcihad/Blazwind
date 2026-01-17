@@ -1,0 +1,100 @@
+@page "/components/switch"
+@using Blazwind.Components.Input
+
+<PageTitle>Switch Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Switch Component"
+            Description="Animated toggle switch component for toggling on/off states."
+            Icon="fa-solid fa-toggle-on"
+            Color="BwColor.Success"/>
+
+    @* Basic & Sizes & Variants *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Switch" Subtitle="On/Off state management" Icon="fa-solid fa-power-off"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                @inject ToastService ToastService
+
+                <div class="space-y-4">
+                    <BwSwitch Label="Enable notifications"
+                              IsChecked="_notifications"
+                              IsCheckedChanged="@(v =>
+                                                {
+                                                    _notifications = v;
+                                                    ToastService.InfoAsync(v ? "Notifications enabled" : "Notifications disabled");
+                                                })"/>
+                    <BwSwitch Label="Dark mode" @bind-IsChecked="_darkMode"/>
+                    <BwSwitch Label="Automatic update" @bind-IsChecked="_autoUpdate"/>
+                </div>
+
+                <div class="mt-4 p-3 bg-blue-50 rounded text-sm text-blue-700">
+                    <strong>Settings:</strong>
+                    Notifications: @(_notifications ? "On" : "Off"),
+                    Dark Mode: @(_darkMode ? "On" : "Off"),
+                    Update: @(_autoUpdate ? "On" : "Off")
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large options" Icon="fa-solid fa-text-height"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-4">
+                    <BwSwitch Label="Small switch" Size="BwSize.Small" IsChecked="true"/>
+                    <BwSwitch Label="Medium switch (default)" Size="BwSize.Medium" IsChecked="true"/>
+                    <BwSwitch Label="Large switch" Size="BwSize.Large" IsChecked="true"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Color Options" Subtitle="Different semantic variants" Icon="fa-solid fa-palette"
+                Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-4">
+                    <BwSwitch Label="Primary (Blue)" IsChecked="true" Color="BwColor.Primary"/>
+                    <BwSwitch Label="Success (Green)" IsChecked="true" Color="BwColor.Success"/>
+                    <BwSwitch Label="Danger (Red)" IsChecked="true" Color="BwColor.Danger"/>
+                    <BwSwitch Label="Warning (Orange)" IsChecked="true" Color="BwColor.Warning"/>
+                    <BwSwitch Label="Secondary (Gray)" IsChecked="true" Color="BwColor.Secondary"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Example Scenarios *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Advanced Scenario" Subtitle="Settings panel example" Icon="fa-solid fa-sliders"
+                Color="BwColor.Primary">
+            <div class="divide-y divide-gray-100">
+                <DemoSettingsRow Title="Email notifications" Description="Receive emails for new messages">
+                    <BwSwitch @bind-IsChecked="_emailNotif"/>
+                </DemoSettingsRow>
+                <DemoSettingsRow Title="Push notifications" Description="Receive instant notifications">
+                    <BwSwitch @bind-IsChecked="_pushNotif"/>
+                </DemoSettingsRow>
+                <DemoSettingsRow Title="SMS notifications" Description="Receive SMS for important updates">
+                    <BwSwitch @bind-IsChecked="_smsNotif"/>
+                </DemoSettingsRow>
+            </div>
+        </BwCard>
+
+        <BwCard Title="Disabled" Subtitle="Non-interactive states" Icon="fa-solid fa-ban" Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="space-y-4">
+                    <BwSwitch Label="Disabled (Off)" IsDisabled="true" IsChecked="false"/>
+                    <BwSwitch Label="Disabled (On)" IsDisabled="true" IsChecked="true"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private bool _notifications = true;
+    private bool _darkMode;
+    private bool _autoUpdate = true;
+    private bool _emailNotif = true;
+    private bool _pushNotif = true;
+    private bool _smsNotif;
+}

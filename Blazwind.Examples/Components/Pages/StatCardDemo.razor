@@ -1,0 +1,66 @@
+@page "/components/stat-card"
+
+<PageTitle>Stat Card Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Stat Card"
+            Description="Statistic cards for dashboard."
+            Icon="fa-solid fa-chart-simple"
+            Color="BwColor.Info"/>
+
+    @* Basic Stats *@
+    <BwCard Title="Basic Stats" Subtitle="Value, title and icon" Icon="fa-solid fa-chart-line" Color="BwColor.Primary">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <BwStatCard Title="Total Users" Value="12,453" Icon="fa-solid fa-users" Color="BwColor.Primary"/>
+            <BwStatCard Title="Active Sessions" Value="847" Icon="fa-solid fa-circle-check" Color="BwColor.Success"/>
+            <BwStatCard Title="Pending Tasks" Value="23" Icon="fa-solid fa-clock" Color="BwColor.Warning"/>
+            <BwStatCard Title="Error Count" Value="5" Icon="fa-solid fa-triangle-exclamation" Color="BwColor.Danger"/>
+        </div>
+    </BwCard>
+
+    @* With Trends *@
+    <BwCard Title="Trend Indicators" Subtitle="Increase/decrease markers" Icon="fa-solid fa-arrow-trend-up"
+            Color="BwColor.Success">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <BwStatCard Title="Monthly Revenue"
+                        Value="₺45,230"
+                        Icon="fa-solid fa-turkish-lira-sign"
+                        TrendValue="+12.5%"
+                        TrendDescription="compared to last month"
+                        Trend="BwTrend.Up"/>
+
+            <BwStatCard Title="Visitors"
+                        Value="8,942"
+                        Icon="fa-solid fa-eye"
+                        TrendValue="-3.2%"
+                        TrendDescription="compared to last week"
+                        Trend="BwTrend.Down"/>
+
+            <BwStatCard Title="Conversion Rate"
+                        Value="%4.8"
+                        Icon="fa-solid fa-bullseye"
+                        TrendValue="No change"
+                        Trend="BwTrend.Neutral"/>
+        </div>
+    </BwCard>
+
+    @* Dark Variant *@
+    <BwCard Title="Dark Theme" Subtitle="Dark variant" Icon="fa-solid fa-moon" Color="BwColor.Dark">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <BwStatCard Title="Total Sales"
+                        Value="₺234,500"
+                        Icon="fa-solid fa-cart-shopping"
+                        TrendValue="+8.1%"
+                        Trend="BwTrend.Up"
+                        Color="BwColor.Dark"/>
+
+            <BwStatCard Title="Average Order"
+                        Value="₺185"
+                        Icon="fa-solid fa-receipt"
+                        Color="BwColor.Dark"/>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+}

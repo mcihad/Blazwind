@@ -1,0 +1,59 @@
+@namespace Blazwind.Components.Layout
+
+@{
+    var style = BuildStyle();
+}
+
+<div class="@Class" style="@style">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Row position (0-indexed)
+    /// </summary>
+    [Parameter] public int Row { get; set; } = 0;
+    
+    /// <summary>
+    /// Column position (0-indexed)
+    /// </summary>
+    [Parameter] public int Column { get; set; } = 0;
+    
+    /// <summary>
+    /// Number of rows to span
+    /// </summary>
+    [Parameter] public int RowSpan { get; set; } = 1;
+    
+    /// <summary>
+    /// Number of columns to span
+    /// </summary>
+    [Parameter] public int ColumnSpan { get; set; } = 1;
+    
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    private string BuildStyle()
+    {
+        var parts = new List<string>();
+        
+        // Grid row: CSS uses 1-indexed lines
+        var rowStart = Row + 1;
+        var rowEnd = rowStart + RowSpan;
+        parts.Add($"grid-row: {rowStart} / {rowEnd}");
+        
+        // Grid column: CSS uses 1-indexed lines
+        var colStart = Column + 1;
+        var colEnd = colStart + ColumnSpan;
+        parts.Add($"grid-column: {colStart} / {colEnd}");
+        
+        // Append custom style
+        if (!string.IsNullOrWhiteSpace(Style))
+        {
+            parts.Add(Style.TrimEnd(';'));
+        }
+        
+        return string.Join("; ", parts) + ";";
+    }
+}

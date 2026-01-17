@@ -1,0 +1,94 @@
+@page "/components/pagination"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Pagination
+
+<PageTitle>Pagination Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Pagination"
+            Description="Pagination components for navigating large datasets."
+            Icon="fa-solid fa-angles-right"
+            Color="BwColor.Primary"/>
+
+    <BwRow Spacing="BwSpacing.Lg" Class="grid lg:grid-cols-2 gap-6">
+
+        @* Interactive Demo *@
+        <BwCard Title="Interactive Example" Subtitle="Full-featured pagination experience"
+                Icon="fa-solid fa-hand-pointer" Color="BwColor.Primary" Class="lg:col-span-2">
+            <div
+                class="flex flex-col items-center gap-6 py-8 bg-gray-50/50 rounded-lg border border-gray-100 border-dashed">
+
+                <div class="text-center space-y-1">
+                    <h3 class="text-2xl font-bold text-gray-900">Page @_interactivePage</h3>
+                    <p class="text-gray-500">Total 150 items, @_pageSize items per page</p>
+                </div>
+
+                <BwPagination TotalItems="150"
+                              @bind-PageSize="_pageSize"
+                              @bind-CurrentPage="_interactivePage"
+                              ShowPageSizeSelector="true"
+                              ShowInfo="true"/>
+            </div>
+        </BwCard>
+
+        @* Sizing Variants *@
+        <BwCard Title="Size Options" Subtitle="Scalable structure for different areas" Icon="fa-solid fa-expand"
+                Color="BwColor.Success">
+            <div class="space-y-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <BwBadge Color="BwColor.Secondary">Small</BwBadge>
+                        <span class="text-xs text-gray-400">For constrained areas</span>
+                    </div>
+                    <BwPagination TotalItems="50" PageSize="10" CurrentPage="1" Size="BwSize.Small"
+                                  ShowFirstLast="false"/>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <BwBadge Color="BwColor.Primary">Medium</BwBadge>
+                        <span class="text-xs text-gray-400">Default size</span>
+                    </div>
+                    <BwPagination TotalItems="50" PageSize="10" CurrentPage="2" Size="BwSize.Medium"/>
+                </div>
+
+                <div class="border-t border-gray-100 pt-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <BwBadge Color="BwColor.Info">Large</BwBadge>
+                        <span class="text-xs text-gray-400">Comfortable touch areas</span>
+                    </div>
+                    <BwPagination TotalItems="50" PageSize="10" CurrentPage="3" Size="BwSize.Large"/>
+                </div>
+            </div>
+        </BwCard>
+
+        @* Simple Mode *@
+        <BwCard Title="Simplified Mode" Subtitle="Only necessary controls" Icon="fa-regular fa-square-minus"
+                Color="BwColor.Warning">
+            <div class="flex flex-col gap-6 h-full">
+                <p class="text-sm text-gray-600">
+                    Sometimes it's enough to show only forward/backward and page numbers to avoid confusing the user.
+                    <code class="text-xs bg-gray-100 px-1 py-0.5 rounded text-red-500">ShowFirstLast="false"</code> and
+                    <code
+                        class="text-xs bg-gray-100 px-1 py-0.5 rounded text-red-500">ShowPageSizeSelector="false"</code>
+                    parameters to achieve this appearance.
+                </p>
+
+                <div class="mt-auto p-4 bg-white border border-gray-100 rounded-lg shadow-sm flex justify-center">
+                    <BwPagination TotalItems="30"
+                                  PageSize="5"
+                                  CurrentPage="1"
+                                  ShowFirstLast="false"
+                                  ShowPageSizeSelector="false"
+                                  ShowInfo="false"/>
+                </div>
+            </div>
+        </BwCard>
+
+    </BwRow>
+</BwColumn>
+
+@code {
+    private int _interactivePage = 1;
+    private int _pageSize = 10;
+}

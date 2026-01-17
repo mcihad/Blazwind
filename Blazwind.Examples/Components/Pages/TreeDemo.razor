@@ -1,0 +1,444 @@
+@page "/components/tree"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Tree
+
+<PageTitle>Tree Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Tree Component"
+            Description="Hierarchical tree view with unlimited depth. Supports search, selection modes, table mode and lazy loading."
+            Icon="fa-solid fa-folder-tree"
+            Color="BwColor.Primary"/>
+    @* TreeSelect Input *@
+    <BwCard Title="TreeSelect Dropdown" Subtitle="Dropdown input for tree structures" Icon="fa-solid fa-caret-down"
+            Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+            <div>
+                <BwTreeSelect TItem="string"
+                              Label="Select Category"
+                              Placeholder="Please select a category..."
+                              Nodes="_selectableNodes"
+                              @bind-ClickedNode="_treeSelectNode"/>
+            </div>
+            <div>
+                <BwTreeSelect TItem="string"
+                              Label="Multiple Selection"
+                              Placeholder="Please select categories..."
+                              Nodes="_cascadeNodes"
+                              SelectionMode="BwSelectionMode.Multiple"
+                              CascadeSelection="true"
+                              @bind-SelectedNodes="_treeSelectMultiNodes"/>
+            </div>
+        </BwRow>
+    </BwCard>
+    @* Basic Tree *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Folder/file hierarchy" Icon="fa-solid fa-folder" Color="BwColor.Primary">
+            <BwTree TItem="string" Nodes="_basicNodes" ShowToolbar="true"/>
+        </BwCard>
+
+        <BwCard Title="Searchable" Subtitle="Filter nodes" Icon="fa-solid fa-search" Color="BwColor.Info">
+            <BwTree TItem="string" Nodes="_searchNodes" ShowSearch="true" ShowToolbar="true"/>
+        </BwCard>
+    </BwRow>
+
+    @* Lazy Loading & ShowChildCount *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Lazy Loading" Subtitle="Load data asynchronously on click" Icon="fa-solid fa-cloud-arrow-down"
+                Color="BwColor.Warning">
+            <BwTree TItem="string"
+                    Nodes="_lazyNodes"
+                    OnLoadChildren="LoadChildrenAsync"/>
+
+            <div
+                class="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded text-sm text-amber-800 dark:text-amber-300">
+                <i class="fa-solid fa-lightbulb mr-2"></i>
+                The <strong>OnLoadChildren</strong> callback loads child nodes asynchronously when a node expands. A
+                loading spinner is shown automatically.
+            </div>
+        </BwCard>
+
+        <BwCard Title="Child Count Display" Subtitle="Number of sub-items next to each node" Icon="fa-solid fa-hashtag"
+                Color="BwColor.Success">
+            <BwTree TItem="string"
+                    Nodes="_countNodes"
+                    ShowChildCount="true"
+                    ShowToolbar="true"/>
+
+            <div
+                class="mt-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded text-sm text-green-800 dark:text-green-300">
+                <i class="fa-solid fa-info-circle mr-2"></i>
+                Using <strong>ShowChildCount="true"</strong> shows the number of children next to each node in
+                parentheses.
+            </div>
+        </BwCard>
+    </BwRow>
+
+    @* Selection Modes *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Checkbox Selection" Subtitle="Multiple selection mode" Icon="fa-solid fa-check-square"
+                Color="BwColor.Success">
+            <BwTree TItem="string"
+                    Nodes="_checkboxNodes"
+                    SelectionMode="BwSelectionMode.Multiple"
+                    @bind-SelectedNodes="_selectedCheckboxNodes"/>
+
+            @if (_selectedCheckboxNodes.Any())
+            {
+                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Selected nodes:</p>
+                    <div class="flex flex-wrap gap-1">
+                        @foreach (var node in _selectedCheckboxNodes)
+                        {
+                            <BwBadge Color="BwColor.Success">@node.Title</BwBadge>
+                        }
+                    </div>
+                </div>
+            }
+        </BwCard>
+
+        <BwCard Title="Radio Selection" Subtitle="Single selection mode" Icon="fa-solid fa-circle-dot"
+                Color="BwColor.Warning">
+            <BwTree TItem="string"
+                    Nodes="_radioNodes"
+                    SelectionMode="BwSelectionMode.Single"
+                    @bind-SelectedNodes="_selectedRadioNodes"/>
+
+            @if (_selectedRadioNodes.Any())
+            {
+                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Selected:
+                        <strong>@_selectedRadioNodes.First().Title</strong></p>
+                </div>
+            }
+        </BwCard>
+    </BwRow>
+
+    @* Table Mode *@
+    <BwCard Title="Table Mode" Subtitle="Enriched view with additional columns" Icon="fa-solid fa-table"
+            Color="BwColor.Secondary">
+        <BwTree TItem="FileItem"
+                Nodes="_tableNodes"
+                ShowTableMode="true"
+                ShowSearch="true">
+            <ColumnsTemplate>
+                <span class="w-24 text-right">@context.Data?.Size</span>
+                <span class="w-32">@context.Data?.Modified</span>
+            </ColumnsTemplate>
+        </BwTree>
+    </BwCard>
+
+    @* Custom Icons *@
+    <BwCard Title="Custom Icons" Subtitle="Different icon for each node" Icon="fa-solid fa-icons"
+            Color="BwColor.Danger">
+        <BwTree TItem="string" Nodes="_iconNodes"/>
+    </BwCard>
+
+    @* Selectable Row *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Selectable Row" Subtitle="Click to select (without checkboxes)" Icon="fa-solid fa-hand-pointer"
+                Color="BwColor.Primary">
+            <BwTree TItem="string"
+                    Nodes="_selectableNodes"
+                    Selectable="true"
+                    @bind-ClickedNode="_clickedNode"/>
+
+            @if (_clickedNode != null)
+            {
+                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Selected: <strong>@_clickedNode.Title</strong>
+                    </p>
+                </div>
+            }
+        </BwCard>
+
+        <BwCard Title="Cascading Selection" Subtitle="Children are selected when parent is selected"
+                Icon="fa-solid fa-sitemap" Color="BwColor.Info">
+            <BwTree TItem="string"
+                    Nodes="_cascadeNodes"
+                    SelectionMode="BwSelectionMode.Multiple"
+                    CascadeSelection="true"
+                    @bind-SelectedNodes="_cascadeSelectedNodes"/>
+
+            @if (_cascadeSelectedNodes.Any())
+            {
+                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Selected
+                        (@_cascadeSelectedNodes.Count):</p>
+                    <div class="flex flex-wrap gap-1">
+                        @foreach (var node in _cascadeSelectedNodes.Take(5))
+                        {
+                            <BwBadge Color="BwColor.Info">@node.Title</BwBadge>
+                        }
+                        @if (_cascadeSelectedNodes.Count > 5)
+                        {
+                            <BwBadge Color="BwColor.Secondary">+@(_cascadeSelectedNodes.Count - 5)</BwBadge>
+                        }
+                    </div>
+                </div>
+            }
+        </BwCard>
+    </BwRow>
+
+
+</BwColumn>
+
+@code {
+
+    // Basic tree data
+    private readonly List<TreeNode<string>> _basicNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Belgeler",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Raporlar", Children = new List<TreeNode<string>> { new() { Title = "2024_Q1.pdf" }, new() { Title = "2024_Q2.pdf" } } },
+                new() { Title = "Sunumlar", Children = new List<TreeNode<string>> { new() { Title = "Demo.pptx" } } }
+            }
+        },
+        new TreeNode<string>
+        {
+            Title = "Projeler",
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Blazwind", IsExpanded = true, Children = new List<TreeNode<string>> { new() { Title = "src" }, new() { Title = "docs" } } },
+                new() { Title = "Backend" }
+            }
+        }
+    };
+
+    // Lazy loading demo
+    private readonly List<TreeNode<string>> _lazyNodes = new()
+    {
+        new TreeNode<string> { Id = "dept-1", Title = "Yazılım Birimi", HasChildren = true },
+        new TreeNode<string> { Id = "dept-2", Title = "İnsan Kaynakları", HasChildren = true },
+        new TreeNode<string> { Id = "dept-3", Title = "Muhasebe", HasChildren = true }
+    };
+
+    private async Task<List<TreeNode<string>>> LoadChildrenAsync(TreeNode<string> parent)
+    {
+        // Simulate API delay
+        await Task.Delay(800);
+
+        // Return mock children based on parent
+        return parent.Id switch
+        {
+            "dept-1" => new List<TreeNode<string>>
+            {
+                new() { Title = "Frontend Takımı", Children = new List<TreeNode<string>> { new() { Title = "React" }, new() { Title = "Blazor" } } },
+                new() { Title = "Backend Takımı", Children = new List<TreeNode<string>> { new() { Title = "API" }, new() { Title = "Database" } } },
+                new() { Title = "DevOps" }
+            },
+            "dept-2" => new List<TreeNode<string>>
+            {
+                new() { Title = "İşe Alım" },
+                new() { Title = "Özlük İşleri" },
+                new() { Title = "Eğitim" }
+            },
+            "dept-3" => new List<TreeNode<string>>
+            {
+                new() { Title = "Gelir" },
+                new() { Title = "Gider" },
+                new() { Title = "Raporlama" }
+            },
+            _ => new List<TreeNode<string>>()
+        };
+    }
+
+    // ShowChildCount demo
+    private readonly List<TreeNode<string>> _countNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Kurum",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new()
+                {
+                    Title = "Müdürlükler",
+                    Children = new List<TreeNode<string>>
+                    {
+                        new() { Title = "Yazı İşleri", Children = new List<TreeNode<string>> { new() { Title = "Evrak" }, new() { Title = "Arşiv" } } },
+                        new() { Title = "Mali Hizmetler", Children = new List<TreeNode<string>> { new() { Title = "Bütçe" }, new() { Title = "Muhasebe" }, new() { Title = "Gelir" } } },
+                        new() { Title = "Fen İşleri" }
+                    }
+                },
+                new() { Title = "Birimler", Children = new List<TreeNode<string>> { new() { Title = "Bilgi İşlem" }, new() { Title = "İnsan Kaynakları" } } }
+            }
+        }
+    };
+
+    private readonly List<TreeNode<string>> _searchNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Türkiye",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "İstanbul", Children = new List<TreeNode<string>> { new() { Title = "Kadıköy" }, new() { Title = "Beşiktaş" }, new() { Title = "Üsküdar" } } },
+                new() { Title = "Ankara", Children = new List<TreeNode<string>> { new() { Title = "Çankaya" }, new() { Title = "Keçiören" } } },
+                new() { Title = "İzmir", Children = new List<TreeNode<string>> { new() { Title = "Konak" }, new() { Title = "Karşıyaka" } } }
+            }
+        }
+    };
+
+    private readonly List<TreeNode<string>> _checkboxNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Kategoriler",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Elektronik", Children = new List<TreeNode<string>> { new() { Title = "Telefon" }, new() { Title = "Bilgisayar" } } },
+                new() { Title = "Giyim", Children = new List<TreeNode<string>> { new() { Title = "Erkek" }, new() { Title = "Kadın" } } },
+                new() { Title = "Kitap" }
+            }
+        }
+    };
+
+    private List<TreeNode<string>> _selectedCheckboxNodes = new();
+
+    private readonly List<TreeNode<string>> _radioNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Departmanlar",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Mühendislik" },
+                new() { Title = "Pazarlama" },
+                new() { Title = "Finans" },
+                new() { Title = "İnsan Kaynakları" }
+            }
+        }
+    };
+
+    private List<TreeNode<string>> _selectedRadioNodes = new();
+
+    // File item for table mode
+    public class FileItem
+    {
+        public string? Size { get; set; }
+        public string? Modified { get; set; }
+    }
+
+    private readonly List<TreeNode<FileItem>> _tableNodes = new()
+    {
+        new TreeNode<FileItem>
+        {
+            Title = "src",
+            IsExpanded = true,
+            Data = new FileItem { Size = "-", Modified = "28.12.2024" },
+            Children = new List<TreeNode<FileItem>>
+            {
+                new() { Title = "main.ts", Data = new FileItem { Size = "4.2 KB", Modified = "28.12.2024" } },
+                new() { Title = "style.css", Data = new FileItem { Size = "12.1 KB", Modified = "27.12.2024" } },
+                new()
+                {
+                    Title = "components",
+                    Data = new FileItem { Size = "-", Modified = "28.12.2024" },
+                    Children = new List<TreeNode<FileItem>>
+                    {
+                        new() { Title = "toast.ts", Data = new FileItem { Size = "8.3 KB", Modified = "25.12.2024" } },
+                        new() { Title = "dialog.ts", Data = new FileItem { Size = "15.2 KB", Modified = "26.12.2024" } }
+                    }
+                }
+            }
+        },
+        new TreeNode<FileItem>
+        {
+            Title = "package.json",
+            Data = new FileItem { Size = "1.1 KB", Modified = "20.12.2024" }
+        }
+    };
+
+    private readonly List<TreeNode<string>> _iconNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Ayarlar",
+            Icon = "fa-solid fa-gear",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Kullanıcı", Icon = "fa-solid fa-user" },
+                new() { Title = "Güvenlik", Icon = "fa-solid fa-shield-halved" },
+                new() { Title = "Bildirimler", Icon = "fa-solid fa-bell" }
+            }
+        },
+        new TreeNode<string>
+        {
+            Title = "Medya",
+            Icon = "fa-solid fa-photo-film",
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Fotoğraflar", Icon = "fa-solid fa-image" },
+                new() { Title = "Videolar", Icon = "fa-solid fa-video" },
+                new() { Title = "Müzik", Icon = "fa-solid fa-music" }
+            }
+        }
+    };
+
+    // Selectable demo
+    private TreeNode<string>? _clickedNode;
+
+    private readonly List<TreeNode<string>> _selectableNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Ürünler",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new() { Title = "Yazılım", Children = new List<TreeNode<string>> { new() { Title = "ERP" }, new() { Title = "CRM" } } },
+                new() { Title = "Donanım", Children = new List<TreeNode<string>> { new() { Title = "Sunucu" }, new() { Title = "Switch" } } }
+            }
+        }
+    };
+
+    // Cascade selection demo
+    private List<TreeNode<string>> _cascadeSelectedNodes = new();
+
+    private readonly List<TreeNode<string>> _cascadeNodes = new()
+    {
+        new TreeNode<string>
+        {
+            Title = "Türkiye",
+            IsExpanded = true,
+            Children = new List<TreeNode<string>>
+            {
+                new()
+                {
+                    Title = "Marmara",
+                    Children = new List<TreeNode<string>>
+                    {
+                        new() { Title = "İstanbul" },
+                        new() { Title = "Kocaeli" },
+                        new() { Title = "Bursa" }
+                    }
+                },
+                new()
+                {
+                    Title = "İç Anadolu",
+                    Children = new List<TreeNode<string>>
+                    {
+                        new() { Title = "Ankara" },
+                        new() { Title = "Konya" },
+                        new() { Title = "Eskişehir" }
+                    }
+                }
+            }
+        }
+    };
+
+    // TreeSelect demos
+    private TreeNode<string>? _treeSelectNode;
+    private List<TreeNode<string>> _treeSelectMultiNodes = new();
+}
+

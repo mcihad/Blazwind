@@ -1,0 +1,148 @@
+@page "/components/help-tooltip"
+@using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Input
+
+<PageTitle>Help Tooltip - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwHelpTooltip"
+            Description="Contextual help tooltips. Explanatory content for form fields and elements."
+            Icon="fa-solid fa-circle-question" Color="BwColor.Warning"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Different positions and contents." Icon="fa-solid fa-question-circle"
+            Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Xl" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Top</span>
+                <BwHelpTooltip Title="Top Position" Content="This tooltip appears at the top."
+                               Position="HelpTooltipPosition.Top" Color="BwColor.Primary"/>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Bottom</span>
+                <BwHelpTooltip Title="Bottom Position" Content="This tooltip appears at the bottom."
+                               Position="HelpTooltipPosition.Bottom" Color="BwColor.Success"/>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Left</span>
+                <BwHelpTooltip Title="Left Position" Content="This tooltip appears on the left."
+                               Position="HelpTooltipPosition.Left" Color="BwColor.Warning"/>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Right</span>
+                <BwHelpTooltip Title="Right Position" Content="This tooltip appears on the right."
+                               Position="HelpTooltipPosition.Right" Color="BwColor.Info"/>
+            </div>
+        </BwRow>
+    </BwCard>
+
+    @* Form Example *@
+    <BwCard Title="Form Field Usage" Subtitle="Providing helpful information to users." Icon="fa-solid fa-edit"
+            Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md" Class="max-w-md">
+            <div>
+                <div class="flex items-center gap-1 mb-1">
+                    <label class="text-sm font-medium text-gray-700">ID Number</label>
+                    <BwHelpTooltip
+                        Content="Enter your 11-digit ID number. You can find it on your ID card or e-Government account."
+                        Size="BwSize.Small" Color="BwColor.Info"/>
+                </div>
+                <BwInput Placeholder="12345678901"/>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-1 mb-1">
+                    <label class="text-sm font-medium text-gray-700">IBAN</label>
+                    <BwHelpTooltip Title="What is IBAN?" LinkText="More information" LinkHref="https://www.tcmb.gov.tr">
+                        <p>IBAN is International Bank Account Number.</p>
+                        <ul class="mt-2 text-xs list-disc list-inside text-gray-500">
+                            <li>Starts with TR</li>
+                            <li>26 characters long</li>
+                            <li>Contains only numbers and letters</li>
+                        </ul>
+                    </BwHelpTooltip>
+                </div>
+                <BwInput Placeholder="TR00 0000 0000 0000 0000 0000 00"/>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-1 mb-1">
+                    <label class="text-sm font-medium text-gray-700">Tax Office</label>
+                    <BwHelpTooltip Content="Enter the full name of your affiliated tax office." Size="BwSize.Small"
+                                   Color="BwColor.Warning"/>
+                </div>
+                <BwInput Placeholder="Ex: Sivas Tax Office"/>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium and Large." Icon="fa-solid fa-ruler" Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Xl" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Small</span>
+                <BwHelpTooltip Content="Small sized tooltip." Size="BwSize.Small"/>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Medium</span>
+                <BwHelpTooltip Content="Medium sized tooltip." Size="BwSize.Medium"/>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-700">Large</span>
+                <BwHelpTooltip Content="Large tooltip with more content area." Size="BwSize.Large"/>
+            </div>
+        </BwRow>
+    </BwCard>
+
+    @* API *@
+    <BwCard Title="API Reference" Subtitle="Component parameters." Icon="fa-solid fa-code" Color="BwColor.Dark">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="text-left p-3 font-medium">Parameter</th>
+                    <th class="text-left p-3 font-medium">Type</th>
+                    <th class="text-left p-3 font-medium">Description</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y">
+                <tr>
+                    <td class="p-3"><code>Title</code></td>
+                    <td class="p-3">string</td>
+                    <td class="p-3">Tooltip title</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>Content</code></td>
+                    <td class="p-3">string</td>
+                    <td class="p-3">Tooltip content</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>Position</code></td>
+                    <td class="p-3">HelpTooltipPosition</td>
+                    <td class="p-3">Top, Bottom, Left, Right</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>ChildContent</code></td>
+                    <td class="p-3">RenderFragment</td>
+                    <td class="p-3">Custom HTML content</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>LinkText</code></td>
+                    <td class="p-3">string</td>
+                    <td class="p-3">Link text at bottom</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>LinkHref</code></td>
+                    <td class="p-3">string</td>
+                    <td class="p-3">Link URL</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </BwCard>
+</BwColumn>

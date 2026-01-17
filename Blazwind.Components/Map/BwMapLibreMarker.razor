@@ -1,0 +1,215 @@
+@namespace Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@implements IAsyncDisposable
+
+@code {
+    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+
+    #region Required Parameters
+
+    /// <summary>
+    /// Unique marker identifier
+    /// </summary>
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    /// Marker position [longitude, latitude]. Can also use Longitude/Latitude properties.
+    /// </summary>
+    [Parameter] public double[]? LngLat { get; set; }
+
+    /// <summary>
+    /// Longitude coordinate (alternative to LngLat)
+    /// </summary>
+    [Parameter] public double? Longitude { get; set; }
+
+    /// <summary>
+    /// Latitude coordinate (alternative to LngLat)
+    /// </summary>
+    [Parameter] public double? Latitude { get; set; }
+
+    /// <summary>
+    /// Gets the effective coordinates
+    /// </summary>
+    private double[] EffectiveLngLat => LngLat ?? new[] { Longitude ?? 0, Latitude ?? 0 };
+
+    #endregion
+
+    #region Appearance
+
+    /// <summary>
+    /// Marker color (CSS color string)
+    /// </summary>
+    [Parameter] public string? Color { get; set; }
+
+    /// <summary>
+    /// Marker scale (default: 1)
+    /// </summary>
+    [Parameter] public double? Scale { get; set; }
+
+    /// <summary>
+    /// Marker rotation in degrees
+    /// </summary>
+    [Parameter] public double? Rotation { get; set; }
+
+    /// <summary>
+    /// Custom HTML element for marker
+    /// </summary>
+    [Parameter] public string? Element { get; set; }
+
+    /// <summary>
+    /// Anchor position: center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right
+    /// </summary>
+    [Parameter] public string? Anchor { get; set; }
+
+    /// <summary>
+    /// Offset from anchor [x, y] in pixels
+    /// </summary>
+    [Parameter] public double[]? Offset { get; set; }
+
+    /// <summary>
+    /// Rotation alignment: map, viewport, auto
+    /// </summary>
+    [Parameter] public string? RotationAlignment { get; set; }
+
+    /// <summary>
+    /// Pitch alignment: map, viewport, auto
+    /// </summary>
+    [Parameter] public string? PitchAlignment { get; set; }
+
+    #endregion
+
+    #region Behavior
+
+    /// <summary>
+    /// Whether the marker is draggable
+    /// </summary>
+    [Parameter] public bool Draggable { get; set; }
+
+    #endregion
+
+    #region Popup
+
+    /// <summary>
+    /// HTML content for popup (alias for PopupHtml)
+    /// </summary>
+    [Parameter] public string? PopupContent { get; set; }
+
+    /// <summary>
+    /// HTML content for popup
+    /// </summary>
+    [Parameter] public string? PopupHtml { get; set; }
+
+    /// <summary>
+    /// Gets effective popup content
+    /// </summary>
+    private string? EffectivePopupHtml => PopupContent ?? PopupHtml;
+
+    /// <summary>
+    /// Popup options
+    /// </summary>
+    [Parameter] public MapPopupOptions? PopupOptions { get; set; }
+
+    #endregion
+
+    #region Events
+
+    /// <summary>
+    /// Fired when marker drag starts
+    /// </summary>
+    [Parameter] public EventCallback<double[]> OnDragStart { get; set; }
+
+    /// <summary>
+    /// Fired during marker drag
+    /// </summary>
+    [Parameter] public EventCallback<double[]> OnDrag { get; set; }
+
+    /// <summary>
+    /// Fired when marker drag ends
+    /// </summary>
+    [Parameter] public EventCallback<double[]> OnDragEnd { get; set; }
+
+    #endregion
+
+    private bool _isAdded;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && ParentMap != null)
+        {
+            await AddMarkerAsync();
+        }
+    }
+
+    private async Task AddMarkerAsync()
+    {
+        if (ParentMap == null || _isAdded) return;
+
+        var marker = new MapMarker
+        {
+            Id = Id,
+            LngLat = new LngLat(EffectiveLngLat[0], EffectiveLngLat[1]),
+            Color = Color,
+            Scale = Scale,
+            Rotation = Rotation,
+            Element = Element,
+            Anchor = Anchor,
+            Offset = Offset,
+            RotationAlignment = RotationAlignment,
+            PitchAlignment = PitchAlignment,
+            Draggable = Draggable,
+            PopupHtml = EffectivePopupHtml,
+            PopupOptions = PopupOptions
+        };
+
+        await ParentMap.AddMarkerAsync(marker);
+        _isAdded = true;
+    }
+
+    /// <summary>
+    /// Update marker position
+    /// </summary>
+    public async Task SetLngLatAsync(double[] lngLat)
+    {
+        LngLat = lngLat;
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.SetMarkerLngLatAsync(Id, lngLat);
+        }
+    }
+
+    /// <summary>
+    /// Set or update popup
+    /// </summary>
+    public async Task SetPopupAsync(string html, MapPopupOptions? options = null)
+    {
+        PopupHtml = html;
+        PopupOptions = options;
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.SetMarkerPopupAsync(Id, html, options);
+        }
+    }
+
+    /// <summary>
+    /// Toggle popup visibility
+    /// </summary>
+    public async Task TogglePopupAsync()
+    {
+        if (ParentMap != null && _isAdded)
+        {
+            await ParentMap.ToggleMarkerPopupAsync(Id);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (ParentMap != null && _isAdded)
+        {
+            try
+            {
+                await ParentMap.RemoveMarkerAsync(Id);
+            }
+            catch { }
+        }
+    }
+}

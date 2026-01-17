@@ -1,0 +1,121 @@
+@page "/components/segmented"
+@using Blazwind.Components.Segmented
+@using static Blazwind.Components.Segmented.BwSegmented
+
+<PageTitle>Segmented Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Segmented Component" Description="Segmented control used as radio button alternative."
+            Icon="fa-solid fa-toggle-on" Color="BwColor.Primary"/>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Simple options" Icon="fa-solid fa-list" Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwSegmented Options="_viewOptions" @bind-Value="_selectedView"/>
+                <p class="text-sm text-gray-600">Selected: <strong>@_selectedView</strong></p>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Icon Options" Subtitle="Icon and text together" Icon="fa-solid fa-icons"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwSegmented Options="_alignOptions" @bind-Value="_selectedAlign"/>
+                <p class="text-sm text-gray-600">Selected: <strong>@_selectedAlign</strong></p>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Small</p>
+                    <BwSegmented Options="_sizeOptions" Value="@("A")" Size="BwSize.Small"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Medium</p>
+                    <BwSegmented Options="_sizeOptions" Value="@("B")" Size="BwSize.Medium"/>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2 text-center">Large</p>
+                    <BwSegmented Options="_sizeOptions" Value="@("C")" Size="BwSize.Large"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Colors" Subtitle="Different color options" Icon="fa-solid fa-palette" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwSegmented Options="_colorOptions" Value="@("1")" Color="BwColor.Primary"/>
+                <BwSegmented Options="_colorOptions" Value="@("2")" Color="BwColor.Success"/>
+                <BwSegmented Options="_colorOptions" Value="@("3")" Color="BwColor.Danger"/>
+                <BwSegmented Options="_colorOptions" Value="@("1")" Color="BwColor.Dark"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Icon Only" Subtitle="Icons without text" Icon="fa-solid fa-image" Color="BwColor.Secondary">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwSegmented Options="_iconOnlyOptions" @bind-Value="_selectedIcon"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Disabled Options" Subtitle="Some options are disabled" Icon="fa-solid fa-ban"
+                Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwSegmented Options="_disabledOptions" Value="@("active")"/>
+                <BwSegmented Options="_viewOptions" Value="@("list")" IsDisabled="true"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private object? _selectedView = "list";
+    private object? _selectedAlign = "left";
+    private object? _selectedIcon = "bold";
+
+    private readonly List<SegmentedOption> _viewOptions = new()
+    {
+        new SegmentedOption { Label = "List", Value = "list" },
+        new SegmentedOption { Label = "Grid", Value = "grid" },
+        new SegmentedOption { Label = "Kanban", Value = "kanban" }
+    };
+
+    private readonly List<SegmentedOption> _alignOptions = new()
+    {
+        new SegmentedOption { Label = "Left", Value = "left", Icon = "fa-solid fa-align-left" },
+        new SegmentedOption { Label = "Center", Value = "center", Icon = "fa-solid fa-align-center" },
+        new SegmentedOption { Label = "Right", Value = "right", Icon = "fa-solid fa-align-right" }
+    };
+
+    private readonly List<SegmentedOption> _sizeOptions = new()
+    {
+        new SegmentedOption { Label = "A", Value = "A" },
+        new SegmentedOption { Label = "B", Value = "B" },
+        new SegmentedOption { Label = "C", Value = "C" }
+    };
+
+    private readonly List<SegmentedOption> _colorOptions = new()
+    {
+        new SegmentedOption { Label = "Seçenek 1", Value = "1" },
+        new SegmentedOption { Label = "Seçenek 2", Value = "2" },
+        new SegmentedOption { Label = "Seçenek 3", Value = "3" }
+    };
+
+    private readonly List<SegmentedOption> _iconOnlyOptions = new()
+    {
+        new SegmentedOption { Icon = "fa-solid fa-bold", Value = "bold" },
+        new SegmentedOption { Icon = "fa-solid fa-italic", Value = "italic" },
+        new SegmentedOption { Icon = "fa-solid fa-underline", Value = "underline" },
+        new SegmentedOption { Icon = "fa-solid fa-strikethrough", Value = "strike" }
+    };
+
+    private readonly List<SegmentedOption> _disabledOptions = new()
+    {
+        new SegmentedOption { Label = "Active", Value = "active" },
+        new SegmentedOption { Label = "Disabled", Value = "disabled", Disabled = true },
+        new SegmentedOption { Label = "Other", Value = "other" }
+    };
+
+}

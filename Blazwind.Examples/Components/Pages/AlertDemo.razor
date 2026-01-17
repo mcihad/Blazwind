@@ -1,0 +1,121 @@
+@page "/components/alert"
+
+<PageTitle>Alert Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Alert Component"
+            Description="Static alert components to show situational information, warnings and error messages to the user."
+            Icon="fa-solid fa-circle-exclamation" Color="BwColor.Success"/>
+
+    @* Color Variants (Soft) *@
+    <BwCard Title="Colors (Soft)" Subtitle="Color options with default 'Soft' style." Icon="fa-solid fa-palette">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwAlert Color="BwColor.Info" Title="Information" Message="This is an information message."/>
+
+            <BwAlert Color="BwColor.Success" Title="Successful"
+                     Message="Your operation has been completed successfully."/>
+
+            <BwAlert Color="BwColor.Warning" Title="Warning" Message="This operation cannot be undone."/>
+
+            <BwAlert Color="BwColor.Danger" Title="Error" Message="An error occurred."/>
+        </BwColumn>
+    </BwCard>
+
+    @* Visual Variants *@
+    <BwCard Title="Visual Styles" Subtitle="Soft, Outline, Filled" Icon="fa-solid fa-brush" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwAlert Color="BwColor.Primary" Variant="BwVariant.Soft" Title="Soft (Default)"
+                     Message="Soft background."/>
+
+            <BwAlert Color="BwColor.Primary" Variant="BwVariant.Outline" Title="Outline"
+                     Message="Transparent background, border."/>
+
+            <BwAlert Color="BwColor.Primary" Variant="BwVariant.Filled" Title="Filled"
+                     Message="Filled background, white text."/>
+
+            <BwAlert Color="BwColor.Secondary" Variant="BwVariant.Ghost" Title="Ghost" Message="Only text and icon."/>
+        </BwColumn>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Without Title *@
+        <BwCard Title="Message Only" Subtitle="Simple alerts without title." Icon="fa-solid fa-align-left"
+                Color="BwColor.Secondary">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwAlert Color="BwColor.Info" Message="This is a simple information message."/>
+                <BwAlert Color="BwColor.Success" Message="File uploaded successfully."/>
+            </BwColumn>
+        </BwCard>
+
+        @* Dismissible *@
+        <BwCard Title="Dismissible" Subtitle="Alerts that can be closed with X button." Icon="fa-solid fa-xmark"
+                Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwAlert Color="BwColor.Warning" Title="Dismissible Warning"
+                         Message="This alert can be dismissed. Click X." Dismissible="true"/>
+                <BwAlert Color="BwColor.Info" Message="This is also a dismissible message." Dismissible="true"/>
+            </BwColumn>
+        </BwCard>
+
+        @* Custom Icons *@
+        <BwCard Title="Custom Icons" Subtitle="You can use different icons." Icon="fa-solid fa-icons"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwAlert Color="BwColor.Info" Icon="fa-solid fa-lightbulb" Title="Tip"
+                         Message="Press Ctrl+K for keyboard shortcuts."/>
+                <BwAlert Color="BwColor.Success" Icon="fa-solid fa-rocket" Title="New Feature"
+                         Message="New theme support added!"/>
+            </BwColumn>
+        </BwCard>
+
+        @* Without Icon *@
+        <BwCard Title="Without Icon" Subtitle="Iconless alerts for minimal appearance." Icon="fa-solid fa-minus"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwAlert Color="BwColor.Info" ShowIcon="false" Title="Minimal Alert"
+                         Message="Clean appearance without icon."/>
+                <BwAlert Color="BwColor.Danger" ShowIcon="false" Message="Iconless error message."/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* With Actions *@
+    <BwCard Title="Alert with Actions" Subtitle="Alerts containing buttons or links." Icon="fa-solid fa-hand-pointer"
+            Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwAlert Color="BwColor.Warning" Title="Session Expiring"
+                     Message="Your session will expire in 5 minutes. Would you like to extend it?">
+                <Actions>
+                    <BwRow Spacing="BwSpacing.Sm">
+                        <BwButton Text="Extend Session" Size="BwSize.Small" Color="BwColor.Warning"/>
+                        <BwButton Text="Logout" Size="BwSize.Small" Color="BwColor.Secondary"
+                                  Variant="BwVariant.Ghost"/>
+                    </BwRow>
+                </Actions>
+            </BwAlert>
+
+            <BwAlert Color="BwColor.Info" Title="New Update Available"
+                     Message="Blazwind v2.0 has been released. Discover new features.">
+                <Actions>
+                    <BwRow Spacing="BwSpacing.Sm">
+                        <BwButton Text="Update" Size="BwSize.Small" Icon="fa-solid fa-download"/>
+                        <BwButton Text="View Changes" Size="BwSize.Small" Variant="BwVariant.Outline"/>
+                    </BwRow>
+                </Actions>
+            </BwAlert>
+        </BwColumn>
+    </BwCard>
+
+    @* Rich Content *@
+    <BwCard Title="Rich Content" Subtitle="List and detailed content." Icon="fa-solid fa-list" Color="BwColor.Success">
+        <BwAlert Color="BwColor.Danger" Title="Form Errors" Dismissible="true">
+            <ChildContent>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li>Email address is invalid</li>
+                    <li>Password must be at least 8 characters</li>
+                    <li>You must accept the terms of use</li>
+                </ul>
+            </ChildContent>
+        </BwAlert>
+    </BwCard>
+</BwColumn>

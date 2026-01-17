@@ -1,0 +1,53 @@
+@namespace Blazwind.Components.Table
+@typeparam TItem where TItem : notnull
+
+@code {
+    [CascadingParameter] public BwTable<TItem>? ParentTable { get; set; }
+    
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string? FieldName { get; set; }
+    [Parameter] public bool Sortable { get; set; } = true;
+    [Parameter] public bool Visible { get; set; } = true;
+    [Parameter] public string? Width { get; set; }
+    [Parameter] public RenderFragment<TItem>? Template { get; set; }
+    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
+    [Parameter] public Func<TItem, object>? Field { get; set; }
+    [Parameter] public string? Format { get; set; }
+    
+    /// <summary>
+    /// Truncate long text with ellipsis
+    /// </summary>
+    [Parameter] public bool Ellipsis { get; set; } = false;
+
+    /// <summary>
+    /// Max width for ellipsis (CSS value). Used when Ellipsis=true
+    /// </summary>
+    [Parameter] public string? EllipsisMaxWidth { get; set; }
+
+    internal string GetFieldName() => FieldName ?? Title;
+    
+    internal object? GetValue(TItem item)
+    {
+        if (Field != null)
+        {
+            var value = Field(item);
+            
+            if (value != null && !string.IsNullOrEmpty(Format))
+            {
+                return value switch
+                {
+                    IFormattable formattable => formattable.ToString(Format, null),
+                    _ => value.ToString()
+                };
+            }
+            
+            return value;
+        }
+        return null;
+    }
+
+    protected override void OnInitialized()
+    {
+        ParentTable?.RegisterColumn(this);
+    }
+}

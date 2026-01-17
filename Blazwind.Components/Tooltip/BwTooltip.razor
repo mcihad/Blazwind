@@ -1,0 +1,166 @@
+@namespace Blazwind.Components.Tooltip
+@using Blazwind.Components.Shared
+
+@{
+    var placementClasses = Placement switch
+    {
+        BwPlacement.Top => "bottom-full left-1/2 -translate-x-1/2 mb-2",
+        BwPlacement.TopStart => "bottom-full left-0 mb-2",
+        BwPlacement.TopEnd => "bottom-full right-0 mb-2",
+        BwPlacement.Left => "right-full top-1/2 -translate-y-1/2 mr-2",
+        BwPlacement.LeftStart => "right-full top-0 mr-2",
+        BwPlacement.LeftEnd => "right-full bottom-0 mr-2",
+        BwPlacement.Right => "left-full top-1/2 -translate-y-1/2 ml-2",
+        BwPlacement.RightStart => "left-full top-0 ml-2",
+        BwPlacement.RightEnd => "left-full bottom-0 ml-2",
+        BwPlacement.BottomStart => "top-full left-0 mt-2",
+        BwPlacement.BottomEnd => "top-full right-0 mt-2",
+        _ => "top-full left-1/2 -translate-x-1/2 mt-2" // Bottom (default)
+    };
+
+    var arrowClasses = Placement switch
+    {
+        BwPlacement.Top or BwPlacement.TopStart or BwPlacement.TopEnd =>
+        "bottom-[-4px] left-1/2 -translate-x-1/2 rotate-45",
+        BwPlacement.Left or BwPlacement.LeftStart or BwPlacement.LeftEnd =>
+        "right-[-4px] top-1/2 -translate-y-1/2 rotate-45",
+        BwPlacement.Right or BwPlacement.RightStart or BwPlacement.RightEnd =>
+        "left-[-4px] top-1/2 -translate-y-1/2 rotate-45",
+        _ => "top-[-4px] left-1/2 -translate-x-1/2 rotate-45" // Bottom
+    };
+
+    var colorClasses = Color switch
+    {
+        BwColor.Primary => "bg-blue-600 text-white",
+        BwColor.Success => "bg-green-600 text-white",
+        BwColor.Warning => "bg-amber-500 text-white",
+        BwColor.Danger => "bg-red-600 text-white",
+        BwColor.Info => "bg-cyan-600 text-white",
+        BwColor.Light => "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-lg",
+        _ => "bg-gray-900 dark:bg-gray-700 text-white" // Dark (default)
+    };
+
+    var arrowColorClasses = Color switch
+    {
+        BwColor.Primary => "bg-blue-600",
+        BwColor.Success => "bg-green-600",
+        BwColor.Warning => "bg-amber-500",
+        BwColor.Danger => "bg-red-600",
+        BwColor.Info => "bg-cyan-600",
+        BwColor.Light => "bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700",
+        _ => "bg-gray-900 dark:bg-gray-700"
+    };
+}
+
+<div class="relative inline-block @Class" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
+    @onfocus="HandleFocus" @onblur="HandleBlur">
+    <div class="inline-block">
+        @ChildContent
+    </div>
+
+    @if (_isVisible && !string.IsNullOrEmpty(Text))
+    {
+        <div role="tooltip" class="absolute z-[1080] px-2.5 py-1.5 text-xs font-medium rounded whitespace-nowrap
+                        pointer-events-none animate-in fade-in zoom-in-95 duration-150
+                        @colorClasses @placementClasses @SizeClasses">
+            @if (ShowArrow)
+            {
+                <div class="absolute w-2 h-2 @arrowColorClasses @arrowClasses"></div>
+            }
+            @if (!string.IsNullOrEmpty(Icon))
+            {
+                <i class="@Icon mr-1.5"></i>
+            }
+            @Text
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public BwPlacement Placement { get; set; } = BwPlacement.Top;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Dark;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public bool ShowArrow { get; set; } = true;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public int ShowDelay { get; set; } = 100;
+    [Parameter] public int HideDelay { get; set; } = 0;
+    [Parameter] public TooltipTrigger Trigger { get; set; } = TooltipTrigger.Hover;
+    [Parameter] public string? Class { get; set; }
+
+    private bool _isVisible;
+    private CancellationTokenSource? _showCts;
+    private CancellationTokenSource? _hideCts;
+
+    private string SizeClasses => Size switch
+    {
+        BwSize.Small => "text-[10px] px-2 py-1",
+        BwSize.Large => "text-sm px-3 py-2",
+        _ => "text-xs px-2.5 py-1.5"
+    };
+
+    private async Task HandleMouseEnter()
+    {
+        if (Disabled || Trigger == TooltipTrigger.Focus) return;
+
+        _hideCts?.Cancel();
+        _showCts = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(ShowDelay, _showCts.Token);
+            _isVisible = true;
+            StateHasChanged();
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    private async Task HandleMouseLeave()
+    {
+        if (Trigger == TooltipTrigger.Focus) return;
+
+        _showCts?.Cancel();
+        _hideCts = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(HideDelay, _hideCts.Token);
+            _isVisible = false;
+            StateHasChanged();
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    private void HandleFocus()
+    {
+        if (Disabled || Trigger == TooltipTrigger.Hover) return;
+        _isVisible = true;
+    }
+
+    private void HandleBlur()
+    {
+        if (Trigger == TooltipTrigger.Hover) return;
+        _isVisible = false;
+    }
+
+    public void Show()
+    {
+        _isVisible = true;
+        StateHasChanged();
+    }
+
+    public void Hide()
+    {
+        _isVisible = false;
+        StateHasChanged();
+    }
+
+    public enum TooltipTrigger
+    {
+        Hover,
+        Focus,
+        Both
+    }
+}

@@ -1,0 +1,108 @@
+@page "/charts/polar"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Polar - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Polar Grafik" 
+            Description="Dairesel koordinat sisteminde veri görselleştirme."
+            Icon="fa-solid fa-circle-dot"
+            Color="BwColor.Success" />
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Polar Bar *@
+        <BwCard Title="Polar Bar" Subtitle="Dairesel çubuk grafik." Icon="fa-solid fa-chart-bar" Color="BwColor.Primary">
+            <BwChart Options="_polarBar" Height="350px" />
+        </BwCard>
+
+        @* Polar Line *@
+        <BwCard Title="Polar Line" Subtitle="Dairesel çizgi grafik." Icon="fa-solid fa-chart-line" Color="BwColor.Info">
+            <BwChart Options="_polarLine" Height="350px" />
+        </BwCard>
+    </BwRow>
+
+    @* Stacked Polar *@
+    <BwCard Title="Stacked Polar Bar" Subtitle="Yığılmış dairesel çubuk." Icon="fa-solid fa-layer-group" Color="BwColor.Warning">
+        <BwChart Options="_stackedPolar" Height="450px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _polarBar = new
+    {
+        title = new { text = "Haftalık Aktivite", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Axis, axisPointer = new { type = ChartAxisPointerType.Shadow } },
+        angleAxis = new { max = 100 },
+        radiusAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+        },
+        polar = new { },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Bar,
+                data = new[] { 80, 75, 90, 85, 70, 40, 30 },
+                coordinateSystem = "polar",
+                name = "Aktivite",
+                emphasis = new { focus = ChartEmphasisFocus.Series }
+            }
+        },
+        color = new[] { "#6366f1" }
+    };
+
+    private object _polarLine = new
+    {
+        title = new { text = "Saat Bazlı Çağrı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        polar = new { radius = new[] { "10%", "80%" } },
+        angleAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "00", "02", "04", "06", "08", "10", "12", "14", "16", "18", "20", "22" },
+            startAngle = 90
+        },
+        radiusAxis = new { },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Line,
+                data = new[] { 5, 3, 2, 8, 45, 60, 55, 50, 65, 40, 25, 10 },
+                coordinateSystem = "polar",
+                name = "Çağrı",
+                smooth = true,
+                symbol = ChartSymbol.Circle,
+                symbolSize = 8,
+                emphasis = new { focus = ChartEmphasisFocus.Series }
+            }
+        },
+        color = new[] { "#10b981" }
+    };
+
+    private object _stackedPolar = new
+    {
+        title = new { text = "Departman Performansı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Axis, axisPointer = new { type = ChartAxisPointerType.Shadow } },
+        legend = new { data = new[] { "Verimlilik", "Kalite", "Hız" }, bottom = "0" },
+        polar = new { radius = new[] { "20%", "80%" } },
+        angleAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Bilgi İşlem", "Fen İşleri", "İmar", "Mali Hiz.", "Yazı İşleri", "Park Bahçe" }
+        },
+        radiusAxis = new { },
+        series = new object[]
+        {
+            new { type = ChartSeriesType.Bar, data = new[] { 90, 75, 80, 85, 70, 78 }, coordinateSystem = "polar", name = "Verimlilik", stack = "a", emphasis = new { focus = ChartEmphasisFocus.Series } },
+            new { type = ChartSeriesType.Bar, data = new[] { 85, 80, 85, 75, 80, 82 }, coordinateSystem = "polar", name = "Kalite", stack = "a", emphasis = new { focus = ChartEmphasisFocus.Series } },
+            new { type = ChartSeriesType.Bar, data = new[] { 88, 70, 75, 80, 85, 75 }, coordinateSystem = "polar", name = "Hız", stack = "a", emphasis = new { focus = ChartEmphasisFocus.Series } }
+        },
+        color = new[] { "#3b82f6", "#10b981", "#f59e0b" }
+    };
+}

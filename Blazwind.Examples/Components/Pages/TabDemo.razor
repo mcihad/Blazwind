@@ -1,0 +1,247 @@
+@page "/components/tabs"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Input
+@using Blazwind.Components.Tabs
+
+<PageTitle>Tabs Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Tabs Component"
+            Description="5 different styles for separating content into different views. Closable tabs and confirmation mechanism."
+            Icon="fa-solid fa-folder-open"
+            Color="BwColor.Primary"/>
+
+    @* Advanced Dynamic Tabs *@
+    <BwCard Title="Advanced Dynamic Tabs" Subtitle="Closable tabs, confirmation dialog, and activation by name"
+            Icon="fa-solid fa-layer-group" Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Sm" Class="mb-4 items-center">
+            <div class="flex-1">
+                <BwInput @bind-Value="_newTabName" Placeholder="New tab name..." Class="!mb-0"/>
+            </div>
+            <div class="w-48">
+                <select
+                    class="w-full h-10 px-3 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                    @bind="_selectedVariant">
+                    <option value="@BwVariant.Outline">Outline (Boxed)</option>
+                    <option value="@BwVariant.Ghost">Ghost (Underline)</option>
+                    <option value="@BwVariant.Soft" Selected="true">Soft (Pills)</option>
+                    <option value="@BwVariant.Filled">Filled (Segmented)</option>
+                </select>
+            </div>
+            <div class="flex gap-2">
+                <BwButton Color="BwColor.Primary" OnClick="OpenTab">
+                    <i class="fa-solid fa-plus mr-1"></i> Open
+                </BwButton>
+            </div>
+        </BwRow>
+
+        <BwTabs @ref="_tabsRef" Variant="@_selectedVariant" Scrollable="true" ShowScrollControls="true">
+            <BwTabItem Title="Fixed Tab" Icon="fa-solid fa-home" Closable="false">
+                <div class="p-4 text-center text-gray-500">
+                    <i class="fa-solid fa-lock text-2xl mb-2"></i>
+                    <p>This tab cannot be closed.</p>
+                </div>
+            </BwTabItem>
+
+            @foreach (var tab in _dynamicTabs)
+            {
+                <BwTabItem @key="tab.Id"
+                           Title="@tab.Title"
+                           Name="@tab.Title"
+                           Icon="@tab.Icon"
+                           Closable="true"
+                           ConfirmClose="@tab.ConfirmClose"
+                           ConfirmCloseMessage="@($"Do you want to close '{tab.Title}'? You may have unsaved data.")"
+                           OnClose="OnTabClose">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">@tab.Title</h3>
+                        <p class="text-gray-600 mb-4">This is a dynamic tab. ID: @tab.Id</p>
+
+                        <div class="bg-yellow-50 p-3 rounded border border-yellow-200 mb-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" @bind="tab.ConfirmClose" class="rounded text-blue-600"/>
+                                <span class="text-sm text-yellow-800">Ask for confirmation when closing (Unsaved data simulation)</span>
+                            </label>
+                        </div>
+
+                        <p class="text-sm text-gray-500">
+                            Try closing it by clicking the cross icon on the top right.
+                        </p>
+                    </div>
+                </BwTabItem>
+            }
+        </BwTabs>
+    </BwCard>
+
+    @* Underline & Pills *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Underline Style" Subtitle="Classic tab with underline indicator" Icon="fa-solid fa-underline"
+                Color="BwColor.Primary">
+            <BwTabs Variant="BwVariant.Ghost">
+                <BwTabItem Title="Home" Icon="fa-solid fa-house">
+                    <p class="text-gray-600">Welcome to the Home tab. This is the default underline style with blue
+                        underline.</p>
+                </BwTabItem>
+                <BwTabItem Title="Profile" Icon="fa-solid fa-user">
+                    <p class="text-gray-600">Your profile information will appear here.</p>
+                </BwTabItem>
+                <BwTabItem Title="Settings" Icon="fa-solid fa-gear">
+                    <p class="text-gray-600">Manage your application settings in this section.</p>
+                </BwTabItem>
+            </BwTabs>
+        </BwCard>
+
+        <BwCard Title="Pills Style" Subtitle="Button-like tabs with background" Icon="fa-solid fa-tablets"
+                Color="BwColor.Success">
+            <BwTabs Variant="BwVariant.Soft">
+                <BwTabItem Title="Active">
+                    <p class="text-gray-600">Pills style uses white active state with gray container - perfect for
+                        segmented controls.</p>
+                </BwTabItem>
+                <BwTabItem Title="Popular">
+                    <p class="text-gray-600">Popular items are shown here.</p>
+                </BwTabItem>
+                <BwTabItem Title="Latest">
+                    <p class="text-gray-600">Latest content appears in this tab.</p>
+                </BwTabItem>
+            </BwTabs>
+        </BwCard>
+    </BwRow>
+
+    @* Badges & Justified *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Badge Supported" Subtitle="Show counter or status in tab titles" Icon="fa-solid fa-tag"
+                Color="BwColor.Danger">
+            <BwTabs Variant="BwVariant.Ghost">
+                <BwTabItem Title="Inbox">
+                    <Badge>
+                        <BwBadge Color="BwColor.Danger" IsPill="true" Size="BwSize.ExtraSmall">12</BwBadge>
+                    </Badge>
+                    <ChildContent>
+                        <p class="text-gray-600">You have 12 unread messages in your inbox.</p>
+                    </ChildContent>
+                </BwTabItem>
+                <BwTabItem Title="Drafts">
+                    <Badge>
+                        <BwBadge Color="BwColor.Secondary" IsPill="true" Size="BwSize.ExtraSmall">3</BwBadge>
+                    </Badge>
+                    <ChildContent>
+                        <p class="text-gray-600">You have 3 saved drafts.</p>
+                    </ChildContent>
+                </BwTabItem>
+            </BwTabs>
+        </BwCard>
+
+        <BwCard Title="Justified Tabs" Subtitle="Tabs with equal width filling the container"
+                Icon="fa-solid fa-arrows-left-right-to-line" Color="BwColor.Success">
+            <BwTabs Variant="BwVariant.Ghost" Justified="true">
+                <BwTabItem Title="Day"><p class="text-gray-600 p-2 text-center">Daily</p></BwTabItem>
+                <BwTabItem Title="Week"><p class="text-gray-600 p-2 text-center">Weekly</p></BwTabItem>
+                <BwTabItem Title="Month"><p class="text-gray-600 p-2 text-center">Monthly</p></BwTabItem>
+            </BwTabs>
+        </BwCard>
+    </BwRow>
+
+    @* Vertical Style *@
+    <BwCard Title="Vertical Style" Subtitle="Side navigation layout" Icon="fa-solid fa-arrows-up-down"
+            Color="BwColor.Secondary">
+        <BwTabs Vertical="true" Class="h-64">
+            <BwTabItem Title="General" Icon="fa-solid fa-sliders">
+                <h3 class="font-semibold text-gray-900 mb-2">General Settings</h3>
+                <p class="text-gray-600">Configure your general application preferences here.</p>
+            </BwTabItem>
+            <BwTabItem Title="Security" Icon="fa-solid fa-shield">
+                <h3 class="font-semibold text-gray-900 mb-2">Security Settings</h3>
+                <p class="text-gray-600">Password and two-factor authentication options.</p>
+            </BwTabItem>
+            <BwTabItem Title="Notifications" Icon="fa-solid fa-bell">
+                <h3 class="font-semibold text-gray-900 mb-2">Notification Preferences</h3>
+                <p class="text-gray-600">Manage which notifications you receive.</p>
+            </BwTabItem>
+        </BwTabs>
+    </BwCard>
+
+    @* Overflow & Limits *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Limited Tabs" Subtitle="Show maximum 3 tabs (MaxTabs=3)" Icon="fa-solid fa-ban"
+                Color="BwColor.Warning">
+            <BwTabs Variant="BwVariant.Ghost" MaxTabs="3">
+                <BwTabItem Title="Tab 1"><p class="text-gray-600 p-2">Content 1</p></BwTabItem>
+                <BwTabItem Title="Tab 2"><p class="text-gray-600 p-2">Content 2</p></BwTabItem>
+                <BwTabItem Title="Tab 3"><p class="text-gray-600 p-2">Content 3 (Last Visible)</p></BwTabItem>
+                <BwTabItem Title="Tab 4"><p class="text-gray-600 p-2">This tab is not visible due to limit</p>
+                </BwTabItem>
+                <BwTabItem Title="Tab 5"><p class="text-gray-600 p-2">This is also not visible</p></BwTabItem>
+            </BwTabs>
+        </BwCard>
+
+        <BwCard Title="Scrollable Tabs" Subtitle="Scroll with arrow buttons (ShowScrollControls=true)"
+                Icon="fa-solid fa-scroll" Color="BwColor.Info">
+            <BwTabs Variant="BwVariant.Outline" Scrollable="true" ShowScrollControls="true">
+                <BwTabItem Title="Home"><p class="text-gray-600 p-2">Home Section</p></BwTabItem>
+                <BwTabItem Title="About"><p class="text-gray-600 p-2">About Us</p></BwTabItem>
+                <BwTabItem Title="Services"><p class="text-gray-600 p-2">Our Services</p></BwTabItem>
+                <BwTabItem Title="Products"><p class="text-gray-600 p-2">Our Products</p></BwTabItem>
+                <BwTabItem Title="References"><p class="text-gray-600 p-2">References</p></BwTabItem>
+                <BwTabItem Title="Contact"><p class="text-gray-600 p-2">Contact Info</p></BwTabItem>
+                <BwTabItem Title="Career"><p class="text-gray-600 p-2">Career Opportunities</p></BwTabItem>
+                <BwTabItem Title="Blog"><p class="text-gray-600 p-2">Blog Posts</p></BwTabItem>
+                <BwTabItem Title="FAQ"><p class="text-gray-600 p-2">Frequently Asked Questions</p></BwTabItem>
+                <BwTabItem Title="Support"><p class="text-gray-600 p-2">Create a support ticket</p></BwTabItem>
+            </BwTabs>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private BwTabs? _tabsRef;
+    private BwVariant _selectedVariant = BwVariant.Soft;
+    private string _newTabName = "New Document";
+
+    private readonly List<DynamicTab> _dynamicTabs = new()
+    {
+        new DynamicTab { Id = Guid.NewGuid(), Title = "Invoice #1023", Icon = "fa-solid fa-file-invoice", ConfirmClose = true },
+        new DynamicTab { Id = Guid.NewGuid(), Title = "Report 2024", Icon = "fa-solid fa-chart-pie", ConfirmClose = false }
+    };
+
+    private void OpenTab()
+    {
+        if (string.IsNullOrWhiteSpace(_newTabName)) return;
+
+        // If already exists, activate it
+        var existing = _dynamicTabs.FirstOrDefault(t => t.Title == _newTabName);
+        if (existing != null)
+        {
+            _tabsRef?.ActivateTab(_newTabName);
+        }
+        else
+        {
+            _dynamicTabs.Add(new DynamicTab { Id = Guid.NewGuid(), Title = _newTabName, Icon = "fa-solid fa-file" });
+            // When new tab is added, we can wait a bit (after render) to activate it
+            // or we can make BwTabs select it automatically but manual control is better
+            // For simplicity we just add it, user can click or we can Call ActivateTab (should be after render)
+
+            // Hack for activation after render:
+            _ = Task.Delay(50).ContinueWith(_ => InvokeAsync(() => _tabsRef?.ActivateTab(_newTabName)));
+        }
+    }
+
+    private void OnTabClose(string name)
+    {
+        var tab = _dynamicTabs.FirstOrDefault(t => t.Title == name);
+        if (tab != null)
+        {
+            _dynamicTabs.Remove(tab);
+            StateHasChanged();
+        }
+    }
+
+    class DynamicTab
+    {
+        public Guid Id { get; set; }
+        public required string Title { get; set; }
+        public required string Icon { get; set; }
+        public bool ConfirmClose { get; set; }
+    }
+
+}

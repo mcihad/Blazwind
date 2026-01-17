@@ -1,0 +1,91 @@
+@namespace Blazwind.Components.Navigation
+@using Blazwind.Components.Shared
+
+@{
+    var baseClasses = "fixed z-50 flex flex-col-reverse items-center gap-3";
+    
+    var positionClasses = Position switch
+    {
+        BwPosition.BottomLeft => "bottom-6 left-6",
+        BwPosition.TopRight => "top-6 right-6 flex-col",
+        BwPosition.TopLeft => "top-6 left-6 flex-col",
+        _ => "bottom-6 right-6"
+    };
+    
+    var fabBaseClasses = "rounded-full border-none cursor-pointer flex items-center justify-center text-white transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
+    
+    var sizeClasses = Size switch
+    {
+        BwSize.Small => Mini ? "w-10 h-10 text-lg" : "w-10 h-10 text-lg",
+        BwSize.Large => "w-[72px] h-[72px] text-3xl",
+        _ => Mini ? "w-10 h-10 text-lg" : "w-14 h-14 text-2xl"
+    };
+    
+    var colorClasses = Color switch
+    {
+        BwColor.Success => "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/30",
+        BwColor.Warning => "bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/30",
+        BwColor.Danger => "bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30",
+        BwColor.Info => "bg-gradient-to-br from-sky-500 to-sky-600 shadow-lg shadow-sky-500/30",
+        BwColor.Secondary => "bg-gradient-to-br from-gray-500 to-gray-600 shadow-lg shadow-gray-500/30",
+        _ => "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30"
+    };
+    
+    var extendedClasses = Extended ? "w-auto px-5 gap-2 rounded-full" : "";
+    var iconRotation = _isOpen ? "rotate-45" : "";
+}
+
+<div class="@baseClasses @positionClasses @Class">
+    @if (_isOpen && SpeedDialItems != null)
+    {
+        <div class="flex flex-col-reverse gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200">
+            @SpeedDialItems
+        </div>
+    }
+    
+    <button type="button" 
+            class="@fabBaseClasses @sizeClasses @colorClasses @extendedClasses"
+            disabled="@IsDisabled"
+            @onclick="HandleClick">
+        <i class="@Icon transition-transform duration-200 @iconRotation"></i>
+        @if (Extended && !string.IsNullOrEmpty(Label))
+        {
+            <span class="text-sm font-medium whitespace-nowrap">@Label</span>
+        }
+        
+        @if (BadgeContent != null)
+        {
+            <div class="absolute -top-1 -right-1">
+                @BadgeContent
+            </div>
+        }
+    </button>
+</div>
+
+@code {
+    [Parameter] public string Icon { get; set; } = "fa-solid fa-plus";
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public RenderFragment? BadgeContent { get; set; }
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwPosition Position { get; set; } = BwPosition.BottomRight;
+    [Parameter] public bool Extended { get; set; } = false;
+    [Parameter] public bool Mini { get; set; } = false;
+    [Parameter] public bool IsDisabled { get; set; } = false;
+    [Parameter] public string? Class { get; set; }
+    
+    [Parameter] public RenderFragment? SpeedDialItems { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    
+    private bool _isOpen = false;
+    
+    private async Task HandleClick()
+    {
+        if (SpeedDialItems != null)
+        {
+            _isOpen = !_isOpen;
+        }
+        
+        await OnClick.InvokeAsync();
+    }
+}

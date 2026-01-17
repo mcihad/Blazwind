@@ -1,0 +1,149 @@
+@namespace Blazwind.Components.BackToTop
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+@{
+    var sizeClasses = Size switch
+    {
+        BwSize.Small => "w-10 h-10 text-sm",
+        BwSize.Large => "w-14 h-14 text-xl",
+        _ => "w-12 h-12 text-lg"
+    };
+
+    var colorClasses = Color switch
+    {
+        BwColor.Success => "bg-emerald-500 dark:bg-emerald-600 hover:bg-emerald-600 dark:hover:bg-emerald-700 shadow-emerald-500/30 dark:shadow-emerald-900/30",
+        BwColor.Danger => "bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 shadow-red-500/30 dark:shadow-red-900/30",
+        BwColor.Warning => "bg-amber-500 dark:bg-amber-600 hover:bg-amber-600 dark:hover:bg-amber-700 shadow-amber-500/30 dark:shadow-amber-900/30",
+        BwColor.Info => "bg-sky-500 dark:bg-sky-600 hover:bg-sky-600 dark:hover:bg-sky-700 shadow-sky-500/30 dark:shadow-sky-900/30",
+        BwColor.Secondary => "bg-gray-500 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-700 shadow-gray-500/30 dark:shadow-gray-900/30",
+        BwColor.Light => "bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 shadow-gray-200/50 dark:shadow-black/30",
+        BwColor.Dark => "bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 shadow-gray-900/30 dark:shadow-black/50",
+        _ => "bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 shadow-blue-500/30 dark:shadow-blue-900/30"
+    };
+
+    var textColor = Color == BwColor.Light ? "" : "text-white";
+
+    var positionClasses = Position switch
+    {
+        BwPosition.BottomLeft => "fixed bottom-6 left-6",
+        _ => "fixed bottom-6 right-6"
+    };
+
+    var shapeClasses = Shape switch
+    {
+        "square" => "rounded-lg",
+        "rounded" => "rounded-xl",
+        _ => "rounded-full"
+    };
+
+    var visibilityClasses = _isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none";
+}
+
+<button type="button"
+    class="@CombineClasses($"{positionClasses} {sizeClasses} {colorClasses} {textColor} {shapeClasses} {visibilityClasses} z-50 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 active:scale-95")"
+    style="@Style" id="@Id" @onclick="ScrollToTop" title="@Tooltip" @attributes="AdditionalAttributes">
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <i class="@Icon"></i>
+    }
+</button>
+
+@code {
+    [Parameter] public string Icon { get; set; } = "fa-solid fa-arrow-up";
+    [Parameter] public string Tooltip { get; set; } = "Yukarı çık";
+    [Parameter] public int VisibilityThreshold { get; set; } = 300;
+    [Parameter] public bool Smooth { get; set; } = true;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwPosition Position { get; set; } = BwPosition.BottomRight;
+    [Parameter] public string Shape { get; set; } = "circle";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private bool _isVisible = false;
+    private DotNetObjectReference<BwBackToTop>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+
+            await JS.InvokeVoidAsync("eval", $@"
+(function() {{
+// Configuration
+var threshold = {VisibilityThreshold};
+var elementId = '{Id}';
+var scrollContainerId = null; // Can be added as parameter later if needed
+
+function getScrollY() {{
+    if (scrollContainerId) {{
+        var container = document.getElementById(scrollContainerId);
+        return container ? container.scrollTop : 0;
+    }}
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}}
+
+function checkVisibility() {{
+    var isVisible = getScrollY() > threshold;
+    var el = document.getElementById(elementId);
+    if (el) {{
+        if (isVisible) {{
+            el.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            el.classList.add('opacity-100', 'translate-y-0');
+        }} else {{
+            el.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            el.classList.remove('opacity-100', 'translate-y-0');
+        }}
+    }}
+}}
+
+// Attach to specific container if ID provided, otherwise window
+var target = scrollContainerId ? document.getElementById(scrollContainerId) : window;
+if (target) {{
+    target.addEventListener('scroll', checkVisibility);
+    // Also check on load/resize just in case
+    window.addEventListener('resize', checkVisibility);
+    checkVisibility(); // Initial check
+}}
+
+window['bwBackToTop_{Id}_cleanup'] = function() {{
+    if (target) target.removeEventListener('scroll', checkVisibility);
+    window.removeEventListener('resize', checkVisibility);
+}};
+}})();
+");
+        }
+    }
+
+    private async Task ScrollToTop()
+    {
+        var behavior = Smooth ? "smooth" : "instant";
+        await JS.InvokeVoidAsync("eval", $@"
+            var container = null; // document.getElementById('{/*ScrollElementId*/""}'); 
+            if (container) {{
+                container.scrollTo({{ top: 0, behavior: '{behavior}' }});
+            }} else {{
+                window.scrollTo({{ top: 0, behavior: '{behavior}' }});
+            }}
+        ");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", $"if(window['bwBackToTop_{Id}_cleanup']) window['bwBackToTop_{Id}_cleanup']();");
+        }
+        catch { }
+        _dotNetRef?.Dispose();
+    }
+}

@@ -1,0 +1,41 @@
+@page "/components/file-upload"
+@using Blazwind.Components.Input
+
+<PageTitle>File Upload Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="File Upload" Description="Drag and drop file upload component." Icon="fa-solid fa-cloud-arrow-up"
+            Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Drag & Drop or click" Icon="fa-solid fa-cloud-arrow-up"
+            Color="BwColor.Primary">
+        <BwFileUpload Label="Files" HelperText="Drag and drop files or click to select" @bind-Files="_basicFiles"/>
+    </BwCard>
+
+    @* Image Only *@
+    <BwCard Title="Images Only" Subtitle="File type restriction with Accept" Icon="fa-solid fa-image"
+            Color="BwColor.Success">
+        <BwFileUpload Label="Profile Photo" Accept=".jpg,.jpeg,.png,.gif" MaxFileSize="@(5 * 1024 * 1024)"
+                      HelperText="JPG, PNG or GIF. Max. 5MB" @bind-Files="_imageFiles"/>
+    </BwCard>
+
+    @* Single File *@
+    <BwCard Title="Single File" Subtitle="Multiple=false" Icon="fa-solid fa-file" Color="BwColor.Warning">
+        <BwFileUpload Label="Upload CV" Accept=".pdf,.doc,.docx" Multiple="false" HelperText="PDF or Word document"
+                      @bind-Files="_cvFiles"/>
+    </BwCard>
+
+    @* With Limits *@
+    <BwCard Title="With Limit" Subtitle="MaxFiles=3" Icon="fa-solid fa-list-ol" Color="BwColor.Danger">
+        <BwFileUpload Label="Additional Documents" MaxFiles="3" MaxFileSize="@(2 * 1024 * 1024)"
+                      HelperText="Maximum 3 files, each max. 2MB" @bind-Files="_limitedFiles"/>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<IBrowserFile> _basicFiles = new();
+    private List<IBrowserFile> _imageFiles = new();
+    private List<IBrowserFile> _cvFiles = new();
+    private List<IBrowserFile> _limitedFiles = new();
+}

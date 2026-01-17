@@ -1,0 +1,673 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+@typeparam TItem
+
+@{
+    var hasError = !string.IsNullOrEmpty(Error);
+    var hasLabel = !string.IsNullOrEmpty(Label);
+    var hasHelper = !string.IsNullOrEmpty(HelperText);
+
+    var sizeClasses = Size switch
+    {
+        BwSize.Small => new { Height = "min-h-[32px]", Text = "text-xs", Padding = "px-2 py-1", Tag = "text-xs px-1.5 py-0.5" },
+        BwSize.Large => new { Height = "min-h-[48px]", Text = "text-base", Padding = "px-4 py-2", Tag = "text-sm px-2.5 py-1" },
+        _ => new { Height = "min-h-[40px]", Text = "text-sm", Padding = "px-3 py-1.5", Tag = "text-xs px-2 py-0.5" }
+    };
+
+    var borderClass = hasError
+    ? "border-red-300 dark:border-red-700 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-offset-0 focus-within:ring-red-500/20"
+    : "border-gray-300 dark:border-gray-700 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-offset-0 focus-within:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600";
+
+    var disabledClass = IsDisabled 
+        ? "bg-gray-50 dark:bg-gray-900 text-gray-400 border-gray-200 dark:border-gray-700 cursor-not-allowed opacity-60" 
+        : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-text";
+}
+
+<div class="relative @Class" @onclick:stopPropagation="true">
+    @if (hasLabel)
+    {
+        <label class="block @sizeClasses.Text font-medium text-gray-700 mb-1">
+            @Label
+            @if (IsRequired)
+            {
+                <span class="text-red-500 ml-0.5">*</span>
+            }
+        </label>
+    }
+
+    <div class="relative">
+        <div class="@sizeClasses.Height flex items-center gap-1.5 @sizeClasses.Padding bg-white dark:bg-gray-800 border rounded transition-all @borderClass @disabledClass"
+             @onclick="FocusInput" @onclick:stopPropagation="true">
+
+            @* Selected Tags (Multiple Mode) *@
+            @if (Multiple && _selectedItems.Any())
+            {
+                <div class="flex flex-wrap gap-1 py-0.5 mr-1">
+                    @foreach (var item in _selectedItems.Take(MaxTags))
+                    {
+                        <span class="inline-flex items-center gap-1 @sizeClasses.Tag font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-200 rounded">
+                            @ItemText(item)
+                            @if (!IsDisabled)
+                            {
+                                <button type="button" class="text-blue-500 hover:text-blue-700 focus:outline-none"
+                                        @onclick="() => RemoveItem(item)" @onclick:stopPropagation="true">
+                                    <i class="fa-solid fa-xmark text-[10px]"></i>
+                                </button>
+                            }
+                        </span>
+                    }
+                    @if (_selectedItems.Count > MaxTags)
+                    {
+                        <span class="@sizeClasses.Tag text-gray-500">+@(_selectedItems.Count - MaxTags)</span>
+                    }
+                </div>
+            }
+
+            @* Search Input (Unified for Display & Search in Single Mode) *@
+            <input type="text" @ref="_inputRef" id="@_elementId"
+                   class="flex-1 min-w-[60px] p-0 bg-transparent @sizeClasses.Text text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border-none outline-none ring-0 focus:ring-0 shadow-none appearance-none"
+                   style="outline: none !important; border: none !important; box-shadow: none !important;"
+                   placeholder="@GetPlaceholder()" value="@_searchText" disabled="@IsDisabled" @oninput="OnSearchInput"
+                   @onfocus="OpenDropdown" @onblur="OnBlur" @onkeydown="OnKeyDown" />
+
+            @* Actions *@
+            <div class="flex items-center gap-1 ml-auto">
+                @if (_isLoading)
+                {
+                    <span class="p-1 text-blue-500">
+                        <i class="fa-solid fa-spinner fa-spin text-sm"></i>
+                    </span>
+                }
+                else if ((_selectedItems.Any() || !string.IsNullOrEmpty(_searchText)) && !IsDisabled)
+                {
+                    <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none" @onclick="ClearAll"
+                            @onclick:stopPropagation="true">
+                        <i class="fa-solid fa-xmark text-sm"></i>
+                    </button>
+                }
+                <span class="text-gray-400 p-1">
+                    <i
+                        class="fa-solid fa-chevron-down text-xs transition-transform duration-200 @(_isOpen ? "rotate-180" : "")"></i>
+                </span>
+            </div>
+        </div>
+
+        @* Dropdown *@
+        @if (_isOpen && !IsDisabled)
+        {
+            <div class="absolute z-50 w-full @_placementClass bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg overflow-hidden">
+                @if (_isLoading)
+                {
+                    <div class="@sizeClasses.Padding text-center text-gray-500">
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+                        Yükleniyor...
+                    </div>
+                }
+                else if (_filteredItems.Any())
+                {
+                    <ul class="max-h-48 overflow-y-auto py-1" @ref="_dropdownRef">
+                        @{
+                            string? currentGroup = null;
+                        }
+                        <Virtualize Items="@_filteredItems" Context="item" OverscanCount="5">
+                            @{
+                                // Calculate index if possible or assume Virtualize doesn't easily expose index. 
+                                // With Virtualize, getting index is hard for active state. 
+                                // We might need to find the item index in original list or filtered list to matching active index.
+                                // However, we can use item reference equality for 'IsActive'.
+                                // NOTE: _activeIndex logic needs adjustment if we rely on index.
+                                // Let's rely on item reference or value equality for Active state if possible, 
+                                // BUT arrow keys rely on numeric index. 
+                                // Let's find index of 'item' in _filteredItems for functionality, 
+                                // although O(N) inside loop is bad. 
+                                // Better: use styling based on equality with a tracked '_activeItem' instead of index?
+                                // But navigation is by index. 
+                                
+                                var isActive = EqualityComparer<TItem>.Default.Equals(item, _activeItem);
+                                var isSelected = Multiple ? _selectedItems.Contains(item) : EqualityComparer<TItem>.Default.Equals(item, _selectedItem);
+                            }
+
+                            @* Group Header *@
+                             @if (GroupBy != null)
+                            {
+                                var group = GroupBy(item);
+                                if (group != currentGroup)
+                                {
+                                    currentGroup = group;
+                                    <li class="px-3 py-1.5 text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-900 border-b border-gray-100 dark:border-gray-700">
+                                        @currentGroup
+                                    </li>
+                                }
+                            }
+
+                            <li class="@sizeClasses.Padding cursor-pointer transition-colors @(isActive ? "bg-gray-100 dark:bg-gray-700" : "") @(isSelected ? "text-blue-700 dark:text-blue-400 font-medium" : "text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700")"
+                                @onclick="() => SelectItem(item)" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
+                                @if (ItemTemplate != null)
+                                {
+                                    @ItemTemplate(item)
+                                }
+                                else
+                                {
+                                    <div class="flex items-center gap-2">
+                                        @if (ItemIcon != null)
+                                        {
+                                            <i class="@ItemIcon(item) text-gray-400"></i>
+                                        }
+                                        <span class="truncate flex-1">@ItemText(item)</span>
+                                        @if (ItemDescription != null)
+                                        {
+                                            <span class="text-xs text-gray-400 truncate">@ItemDescription(item)</span>
+                                        }
+                                        @if (isSelected)
+                                        {
+                                            <i class="fa-solid fa-check text-blue-600 text-xs"></i>
+                                        }
+                                    </div>
+                                }
+                            </li>
+                        </Virtualize>
+                    </ul>
+
+                    @* Create New Option *@
+                    @if (AllowCreate && !string.IsNullOrWhiteSpace(_searchText) && !_filteredItems.Any(x =>
+                            ItemText(x).Equals(_searchText, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        <div class="border-t border-gray-100 dark:border-gray-700">
+                            <button type="button"
+                                class="w-full @sizeClasses.Padding text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-2"
+                                @onclick="CreateNewItem" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                                <span>"<strong>@_searchText</strong>" oluştur</span>
+                            </button>
+                        </div>
+                    }
+                }
+                else if (AllowCreate && !string.IsNullOrWhiteSpace(_searchText))
+                {
+                    <div class="border-t border-gray-100 dark:border-gray-700">
+                        <button type="button"
+                            class="w-full @sizeClasses.Padding text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-2"
+                            @onclick="CreateNewItem" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                            <span>"<strong>@_searchText</strong>" oluştur</span>
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="@sizeClasses.Padding text-center text-gray-500">
+                        <i class="fa-solid fa-search mr-1"></i>
+                        @(string.IsNullOrWhiteSpace(_searchText) && MinChars > 0
+                                    ? $"En az {MinChars} karakter girin"
+                                    : "Sonuç bulunamadı")
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @if (hasError)
+    {
+        <p class="mt-1 @sizeClasses.Text text-red-600">
+            <i class="fa-solid fa-circle-exclamation mr-1"></i>@Error
+        </p>
+    }
+    else if (hasHelper)
+    {
+        <p class="mt-1 @sizeClasses.Text text-gray-500">@HelperText</p>
+    }
+</div>
+
+@code {
+    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+    
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; } = "Seçin veya arayın...";
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public bool IsDisabled { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public bool Multiple { get; set; }
+    [Parameter] public int MaxTags { get; set; } = 3;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public string? Class { get; set; }
+
+    /// <summary>Static items list (for non-async usage)</summary>
+    [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+
+    /// <summary>Function to get display text from item</summary>
+    [Parameter] public Func<TItem, string> ItemText { get; set; } = item => item?.ToString() ?? "";
+
+    /// <summary>Optional function to get icon class from item</summary>
+    [Parameter] public Func<TItem, string>? ItemIcon { get; set; }
+
+    /// <summary>Optional function to get description from item</summary>
+    [Parameter] public Func<TItem, string>? ItemDescription { get; set; }
+
+    /// <summary>Optional function to group items</summary>
+    [Parameter] public Func<TItem, string>? GroupBy { get; set; }
+
+    /// <summary>Custom item template</summary>
+    [Parameter] public RenderFragment<TItem>? ItemTemplate { get; set; }
+
+    // Async Search Support
+    /// <summary>Async function to search items (enables async mode)</summary>
+    [Parameter] public Func<string, CancellationToken, Task<IEnumerable<TItem>>>? SearchFunc { get; set; }
+
+    /// <summary>Debounce delay in milliseconds for async search</summary>
+    [Parameter] public int DebounceMs { get; set; } = 300;
+
+    /// <summary>Minimum characters before search is triggered</summary>
+    [Parameter] public int MinChars { get; set; } = 0;
+
+    // Creatable
+    /// <summary>Allow creating new items from search text</summary>
+    [Parameter] public bool AllowCreate { get; set; }
+
+    /// <summary>Callback when user wants to create a new item</summary>
+    [Parameter] public EventCallback<string> OnCreateNew { get; set; }
+
+    // Single Selection
+    [Parameter] public TItem? SelectedItem { get; set; }
+    [Parameter] public EventCallback<TItem?> SelectedItemChanged { get; set; }
+
+    // Multiple Selection
+    [Parameter] public List<TItem> SelectedItems { get; set; } = new();
+    [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
+    
+    /// <summary>Expression for validation binding (single selection)</summary>
+    [Parameter] public Expression<Func<TItem>>? For { get; set; }
+    
+    /// <summary>Expression for validation binding (multiple selection)</summary>
+    [Parameter] public Expression<Func<List<TItem>>>? ForMultiple { get; set; }
+
+    [Inject] private IJSRuntime _js { get; set; } = default!;
+
+    private ElementReference _inputRef;
+    private ElementReference _dropdownRef;
+    private string _searchText = "";
+    private bool _isOpen;
+    private bool _isLoading;
+    private List<TItem> _filteredItems = new();
+    private TItem? _selectedItem;
+    private List<TItem> _selectedItems = new();
+    private int _activeIndex = -1;
+    private TItem? _activeItem;
+    private CancellationTokenSource? _searchCts;
+    private FieldIdentifier _fieldIdentifier;
+
+    protected override void OnInitialized()
+    {
+        if (CascadedEditContext != null)
+        {
+            if (For != null) _fieldIdentifier = FieldIdentifier.Create(For);
+            else if (ForMultiple != null) _fieldIdentifier = FieldIdentifier.Create(ForMultiple);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Snapshot to detect external changes
+        if (!Multiple)
+        {
+            // If external change (or initial), update search text
+            if (!EqualityComparer<TItem>.Default.Equals(_selectedItem, SelectedItem))
+            {
+                _selectedItem = SelectedItem;
+                _searchText = _selectedItem != null ? ItemText(_selectedItem) : "";
+            }
+        }
+        else
+        {
+            _selectedItems = new List<TItem>(SelectedItems);
+        }
+
+        // Only filter for static items, async will be handled separately
+        if (SearchFunc == null)
+        {
+            FilterItems();
+        }
+    }
+
+    private string GetPlaceholder()
+    {
+        if (Multiple && _selectedItems.Any()) return "";
+        return Placeholder ?? "";
+    }
+
+    private void FilterItems()
+    {
+        if (string.IsNullOrWhiteSpace(_searchText) && !(_selectedItem != null && !Multiple && _searchText ==
+        ItemText(_selectedItem)))
+        {
+            // If empty text, show all
+            _filteredItems = Items.ToList();
+        }
+        else if (!Multiple && _selectedItem != null && _searchText == ItemText(_selectedItem))
+        {
+            // If text matches active selection exactly, show all (so user can switch)
+            _filteredItems = Items.ToList();
+        }
+        else
+        {
+            _filteredItems = Items
+            .Where(item => ItemText(item).Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        }
+        _activeIndex = _filteredItems.Any() ? 0 : -1;
+        _activeItem = _activeIndex >= 0 ? _filteredItems[_activeIndex] : default;
+    }
+
+    private async Task SearchAsync(string searchText)
+    {
+        if (SearchFunc == null) return;
+
+        // Cancel previous search
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+
+        // Check min chars
+        if (searchText.Length < MinChars)
+        {
+            _filteredItems = new List<TItem>();
+            _isLoading = false;
+            return;
+        }
+
+        _isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            // Debounce
+            await Task.Delay(DebounceMs, _searchCts.Token);
+
+            // Perform search
+            var results = await SearchFunc(searchText, _searchCts.Token);
+            _filteredItems = results.ToList();
+            _activeIndex = _filteredItems.Any() ? 0 : -1;
+            _activeItem = _activeIndex >= 0 ? _filteredItems[_activeIndex] : default;
+        }
+        catch (TaskCanceledException)
+        {
+            // Ignore cancelled searches
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnSearchInput(ChangeEventArgs e)
+    {
+        _searchText = e.Value?.ToString() ?? "";
+
+        // In Single Mode, typing clears selection until picked
+        if (!Multiple && _selectedItem != null && _searchText != ItemText(_selectedItem))
+        {
+            _selectedItem = default;
+            await SelectedItemChanged.InvokeAsync(_selectedItem);
+        }
+
+        // Use async search if available, otherwise filter locally
+        if (SearchFunc != null)
+        {
+            await SearchAsync(_searchText);
+        }
+        else
+        {
+            FilterItems();
+        }
+
+        _isOpen = true;
+    }
+
+    private string _placementClass = "mt-1"; // Default to bottom
+
+    private async void OpenDropdown()
+    {
+        if (!IsDisabled)
+        {
+            // Determine placement before showing
+            // We use a small delay or check to ensure we have the input ref
+            try 
+            {
+               var windowHeight = await _js.InvokeAsync<double>("eval", "window.innerHeight");
+               var rect = await _js.InvokeAsync<BoundingClientRect>("eval", 
+                   $"let el = document.getElementById('{_elementId}'); if(el) {{ let r = el.getBoundingClientRect(); ({{ top: r.top, bottom: r.bottom }}) }} else {{ ({{ top: 0, bottom: 0 }}) }}");
+               
+               // Note: This relies on specific ID or reference. 
+               // Better approach: Use a dedicated JS function for this component library if it existed.
+               // Since I can't easily add a global JS file right now without checking layout, 
+               // I will use a direct element reference approach if possible or a simpler eval.
+               
+               // Let's use the container div for reference
+               var placement = "bottom";
+               // Assuming dropdown height ~200px (max-h-48 = 12rem = 192px + borders)
+               if (windowHeight - rect.Bottom < 220 && rect.Top > 220)
+               {
+                   placement = "top";
+               }
+               
+               _placementClass = placement == "top" ? "bottom-full mb-0.5" : "mt-0.5";
+            }
+            catch {}
+
+            _isOpen = true;
+            StateHasChanged(); // Re-render to show with correct class
+
+            // For async, trigger initial search if needed
+            if (SearchFunc != null && !_filteredItems.Any() && string.IsNullOrEmpty(_searchText))
+            {
+                if (MinChars == 0)
+                {
+                    await SearchAsync("");
+                }
+            }
+            else if (SearchFunc == null)
+            {
+                FilterItems();
+            }
+            
+            // Wait for render then scroll
+            // await Task.Delay(50); // Small delay to allow render
+            // await ScrollToActive(); // Initial scroll not always needed unless navigating back
+        }
+    }
+
+    private async Task OnBlur()
+    {
+        await Task.Delay(200);
+        _isOpen = false;
+        _placementClass = "mt-0.5"; // Reset to default
+
+        if (!Multiple)
+        {
+            // If text matches nothing selected, maybe clear or keep custom text?
+            // Strategy: Keep text. If user wants to enforce selection, they check SelectedItem.
+            if (_selectedItem != null)
+            {
+                _searchText = ItemText(_selectedItem);
+            }
+        }
+        else
+        {
+            _searchText = "";
+        }
+
+        _activeIndex = -1;
+    }
+
+    private async Task SelectItem(TItem item)
+    {
+        if (Multiple)
+        {
+            if (_selectedItems.Contains(item))
+            {
+                _selectedItems.Remove(item);
+            }
+            else
+            {
+                _selectedItems.Add(item);
+            }
+            await SelectedItemsChanged.InvokeAsync(_selectedItems);
+            _searchText = "";
+            if (SearchFunc != null)
+            {
+                _filteredItems = new List<TItem>();
+            }
+            else
+            {
+                FilterItems();
+            }
+            await FocusInputAsync();
+        }
+        else
+        {
+            _selectedItem = item;
+            _searchText = ItemText(item);
+            await SelectedItemChanged.InvokeAsync(_selectedItem);
+            _isOpen = false;
+        }
+    }
+
+    private async Task RemoveItem(TItem item)
+    {
+        _selectedItems.Remove(item);
+        await SelectedItemsChanged.InvokeAsync(_selectedItems);
+    }
+
+    private async Task ClearAll()
+    {
+        if (Multiple)
+        {
+            _selectedItems.Clear();
+            await SelectedItemsChanged.InvokeAsync(_selectedItems);
+        }
+        else
+        {
+            _selectedItem = default;
+            await SelectedItemChanged.InvokeAsync(_selectedItem);
+        }
+        _searchText = "";
+        _activeIndex = -1;
+        _filteredItems = new List<TItem>();
+    }
+
+    private async Task CreateNewItem()
+    {
+        if (!string.IsNullOrWhiteSpace(_searchText) && OnCreateNew.HasDelegate)
+        {
+            await OnCreateNew.InvokeAsync(_searchText);
+            _searchText = "";
+            _isOpen = false;
+        }
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (!_isOpen)
+        {
+            if (e.Key == "ArrowDown" || e.Key == "Enter")
+            {
+                OpenDropdown();
+            }
+            return;
+        }
+
+        switch (e.Key)
+        {
+            case "Escape":
+                _isOpen = false;
+                _searchText = "";
+                _activeIndex = -1;
+                break;
+
+            case "ArrowDown":
+                if (_filteredItems.Any())
+                {
+                    _activeIndex = (_activeIndex + 1) % _filteredItems.Count;
+                    _activeItem = _filteredItems[_activeIndex];
+                    await ScrollToActive();
+                }
+                break;
+
+            case "ArrowUp":
+                if (_filteredItems.Any())
+                {
+                    _activeIndex = (_activeIndex - 1 + _filteredItems.Count) % _filteredItems.Count;
+                    _activeItem = _filteredItems[_activeIndex];
+                    await ScrollToActive();
+                }
+                break;
+
+            case "Enter":
+                if (_activeIndex >= 0 && _activeIndex < _filteredItems.Count)
+                {
+                    await SelectItem(_filteredItems[_activeIndex]);
+                }
+                else if (AllowCreate && !string.IsNullOrWhiteSpace(_searchText))
+                {
+                    await CreateNewItem();
+                }
+                break;
+
+            case "Backspace":
+                if (string.IsNullOrEmpty(_searchText) && Multiple && _selectedItems.Any())
+                {
+                    _selectedItems.RemoveAt(_selectedItems.Count - 1);
+                    await SelectedItemsChanged.InvokeAsync(_selectedItems);
+                }
+                break;
+        }
+    }
+
+    private async Task ScrollToActive()
+    {
+        try
+        {
+            if (_activeIndex < 0) return;
+            // Scroll logic for virtualization:
+            // Since we use virtualization, we can't select element by ID easily if it's not rendered.
+            // But Virtualize component generally renders items based on scroll position.
+            // To programmatic scroll, we can try setting scrollTop of the container.
+            // Estimate item height: 32px (Small) - 40px (Medium) -> avg 36px.
+            
+            // However, we can also try to find the active element if it IS rendered.
+            // Or calculate position.
+            
+            // Simple approach: scrollTop = index * estimatedHeight.
+            // Let's assume 36px per item.
+            var itemHeight = 36;
+            
+            // Using eval to set scrollTop of the UL ref
+            await _js.InvokeVoidAsync("eval", $"let el = document.querySelector('[_bl__{_dropdownRef.Id}]'); if(el) {{ el.scrollTop = {_activeIndex * itemHeight}; }}");
+        }
+        catch { }
+    }
+
+    private void FocusInput()
+    {
+        // Handled by click
+    }
+
+    private async Task FocusInputAsync()
+    {
+        await _inputRef.FocusAsync();
+    }
+
+    private string _elementId = "bw-ac-" + Guid.NewGuid().ToString("N");
+
+    public void Dispose()
+    {
+        _searchCts?.Cancel();
+        _searchCts?.Dispose();
+    }
+
+    private record BoundingClientRect(double Top, double Bottom);
+}

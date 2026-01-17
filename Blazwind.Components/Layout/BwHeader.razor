@@ -1,0 +1,20 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@inherits BwBase
+
+<div class="flex-1 flex items-center justify-between h-full relative z-50 @Class" style="@Style">
+    <!-- Left Section -->
+    <div class="flex items-center gap-4">
+        @LeftContent
+    </div>
+
+    <!-- Right Section -->
+    <div class="flex items-center gap-3">
+        @RightContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? LeftContent { get; set; }
+    [Parameter] public RenderFragment? RightContent { get; set; }
+}

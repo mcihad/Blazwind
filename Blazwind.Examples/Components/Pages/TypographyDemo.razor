@@ -1,0 +1,99 @@
+@page "/components/label"
+@using Blazwind.Components.Typography
+
+<PageTitle>Label & Typography - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Label & Typography"
+            Description="Flexible typography for headings, paragraphs and labels."
+            Icon="fa-solid fa-font"
+            Color="BwColor.Primary"/>
+
+    @* Headlines *@
+    <BwCard Title="Heading Hierarchy" Subtitle="All headings from H1 to H6" Icon="fa-solid fa-heading"
+            Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTypography Tag="BwTypographyTag.H1" Size="BwSize.ExtraLarge" Weight="BwFontWeight.Bold">H1. Main Heading
+                (4XL)
+            </BwTypography>
+            <BwTypography Tag="BwTypographyTag.H2" Size="BwSize.ExtraLarge" Weight="BwFontWeight.Semibold">H2. Secondary
+                Heading (3XL)
+            </BwTypography>
+            <BwTypography Tag="BwTypographyTag.H3" Size="BwSize.ExtraLarge" Weight="BwFontWeight.Medium">H3. Section
+                Heading (2XL)
+            </BwTypography>
+            <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.ExtraLarge" Weight="BwFontWeight.Medium">H4. Card Title
+                (XL)
+            </BwTypography>
+            <BwTypography Tag="BwTypographyTag.H5" Size="BwSize.Large" Weight="BwFontWeight.Normal">H5. Group Title
+                (LG)
+            </BwTypography>
+            <BwTypography Tag="BwTypographyTag.H6" Size="BwSize.Medium" Weight="BwFontWeight.Normal"
+                          Color="BwColor.Secondary">H6. Subtle Heading (Base, Secondary)
+            </BwTypography>
+        </BwColumn>
+    </BwCard>
+
+    @* Weights *@
+    <BwCard Title="Font Weights" Subtitle="From Thin to Black" Icon="fa-solid fa-weight-hanging"
+            Color="BwColor.Primary">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <BwTypography Weight="BwFontWeight.Thin" Size="BwSize.Large">Thin (100)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Light" Size="BwSize.Large">Light (300)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Normal" Size="BwSize.Large">Normal (400)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Medium" Size="BwSize.Large">Medium (500)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Semibold" Size="BwSize.Large">Semibold (600)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Bold" Size="BwSize.Large">Bold (700)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Extrabold" Size="BwSize.Large">Extrabold (800)</BwTypography>
+            <BwTypography Weight="BwFontWeight.Black" Size="BwSize.Large">Black (900)</BwTypography>
+        </div>
+    </BwCard>
+
+    @* Variants / Colors *@
+    <BwCard Title="Color Variants" Subtitle="Text colors compatible with your theme" Icon="fa-solid fa-palette"
+            Color="BwColor.Danger">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <BwTypography Color="BwColor.Dark" Weight="BwFontWeight.Medium">Default (Glass)</BwTypography>
+            <BwTypography Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Muted (Ghost)</BwTypography>
+            <BwTypography Color="BwColor.Primary" Weight="BwFontWeight.Medium">Primary</BwTypography>
+            <BwTypography Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Secondary</BwTypography>
+            <BwTypography Color="BwColor.Success" Weight="BwFontWeight.Medium">Success</BwTypography>
+            <BwTypography Color="BwColor.Warning" Weight="BwFontWeight.Medium">Warning</BwTypography>
+            <BwTypography Color="BwColor.Danger" Weight="BwFontWeight.Medium">Danger</BwTypography>
+            <BwTypography Color="BwColor.Info" Weight="BwFontWeight.Medium">Info</BwTypography>
+        </div>
+    </BwCard>
+
+    @* Truncation *@
+    <BwCard Title="Text Truncation" Subtitle="Handling long texts" Icon="fa-solid fa-scissors" Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <BwTypography Text="Single-line Truncate (IsTruncated=true):" Size="BwSize.Small"
+                              Class="mb-1 text-gray-400"/>
+                <BwTypography IsTruncated="true" Class="w-64 bg-gray-50 p-2 rounded border border-gray-200">
+                    This is a very long text and should be truncated with an ellipsis when it doesn't fit the given
+                    width.
+                </BwTypography>
+            </div>
+
+            <div>
+                <BwTypography Text="Multi-line Truncate (LineClamp=2):" Size="BwSize.Small" Class="mb-1 text-gray-400"/>
+                <BwTypography LineClamp="2" Class="w-64 bg-gray-50 p-2 rounded border border-gray-200">
+                    This text is designed to span multiple lines but must be truncated after the second line. Lorem
+                    ipsum dolor sit amet, consectetur adipiscing elit.
+                </BwTypography>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Interactive *@
+    <BwCard Title="Label Usage" Subtitle="For form elements" Icon="fa-solid fa-tag" Color="BwColor.Success">
+        <div class="flex items-center gap-2">
+            <BwTypography Tag="BwTypographyTag.Label" Size="BwSize.Small" Weight="BwFontWeight.Medium"
+                          Color="BwColor.Secondary">Username:
+            </BwTypography>
+            <span class="text-sm">cihad_coder</span>
+        </div>
+    </BwCard>
+
+</BwColumn>

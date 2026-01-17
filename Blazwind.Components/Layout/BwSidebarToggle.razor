@@ -1,0 +1,11 @@
+@namespace Blazwind.Components.Layout
+
+<button type="button" 
+        class="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors @Class"
+        onclick="Blazwind.Sidebar.toggle()">
+    <i class="fa-solid fa-bars text-lg"></i>
+</button>
+
+@code {
+    [Parameter] public string? Class { get; set; }
+}

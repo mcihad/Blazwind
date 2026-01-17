@@ -1,0 +1,139 @@
+@namespace Blazwind.Components.Calendar
+@using Blazwind.Components.Shared
+
+@{
+    var culture = new System.Globalization.CultureInfo("tr-TR");
+    var monthStart = new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
+    var monthEnd = monthStart.AddMonths(1).AddDays(-1);
+    
+    // Calculate offset for Monday-starting week
+    var firstDayOffset = ((int)monthStart.DayOfWeek + 6) % 7;
+    var totalDays = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
+    var weekCount = (int)Math.Ceiling((firstDayOffset + totalDays) / 7.0);
+    
+    var dayNames = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" };
+}
+
+<div class="flex flex-col h-full">
+    @* Week Days Header *@
+    <div class="grid grid-cols-7 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        @foreach (var (dayName, idx) in dayNames.Select((d, i) => (d, i)))
+        {
+            var isWeekend = idx >= 5;
+            <div class="text-center py-2 text-xs font-medium @(isWeekend ? "text-gray-400 dark:text-gray-500" : "text-gray-500 dark:text-gray-400") uppercase tracking-wide">
+                @dayName
+            </div>
+        }
+    </div>
+    
+    @* Month Grid - Square Cells *@
+    <div class="flex-1 grid" style="grid-template-rows: repeat(@weekCount, 1fr);">
+        @for (var week = 0; week < weekCount; week++)
+        {
+            <div class="grid grid-cols-7 border-b border-gray-100 dark:border-gray-800 last:border-b-0">
+                @for (var day = 0; day < 7; day++)
+                {
+                    var dayIndex = week * 7 + day - firstDayOffset + 1;
+                    var date = dayIndex >= 1 && dayIndex <= totalDays 
+                        ? new DateTime(SelectedDate.Year, SelectedDate.Month, dayIndex) 
+                        : (DateTime?)null;
+                    
+                    var isToday = date?.Date == DateTime.Today;
+                    var isSelected = date?.Date == SelectedDate.Date;
+                    var isCurrentMonth = date.HasValue;
+                    var isWeekend = day >= 5;
+                    
+                    var cellClass = isCurrentMonth 
+                        ? "bg-white dark:bg-gray-900 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer" 
+                        : "bg-gray-50/50 dark:bg-gray-800/30";
+                    
+                    var dayEvents = date.HasValue 
+                        ? Events?.Where(e => e.StartTime.Date == date.Value.Date).Take(3).ToList() 
+                        : null;
+                    var extraEventCount = date.HasValue 
+                        ? (Events?.Count(e => e.StartTime.Date == date.Value.Date) ?? 0) - 3 
+                        : 0;
+                    
+                    <div class="aspect-square border-r border-gray-100 dark:border-gray-800 last:border-r-0 p-1 flex flex-col @cellClass transition-colors relative overflow-hidden"
+                         @onclick="() => date.HasValue ? HandleDateSelected(date.Value) : Task.CompletedTask">
+                        
+                        @* Day Number *@
+                        <div class="flex justify-end mb-0.5">
+                            @if (date.HasValue)
+                            {
+                                var numberClass = isToday 
+                                    ? $"{TodayHeaderClass} shadow-sm" 
+                                    : isSelected 
+                                        ? "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300" 
+                                        : isWeekend 
+                                            ? "text-gray-400 dark:text-gray-500"
+                                            : "text-gray-700 dark:text-gray-300";
+                                
+                                <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-medium rounded-full @numberClass">
+                                    @date.Value.Day
+                                </span>
+                            }
+                        </div>
+                        
+                        @* Events *@
+                        @if (dayEvents?.Any() == true)
+                        {
+                            <div class="flex-1 space-y-0.5 overflow-hidden min-h-0">
+                                @foreach (var calendarEvent in dayEvents)
+                                {
+                                    var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
+                                    var color = calendarEvent.Color ?? calendar?.Color ?? "#3B82F6";
+                                    
+                                    <div class="text-[10px] sm:text-xs px-1 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity leading-tight"
+                                         style="background-color: @(color)15; color: @color; border-left: 2px solid @color;"
+                                         @onclick="() => HandleEventClicked(calendarEvent)"
+                                         @onclick:stopPropagation="true">
+                                        @if (EventTemplate != null)
+                                        {
+                                            @EventTemplate(calendarEvent)
+                                        }
+                                        else
+                                        {
+                                            @if (!calendarEvent.IsAllDay)
+                                            {
+                                                <span class="font-medium hidden sm:inline">@calendarEvent.StartTime.ToString("HH:mm") </span>
+                                            }
+                                            @calendarEvent.Title
+                                        }
+                                    </div>
+                                }
+                                
+                                @if (extraEventCount > 0)
+                                {
+                                    <div class="text-[10px] text-gray-400 dark:text-gray-500 px-1 font-medium">
+                                        +@extraEventCount
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime SelectedDate { get; set; }
+    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
+    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
+    [Parameter] public string TodayHeaderClass { get; set; } = "bg-blue-600 text-white";
+    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+    [Parameter] public EventCallback<DateTime> OnDateSelected { get; set; }
+    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+    
+    private async Task HandleDateSelected(DateTime date)
+    {
+        await OnDateSelected.InvokeAsync(date);
+    }
+    
+    private async Task HandleEventClicked(CalendarEvent calendarEvent)
+    {
+        await OnEventClicked.InvokeAsync(calendarEvent);
+    }
+}

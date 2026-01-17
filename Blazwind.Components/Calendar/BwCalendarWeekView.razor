@@ -1,0 +1,176 @@
+@namespace Blazwind.Components.Calendar
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+@{
+    var culture = new System.Globalization.CultureInfo("tr-TR");
+    var slotCount = (EndHour - StartHour) * 60 / SlotMinutes;
+    var slotHeight = 48; // px
+    var weekDays = Enumerable.Range(0, 7).Select(i => WeekStart.AddDays(i)).ToList();
+    var dayNames = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" };
+}
+
+<div id="@containerId" class="relative flex flex-col h-full" data-start-hour="@StartHour"
+    data-slot-minutes="@SlotMinutes" data-slot-height="@slotHeight">
+
+
+
+    @* Time Grid *@
+    <div class="flex-1 overflow-y-auto relative">
+        @* Week Header - Sticky *@
+        <div class="sticky top-0 z-30 flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-sm">
+            @* Time column spacer *@
+            <div class="flex-shrink-0 w-14 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700"></div>
+
+            @* Day headers *@
+            @foreach (var (day, index) in weekDays.Select((d, i) => (d, i)))
+            {
+                var isToday = day.Date == DateTime.Today;
+                var dayClass = isToday ? TodayHeaderClass : "text-gray-700 dark:text-gray-300";
+
+                <div class="flex-1 text-center py-2 border-l border-gray-200 dark:border-gray-700 first:border-l-0">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">@dayNames[index]</div>
+                    <div
+                        class="text-sm font-semibold mt-0.5 @dayClass @(isToday ? "w-7 h-7 rounded-full mx-auto flex items-center justify-center" : "")">
+                        @day.Day
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* Time Indicator *@
+        @if (weekDays.Any(d => d.Date == DateTime.Today))
+        {
+            <div class="bw-time-indicator absolute left-0 right-0 z-20 pointer-events-none flex items-center"
+                style="display: none;">
+                <div class="w-2 h-2 rounded-full @TodayBackgroundClass.Split(' ')[0].Replace("bg", "text")-600 ml-14"></div> @* Hacky: trying to use TodayColor for indicator too usually needs direct color *@
+                <div class="flex-1 h-0.5 bg-red-500"></div> @* Keeping red for now as it's standard "NOW" color *@
+            </div>
+        }
+
+        <div class="relative min-h-full">
+            @* Time slots grid *@
+            @for (var slotIndex = 0; slotIndex < slotCount; slotIndex++)
+            {
+                var minute = StartHour * 60 + slotIndex * SlotMinutes;
+                var hour = minute / 60;
+                var minutePart = minute % 60;
+                var timeStr = $"{hour:D2}:{minutePart:D2}";
+
+                <div class="flex border-b border-gray-100 dark:border-gray-800" style="height: @(slotHeight)px;">
+                    @* Time Label *@
+                    <div
+                        class="flex-shrink-0 w-14 text-right pr-2 pt-1 text-xs text-gray-400 dark:text-gray-500 select-none">
+                        @if (minutePart == 0)
+                        {
+                            <span class="font-medium">@timeStr</span>
+                        }
+                    </div>
+
+                    @* Day columns - equal width with flex-1 *@
+                    @foreach (var day in weekDays)
+                    {
+                        var isToday = day.Date == DateTime.Today;
+                        var bgClass = isToday ? TodayBackgroundClass : "hover:bg-blue-50/50 dark:hover:bg-blue-900/20";
+                        var slotStart = day.Date.AddMinutes(minute);
+                        var slotEnd = slotStart.AddMinutes(SlotMinutes);
+
+                        <div class="flex-1 border-l border-gray-200 dark:border-gray-700 first:border-l-0 relative transition-colors cursor-pointer @bgClass"
+                            @onclick="() => HandleSlotClick(slotStart, slotEnd)">
+                        </div>
+                    }
+                </div>
+            }
+
+            @* Events Overlay - positioned over the grid *@
+            <div class="absolute inset-0 flex pointer-events-none">
+                @* Time column spacer *@
+                <div class="flex-shrink-0 w-14"></div>
+
+                @* Day columns for events *@
+                @foreach (var (day, dayIndex) in weekDays.Select((d, i) => (d, i)))
+                {
+                    var dayEvents = Events?
+                    .Where(e => e.StartTime.Date == day.Date && !e.IsAllDay)
+                    .ToList() ?? new();
+
+                    <div class="flex-1 relative">
+                        @foreach (var calendarEvent in dayEvents)
+                        {
+                            var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
+                            var startMinute = (calendarEvent.StartTime.Hour - StartHour) * 60 + calendarEvent.StartTime.Minute;
+                            var endMinute = (calendarEvent.EndTime.Hour - StartHour) * 60 + calendarEvent.EndTime.Minute;
+                            var top = (startMinute * slotHeight) / (double)SlotMinutes;
+                            var height = Math.Max(slotHeight / 2, ((endMinute - startMinute) * slotHeight) /
+                            (double)SlotMinutes);
+
+                            <div @key="@($"{calendarEvent.Id}-{calendarEvent.StartTime.Ticks}-{calendarEvent.EndTime.Ticks}")"
+                                class="absolute inset-x-0 pointer-events-auto px-0.5 bw-event-container"
+                                style="top: @(top)px; height: @(height)px;">
+                                <BwCalendarEvent Event="@calendarEvent" CalendarColor="@calendar?.Color"
+                                    Compact="@(height < 40)" AllowDrag="@AllowDrag" AllowResize="@AllowResize"
+                                    DayIndex="@dayIndex" SlotHeight="@slotHeight" SlotMinutes="@SlotMinutes"
+                                    StyleOverride="height: 100%;" OnClick="@OnEventClicked"
+                                    EventTemplate="@EventTemplate"
+                                    OnResizeStart="@HandleResizeStart" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime SelectedDate { get; set; }
+    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
+    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
+    [Parameter] public int SlotMinutes { get; set; } = 30;
+    [Parameter] public int StartHour { get; set; } = 7;
+    [Parameter] public int EndHour { get; set; } = 22;
+    [Parameter] public bool HideEmptySlots { get; set; }
+    [Parameter] public bool AllowDrag { get; set; } = true;
+    [Parameter] public bool AllowResize { get; set; } = true;
+    [Parameter] public string TodayHeaderClass { get; set; } = "bg-blue-600 text-white";
+    [Parameter] public string TodayBackgroundClass { get; set; } = "bg-blue-50 dark:bg-blue-900/10";
+    [Parameter] public string TodayTextClass { get; set; } = "text-blue-600 dark:text-blue-400";
+    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+    
+    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+    [Parameter] public EventCallback<(DateTime Start, DateTime End)> OnSlotSelected { get; set; }
+    [Parameter] public EventCallback<(string EventId, double ClientY)> OnResizeStart { get; set; }
+    [Parameter] public Guid ParentInstanceId { get; set; }
+
+    private async Task HandleSlotClick(DateTime start, DateTime end)
+    {
+        await OnSlotSelected.InvokeAsync((start, end));
+    }
+    
+    [Parameter] public EventCallback<CalendarEvent> OnEventChanged { get; set; }
+
+    private string containerId = $"bw-calendar-week-{Guid.NewGuid():N}";
+
+    // Monday-starting week
+    private DateTime WeekStart => SelectedDate.AddDays(-(((int)SelectedDate.DayOfWeek + 6) % 7));
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Calendar.startTimeIndicatorUpdate", containerId);
+            await JS.InvokeVoidAsync("Blazwind.Calendar.scrollToNow", containerId);
+        }
+    }
+
+
+
+
+
+    private async Task HandleResizeStart((string EventId, double ClientY) args)
+    {
+        await JS.InvokeVoidAsync("Blazwind.Calendar.startResize", args.EventId, args.ClientY, 48, SlotMinutes);
+    }
+}

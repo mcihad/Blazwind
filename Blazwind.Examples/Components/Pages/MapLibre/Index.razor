@@ -1,0 +1,68 @@
+@page "/maps"
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Shared
+
+<PageTitle>Maps - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="MapLibre GL JS" 
+            Description="A powerful and flexible map visualization library. Supports vector tiles, GeoJSON, WMS and more."
+            Icon="fa-solid fa-map-location-dot"
+            Color="BwColor.Primary" />
+
+    @* Info *@
+    <div class="p-4 bg-blue-50 border border-blue-200 rounded">
+        <div class="flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-blue-600 text-xl mt-0.5"></i>
+            <div>
+                <h4 class="font-semibold text-blue-800 mb-1">About the BwMapLibre Component</h4>
+                <p class="text-sm text-blue-700 mb-2">
+                    This component uses the <a href="https://maplibre.org" target="_blank" class="underline hover:text-blue-900">MapLibre GL JS</a> 
+                    library. Use the left menu to explore detailed examples of different map features.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @* Feature Cards *@
+    <BwGrid Gap="BwSpacing.Md" MinItemWidth="200px">
+        @foreach (var feature in _features)
+        {
+            <a href="@feature.Href" class="block p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-400 hover:shadow-md transition-all group h-full">
+                <div class="flex flex-col items-center text-center h-full">
+                    <div class="w-12 h-12 rounded-full bg-@(feature.Color)-100 text-@(feature.Color)-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="@feature.Icon text-xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">@feature.Name</h3>
+                    <p class="text-xs text-gray-500 mt-1">@feature.Description</p>
+                </div>
+            </a>
+        }
+    </BwGrid>
+
+    @* Quick Start *@
+    <BwCard Title="Hızlı Kullanım" Icon="fa-solid fa-code" Color="BwColor.Info">
+        <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+            <p><strong>Temel Kullanım:</strong></p>
+            <pre class="p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">&lt;BwMapLibre StyleUrl="style.json" Center="@(new[] { 37.0, 39.7 })" Zoom="12" /&gt;</pre>
+            <p class="mt-3"><strong>İşaretçi Ekleme:</strong></p>
+            <pre class="p-3 bg-gray-100 dark:bg-gray-800 rounded text-xs overflow-x-auto">&lt;BwMapLibreMarker Longitude="37.0" Latitude="39.7" Color="#ef4444" /&gt;</pre>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private record FeatureInfo(string Name, string Description, string Icon, string Color, string Href);
+
+    private List<FeatureInfo> _features = new()
+    {
+        new("Basic Map", "Simple map, zoom and center settings", "fa-solid fa-image", "blue", "maps/basic"),
+        new("Markers", "Add markers, popups, fly-to", "fa-solid fa-location-dot", "red", "maps/markers"),
+        new("Layers", "Vector tile, GeoJSON, hover, click", "fa-solid fa-layer-group", "green", "maps/layers"),
+        new("Advanced", "Fly events, coordinate display", "fa-solid fa-wand-magic-sparkles", "purple", "maps/advanced"),
+        new("Events", "Map events, logging and filtering", "fa-solid fa-file-waveform", "teal", "maps/events"),
+        new("Context Menu", "Right-click menu and adding markers", "fa-solid fa-computer-mouse", "pink", "maps/context-menu"),
+        new("Fullscreen", "Fullscreen map experience", "fa-solid fa-expand", "orange", "demos/fullscreen-map")
+    };
+}

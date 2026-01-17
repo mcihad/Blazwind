@@ -1,0 +1,65 @@
+@page "/components/bottomnav"
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Typography
+
+<PageTitle>BottomNav Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg" Class="pb-20">
+    <BwHero Title="Bottom Navigation"
+            Description="Mobile bottom navigation bar. Fixed at the bottom of the page."
+            Icon="fa-solid fa-navicon"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="Mobile View" Subtitle="Check the bottom of the page" Icon="fa-solid fa-mobile-alt">
+        <BwAlert Color="BwColor.Info">
+            This demo is designed for mobile view. Check the navigation bar at the bottom of the page.
+        </BwAlert>
+    </BwCard>
+
+    <BwCard Title="Features" Subtitle="BottomNav component features" Icon="fa-solid fa-list-check"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwIcon Name="fa-solid fa-check" Color="BwColor.Success"/>
+                <BwTypography>Icon + Label support</BwTypography>
+            </BwFlex>
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwIcon Name="fa-solid fa-check" Color="BwColor.Success"/>
+                <BwTypography>Badge (rosette) display</BwTypography>
+            </BwFlex>
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwIcon Name="fa-solid fa-check" Color="BwColor.Success"/>
+                <BwTypography>Active state indicator</BwTypography>
+            </BwFlex>
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwIcon Name="fa-solid fa-check" Color="BwColor.Success"/>
+                <BwTypography>iOS Safe Area support</BwTypography>
+            </BwFlex>
+        </BwColumn>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="4">
+            <BwCard Title="Home Page" Subtitle="Switch from bottom navigation" Icon="fa-solid fa-home"
+                    Color="BwColor.Primary"/>
+        </BwColumn>
+        <BwColumn Span="12" Md="4">
+            <BwCard Title="Search" Subtitle="Badge display available" Icon="fa-solid fa-search"
+                    Color="BwColor.Warning"/>
+        </BwColumn>
+        <BwColumn Span="12" Md="4">
+            <BwCard Title="Notifications" Subtitle="Dot display available" Icon="fa-solid fa-bell"
+                    Color="BwColor.Danger"/>
+        </BwColumn>
+    </BwRow>
+</BwColumn>
+
+<BwBottomNav>
+    <BwBottomNavItem Icon="fa-solid fa-home" Label="Home" Href="/"/>
+    <BwBottomNavItem Icon="fa-solid fa-search" Label="Search" BadgeCount="5"/>
+    <BwBottomNavItem Icon="fa-solid fa-bell" Label="Notifications" ShowDot="true"/>
+    <BwBottomNavItem Icon="fa-solid fa-user" Label="Profile"/>
+</BwBottomNav>
+
+@code {
+}

@@ -1,0 +1,91 @@
+@page "/components/padding-margin"
+
+<PageTitle>Padding & Margin Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Padding & Margin Wrapper"
+            Description="Layout and spacing management with Flutter-style wrapper components." Icon="fa-solid fa-expand"
+            Color="BwColor.Info"/>
+
+    <BwRow Spacing="BwSpacing.Lg" Wrap="true">
+        @* Padding Example *@
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Padding Wrapper" Subtitle="Provides inner spacing by wrapping content"
+                    Icon="fa-solid fa-box-open" Color="BwColor.Info">
+                <BwPadding All="BwSpacing.Md" Class="bg-cyan-50 border border-cyan-200 rounded-lg">
+                    <div class="bg-white p-4 rounded border border-gray-200 text-center">
+                        This box has padding around it (All=Md)
+                    </div>
+                </BwPadding>
+
+                <div class="mt-4 space-y-2">
+                    <h4 class="text-sm font-semibold text-gray-700">Flutter-like usage:</h4>
+                    <div class="bg-gray-800 text-gray-300 p-3 rounded text-xs font-mono overflow-x-auto">
+                        &lt;BwPadding All="BwSpacing.Md"&gt;<br/>
+                        &nbsp;&nbsp;&lt;ChildContent /&gt;<br/>
+                        &lt;/BwPadding&gt;
+                    </div>
+                </div>
+            </BwCard>
+        </BwColumn>
+
+        @* Margin Example *@
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Margin Wrapper" Subtitle="Provides outer spacing by wrapping content"
+                    Icon="fa-solid fa-arrows-left-right-to-line" Color="BwColor.Warning">
+                <div class="bg-orange-50 border border-orange-200 rounded-lg overflow-hidden">
+                    <div class="bg-orange-200 p-2 text-center text-xs text-orange-800">Container Boundary</div>
+                    <BwMargin All="BwSpacing.Md">
+                        <div class="bg-white p-4 rounded border border-gray-200 text-center shadow-sm">
+                            This box has margin around it (All=Md)
+                        </div>
+                    </BwMargin>
+                    <div class="bg-orange-200 p-2 text-center text-xs text-orange-800">Container Boundary</div>
+                </div>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Complex Usage *@
+    <BwCard Title="Complex Usage (Specific Sides)" Subtitle="Horizontal, Vertical and Special Edges"
+            Icon="fa-solid fa-layer-group" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div class="bg-gray-100 rounded-lg border border-gray-200">
+                <BwPadding Horizontal="BwSpacing.Xl" Vertical="BwSpacing.Sm">
+                    <div class="bg-white p-3 rounded text-center shadow-sm">
+                        Horizontal=Xl (Wide side spacing)<br/>
+                        Vertical=Sm (Narrow vertical spacing)
+                    </div>
+                </BwPadding>
+            </div>
+
+            <div class="bg-gray-100 rounded-lg border border-gray-200">
+                <BwPadding Left="BwSpacing.Xxl" Top="BwSpacing.Md">
+                    <div class="bg-white p-3 rounded text-center shadow-sm">
+                        Left=Xxl, Top=Md (Asymmetric)
+                    </div>
+                </BwPadding>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Nested Example *@
+    <BwCard Title="Nested Usage" Subtitle="Padding and Margin Brotherhood" Icon="fa-solid fa-cubes-stacked"
+            Color="BwColor.Success">
+        <div class="bg-gray-900 rounded-lg text-white">
+            <BwPadding All="BwSpacing.Md">
+                <div class="bg-gray-800 rounded border border-gray-700">
+                    <BwMargin Bottom="BwSpacing.Lg">
+                        <BwPadding All="BwSpacing.Sm" Class="bg-emerald-900/30 text-center">
+                            Margin Bottom: Large
+                        </BwPadding>
+                    </BwMargin>
+
+                    <BwPadding All="BwSpacing.Sm" Class="bg-blue-900/30 text-center">
+                        Sub content
+                    </BwPadding>
+                </div>
+            </BwPadding>
+        </div>
+    </BwCard>
+</BwColumn>

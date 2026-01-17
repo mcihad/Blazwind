@@ -1,0 +1,184 @@
+@page "/charts/pie"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Pasta Grafik - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Pasta Grafik (Pie Chart)" 
+            Description="Oransal dağılımları göstermek için ideal grafik tipi."
+            Icon="fa-solid fa-chart-pie"
+            Color="BwColor.Warning" />
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Temel Pasta *@
+        <BwCard Title="Temel Pasta Grafik" Subtitle="Basit pie chart." Icon="fa-solid fa-chart-pie" Color="BwColor.Primary">
+            <BwChart Options="_basicPie" Height="300px" />
+        </BwCard>
+
+        @* Halka (Donut) *@
+        <BwCard Title="Halka Grafik" Subtitle="Donut chart." Icon="fa-solid fa-circle-notch" Color="BwColor.Info">
+            <BwChart Options="_donutPie" Height="300px" />
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Rose Type *@
+        <BwCard Title="Nightingale Rose" Subtitle="Yarıçapı değişen pasta." Icon="fa-solid fa-flower" Color="BwColor.Success">
+            <BwChart Options="_rosePie" Height="300px" />
+        </BwCard>
+
+        @* Nested Donut *@
+        <BwCard Title="İç İçe Halka" Subtitle="Nested donut chart." Icon="fa-solid fa-bullseye" Color="BwColor.Warning">
+            <BwChart Options="_nestedPie" Height="300px" />
+        </BwCard>
+    </BwRow>
+
+    @* Half Donut *@
+    <BwCard Title="Yarım Halka" Subtitle="Semi-circle donut chart." Icon="fa-solid fa-circle-half-stroke" Color="BwColor.Danger">
+        <BwChart Options="_halfDonut" Height="300px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _basicPie = new()
+    {
+        Title = new ChartTitle { Text = "Başvuru Türleri", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        Legend = new ChartLegend { Orient = ChartLegendOrient.Vertical, Left = ChartPosition.Left },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Başvuru",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "0%", "65%" },
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "Dilekçe", Value = 1048 },
+                    new() { Name = "İmar", Value = 735 },
+                    new() { Name = "Ruhsat", Value = 580 },
+                    new() { Name = "Şikayet", Value = 484 },
+                    new() { Name = "Bilgi Edinme", Value = 300 }
+                }
+            }
+        },
+        Color = new List<string> { "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6" }
+    };
+
+    private ChartOptions _donutPie = new()
+    {
+        Title = new ChartTitle { Text = "Bütçe Dağılımı", Subtext = "2025 Yılı", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        Legend = new ChartLegend { Top = ChartPosition.Bottom },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Bütçe",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "40%", "70%" },
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "Personel", Value = 35 },
+                    new() { Name = "Yatırım", Value = 28 },
+                    new() { Name = "Mal ve Hizmet", Value = 22 },
+                    new() { Name = "Cari Gider", Value = 15 }
+                },
+                Label = new ChartLabel { Show = true, Formatter = "{b}: {d}%" }
+            }
+        },
+        Color = new List<string> { "#0ea5e9", "#22c55e", "#eab308", "#f97316" }
+    };
+
+    private ChartOptions _rosePie = new()
+    {
+        Title = new ChartTitle { Text = "Nightingale Rose", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        Legend = new ChartLegend { Top = ChartPosition.Bottom },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Değer",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "20%", "70%" },
+                RoseType = ChartRoseType.Area,
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "Gül-1", Value = 40 },
+                    new() { Name = "Gül-2", Value = 38 },
+                    new() { Name = "Gül-3", Value = 32 },
+                    new() { Name = "Gül-4", Value = 30 },
+                    new() { Name = "Gül-5", Value = 28 },
+                    new() { Name = "Gül-6", Value = 26 },
+                    new() { Name = "Gül-7", Value = 22 },
+                    new() { Name = "Gül-8", Value = 18 }
+                }
+            }
+        },
+        Color = new List<string> { "#f43f5e", "#ec4899", "#d946ef", "#a855f7", "#8b5cf6", "#6366f1", "#3b82f6", "#0ea5e9" }
+    };
+
+    private ChartOptions _nestedPie = new()
+    {
+        Title = new ChartTitle { Text = "İç İçe Halka", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "İç",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "0%", "30%" },
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "Teknik", Value = 55 },
+                    new() { Name = "Mali", Value = 45 }
+                }
+            },
+            new()
+            {
+                Name = "Dış",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "45%", "70%" },
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "Fen İşleri", Value = 30 },
+                    new() { Name = "İmar", Value = 25 },
+                    new() { Name = "Mali Hizmetler", Value = 25 },
+                    new() { Name = "Bütçe", Value = 20 }
+                }
+            }
+        },
+        Color = new List<string> { "#3b82f6", "#10b981", "#6366f1", "#8b5cf6", "#f59e0b", "#ef4444" }
+    };
+
+    private ChartOptions _halfDonut = new()
+    {
+        Title = new ChartTitle { Text = "Yarım Halka Grafik", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        Legend = new ChartLegend { Top = ChartPosition.Bottom },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Değer",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "50%", "80%" },
+                Center = new List<string> { "50%", "70%" },
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "A", Value = 30 },
+                    new() { Name = "B", Value = 25 },
+                    new() { Name = "C", Value = 20 },
+                    new() { Name = "D", Value = 15 },
+                    new() { Name = "E", Value = 10 }
+                }
+            }
+        },
+        Color = new List<string> { "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6" }
+    };
+}

@@ -1,0 +1,91 @@
+@page "/components/collapse"
+@using Blazwind.Components.Collapse
+
+<PageTitle>Collapse Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Collapse Component"
+            Description="Collapsible content component for single panel. Unlike Accordion, it works independently."
+            Icon="fa-solid fa-chevron-down" Color="BwColor.Primary"/>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Simple collapse example" Icon="fa-solid fa-layer-group"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwCollapse Title="Show Details" @bind-IsExpanded="_basic1">
+                    This content becomes visible when the title is clicked. It is ideal for secondary information
+                    that should not take up too much space in the user interface.
+                </BwCollapse>
+
+                <BwCollapse Title="Additional Information" Icon="fa-solid fa-info-circle">
+                    <p class="mb-2">Second collapse panel. Each works independently.</p>
+                    <ul class="list-disc list-inside text-sm">
+                        <li>Feature 1</li>
+                        <li>Feature 2</li>
+                        <li>Feature 3</li>
+                    </ul>
+                </BwCollapse>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwCollapse Title="Small Collapse" Size="BwSize.Small">
+                    Small size collapse content.
+                </BwCollapse>
+
+                <BwCollapse Title="Medium Collapse (Default)" Size="BwSize.Medium">
+                    Medium size collapse content.
+                </BwCollapse>
+
+                <BwCollapse Title="Large Collapse" Size="BwSize.Large">
+                    Large size collapse content.
+                </BwCollapse>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Color Options" Subtitle="Different colors with icons" Icon="fa-solid fa-palette"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwCollapse Title="Primary" Icon="fa-solid fa-star" Color="BwColor.Primary">
+                    Primary color collapse content.
+                </BwCollapse>
+
+                <BwCollapse Title="Success" Icon="fa-solid fa-check" Color="BwColor.Success">
+                    Success color collapse content.
+                </BwCollapse>
+
+                <BwCollapse Title="Danger" Icon="fa-solid fa-exclamation-triangle" Color="BwColor.Danger">
+                    Danger color collapse content.
+                </BwCollapse>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Special Cases" Subtitle="Disabled and borderless" Icon="fa-solid fa-cog" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwCollapse Title="Borderless Collapse" Bordered="false">
+                    Shown without border.
+                </BwCollapse>
+
+                <BwCollapse Title="Disabled" IsDisabled="true">
+                    This collapse is not clickable.
+                </BwCollapse>
+
+                <BwCollapse Title="With Extra Content">
+                    <Extra>
+                        <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" Icon="fa-solid fa-edit"/>
+                    </Extra>
+                    <ChildContent>
+                        Collapse with additional button on the right.
+                    </ChildContent>
+                </BwCollapse>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private bool _basic1;
+}

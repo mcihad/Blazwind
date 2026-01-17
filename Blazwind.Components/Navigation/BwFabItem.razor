@@ -1,0 +1,35 @@
+@namespace Blazwind.Components.Navigation
+@using Blazwind.Components.Shared
+
+@{
+    var colorClasses = Color switch
+    {
+        BwColor.Success => "bg-emerald-500 hover:bg-emerald-600",
+        BwColor.Warning => "bg-amber-500 hover:bg-amber-600",
+        BwColor.Danger => "bg-red-500 hover:bg-red-600",
+        BwColor.Info => "bg-sky-500 hover:bg-sky-600",
+        BwColor.Primary => "bg-blue-500 hover:bg-blue-600",
+        _ => "bg-gray-500 hover:bg-gray-600"
+    };
+}
+
+<button type="button" 
+        class="w-12 h-12 rounded-full border-none cursor-pointer flex items-center justify-center text-lg text-white shadow-md transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed relative @colorClasses"
+        disabled="@IsDisabled"
+        title="@Tooltip"
+        @onclick="OnClick">
+    <i class="@Icon"></i>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <span class="absolute right-full mr-3 bg-gray-800 dark:bg-gray-700 text-white text-xs font-medium px-3 py-1.5 rounded whitespace-nowrap shadow-lg">@Label</span>
+    }
+</button>
+
+@code {
+    [Parameter] public string Icon { get; set; } = "fa-solid fa-star";
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Tooltip { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
+    [Parameter] public bool IsDisabled { get; set; } = false;
+    [Parameter] public EventCallback OnClick { get; set; }
+}

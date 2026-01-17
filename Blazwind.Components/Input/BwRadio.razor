@@ -1,0 +1,77 @@
+@namespace Blazwind.Components.Input
+@typeparam TValue where TValue : notnull
+
+@{
+    var isSelected = IsSelected();
+    var cursorClass = IsDisabled ? "cursor-not-allowed opacity-60" : "cursor-pointer";
+    var ringClass = isSelected ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 group-hover:border-blue-500 dark:group-hover:border-blue-400";
+}
+
+<div class="flex items-start @cursorClass @Class" @onclick="HandleClick">
+    <div class="flex items-center h-5">
+        <input type="radio" 
+               name="@Context?.GroupName" 
+               checked="@isSelected"
+               class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 hidden" 
+               disabled="@IsDisabled" />
+               
+        @* Custom Radio UI *@
+        <div class="w-4 h-4 rounded-full border @ringClass bg-white dark:bg-gray-800 flex items-center justify-center transition-all duration-200 relative group">
+            @if (isSelected)
+            {
+                <div class="w-2 h-2 rounded-full bg-blue-600 transition-transform scale-100"></div>
+            }
+        </div>
+    </div>
+    
+    <div class="ml-3 text-sm">
+        @if (!string.IsNullOrEmpty(Label))
+        {
+            <label class="font-medium text-gray-700 dark:text-gray-300 @cursorClass">
+                @Label
+            </label>
+        }
+        @if (!string.IsNullOrEmpty(SubLabel))
+        {
+            <p class="text-gray-500 dark:text-gray-400">@SubLabel</p>
+        }
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] public BwRadioGroup<TValue>? Context { get; set; }
+
+    [Parameter] public TValue Value { get; set; } = default!;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? SubLabel { get; set; }
+    [Parameter] public bool IsDisabled { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    [Parameter] public bool? IsChecked { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private bool IsSelected()
+    {
+        if (IsChecked.HasValue) return IsChecked.Value;
+        
+        if (Context is null) return false;
+        return EqualityComparer<TValue>.Default.Equals(Context.Value, Value);
+    }
+
+    private async Task HandleClick()
+    {
+        if (IsDisabled) return;
+        
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+        }
+        
+        if (Context != null) 
+        {
+            await Context.OnRadioChange(Value);
+        }
+    }
+}

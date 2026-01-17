@@ -1,0 +1,107 @@
+@page "/components/qr-code"
+@using Blazwind.Components.Input
+@using Blazwind.Components.QRCode
+
+<PageTitle>QR Code Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="QR Code Component" Description="QR code generator component." Icon="fa-solid fa-qrcode"
+            Color="BwColor.Dark"/>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="QR code for URL" Icon="fa-solid fa-link" Color="BwColor.Primary">
+            <div class="flex flex-col items-center gap-4">
+                <BwQRCode Value="https://blazwind.dev" Size="200"/>
+                <p class="text-sm text-gray-600">blazwind.dev</p>
+            </div>
+        </BwCard>
+
+        <BwCard Title="Random UUID" Subtitle="Click button to generate new UUID" Icon="fa-solid fa-random"
+                Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwQRCode Value="@_uuid" Size="180"/>
+                <p class="text-xs text-gray-500 font-mono break-all text-center px-4">@_uuid</p>
+                <BwButton Color="BwColor.Danger" OnClick="GenerateNewUUID" Icon="fa-solid fa-shuffle">
+                    Generate New UUID
+                </BwButton>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Dynamic QR Code" Subtitle="With text input" Icon="fa-solid fa-keyboard" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md" Class="items-center">
+                <BwInput @bind-Value="_customText" Placeholder="Enter QR code text..."/>
+                <BwQRCode Value="@_customText" Size="180"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Sizes" Subtitle="Different QR code sizes" Icon="fa-solid fa-expand" Color="BwColor.Warning">
+            <div class="flex items-end justify-center gap-6">
+                <div class="text-center">
+                    <p class="text-sm text-gray-500 mb-2">100px</p>
+                    <BwQRCode Value="Small" Size="100"/>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-gray-500 mb-2">150px</p>
+                    <BwQRCode Value="Medium" Size="150"/>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm text-gray-500 mb-2">200px</p>
+                    <BwQRCode Value="Large" Size="200"/>
+                </div>
+            </div>
+        </BwCard>
+    </BwRow>
+
+    <BwCard Title="Colors" Subtitle="Custom foreground and background colors" Icon="fa-solid fa-palette"
+            Color="BwColor.Info">
+        <div class="flex items-center justify-center gap-6">
+            <div class="text-center">
+                <p class="text-sm text-gray-500 mb-2">Blue</p>
+                <BwQRCode Value="Blue" Size="120" ForegroundColor="#3B82F6"/>
+            </div>
+            <div class="text-center">
+                <p class="text-sm text-gray-500 mb-2">Green</p>
+                <BwQRCode Value="Green" Size="120" ForegroundColor="#10B981"/>
+            </div>
+            <div class="text-center">
+                <p class="text-sm text-gray-500 mb-2">Purple</p>
+                <BwQRCode Value="Purple" Size="120" ForegroundColor="#8B5CF6"/>
+            </div>
+        </div>
+    </BwCard>
+
+    <BwCard Title="Use Cases" Subtitle="Real world examples" Icon="fa-solid fa-lightbulb"
+            Color="BwColor.Secondary">
+        <div class="grid md:grid-cols-4 gap-6">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <BwQRCode Value="https://example.com/product/123" Size="120"/>
+                <p class="text-sm font-medium mt-2">Product Info</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <BwQRCode Value="WIFI:T:WPA;S:MyNetwork;P:password123;;" Size="120"/>
+                <p class="text-sm font-medium mt-2">WiFi Connection</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <BwQRCode Value="tel:+905551234567" Size="120"/>
+                <p class="text-sm font-medium mt-2">Phone Number</p>
+            </div>
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                <BwQRCode Value="mailto:info@blazwind.dev" Size="120"/>
+                <p class="text-sm font-medium mt-2">Email Address</p>
+            </div>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _customText = "Hello World!";
+    private string _uuid = Guid.NewGuid().ToString();
+
+    private void GenerateNewUUID()
+    {
+        _uuid = Guid.NewGuid().ToString();
+    }
+
+}

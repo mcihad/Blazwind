@@ -1,0 +1,94 @@
+@page "/components/popover"
+@using Blazwind.Components.Popover
+
+<PageTitle>Popover Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Popover"
+            Description="Rich version of Tooltip. Contains HTML content."
+            Icon="fa-solid fa-comment-dots"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="Basic Usage" Subtitle="Click to open and close" Icon="fa-solid fa-hand-pointer">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwPopover Title="Info" Content="This is popover content. It can contain any text or HTML.">
+                <BwButton Variant="BwVariant.Outline" Text="Click"/>
+            </BwPopover>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Positioning" Subtitle="Can open in different directions" Icon="fa-solid fa-compass"
+            Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Lg" MainAxisAlignment="BwMainAxisAlignment.Center" Class="py-12">
+            <BwPopover Title="Top" Content="Opens above" Placement="BwPlacement.Top">
+                <BwButton Variant="BwVariant.Outline" Size="BwSize.Small" Text="Top"/>
+            </BwPopover>
+
+            <BwPopover Title="Bottom" Content="Opens below" Placement="BwPlacement.Bottom">
+                <BwButton Variant="BwVariant.Outline" Size="BwSize.Small" Text="Bottom"/>
+            </BwPopover>
+
+            <BwPopover Title="Left" Content="Opens to the left" Placement="BwPlacement.Left">
+                <BwButton Variant="BwVariant.Outline" Size="BwSize.Small" Text="Left"/>
+            </BwPopover>
+
+            <BwPopover Title="Right" Content="Opens to the right" Placement="BwPlacement.Right">
+                <BwButton Variant="BwVariant.Outline" Size="BwSize.Small" Text="Right"/>
+            </BwPopover>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Trigger Methods" Subtitle="Click and Hover triggers" Icon="fa-solid fa-mouse-pointer"
+            Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwPopover Title="Click Trigger" Content="Opened by clicking" Trigger="BwTrigger.Click">
+                <BwButton Variant="BwVariant.Filled" Text="Click"/>
+            </BwPopover>
+
+            <BwPopover Title="Hover Trigger" Content="Opened by hovering" Trigger="BwTrigger.Hover">
+                <BwButton Variant="BwVariant.Outline" Text="Hover"/>
+            </BwPopover>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Rich Content" Subtitle="Header, Body, Footer slots" Icon="fa-solid fa-layer-group"
+            Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwPopover Closable="true">
+                <ChildContent>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Text="View Details"/>
+                </ChildContent>
+                <HeaderContent>
+                    <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                        <i class="fa-solid fa-user text-blue-500"></i>
+                        <span class="font-semibold">User Information</span>
+                    </BwRow>
+                </HeaderContent>
+                <BodyContent>
+                    <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                        <BwAvatar Size="BwSize.Medium" Src="https://i.pravatar.cc/40"/>
+                        <BwColumn>
+                            <span class="font-medium">Ahmet Yılmaz</span>
+                            <span class="text-xs text-gray-500">ahmet@example.com</span>
+                        </BwColumn>
+                    </BwRow>
+                </BodyContent>
+                <FooterContent>
+                    <BwButton Size="BwSize.Small" Variant="BwVariant.Outline" Text="View Profile"/>
+                </FooterContent>
+            </BwPopover>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Without Arrow" Subtitle="Arrow indicator disabled" Icon="fa-solid fa-arrow-right"
+            Color="BwColor.Danger">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwPopover Title="Arrowless Popover" Content="No arrow indicator" ShowArrow="false">
+                <BwButton Variant="BwVariant.Ghost" Text="No Arrow"/>
+            </BwPopover>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+}

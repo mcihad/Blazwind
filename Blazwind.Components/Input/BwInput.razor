@@ -1,0 +1,230 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@inherits BwBaseInput<string>
+
+@{
+    var sizeClass = GetSizeClass();
+    var baseClass = GetBaseInputClass();
+    var stateClass = GetStateClass();
+    var disabledClass = GetDisabledClass();
+    var marginClass = GetDensityMarginClass();
+    var labelSpacingClass = GetLabelSpacingClass();
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @switch (EffectiveLabelPosition)
+    {
+        case BwLabelPosition.Top:
+            @if (HasLabel)
+            {
+                <div class="flex items-center gap-1 @labelSpacingClass">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                    @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                    {
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    }
+                </div>
+            }
+            <div class="relative">
+                @RenderInput()
+            </div>
+            break;
+            
+        case BwLabelPosition.Left:
+            <div class="flex items-start gap-3">
+                @if (HasLabel)
+                {
+                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                            @Label
+                            @if (IsRequired)
+                            {
+                                <span class="text-red-500 ml-0.5">*</span>
+                            }
+                        </label>
+                        @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                        {
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        }
+                    </div>
+                }
+                <div class="flex-1 relative">
+                    @RenderInput()
+                </div>
+            </div>
+            break;
+            
+        case BwLabelPosition.Floating:
+            <div class="relative">
+                @RenderInput()
+                @if (HasLabel)
+                {
+                    <label class="absolute left-3 transition-all duration-200 pointer-events-none
+                                  @(HasValue || IsFocused 
+                                      ? "top-0 -translate-y-1/2 text-xs bg-white dark:bg-gray-800 px-1 text-blue-600 dark:text-blue-400" 
+                                      : "top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400")">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                }
+                @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                {
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    </div>
+                }
+            </div>
+            break;
+            
+        case BwLabelPosition.Hidden:
+        default:
+            <div class="relative">
+                @RenderInput()
+            </div>
+            break;
+    }
+    
+    @* Error/Helper Messages *@
+    @if (HasError)
+    {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @DisplayError
+        </p>
+    }
+    else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+    {
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+    }
+</div>
+
+@code {
+    /// <summary>HTML input type (text, email, password, number, etc.)</summary>
+    [Parameter] public string Type { get; set; } = "text";
+    
+    /// <summary>Icon class for left icon (e.g., "fa-solid fa-user")</summary>
+    [Parameter] public string? IconLeft { get; set; }
+    
+    /// <summary>Icon class for right icon (e.g., "fa-solid fa-search")</summary>
+    [Parameter] public string? IconRight { get; set; }
+    
+    /// <summary>Triggered when Enter key is pressed</summary>
+    [Parameter] public EventCallback OnEnter { get; set; }
+    
+    // Input event for real-time updates
+    [Parameter] public EventCallback<ChangeEventArgs> OnInput { get; set; }
+    
+    private bool _hasValue;
+    
+    protected new bool HasValue => _hasValue;
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _hasValue = !string.IsNullOrEmpty(Value);
+    }
+    
+    protected override void OnParametersSet()
+    {
+        _hasValue = !string.IsNullOrEmpty(Value);
+    }
+    
+    private RenderFragment RenderInput() => __builder =>
+    {
+        var sizeClass = GetSizeClass();
+        var baseClass = GetBaseInputClass();
+        var stateClass = GetStateClass();
+        var disabledClass = GetDisabledClass();
+        
+        @if (!string.IsNullOrEmpty(IconLeft))
+        {
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <i class="@IconLeft"></i>
+            </div>
+        }
+        
+        <input type="@Type"
+               class="@baseClass @sizeClass @stateClass @disabledClass @(!string.IsNullOrEmpty(IconLeft) ? "pl-10" : "") @(!string.IsNullOrEmpty(IconRight) ? "pr-10" : "")"
+               placeholder="@(EffectiveLabelPosition == BwLabelPosition.Floating && !IsFocused && !_hasValue ? "" : Placeholder)"
+               value="@Value"
+               disabled="@IsDisabled"
+               readonly="@IsReadOnly"
+               @oninput="HandleInput"
+               @onchange="HandleChange"
+               @onfocus="HandleFocusEvent"
+               @onblur="HandleBlurEvent"
+               @onkeydown="HandleKeyDownEvent"
+               @onkeyup="HandleKeyUpEvent"
+               @onclick="HandleClickEvent" />
+        
+        @if (!string.IsNullOrEmpty(IconRight))
+        {
+            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <i class="@IconRight"></i>
+            </div>
+        }
+    };
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString();
+        _hasValue = !string.IsNullOrEmpty(newValue);
+        Value = newValue;
+        await ValueChanged.InvokeAsync(newValue);
+        await OnInput.InvokeAsync(e);
+        
+        if (CascadedEditContext != null && For != null)
+        {
+            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+        }
+    }
+
+    private async Task HandleChange(ChangeEventArgs e)
+    {
+        var newValue = e.Value?.ToString();
+        _hasValue = !string.IsNullOrEmpty(newValue);
+        await HandleValueChanged(newValue);
+    }
+    
+    private async Task HandleFocusEvent(FocusEventArgs e)
+    {
+        IsFocused = true;
+        await HandleFocus(e);
+    }
+
+    private async Task HandleBlurEvent(FocusEventArgs e)
+    {
+        IsFocused = false;
+        await HandleBlur(e);
+    }
+    
+    private async Task HandleKeyDownEvent(KeyboardEventArgs e)
+    {
+        await HandleKeyDown(e);
+        
+        if (e.Key == "Enter" && OnEnter.HasDelegate)
+        {
+            await OnEnter.InvokeAsync();
+        }
+    }
+    
+    private async Task HandleKeyUpEvent(KeyboardEventArgs e)
+    {
+        await HandleKeyUp(e);
+    }
+    
+    private async Task HandleClickEvent(MouseEventArgs e)
+    {
+        await HandleClick(e);
+    }
+}

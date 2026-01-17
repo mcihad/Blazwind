@@ -1,0 +1,138 @@
+@page "/charts/line"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Çizgi Grafik - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Çizgi Grafik (Line Chart)" 
+            Description="Zaman serisi ve trend analizi için ideal grafik tipi."
+            Icon="fa-solid fa-chart-line"
+            Color="BwColor.Primary" />
+
+    @* Temel Çizgi Grafik *@
+    <BwCard Title="Temel Çizgi Grafik" Subtitle="Basit çizgi grafik örneği." Icon="fa-solid fa-chart-line" Color="BwColor.Primary">
+        <BwChart Options="_basicLine" Height="350px" />
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Smooth Çizgi *@
+        <BwCard Title="Smooth Çizgi" Subtitle="Yumuşatılmış çizgi." Icon="fa-solid fa-wave-square" Color="BwColor.Info">
+            <BwChart Options="_smoothLine" Height="280px" />
+        </BwCard>
+
+        @* Multi-Series *@
+        <BwCard Title="Çoklu Seri" Subtitle="Birden fazla veri serisi." Icon="fa-solid fa-layer-group" Color="BwColor.Success">
+            <BwChart Options="_multiLine" Height="280px" />
+        </BwCard>
+    </BwRow>
+
+    @* Step Line *@
+    <BwCard Title="Basamak Çizgisi" Subtitle="Step line grafik örnekleri." Icon="fa-solid fa-stairs" Color="BwColor.Warning">
+        <BwChart Options="_stepLine" Height="350px" />
+    </BwCard>
+
+    @* Stacked Line *@
+    <BwCard Title="Yığılmış Çizgi" Subtitle="Stacked line ile toplam gösterimi." Icon="fa-solid fa-layer-group" Color="BwColor.Danger">
+        <BwChart Options="_stackedLine" Height="350px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _basicLine = new()
+    {
+        Title = new ChartTitle { Text = "Aylık Ziyaretçi Sayısı", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            Data = new List<string> { "Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Ziyaretçi" },
+        Series = new List<ChartSeries>
+        {
+            new() { Name = "Ziyaretçi", Type = ChartSeriesType.Line, Data = new List<int> { 820, 932, 901, 934, 1290, 1330, 1320, 1450, 1200, 1340, 1500, 1620 } }
+        },
+        Color = new List<string> { "#3b82f6" }
+    };
+
+    private ChartOptions _smoothLine = new()
+    {
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            Data = new List<string> { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new() { Type = ChartSeriesType.Line, Smooth = true, Data = new List<int> { 120, 132, 101, 134, 90, 230, 210 } }
+        },
+        Color = new List<string> { "#10b981" }
+    };
+
+    private ChartOptions _multiLine = new()
+    {
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        Legend = new ChartLegend { Data = new List<string> { "Email", "Video", "Sosyal Medya" } },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            Data = new List<string> { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new() { Name = "Email", Type = ChartSeriesType.Line, Data = new List<int> { 120, 132, 101, 134, 90, 230, 210 } },
+            new() { Name = "Video", Type = ChartSeriesType.Line, Data = new List<int> { 220, 182, 191, 234, 290, 330, 310 } },
+            new() { Name = "Sosyal Medya", Type = ChartSeriesType.Line, Data = new List<int> { 150, 232, 201, 154, 190, 330, 410 } }
+        },
+        Color = new List<string> { "#3b82f6", "#ef4444", "#f59e0b" }
+    };
+
+    private ChartOptions _stepLine = new()
+    {
+        Title = new ChartTitle { Text = "Step Line Örnekleri", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        Legend = new ChartLegend { Data = new List<string> { "Step Start", "Step Middle", "Step End" } },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            Data = new List<string> { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new() { Name = "Step Start", Type = ChartSeriesType.Line, Data = new List<int> { 120, 132, 101, 134, 90, 230, 210 } },
+            new() { Name = "Step Middle", Type = ChartSeriesType.Line, Data = new List<int> { 220, 282, 201, 234, 190, 330, 310 } },
+            new() { Name = "Step End", Type = ChartSeriesType.Line, Data = new List<int> { 450, 432, 401, 454, 590, 530, 510 } }
+        },
+        Color = new List<string> { "#8b5cf6", "#ec4899", "#06b6d4" }
+    };
+
+    private ChartOptions _stackedLine = new()
+    {
+        Title = new ChartTitle { Text = "Yığılmış Çizgi Grafik", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+        Legend = new ChartLegend { Data = new List<string> { "Email", "Arama", "Video", "Direkt", "SEO" } },
+        XAxis = new ChartAxis
+        {
+            Type = ChartAxisType.Category,
+            BoundaryGap = false,
+            Data = new List<string> { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" }
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new() { Name = "Email", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Data = new List<int> { 120, 132, 101, 134, 90, 230, 210 } },
+            new() { Name = "Arama", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Data = new List<int> { 220, 182, 191, 234, 290, 330, 310 } },
+            new() { Name = "Video", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Data = new List<int> { 150, 232, 201, 154, 190, 330, 410 } },
+            new() { Name = "Direkt", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Data = new List<int> { 320, 332, 301, 334, 390, 330, 320 } },
+            new() { Name = "SEO", Type = ChartSeriesType.Line, Stack = "Total", AreaStyle = new { }, Data = new List<int> { 820, 932, 901, 934, 1290, 1330, 1320 } }
+        },
+        Color = new List<string> { "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6" }
+    };
+}

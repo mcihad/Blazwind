@@ -1,0 +1,133 @@
+@namespace Blazwind.Components.Alert
+@using Blazwind.Components.Shared
+
+@{
+    var alertId = $"bw-alert-{Guid.NewGuid():N}";
+    
+    // Default Icon
+    var defaultIcon = Color switch
+    {
+        BwColor.Success => "fa-solid fa-circle-check",
+        BwColor.Warning => "fa-solid fa-triangle-exclamation",
+        BwColor.Danger => "fa-solid fa-circle-xmark",
+        _ => "fa-solid fa-circle-info"
+    };
+    
+    var iconToUse = string.IsNullOrEmpty(Icon) ? defaultIcon : Icon;
+
+    // Style Generation
+    var (bgClass, borderClass, textClass, iconClass) = (Variant, Color) switch
+    {
+        // FILLED
+        (BwVariant.Filled, BwColor.Success) => ("bg-emerald-600", "border-transparent", "text-white", "text-white"),
+        (BwVariant.Filled, BwColor.Warning) => ("bg-amber-500", "border-transparent", "text-white", "text-white"),
+        (BwVariant.Filled, BwColor.Danger) => ("bg-red-600", "border-transparent", "text-white", "text-white"),
+        (BwVariant.Filled, BwColor.Info) => ("bg-sky-600", "border-transparent", "text-white", "text-white"),
+        (BwVariant.Filled, BwColor.Primary) => ("bg-blue-600", "border-transparent", "text-white", "text-white"),
+        (BwVariant.Filled, BwColor.Secondary) => ("bg-slate-600", "border-transparent", "text-white", "text-white"),
+        (BwVariant.Filled, BwColor.Dark) => ("bg-gray-900 dark:bg-black", "border-transparent", "text-white", "text-white"),
+        
+        // OUTLINE
+        (BwVariant.Outline, BwColor.Success) => ("bg-transparent", "border border-emerald-600 dark:border-emerald-400", "text-emerald-700 dark:text-emerald-400", "text-emerald-600 dark:text-emerald-400"),
+        (BwVariant.Outline, BwColor.Warning) => ("bg-transparent", "border border-amber-500 dark:border-amber-400", "text-amber-700 dark:text-amber-400", "text-amber-500 dark:text-amber-400"),
+        (BwVariant.Outline, BwColor.Danger) => ("bg-transparent", "border border-red-600 dark:border-red-400", "text-red-700 dark:text-red-400", "text-red-600 dark:text-red-400"),
+        (BwVariant.Outline, BwColor.Info) => ("bg-transparent", "border border-sky-600 dark:border-sky-400", "text-sky-700 dark:text-sky-400", "text-sky-600 dark:text-sky-400"),
+        (BwVariant.Outline, BwColor.Primary) => ("bg-transparent", "border border-blue-600 dark:border-blue-400", "text-blue-700 dark:text-blue-400", "text-blue-600 dark:text-blue-400"),
+        (BwVariant.Outline, BwColor.Secondary) => ("bg-transparent", "border border-slate-400 dark:border-slate-500", "text-slate-700 dark:text-slate-400", "text-slate-600 dark:text-slate-400"),
+        (BwVariant.Outline, BwColor.Dark) => ("bg-transparent", "border border-gray-800 dark:border-gray-500", "text-gray-900 dark:text-gray-300", "text-gray-800 dark:text-gray-300"),
+
+        // SOFT (Default)
+        (BwVariant.Soft, BwColor.Success) => ("bg-emerald-50 dark:bg-emerald-900/30", "border border-emerald-200 dark:border-emerald-800", "text-emerald-800 dark:text-emerald-200", "text-emerald-600 dark:text-emerald-300"),
+        (BwVariant.Soft, BwColor.Warning) => ("bg-amber-50 dark:bg-amber-900/30", "border border-amber-200 dark:border-amber-800", "text-amber-800 dark:text-amber-200", "text-amber-600 dark:text-amber-300"),
+        (BwVariant.Soft, BwColor.Danger) => ("bg-red-50 dark:bg-red-900/30", "border border-red-200 dark:border-red-800", "text-red-800 dark:text-red-200", "text-red-600 dark:text-red-300"),
+        (BwVariant.Soft, BwColor.Info) => ("bg-sky-50 dark:bg-sky-900/30", "border border-sky-200 dark:border-sky-800", "text-sky-800 dark:text-sky-200", "text-sky-600 dark:text-sky-300"),
+        (BwVariant.Soft, BwColor.Primary) => ("bg-blue-50 dark:bg-blue-900/30", "border border-blue-200 dark:border-blue-800", "text-blue-800 dark:text-blue-200", "text-blue-600 dark:text-blue-300"),
+        (BwVariant.Soft, BwColor.Secondary) => ("bg-slate-100 dark:bg-slate-800/50", "border border-slate-200 dark:border-slate-700", "text-slate-800 dark:text-slate-200", "text-slate-600 dark:text-slate-300"),
+        (BwVariant.Soft, BwColor.Dark) => ("bg-gray-100 dark:bg-gray-800", "border border-gray-300 dark:border-gray-600", "text-gray-900 dark:text-gray-100", "text-gray-800 dark:text-gray-200"),
+        
+        // GHOST (No border, light bg)
+        (BwVariant.Ghost, BwColor.Success) => ("hover:bg-emerald-50 dark:hover:bg-emerald-900/30 bg-transparent", "border-transparent", "text-emerald-800 dark:text-emerald-400", "text-emerald-600 dark:text-emerald-400"),
+        (BwVariant.Ghost, BwColor.Warning) => ("hover:bg-amber-50 dark:hover:bg-amber-900/30 bg-transparent", "border-transparent", "text-amber-800 dark:text-amber-400", "text-amber-600 dark:text-amber-400"),
+        (BwVariant.Ghost, BwColor.Danger) => ("hover:bg-red-50 dark:hover:bg-red-900/30 bg-transparent", "border-transparent", "text-red-800 dark:text-red-400", "text-red-600 dark:text-red-400"),
+        (BwVariant.Ghost, BwColor.Info) => ("hover:bg-sky-50 dark:hover:bg-sky-900/30 bg-transparent", "border-transparent", "text-sky-800 dark:text-sky-400", "text-sky-600 dark:text-sky-400"),
+        (BwVariant.Ghost, BwColor.Primary) => ("hover:bg-blue-50 dark:hover:bg-blue-900/30 bg-transparent", "border-transparent", "text-blue-800 dark:text-blue-400", "text-blue-600 dark:text-blue-400"),
+        (BwVariant.Ghost, BwColor.Secondary) => ("hover:bg-slate-100 dark:hover:bg-slate-800/50 bg-transparent", "border-transparent", "text-slate-800 dark:text-slate-400", "text-slate-600 dark:text-slate-400"),
+        
+        // Fallback (Soft Primary)
+        _ => ("bg-blue-50", "border border-blue-200", "text-blue-800", "text-blue-500")
+    };
+    
+    // Accent modification (Border Left)
+    if (Variant == BwVariant.Glass) // Using Glass as "Accent" for now, or we can map it
+    {
+        // Custom accent logic if needed, or stick to standard variants.
+        // For now let's stick to standard variants.
+    }
+}
+
+@if (_isVisible)
+{
+    <div id="@alertId" class="flex gap-2 md:gap-3 p-3 md:p-4 rounded @borderClass @bgClass @Class" role="alert">
+        @if (ShowIcon && !string.IsNullOrEmpty(iconToUse))
+        {
+            <div class="flex-shrink-0">
+                <i class="@iconToUse text-lg @iconClass"></i>
+            </div>
+        }
+        
+        <div class="flex-1 min-w-0">
+            @if (!string.IsNullOrEmpty(Title))
+            {
+                <h4 class="font-semibold @textClass mb-1">@Title</h4>
+            }
+            
+            @if (!string.IsNullOrEmpty(Message))
+            {
+                <p class="text-sm @textClass opacity-90">@Message</p>
+            }
+            
+            @if (ChildContent != null)
+            {
+                <div class="text-sm @textClass opacity-90">
+                    @ChildContent
+                </div>
+            }
+            
+            @if (Actions != null)
+            {
+                <div class="mt-3">
+                    @Actions
+                </div>
+            }
+        </div>
+        
+        @if (Dismissible)
+        {
+            <button type="button" 
+                    class="flex-shrink-0 p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors @textClass opacity-60 hover:opacity-100 cursor-pointer"
+                    @onclick="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Info;
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Soft;
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public bool ShowIcon { get; set; } = true;
+    [Parameter] public bool Dismissible { get; set; } = false;
+    [Parameter] public string? Class { get; set; }
+    
+    private bool _isVisible = true;
+
+    private void Close()
+    {
+        _isVisible = false;
+    }
+}

@@ -1,0 +1,359 @@
+@namespace Blazwind.Components.Range
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div id="@_elementId" class="bw-date-range-brush @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
+    }
+
+    @* Time Series Preview - Mini Chart *@
+    @if (ShowTimeline && Data?.Any() == true)
+    {
+        <div class="h-10 flex items-end gap-px mb-1 px-0.5 relative">
+            @foreach (var (point, index) in Data.Select((v, i) => (v, i)))
+            {
+                var height = MaxValue > 0 ? (point.Value / MaxValue) * 100 : 0;
+                var isInRange = IsPointInRange(point.Date);
+                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? GetBarActiveClass() : "bg-gray-200 dark:bg-gray-700")"
+                    style="height: @(Math.Max(2, height))%;" title="@point.Date.ToString("d") - @point.Value">
+                </div>
+            }
+        </div>
+    }
+
+    @* Brush Track *@
+    <div
+        class="bw-brush-track relative h-8 rounded-lg @GetTrackBgClass() overflow-hidden cursor-pointer select-none border border-gray-200 dark:border-gray-700">
+        @* Inactive areas *@
+        <div class="absolute inset-y-0 left-0 bg-gray-300/50 dark:bg-gray-900/70 transition-all"
+            style="width: @(StartPercent)%;"></div>
+        <div class="absolute inset-y-0 right-0 bg-gray-300/50 dark:bg-gray-900/70 transition-all"
+            style="width: @(100 - EndPercent)%;"></div>
+
+        @* Selection Brush *@
+        <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing transition-shadow
+                    @GetBrushBgClass() shadow hover:shadow-md"
+            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+
+            @* Left Handle *@
+            <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-3 cursor-ew-resize @GetHandleClass()
+                        flex items-center justify-center hover:opacity-80 rounded-l">
+                <i class="fa-solid fa-grip-lines-vertical text-white/60 text-[8px]"></i>
+            </div>
+
+            @* Center Drag Area *@
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="flex gap-0.5 opacity-30">
+                    @for (int i = 0; i < 3; i++)
+                    {
+                        <div class="w-0.5 h-2 bg-white rounded-full"></div>
+                    }
+                </div>
+            </div>
+
+            @* Right Handle *@
+            <div class="bw-brush-handle-right absolute right-0 inset-y-0 w-3 cursor-ew-resize @GetHandleClass()
+                        flex items-center justify-center hover:opacity-80 rounded-r">
+                <i class="fa-solid fa-grip-lines-vertical text-white/60 text-[8px]"></i>
+            </div>
+        </div>
+
+        @* Date Markers *@
+        @if (ShowDateMarkers)
+        {
+            <div class="absolute -bottom-4 inset-x-0 flex justify-between text-[9px] text-gray-400 px-1">
+                <span>@MinDate.ToString(DateLabelFormat)</span>
+                @if (TotalDays > 60)
+                {
+                    <span>@MinDate.AddDays(TotalDays / 4).ToString(DateLabelFormat)</span>
+                    <span>@MinDate.AddDays(TotalDays / 2).ToString(DateLabelFormat)</span>
+                    <span>@MinDate.AddDays(TotalDays * 3 / 4).ToString(DateLabelFormat)</span>
+                }
+                else if (TotalDays > 14)
+                {
+                    <span>@MinDate.AddDays(TotalDays / 2).ToString(DateLabelFormat)</span>
+                }
+                <span>@MaxDate.ToString(DateLabelFormat)</span>
+            </div>
+        }
+    </div>
+
+    @* Selected Range Display *@
+    @if (ShowSelectedRange)
+    {
+        <div class="mt-5 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+            <div
+                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <i class="fa-regular fa-calendar @GetIconColorClass() text-sm"></i>
+                <span
+                    class="text-sm font-medium text-gray-700 dark:text-gray-300">@CurrentStartDate.ToString(DateFormat)</span>
+            </div>
+            <i class="fa-solid fa-arrow-right text-gray-400 text-xs hidden sm:block"></i>
+            <i class="fa-solid fa-arrow-down text-gray-400 text-xs sm:hidden"></i>
+            <div
+                class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <i class="fa-regular fa-calendar @GetIconColorClass() text-sm"></i>
+                <span
+                    class="text-sm font-medium text-gray-700 dark:text-gray-300">@CurrentEndDate.ToString(DateFormat)</span>
+            </div>
+            <div class="px-2 py-1 text-xs @GetBadgeClass() rounded">
+                @RangeText
+            </div>
+        </div>
+    }
+
+    @* Quick Date Ranges *@
+    @if (Presets?.Any() == true)
+    {
+        <div class="mt-3 flex flex-wrap justify-center gap-2">
+            @foreach (var preset in Presets)
+            {
+                <button type="button"
+                    class="px-2.5 py-1 text-xs font-medium rounded-md transition-all
+                                                       @(IsPresetActive(preset) ? GetActivePresetClass() : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600")"
+                    @onclick="() => ApplyPreset(preset)">
+                    @preset.Label
+                </button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public DateTime MinDate { get; set; } = DateTime.Today.AddMonths(-3);
+    [Parameter] public DateTime MaxDate { get; set; } = DateTime.Today;
+    [Parameter] public DateTime StartDate { get; set; } = DateTime.Today.AddMonths(-1);
+    [Parameter] public DateTime EndDate { get; set; } = DateTime.Today;
+    [Parameter] public DateStepUnit StepUnit { get; set; } = DateStepUnit.Day;
+    [Parameter] public int StepValue { get; set; } = 1;
+    [Parameter] public double MinWidthPercent { get; set; } = 5;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string DateFormat { get; set; } = "dd MMM yyyy";
+    [Parameter] public string DateLabelFormat { get; set; } = "MMM yy";
+    [Parameter] public bool ShowSelectedRange { get; set; } = true;
+    [Parameter] public bool ShowDateMarkers { get; set; } = true;
+    [Parameter] public bool ShowTimeline { get; set; } = true;
+    [Parameter] public List<TimeSeriesPoint>? Data { get; set; }
+    [Parameter] public List<DateBrushPreset>? Presets { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<BrushChangedEventArgs<DateTime>> OnBrushChanged { get; set; }
+
+    private string _elementId = "";
+    private DotNetObjectReference<BwDateRangeBrush>? _dotNetRef;
+    private double _startPercent;
+    private double _endPercent;
+
+    private double StartPercent => _startPercent;
+    private double EndPercent => _endPercent;
+    private int TotalDays => (int)(MaxDate - MinDate).TotalDays;
+    private DateTime CurrentStartDate => SnapToStep(MinDate.AddDays(TotalDays * (_startPercent / 100)));
+    private DateTime CurrentEndDate => SnapToStep(MinDate.AddDays(TotalDays * (_endPercent / 100)));
+    private double MaxValue => Data?.Max(x => x.Value) ?? 0;
+
+    private string RangeText => StepUnit switch
+    {
+        DateStepUnit.Hour => $"{(int)(CurrentEndDate - CurrentStartDate).TotalHours} saat",
+        DateStepUnit.Day => $"{(int)(CurrentEndDate - CurrentStartDate).TotalDays} gün",
+        DateStepUnit.Week => $"{(int)((CurrentEndDate - CurrentStartDate).TotalDays / 7)} hafta",
+        DateStepUnit.Month => GetMonthDiff() + " ay",
+        DateStepUnit.Year => $"{CurrentEndDate.Year - CurrentStartDate.Year} yıl",
+        _ => $"{(int)(CurrentEndDate - CurrentStartDate).TotalDays} gün"
+    };
+
+    private string GetMonthDiff()
+    {
+        var months = ((CurrentEndDate.Year - CurrentStartDate.Year) * 12) + (CurrentEndDate.Month - CurrentStartDate.Month);
+        return months.ToString();
+    }
+
+    private DateTime SnapToStep(DateTime date)
+    {
+        return StepUnit switch
+        {
+            DateStepUnit.Hour => new DateTime(date.Year, date.Month, date.Day, date.Hour, 0, 0),
+            DateStepUnit.Day => date.Date,
+            DateStepUnit.Week => date.Date.AddDays(-(int)date.DayOfWeek + (int)DayOfWeek.Monday),
+            DateStepUnit.Month => new DateTime(date.Year, date.Month, 1),
+            DateStepUnit.Year => new DateTime(date.Year, 1, 1),
+            _ => date.Date
+        };
+    }
+
+    protected override void OnInitialized()
+    {
+        _elementId = $"bw-date-brush-{Guid.NewGuid():N}";
+
+        var totalDays = (double)TotalDays;
+        _startPercent = totalDays > 0 ? ((StartDate - MinDate).TotalDays / totalDays) * 100 : 0;
+        _endPercent = totalDays > 0 ? ((EndDate - MinDate).TotalDays / totalDays) * 100 : 100;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
+            MinWidthPercent);
+        }
+    }
+
+    [JSInvokable]
+    public async Task HandleBrushChanged(double startPercent, double endPercent)
+    {
+        _startPercent = Math.Round(startPercent, 2);
+        _endPercent = Math.Round(endPercent, 2);
+
+        await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<DateTime>
+        {
+            Start = CurrentStartDate,
+            End = CurrentEndDate,
+            Min = MinDate,
+            Max = MaxDate,
+            StartPercent = _startPercent,
+            EndPercent = _endPercent
+        });
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ApplyPreset(DateBrushPreset preset)
+    {
+        var totalDays = (double)TotalDays;
+        if (totalDays <= 0) return;
+
+        // Clamp preset dates to min/max range
+        var start = preset.StartDate < MinDate ? MinDate : preset.StartDate;
+        var end = preset.EndDate > MaxDate ? MaxDate : preset.EndDate;
+
+        _startPercent = ((start - MinDate).TotalDays / totalDays) * 100;
+        _endPercent = ((end - MinDate).TotalDays / totalDays) * 100;
+
+        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, _startPercent, _endPercent);
+
+        await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<DateTime>
+        {
+            Start = start,
+            End = end,
+            Min = MinDate,
+            Max = MaxDate,
+            StartPercent = _startPercent,
+            EndPercent = _endPercent
+        });
+    }
+
+    private bool IsPresetActive(DateBrushPreset preset)
+    {
+        return Math.Abs((CurrentStartDate - preset.StartDate).TotalDays) < 1 &&
+        Math.Abs((CurrentEndDate - preset.EndDate).TotalDays) < 1;
+    }
+
+    private bool IsPointInRange(DateTime date)
+    {
+        var totalDays = (MaxDate - MinDate).TotalDays;
+        if (totalDays <= 0) return false;
+
+        var percent = ((date - MinDate).TotalDays / totalDays) * 100;
+        return percent >= _startPercent && percent <= _endPercent;
+    }
+
+    private string GetTrackBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 dark:bg-blue-950",
+        BwColor.Success => "bg-green-100 dark:bg-green-950",
+        BwColor.Danger => "bg-red-100 dark:bg-red-950",
+        BwColor.Warning => "bg-amber-100 dark:bg-amber-950",
+        BwColor.Info => "bg-cyan-100 dark:bg-cyan-950",
+        _ => "bg-blue-100 dark:bg-blue-950"
+    };
+
+    private string GetBrushBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-gradient-to-r from-blue-500 to-blue-600",
+        BwColor.Success => "bg-gradient-to-r from-green-500 to-green-600",
+        BwColor.Danger => "bg-gradient-to-r from-red-500 to-red-600",
+        BwColor.Warning => "bg-gradient-to-r from-amber-500 to-amber-600",
+        BwColor.Info => "bg-gradient-to-r from-cyan-500 to-cyan-600",
+        _ => "bg-gradient-to-r from-blue-500 to-blue-600"
+    };
+
+    private string GetHandleClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-700",
+        BwColor.Success => "bg-green-700",
+        BwColor.Danger => "bg-red-700",
+        BwColor.Warning => "bg-amber-700",
+        BwColor.Info => "bg-cyan-700",
+        _ => "bg-blue-700"
+    };
+
+    private string GetBarActiveClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-400 dark:bg-blue-500",
+        BwColor.Success => "bg-green-400 dark:bg-green-500",
+        BwColor.Danger => "bg-red-400 dark:bg-red-500",
+        BwColor.Warning => "bg-amber-400 dark:bg-amber-500",
+        BwColor.Info => "bg-cyan-400 dark:bg-cyan-500",
+        _ => "bg-blue-400 dark:bg-blue-500"
+    };
+
+    private string GetIconColorClass() => Color switch
+    {
+        BwColor.Primary => "text-blue-500",
+        BwColor.Success => "text-green-500",
+        BwColor.Danger => "text-red-500",
+        BwColor.Warning => "text-amber-500",
+        BwColor.Info => "text-cyan-500",
+        _ => "text-blue-500"
+    };
+
+    private string GetBadgeClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+        BwColor.Warning => "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400",
+        _ => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+    };
+
+    private string GetActivePresetClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-500 text-white shadow-sm",
+        BwColor.Success => "bg-green-500 text-white shadow-sm",
+        BwColor.Danger => "bg-red-500 text-white shadow-sm",
+        BwColor.Warning => "bg-amber-500 text-white shadow-sm",
+        BwColor.Info => "bg-cyan-500 text-white shadow-sm",
+        _ => "bg-blue-500 text-white shadow-sm"
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
+        }
+        catch { }
+
+        _dotNetRef?.Dispose();
+    }
+
+    public class TimeSeriesPoint
+    {
+        public DateTime Date { get; set; }
+        public double Value { get; set; }
+    }
+
+    public class DateBrushPreset
+    {
+        public string Label { get; set; } = "";
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+}

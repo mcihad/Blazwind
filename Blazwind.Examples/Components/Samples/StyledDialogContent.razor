@@ -1,0 +1,60 @@
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Dialog
+@inject DialogService DialogService
+
+<BwColumn Spacing="BwSpacing.Md">
+    <p class="text-gray-600">
+        This dialog is displayed with customized header background color and header height.
+    </p>
+
+    <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded border">
+        <div>
+            <span class="text-xs text-gray-500 block mb-1">Header Background:</span>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 rounded @GetColorBgClass()"></span>
+                <span class="font-medium text-gray-900">@ColorName</span>
+            </div>
+        </div>
+        <div>
+            <span class="text-xs text-gray-500 block mb-1">Header Height:</span>
+            <span class="font-medium text-gray-900">@SizeName</span>
+        </div>
+    </div>
+
+    <div class="p-3 bg-blue-50 rounded border border-blue-100 text-sm text-blue-700">
+        <i class="fa-solid fa-info-circle mr-2"></i>
+        <code class="bg-blue-100 px-1 rounded">TitleColor</code> changes header background,
+        <code class="bg-blue-100 px-1 rounded">TitleSize</code> changes header height (padding).
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4 border-t">
+        <BwButton Text="Close" Color="BwColor.Secondary" Variant="BwVariant.Outline" OnClick="Close" />
+    </div>
+</BwColumn>
+
+@code {
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+
+    [Parameter] public string ColorName { get; set; } = "Default";
+    [Parameter] public string SizeName { get; set; } = "Medium";
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+
+    private string GetColorBgClass() => Color switch
+    {
+        BwColor.Success => "bg-green-600",
+        BwColor.Danger => "bg-red-600",
+        BwColor.Warning => "bg-amber-500",
+        BwColor.Info => "bg-blue-600",
+        BwColor.Secondary => "bg-gray-500",
+        BwColor.Dark => "bg-gray-800",
+        _ => "bg-gray-200"
+    };
+
+    private void Close()
+    {
+        if (DialogInstance != null) DialogService.Close(DialogInstance);
+    }
+}

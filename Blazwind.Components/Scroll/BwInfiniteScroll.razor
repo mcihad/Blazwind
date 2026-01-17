@@ -1,0 +1,85 @@
+@namespace Blazwind.Components.Scroll
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+<div @ref="_containerRef" class="@Class" style="@Style">
+    @ChildContent
+    
+    @if (_isLoading)
+    {
+        <div class="flex items-center justify-center py-4">
+            @if (LoadingTemplate != null)
+            {
+                @LoadingTemplate
+            }
+            else
+            {
+                <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <span class="text-sm">Yükleniyor...</span>
+                </div>
+            }
+        </div>
+    }
+    
+    @if (!HasMore && !_isLoading)
+    {
+        <div class="text-center py-4 text-sm text-gray-400 dark:text-gray-500">
+            @EndMessage
+        </div>
+    }
+    
+    @* Sentinel element for intersection observer *@
+    <div @ref="_sentinelRef" class="h-1"></div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? LoadingTemplate { get; set; }
+    [Parameter] public EventCallback OnLoadMore { get; set; }
+    [Parameter] public bool HasMore { get; set; } = true;
+    [Parameter] public string EndMessage { get; set; } = "Tüm içerik yüklendi";
+    [Parameter] public int Threshold { get; set; } = 100;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    private ElementReference _containerRef;
+    private ElementReference _sentinelRef;
+    private bool _isLoading = false;
+    private DotNetObjectReference<BwInfiniteScroll>? _dotNetRef;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("Blazwind.InfiniteScroll.initialize", _sentinelRef, _dotNetRef, Threshold);
+        }
+    }
+    
+    [JSInvokable]
+    public async Task TriggerLoadMore()
+    {
+        if (_isLoading || !HasMore) return;
+        
+        _isLoading = true;
+        StateHasChanged();
+        
+        await OnLoadMore.InvokeAsync();
+        
+        _isLoading = false;
+        StateHasChanged();
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.InfiniteScroll.dispose");
+        }
+        catch { }
+        _dotNetRef?.Dispose();
+    }
+}

@@ -1,0 +1,172 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@inherits BwBaseInput<double>
+
+@{
+    var marginClass = GetDensityMarginClass();
+    var percentage = ((Value - Min) / (Max - Min)) * 100;
+    
+    var fillColor = Color switch
+    {
+        BwColor.Primary => "#3B82F6",
+        BwColor.Success => "#22C55E",
+        BwColor.Danger => "#EF4444",
+        BwColor.Warning => "#F59E0B",
+        BwColor.Info => "#0EA5E9",
+        _ => "#3B82F6"
+    };
+    
+    var thumbColor = Color switch
+    {
+        BwColor.Primary => "#2563EB",
+        BwColor.Success => "#16A34A",
+        BwColor.Danger => "#DC2626",
+        BwColor.Warning => "#D97706",
+        BwColor.Info => "#0284C7",
+        _ => "#2563EB"
+    };
+    
+    var heightPx = Size switch
+    {
+        BwSize.Small => "4px",
+        BwSize.Large => "12px",
+        _ => "8px"
+    };
+    
+    var thumbSizePx = Size switch
+    {
+        BwSize.Small => "12px",
+        BwSize.Large => "24px",
+        _ => "16px"
+    };
+    
+    var trackGradient = $"linear-gradient(to right, {fillColor} 0%, {fillColor} {percentage}%, #E5E7EB {percentage}%, #E5E7EB 100%)";
+    var errorTrackColor = HasError ? "#FCA5A5" : "#E5E7EB";
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @if (HasLabel || ShowValue)
+    {
+        <div class="flex justify-between items-center mb-2">
+            @if (HasLabel)
+            {
+                <div class="flex items-center gap-1">
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                    @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                    {
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    }
+                </div>
+            }
+            @if (ShowValue)
+            {
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">@Value.ToString(ValueFormat)</span>
+            }
+        </div>
+    }
+    
+    <div class="relative @(IsDisabled ? "opacity-50 cursor-not-allowed" : "")">
+        <input type="range"
+               class="bw-slider w-full"
+               min="@Min"
+               max="@Max"
+               step="@Step"
+               value="@Value"
+               disabled="@IsDisabled"
+               @oninput="HandleSliderInput"
+               @onfocus="HandleFocusEvent"
+               @onblur="HandleBlurEvent"
+               style="--slider-track-height: @heightPx; --slider-thumb-size: @thumbSizePx; --slider-fill-color: @fillColor; --slider-thumb-color: @thumbColor; background: @trackGradient;" />
+    </div>
+    
+    @* Marks *@
+    @if (ShowMarks && Marks != null)
+    {
+        <div class="relative mt-1">
+            @foreach (var mark in Marks)
+            {
+                var markPercent = ((mark - Min) / (Max - Min)) * 100;
+                <div class="absolute -translate-x-1/2 text-xs text-gray-500 dark:text-gray-400"
+                     style="left: @markPercent%;">
+                    @mark
+                </div>
+            }
+        </div>
+    }
+    
+    @* Error/Helper Messages *@
+    @if (HasError)
+    {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @DisplayError
+        </p>
+    }
+    else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+    {
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+    }
+</div>
+
+@code {
+    /// <summary>Minimum value</summary>
+    [Parameter] public double Min { get; set; } = 0;
+    
+    /// <summary>Maximum value</summary>
+    [Parameter] public double Max { get; set; } = 100;
+    
+    /// <summary>Step increment</summary>
+    [Parameter] public double Step { get; set; } = 1;
+    
+    /// <summary>Show current value</summary>
+    [Parameter] public bool ShowValue { get; set; } = true;
+    
+    /// <summary>Show tooltip while dragging</summary>
+    [Parameter] public bool ShowTooltip { get; set; } = true;
+    
+    /// <summary>Show tick marks</summary>
+    [Parameter] public bool ShowMarks { get; set; }
+    
+    /// <summary>Custom mark values</summary>
+    [Parameter] public double[]? Marks { get; set; }
+    
+    /// <summary>Value format string</summary>
+    [Parameter] public string ValueFormat { get; set; } = "0";
+    
+    /// <summary>Color variant</summary>
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    private async Task HandleSliderInput(ChangeEventArgs e)
+    {
+        if (double.TryParse(e.Value?.ToString(), out var newValue))
+        {
+            Value = newValue;
+            await ValueChanged.InvokeAsync(Value);
+            await OnChange.InvokeAsync(Value);
+            
+            if (CascadedEditContext != null && For != null)
+            {
+                CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+            }
+        }
+    }
+    
+    private async Task HandleFocusEvent(FocusEventArgs e)
+    {
+        IsFocused = true;
+        await HandleFocus(e);
+    }
+
+    private async Task HandleBlurEvent(FocusEventArgs e)
+    {
+        IsFocused = false;
+        await HandleBlur(e);
+    }
+}

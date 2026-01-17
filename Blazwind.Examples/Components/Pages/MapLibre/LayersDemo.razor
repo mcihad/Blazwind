@@ -1,0 +1,226 @@
+@page "/maps/layers"
+@using Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Dialog
+@using Blazwind.Examples.Components.Samples
+@using Blazwind.Components.Input
+@inject DialogService DialogService
+
+<PageTitle>Layers - MapLibre</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Layers" 
+            Description="Declarative layer structure: manage layers with Vector Tile and GeoJSON sources."
+            Icon="fa-solid fa-layer-group"
+            Color="BwColor.Success" />
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        @* Harita *@
+        <div class="lg:col-span-3 h-[500px] relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+            <BwMapLibre @ref="_map" StyleUrl="osm_style.json" Center="@SivasCenter" Zoom="@((double)14)"
+                NavigationControl="true" ScaleControl="true">
+                
+                @* Buildings (Vector) *@
+                @if (_layerBinalarVisible)
+                {
+                    <BwMapLibreSource Id="binalar-source" Type="@MapSourceType.Vector" Tiles="@(new List<string> { "https://harita.sivas.bel.tr/binalar/{z}/{x}/{y}" })">
+                        <BwMapLibreLayer Id="binalar-fill" 
+                            Type="@MapLayerType.Fill" 
+                            SourceId="binalar-source"
+                            SourceLayer="binalar"
+                            Interactive="true"
+                            ClickOrder="@_binalarClickOrder"
+                            OnClick="OnBinalarClick"
+                            OnMouseEnter="OnLayerMouseEnter"
+                            OnMouseLeave="OnLayerMouseLeave"
+                            Paint="@BinalarPaint" />
+                    </BwMapLibreSource>
+                }
+                
+                @* Gathering Areas - GeoJSON Source *@
+                @if (_layerToplanmaVisible)
+                {
+                    <BwMapLibreSource Id="toplanma-alanlari-source" Type="@MapSourceType.GeoJson" Data="@("https://kentrehberi.sivas.bel.tr/api/geojson/toplanma-alanlari")">
+                        <BwMapLibreLayer Id="toplanma-alanlari-fill" 
+                            Type="@MapLayerType.Fill" 
+                            SourceId="toplanma-alanlari-source"
+                            Interactive="true"
+                            ClickOrder="@_toplanmaClickOrder"
+                            OnClick="OnToplanmaClick"
+                            OnMouseEnter="OnLayerMouseEnter"
+                            OnMouseLeave="OnLayerMouseLeave"
+                            Paint="@ToplanmaPaint" />
+                    </BwMapLibreSource>
+                }
+                
+            </BwMapLibre>
+
+            @* Hover Durumu *@
+            @if (!string.IsNullOrEmpty(_hoveredLayerInfo))
+            {
+                <div class="absolute bottom-4 left-4 z-[1000]">
+                    <BwCard Class="bg-white/95 dark:bg-gray-800/95 backdrop-blur">
+                        <div class="text-xs">
+                            <div><i class="fa-solid fa-mouse-pointer mr-1"></i> @_hoveredLayerInfo</div>
+                        </div>
+                    </BwCard>
+                </div>
+            }
+
+            @* Son Tıklama *@
+            @if (!string.IsNullOrEmpty(_lastClickInfo))
+            {
+                <div class="absolute top-4 right-4 z-[1000]">
+                    <BwCard Class="bg-white/95 dark:bg-gray-800/95 backdrop-blur">
+                        <div class="text-xs">
+                            <div><i class="fa-solid fa-hand-pointer mr-1"></i> @_lastClickInfo</div>
+                        </div>
+                    </BwCard>
+                </div>
+            }
+        </div>
+
+        @* Kontrol Paneli *@
+        <div class="space-y-4">
+            <BwCard Title="Layers" Icon="fa-solid fa-layer-group" Color="BwColor.Primary">
+                 <div class="space-y-3">
+                    <BwCheckbox Label="Buildings (Vector)" Value="_layerBinalarVisible" ValueChanged="SetBinalarVisible" />
+                    <BwCheckbox Label="Gathering Areas" Value="_layerToplanmaVisible" ValueChanged="SetToplanmaVisible" />
+                </div>
+            </BwCard>
+
+            <BwCard Title="Layer Structure" Icon="fa-solid fa-code" Color="BwColor.Secondary">
+                <pre class="text-xs bg-gray-100 dark:bg-gray-900 p-2 rounded overflow-x-auto">&lt;BwMapLibre&gt;
+  &lt;BwMapLibreSource Type="Vector" ...&gt;
+    &lt;BwMapLibreLayer OnClick="..." /&gt;
+  &lt;/BwMapLibreSource&gt;
+&lt;/BwMapLibre&gt;</pre>
+            </BwCard>
+
+            <BwCard Title="Click Order" Icon="fa-solid fa-sort-amount-up" Color="BwColor.Warning">
+                <div class="space-y-3">
+                    <div class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                        Buildings layer priority:
+                    </div>
+                    <BwSelect TValue="int" Value="_binalarClickOrder" 
+                        ValueChanged="SetBinalarClickOrder"
+                        Items="_clickOrderOptions" Size="BwSize.Small" />
+                    <div class="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                        Gathering areas priority:
+                    </div>
+                    <BwSelect TValue="int" Value="_toplanmaClickOrder" 
+                        ValueChanged="SetToplanmaClickOrder" 
+                        Items="_clickOrderOptions" Size="BwSize.Small" />
+                </div>
+            </BwCard>
+
+            <BwCard Title="Bilgi" Icon="fa-solid fa-info-circle" Color="BwColor.Info">
+                <div class="text-xs text-gray-600 dark:text-gray-400 space-y-2">
+                    <p><span class="inline-block w-3 h-3 rounded bg-red-500 mr-2"></span>Buildings: Sivas Municipality (Vector)</p>
+                    <p><span class="inline-block w-3 h-3 rounded bg-blue-500 mr-2"></span>Gathering: City Guide (GeoJSON)</p>
+                </div>
+            </BwCard>
+        </div>
+    </div>
+</BwColumn>
+
+@code {
+    private BwMapLibre? _map;
+    private double[] SivasCenter => [37.0150, 39.7505];
+
+    private string? _hoveredLayerInfo;
+    private string? _lastClickInfo;
+    
+    // Config
+    private bool _layerBinalarVisible = false;
+    private bool _layerToplanmaVisible = false;
+    private int _binalarClickOrder = 5;
+    private int _toplanmaClickOrder = 5;
+
+    // Click Order seçenekleri
+    private readonly List<BwSelectItem<int>> _clickOrderOptions = new()
+    {
+        new(1, "1 - Low"),
+        new(5, "5 - Medium"),
+        new(10, "10 - High")
+    };
+
+    // Binalar Stili
+    private readonly Dictionary<string, object?> BinalarPaint = new()
+    {
+        ["fill-color"] = "#ef4444",
+        ["fill-opacity"] = 0.6,
+        ["fill-outline-color"] = "#ffffff"
+    };
+
+    // Toplanma Alanları Stili
+    private readonly Dictionary<string, object?> ToplanmaPaint = new()
+    {
+        ["fill-color"] = "#3b82f6",
+        ["fill-opacity"] = 0.6,
+        ["fill-outline-color"] = "#ffffff"
+    };
+
+    private async Task OnBinalarClick(MapLayerClickEventArgs e)
+    {
+        if (e.Features.Count == 0) return;
+        
+        var feature = e.Features[0];
+        _lastClickInfo = $"Building clicked: {(feature.Properties != null && feature.Properties.TryGetValue("adi", out var val) ? val : feature.Id)}"; // Example property, depends on data
+        StateHasChanged();
+        
+        var parameters = new Dictionary<string, object> { { "Feature", feature } };
+        await DialogService.ShowAsync<MapFeatureDialog>("Building Information", parameters, new DialogOptions
+        {
+            Width = "450px",
+            Draggable = true
+        });
+    }
+
+    private async Task OnToplanmaClick(MapLayerClickEventArgs e)
+    {
+        if (e.Features.Count == 0) return;
+        
+        var feature = e.Features[0];
+        _lastClickInfo = $"Gathering area clicked: {(feature.Properties != null && feature.Properties.TryGetValue("adi", out var val2) ? val2 : feature.Id)}";
+        StateHasChanged();
+        
+        var parameters = new Dictionary<string, object> { { "Feature", feature } };
+        await DialogService.ShowAsync<MapFeatureDialog>("Gathering Area Information", parameters, new DialogOptions
+        {
+            Width = "450px",
+            Draggable = true
+        });
+    }
+
+    private void OnLayerMouseEnter(MapLayerEventArgs e)
+    {
+        _hoveredLayerInfo = $"{e.LayerId} (hover)";
+        StateHasChanged();
+        
+        if (_map != null)
+        {
+            _ = _map.SetPaintPropertyAsync(e.LayerId, "fill-opacity", 0.9);
+        }
+    }
+
+    private async Task OnLayerMouseLeave(MapLayerEventArgs e)
+    {
+        _hoveredLayerInfo = null;
+        StateHasChanged();
+        
+        if (_map != null)
+        {
+            _ = _map.SetPaintPropertyAsync(e.LayerId, "fill-opacity", 0.6);
+        }
+    }
+    
+    // UI Event Handlers
+    private void SetBinalarVisible(bool value) => _layerBinalarVisible = value;
+    private void SetToplanmaVisible(bool value) => _layerToplanmaVisible = value;
+    private void SetBinalarClickOrder(int value) => _binalarClickOrder = value;
+    private void SetToplanmaClickOrder(int value) => _toplanmaClickOrder = value;
+}

@@ -1,0 +1,199 @@
+@page "/components/document-viewer"
+@using Blazwind.Components.CodeBlock
+@using Blazwind.Components.DocumentViewer
+
+<PageTitle>Document Viewer Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Document Viewer"
+            Description="PDF, image and document viewing, rotation, cropping and filtering component."
+            Icon="fa-solid fa-file-pdf" Color="BwColor.Primary"/>
+
+    @* Görüntü Düzenleme Demo *@
+    <BwCard Title="Image Editing (New)" Subtitle="Rotation, Cropping, Black/White and Save."
+            Icon="fa-solid fa-wand-magic-sparkles" Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div class="text-sm text-gray-600 mb-2">
+                <i class="fa-solid fa-info-circle mr-1"></i>
+                You can rotate the image below, make it black and white, or crop it. When you press the save button, the
+                result is shown below.
+            </div>
+
+            <BwDocumentViewer Url="https://picsum.photos/id/237/800/600" Type="DocumentType.Jpeg" Height="500px"
+                              ShowToolbar="true" OnSave="OnImageSave"/>
+
+            @if (!string.IsNullOrEmpty(_savedImageBase64))
+            {
+                <div class="mt-4 p-4 bg-gray-50 border rounded-lg">
+                    <h5 class="font-semibold text-sm mb-2">Saved Image (Base64 Preview):</h5>
+                    <img src="@_savedImageBase64" class="max-w-full h-48 object-contain border bg-white"/>
+                    <div class="mt-2">
+                        <BwCodeBlock Language="text"
+                                     Code="@(_savedImageBase64.Substring(0, Math.Min(100, _savedImageBase64.Length)) + "...")"/>
+                    </div>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
+
+    @* PDF Görüntüleme *@
+    <BwCard Title="PDF Viewing" Subtitle="Sample PDF document." Icon="fa-solid fa-file-pdf" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div class="text-sm text-gray-600 mb-2">
+                <i class="fa-solid fa-info-circle mr-1"></i>
+                The browser's built-in PDF viewer is used to view PDFs.
+            </div>
+
+            <BwDocumentViewer Url="https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf"
+                              Type="DocumentType.Pdf" Height="500px"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Resim Görüntüleme *@
+    <BwCard Title="Format Support" Subtitle="Different image formats." Icon="fa-solid fa-image" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Sm">
+                <BwButton Text="PNG" Size="BwSize.Small"
+                          Variant="@(_selectedImageType == DocumentType.Png ? BwVariant.Filled : BwVariant.Outline)"
+                          OnClick="() => _selectedImageType = DocumentType.Png"/>
+                <BwButton Text="JPEG" Size="BwSize.Small"
+                          Variant="@(_selectedImageType == DocumentType.Jpeg ? BwVariant.Filled : BwVariant.Outline)"
+                          OnClick="() => _selectedImageType = DocumentType.Jpeg"/>
+            </BwRow>
+
+            <BwDocumentViewer Url="@GetSampleImageUrl()" Type="@_selectedImageType" Height="400px"
+                              ShowDownloadButton="true" ShowPrintButton="true"/>
+        </BwColumn>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Araç Çubuğu Olmadan *@
+        <BwCard Title="Without Toolbar" Subtitle="Minimal appearance." Icon="fa-solid fa-eye-slash"
+                Color="BwColor.Warning">
+            <BwDocumentViewer Url="https://picsum.photos/800/600" Type="DocumentType.Jpeg" Height="300px"
+                              ShowToolbar="false"/>
+        </BwCard>
+
+        @* Sadece Yazdırma *@
+        <BwCard Title="Custom Toolbar" Subtitle="Print button only." Icon="fa-solid fa-print" Color="BwColor.Success">
+            <BwDocumentViewer Url="https://picsum.photos/seed/doc/800/600" Type="DocumentType.Jpeg" Height="300px"
+                              ShowDownloadButton="false" ShowFullscreenButton="false" ShowPrintButton="true"/>
+        </BwCard>
+    </BwRow>
+
+    @* Kurumsal Kullanım *@
+    <BwCard Title="Document Viewing Scenario" Subtitle="Municipal document management system example."
+            Icon="fa-solid fa-folder-open" Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Lg">
+            @* Sol: Evrak Listesi *@
+            <div class="w-64 border-r border-gray-200 pr-4">
+                <h4 class="font-semibold text-sm text-gray-700 mb-3">Documents</h4>
+                <BwColumn Spacing="BwSpacing.Xs">
+                    @foreach (var doc in _sampleDocuments)
+                    {
+                        <button
+                            class="w-full text-left px-3 py-2 rounded text-sm hover:bg-gray-100 transition-colors @(_selectedDocument == doc ? "bg-primary-50 text-primary-700 border-l-2 border-primary-500" : "text-gray-700")"
+                            @onclick="() => SelectDocument(doc)">
+                            <i class="@GetDocumentIcon(doc.Type) mr-2 text-gray-400"></i>
+                            @doc.Name
+                        </button>
+                    }
+                </BwColumn>
+            </div>
+
+            @* Sağ: Görüntüleyici *@
+            <div class="flex-1">
+                @if (_selectedDocument != null)
+                {
+                    <div class="mb-3">
+                        <h4 class="font-semibold">@_selectedDocument.Name</h4>
+                        <p class="text-sm text-gray-500">@_selectedDocument.Description</p>
+                    </div>
+
+                    <BwDocumentViewer Url="@_selectedDocument.Url" Type="@_selectedDocument.Type" Height="400px"/>
+                }
+                else
+                {
+                    <div
+                        class="h-[400px] flex items-center justify-center bg-gray-50 rounded border border-gray-200 text-gray-500">
+                        <div class="text-center">
+                            <i class="fa-solid fa-file-circle-question text-4xl mb-2"></i>
+                            <p>Select a document to view</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private DocumentType _selectedImageType = DocumentType.Png;
+    private SampleDocument? _selectedDocument;
+    private string? _savedImageBase64;
+
+    private void OnImageSave(string base64Data)
+    {
+        _savedImageBase64 = base64Data;
+        StateHasChanged();
+    }
+
+    private readonly List<SampleDocument> _sampleDocuments = new()
+    {
+        new SampleDocument
+        {
+            Name = "Petition.pdf", Type = DocumentType.Pdf, Url =
+                "https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf",
+            Description = "Citizen petition - 01.01.2026"
+        },
+        new SampleDocument
+        {
+            Name = "Attachment 1.jpg", Type = DocumentType.Jpeg, Url = "https://picsum.photos/seed/doc1/800/1000",
+            Description = "ID photocopy"
+        },
+        new SampleDocument
+        {
+            Name = "Attachment 2.jpg", Type = DocumentType.Jpeg, Url = "https://picsum.photos/seed/doc2/800/1000",
+            Description = "Title deed photocopy"
+        },
+        new SampleDocument
+        {
+            Name = "Map.png", Type = DocumentType.Png, Url = "https://picsum.photos/seed/map/1000/800", Description =
+                "Location map"
+        }
+    };
+
+    private string GetSampleImageUrl()
+    {
+        return _selectedImageType switch
+        {
+            DocumentType.Png => "https://picsum.photos/seed/png/800/600",
+            DocumentType.Jpeg => "https://picsum.photos/seed/jpg/800/600",
+            _ => "https://picsum.photos/800/600"
+        };
+    }
+
+    private void SelectDocument(SampleDocument doc)
+    {
+        _selectedDocument = doc;
+    }
+
+    private string GetDocumentIcon(DocumentType type)
+    {
+        return type switch
+        {
+            DocumentType.Pdf => "fa-solid fa-file-pdf text-red-500",
+            DocumentType.Jpeg or DocumentType.Png => "fa-solid fa-file-image text-blue-500",
+            _ => "fa-solid fa-file"
+        };
+    }
+
+    private class SampleDocument
+    {
+        public string Name { get; set; } = "";
+        public DocumentType Type { get; set; }
+        public string Url { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+}

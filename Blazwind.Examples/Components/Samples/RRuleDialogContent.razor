@@ -1,0 +1,45 @@
+@using Blazwind.Components.RRule
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Button
+
+@namespace Blazwind.Examples.Components.Samples
+
+<BwColumn Spacing="BwSpacing.Md">
+    <BwRRuleDesigner @bind-Value="_value" ShowPreview="true" />
+    
+    <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.End" Class="pt-4 border-t border-gray-200 dark:border-gray-700">
+        <BwButton Text="Cancel" 
+                  Color="BwColor.Secondary" 
+                  Variant="BwVariant.Ghost"
+                  OnClick="Cancel" />
+        <BwButton Text="Apply" 
+                  Icon="fa-solid fa-check" 
+                  Color="BwColor.Primary"
+                  OnClick="Apply" />
+    </BwRow>
+</BwColumn>
+
+@code {
+    [CascadingParameter] Blazwind.Components.Services.DialogInstance DialogInstance { get; set; } = default!;
+    [Inject] Blazwind.Components.Services.DialogService DialogService { get; set; } = default!;
+    
+    [Parameter] public string? InitialValue { get; set; }
+    
+    private string? _value;
+    
+    protected override void OnInitialized()
+    {
+        _value = InitialValue ?? "FREQ=WEEKLY;BYDAY=MO";
+    }
+    
+    private void Cancel()
+    {
+        DialogService.Close(DialogInstance, Blazwind.Components.Dialog.DialogResult.Cancel());
+    }
+    
+    private void Apply()
+    {
+        DialogService.Close(DialogInstance, Blazwind.Components.Dialog.DialogResult.Ok((object)(_value ?? "")));
+    }
+}

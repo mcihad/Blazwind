@@ -1,0 +1,182 @@
+@namespace Blazwind.Components.Range
+@using Blazwind.Components.Shared
+
+<div class="bw-time-range @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
+    }
+
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        @* Start Time *@
+        <div class="flex-1">
+            <div class="relative">
+                <i
+                    class="fa-regular fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+                <input type="time" min="@Min?.ToString(@"hh\:mm")" max="@End?.ToString(@"hh\:mm")"
+                    step="@((int)Step.TotalSeconds)" value="@Start?.ToString(@"hh\:mm")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
+                              bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
+                              text-gray-900 dark:text-white @GetFocusRingClass()" @onchange="HandleStartChange" />
+            </div>
+        </div>
+
+        @* Separator *@
+        <div class="hidden sm:flex items-center justify-center px-2">
+            <i class="fa-solid fa-arrow-right text-gray-400"></i>
+        </div>
+
+        @* End Time *@
+        <div class="flex-1">
+            <div class="relative">
+                <i
+                    class="fa-regular fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+                <input type="time" min="@Start?.ToString(@"hh\:mm")" max="@Max?.ToString(@"hh\:mm")"
+                    step="@((int)Step.TotalSeconds)" value="@End?.ToString(@"hh\:mm")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
+                              bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
+                              text-gray-900 dark:text-white @GetFocusRingClass()" @onchange="HandleEndChange" />
+            </div>
+        </div>
+    </div>
+
+    @* Duration Display *@
+    @if (ShowDuration && Start.HasValue && End.HasValue)
+    {
+        <div class="mt-2 text-center">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-full @GetDurationBgClass()">
+                <i class="fa-solid fa-hourglass-half text-xs"></i>
+                <span>@GetDurationText()</span>
+            </span>
+        </div>
+    }
+
+    @* Quick Presets *@
+    @if (ShowPresets)
+    {
+        <div class="mt-3 flex flex-wrap gap-2">
+            <button type="button" class="@GetPresetClass("morning")" @onclick='() => ApplyPreset("morning")'>Sabah</button>
+            <button type="button" class="@GetPresetClass("noon")" @onclick='() => ApplyPreset("noon")'>Öğle</button>
+            <button type="button" class="@GetPresetClass("afternoon")" @onclick='() => ApplyPreset("afternoon")'>Öğleden
+                Sonra</button>
+            <button type="button" class="@GetPresetClass("evening")" @onclick='() => ApplyPreset("evening")'>Akşam</button>
+            <button type="button" class="@GetPresetClass("work")" @onclick='() => ApplyPreset("work")'>Mesai Saati</button>
+            <button type="button" class="@GetPresetClass("allday")" @onclick='() => ApplyPreset("allday")'>Tüm Gün</button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public TimeSpan? Min { get; set; } = TimeSpan.Zero;
+    [Parameter] public TimeSpan? Max { get; set; } = new TimeSpan(23, 59, 59);
+    [Parameter] public TimeSpan Step { get; set; } = TimeSpan.FromMinutes(15);
+    [Parameter] public TimeSpan? Start { get; set; }
+    [Parameter] public TimeSpan? End { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool ShowDuration { get; set; } = true;
+    [Parameter] public bool ShowPresets { get; set; } = true;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<RangeChangedEventArgs<TimeSpan?>> OnRangeChanged { get; set; }
+
+    private string _activePreset = "";
+
+    private async Task HandleStartChange(ChangeEventArgs e)
+    {
+        if (TimeSpan.TryParse(e.Value?.ToString(), out var value))
+        {
+            Start = value;
+            _activePreset = "";
+            await NotifyChange();
+        }
+    }
+
+    private async Task HandleEndChange(ChangeEventArgs e)
+    {
+        if (TimeSpan.TryParse(e.Value?.ToString(), out var value))
+        {
+            End = value;
+            _activePreset = "";
+            await NotifyChange();
+        }
+    }
+
+    private async Task ApplyPreset(string preset)
+    {
+        _activePreset = preset;
+
+        (Start, End) = preset switch
+        {
+            "morning" => (new TimeSpan(6, 0, 0), new TimeSpan(12, 0, 0)),
+            "noon" => (new TimeSpan(11, 0, 0), new TimeSpan(14, 0, 0)),
+            "afternoon" => (new TimeSpan(12, 0, 0), new TimeSpan(18, 0, 0)),
+            "evening" => (new TimeSpan(18, 0, 0), new TimeSpan(23, 0, 0)),
+            "work" => (new TimeSpan(9, 0, 0), new TimeSpan(18, 0, 0)),
+            "allday" => (TimeSpan.Zero, new TimeSpan(23, 59, 0)),
+            _ => (Start, End)
+        };
+
+        await NotifyChange();
+    }
+
+    private async Task NotifyChange()
+    {
+        await OnRangeChanged.InvokeAsync(new RangeChangedEventArgs<TimeSpan?>
+        {
+            Start = Start,
+            End = End,
+            Min = Min,
+            Max = Max
+        });
+    }
+
+    private string GetDurationText()
+    {
+        if (!Start.HasValue || !End.HasValue) return "";
+        var duration = End.Value - Start.Value;
+        if (duration.TotalMinutes < 0) duration = duration.Add(TimeSpan.FromHours(24));
+
+        if (duration.TotalHours >= 1)
+        {
+            var hours = (int)duration.TotalHours;
+            var minutes = duration.Minutes;
+            return minutes > 0 ? $"{hours} saat {minutes} dk" : $"{hours} saat";
+        }
+        return $"{(int)duration.TotalMinutes} dakika";
+    }
+
+    private string GetFocusRingClass() => Color switch
+    {
+        BwColor.Primary => "focus:ring-blue-500/30 focus:border-blue-500",
+        BwColor.Success => "focus:ring-green-500/30 focus:border-green-500",
+        BwColor.Danger => "focus:ring-red-500/30 focus:border-red-500",
+        BwColor.Warning => "focus:ring-yellow-500/30 focus:border-yellow-500",
+        BwColor.Info => "focus:ring-cyan-500/30 focus:border-cyan-500",
+        _ => "focus:ring-blue-500/30 focus:border-blue-500"
+    };
+
+    private string GetDurationBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+        BwColor.Warning => "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
+        _ => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+    };
+
+    private string GetPresetClass(string preset)
+    {
+        var baseClass = "px-2.5 py-1 text-xs rounded-md transition-colors ";
+        if (_activePreset == preset)
+        {
+            return baseClass + (Color switch
+            {
+                BwColor.Primary => "bg-blue-500 text-white",
+                BwColor.Success => "bg-green-500 text-white",
+                BwColor.Danger => "bg-red-500 text-white",
+                _ => "bg-blue-500 text-white"
+            });
+        }
+        return baseClass + "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600";
+    }
+}

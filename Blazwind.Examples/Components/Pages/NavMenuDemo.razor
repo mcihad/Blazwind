@@ -1,0 +1,231 @@
+@page "/components/navmenu"
+
+<PageTitle>NavMenu Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Navigation Menu" Description="Flexible and customizable components for side menu navigation."
+            Icon="fa-solid fa-bars" Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Navigation menu with default style" Icon="fa-solid fa-list"
+            Color="BwColor.Primary">
+        <BwRow Wrap="true">
+            <BwColumn Span="12" Md="6">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-80 overflow-hidden">
+                    <BwNavMenu>
+                        <Header>
+                            <BwNavHeader Title="Demo App" Subtitle="v1.0" Icon="fa-solid fa-rocket"/>
+                        </Header>
+                        <ChildContent>
+                            <BwNavMenuGroup Title="Main Menu" Icon="fa-solid fa-home" DefaultExpanded="true">
+                                <BwNavMenuItem Label="Home" Href="components/navmenu" Icon="fa-solid fa-house"
+                                               Match="NavLinkMatch.All"/>
+                                <BwNavMenuItem Label="Settings" Href="#settings" Icon="fa-solid fa-gear"/>
+                            </BwNavMenuGroup>
+                            <BwNavMenuGroup Title="Reports" Icon="fa-solid fa-chart-bar">
+                                <BwNavMenuItem Label="Daily" Href="#daily" Icon="fa-solid fa-calendar-day"/>
+                                <BwNavMenuItem Label="Weekly" Href="#weekly" Icon="fa-solid fa-calendar-week"
+                                               Badge="New"/>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Usage</h4>
+                    <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto"><code>&lt;BwNavMenu&gt;
+  &lt;Header&gt;
+    &lt;BwNavHeader Title="App" /&gt;
+  &lt;/Header&gt;
+  &lt;ChildContent&gt;
+    &lt;BwNavMenuGroup Title="Menu"&gt;
+      &lt;BwNavMenuItem Label="Page" Href="/page" /&gt;
+    &lt;/BwNavMenuGroup&gt;
+  &lt;/ChildContent&gt;
+&lt;/BwNavMenu&gt;</code></pre>
+                </div>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Width Variations *@
+    <BwCard Title="Width Settings" Subtitle="Different widths with Width parameter" Icon="fa-solid fa-arrows-left-right"
+            Color="BwColor.Info">
+        <BwRow Wrap="true" Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="4">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">w-48 (192px)</p>
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-48 overflow-hidden">
+                    <BwNavMenu Width="w-48">
+                        <ChildContent>
+                            <BwNavMenuGroup Title="Narrow Menu" Icon="fa-solid fa-compress" DefaultExpanded="true">
+                                <BwNavMenuItem Label="Item 1" Href="#" Icon="fa-solid fa-circle"/>
+                                <BwNavMenuItem Label="Item 2" Href="#" Icon="fa-solid fa-circle"/>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">w-64 (256px - Default)</p>
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-48 overflow-hidden">
+                    <BwNavMenu Width="w-64">
+                        <ChildContent>
+                            <BwNavMenuGroup Title="Standard Menu" Icon="fa-solid fa-bars" DefaultExpanded="true">
+                                <BwNavMenuItem Label="Item 1" Href="#" Icon="fa-solid fa-circle"/>
+                                <BwNavMenuItem Label="Item 2" Href="#" Icon="fa-solid fa-circle"/>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">w-80 (320px)</p>
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-48 overflow-hidden">
+                    <BwNavMenu Width="w-80">
+                        <ChildContent>
+                            <BwNavMenuGroup Title="Wide Menu" Icon="fa-solid fa-expand" DefaultExpanded="true">
+                                <BwNavMenuItem Label="Item 1" Href="#" Icon="fa-solid fa-circle"/>
+                                <BwNavMenuItem Label="Item 2" Href="#" Icon="fa-solid fa-circle"/>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Custom Group Header Template *@
+    <BwCard Title="Custom Group Header" Subtitle="Customized group headers with HeaderTemplate"
+            Icon="fa-solid fa-paint-brush" Color="BwColor.Warning">
+        <BwRow Wrap="true">
+            <BwColumn Span="12" Md="6">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-64 overflow-hidden">
+                    <BwNavMenu>
+                        <ChildContent>
+                            <BwNavMenuGroup Title="Custom Header" Icon="fa-solid fa-star" DefaultExpanded="true">
+                                <HeaderTemplate Context="ctx">
+                                    <button
+                                        class="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer"
+                                        @onclick="() => ctx?.Toggle()">
+                                        <i class="@ctx?.Icon text-lg"></i>
+                                        <span class="font-bold flex-1 text-left">@ctx?.Title</span>
+                                        <i
+                                            class="fa-solid @(ctx?.IsExpanded == true ? "fa-chevron-up" : "fa-chevron-down") text-sm"></i>
+                                    </button>
+                                </HeaderTemplate>
+                                <ChildContent>
+                                    <BwNavMenuItem Label="Sub Item 1" Href="#" Icon="fa-solid fa-check"/>
+                                    <BwNavMenuItem Label="Sub Item 2" Href="#" Icon="fa-solid fa-check"/>
+                                </ChildContent>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">HeaderTemplate Usage</h4>
+                    <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto"><code>&lt;BwNavMenuGroup Title="Group"&gt;
+                            &lt;HeaderTemplate Context="ctx"&gt;
+                            &lt;button @@onclick="ctx.Toggle"&gt;
+                            @@ctx.Title (@@ctx.IsExpanded)
+                            &lt;/button&gt;
+                            &lt;/HeaderTemplate&gt;
+                            &lt;/BwNavMenuGroup&gt;</code></pre>
+                </div>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Custom Item Template *@
+    <BwCard Title="Custom Menu Item" Subtitle="Customized menu items with ItemTemplate"
+            Icon="fa-solid fa-wand-magic-sparkles" Color="BwColor.Success">
+        <BwRow Wrap="true">
+            <BwColumn Span="12" Md="6">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-64 overflow-hidden">
+                    <BwNavMenu>
+                        <ChildContent>
+                            <BwNavMenuGroup Title="Custom Items" Icon="fa-solid fa-sparkles" DefaultExpanded="true">
+                                <BwNavMenuItem Label="Custom Style" Href="#" Icon="fa-solid fa-gem">
+                                    <ItemTemplate Context="ctx">
+                                        <a href="@ctx.Href"
+                                           class="flex items-center gap-3 px-4 py-3 mx-2 my-1 bg-gradient-to-r @(ctx.IsActive ? "from-emerald-500 to-teal-500 text-white" : "from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 text-emerald-700 dark:text-emerald-300") rounded-xl shadow-sm hover:shadow-md transition-all">
+                                            <i class="@ctx.Icon text-lg"></i>
+                                            <span class="font-medium">@ctx.Label</span>
+                                            @if (ctx.IsActive)
+                                            {
+                                                <span
+                                                    class="ml-auto px-2 py-0.5 bg-white/20 rounded-full text-xs">Active</span>
+                                            }
+                                        </a>
+                                    </ItemTemplate>
+                                </BwNavMenuItem>
+                                <BwNavMenuItem Label="Normal Style" Href="#" Icon="fa-solid fa-circle"/>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">ItemTemplate Usage</h4>
+                    <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto"><code>&lt;BwNavMenuItem Label="Page"&gt;
+                            &lt;ItemTemplate Context="ctx"&gt;
+                            &lt;a href="@@ctx.Href"
+                            class="@@(ctx.IsActive ? "active" : "")"&gt;
+                            @@ctx.Label
+                            &lt;/a&gt;
+                            &lt;/ItemTemplate&gt;
+                            &lt;/BwNavMenuItem&gt;</code></pre>
+                </div>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Global Templates *@
+    <BwCard Title="Global Templates" Subtitle="Applying templates to all child elements via BwNavMenu"
+            Icon="fa-solid fa-layer-group" Color="BwColor.Secondary">
+        <BwRow Wrap="true">
+            <BwColumn Span="12" Md="6">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg h-72 overflow-hidden">
+                    <BwNavMenu>
+                        <ItemTemplate Context="ctx">
+                            <a href="@ctx.Href"
+                               class="flex items-center gap-2 px-3 py-2 mx-1 my-0.5 rounded-lg border-l-4 @(ctx.IsActive ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" : "border-transparent hover:border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400") transition-all">
+                                @if (!string.IsNullOrEmpty(ctx.Icon))
+                                {
+                                    <i class="@ctx.Icon w-4 text-sm"></i>
+                                }
+                                <span>@ctx.Label</span>
+                            </a>
+                        </ItemTemplate>
+                        <ChildContent>
+                            <BwNavMenuGroup Title="All Items Custom" Icon="fa-solid fa-wand-sparkles"
+                                            DefaultExpanded="true">
+                                <BwNavMenuItem Label="Page 1" Href="components/navmenu" Icon="fa-solid fa-file"
+                                               Match="NavLinkMatch.All"/>
+                                <BwNavMenuItem Label="Page 2" Href="#page2" Icon="fa-solid fa-file"/>
+                                <BwNavMenuItem Label="Page 3" Href="#page3" Icon="fa-solid fa-file"/>
+                            </BwNavMenuGroup>
+                        </ChildContent>
+                    </BwNavMenu>
+                </div>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Global ItemTemplate</h4>
+                    <pre class="text-xs bg-gray-900 text-gray-100 p-3 rounded overflow-x-auto"><code>&lt;BwNavMenu&gt;
+                            &lt;ItemTemplate Context="ctx"&gt;
+                            &lt;!-- Applied to all BwNavMenuItem --&gt;
+                            &lt;a href="@@ctx.Href"&gt;@@ctx.Label&lt;/a&gt;
+                            &lt;/ItemTemplate&gt;
+                            &lt;ChildContent&gt;
+                            ...
+                            &lt;/ChildContent&gt;
+                            &lt;/BwNavMenu&gt;</code></pre>
+                </div>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+</BwColumn>

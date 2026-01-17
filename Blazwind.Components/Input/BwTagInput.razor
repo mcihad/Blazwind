@@ -1,0 +1,272 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Button
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+
+@{
+    var hasError = !IsValid || !string.IsNullOrEmpty(ErrorMessage) || _validationMessages.Any();
+    var hasLabel = !string.IsNullOrEmpty(Label);
+    var hasHelper = !string.IsNullOrEmpty(HelperText);
+    var displayError = ErrorMessage ?? _validationMessages.FirstOrDefault();
+    
+    var sizeClass = Size switch
+    {
+        BwSize.Small => "p-1.5 min-h-[32px] text-xs gap-1.5",
+        BwSize.Large => "p-4 min-h-[56px] text-base gap-3",
+        _ => "p-3 min-h-[42px] text-sm gap-2"
+    };
+    
+    var tagSizeClass = Size switch
+    {
+        BwSize.Small => "px-1.5 py-0.5 text-xs",
+        BwSize.Large => "px-3 py-1.5 text-sm",
+        _ => "px-2.5 py-1 text-sm"
+    };
+    
+    var marginClass = EffectiveDensity switch
+    {
+        BwFormDensity.Compact => "mb-2",
+        BwFormDensity.Relaxed => "mb-6",
+        _ => "mb-4"
+    };
+    
+    var labelSpacingClass = EffectiveDensity switch
+    {
+        BwFormDensity.Compact => "mb-0.5",
+        BwFormDensity.Relaxed => "mb-2",
+        _ => "mb-1.5"
+    };
+    
+    var borderClass = hasError 
+        ? "border-red-500 focus-within:border-red-500 focus-within:ring-red-500/20" 
+        : "border-gray-300 dark:border-gray-700 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20";
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @if (hasLabel)
+    {
+        <div class="flex items-center gap-1 @labelSpacingClass">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                @Label
+                @if (IsRequired)
+                {
+                    <span class="text-red-500 ml-0.5">*</span>
+                }
+            </label>
+            @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+            {
+                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+            }
+        </div>
+    }
+    
+    <div class="flex flex-wrap border rounded transition-colors duration-200 outline-none @(IsDisabled ? "bg-gray-50 dark:bg-gray-900 text-gray-400 border-gray-200 dark:border-gray-700 cursor-not-allowed" : "bg-white dark:bg-gray-800 " + borderClass) @sizeClass">
+        @* Tags *@
+        @foreach (var tag in Tags)
+        {
+            var tagValue = tag;
+            <span class="inline-flex items-center gap-1 @tagSizeClass bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 rounded">
+                @tag
+                @if (!IsDisabled && !IsReadOnly)
+                {
+                    <button type="button" 
+                            class="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100 hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full w-4 h-4 flex items-center justify-center transition-colors"
+                            @onclick="() => RemoveTag(tagValue)"
+                            @onclick:stopPropagation="true">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                }
+            </span>
+        }
+        
+        @* Input *@
+        @if (!IsDisabled && !IsReadOnly && (!MaxTags.HasValue || Tags.Count < MaxTags))
+        {
+            <input type="text"
+                   class="flex-1 min-w-[120px] border-0 p-0 text-sm bg-transparent appearance-none text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                   style="outline: none; box-shadow: none;"
+                   placeholder="@(Tags.Count == 0 ? Placeholder : "")"
+                   @bind="_inputValue"
+                   @bind:event="oninput"
+                   @onkeydown="HandleKeyDown" />
+        }
+    </div>
+    
+    <div class="flex justify-between items-center mt-1">
+        @if (hasError)
+        {
+            <p class="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                @displayError
+            </p>
+        }
+        else if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+        {
+            <p class="text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        }
+        else
+        {
+            <span></span>
+        }
+        
+        @if (MaxTags.HasValue)
+        {
+            <span class="text-xs @(Tags.Count >= MaxTags ? "text-red-500 font-medium" : "text-gray-400")">
+                @Tags.Count / @MaxTags
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    #region Cascading Parameters
+    
+    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
+    [CascadingParameter] private BwHelpTextMode? CascadedHelpTextMode { get; set; }
+    
+    #endregion
+
+    #region Parameters
+    
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; } = "Etiket ekle...";
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>Validation state</summary>
+    [Parameter] public bool IsValid { get; set; } = true;
+    
+    /// <summary>Error message</summary>
+    [Parameter] public string? ErrorMessage { get; set; }
+    
+    /// <summary>Help text display mode</summary>
+    [Parameter] public BwHelpTextMode? HelpTextMode { get; set; }
+    
+    /// <summary>Form density</summary>
+    [Parameter] public BwFormDensity? Density { get; set; }
+    
+    /// <summary>Required field indicator</summary>
+    [Parameter] public bool IsRequired { get; set; }
+    
+    /// <summary>List of tags</summary>
+    [Parameter] public List<string> Tags { get; set; } = new();
+    [Parameter] public EventCallback<List<string>> TagsChanged { get; set; }
+    
+    /// <summary>Maximum number of tags</summary>
+    [Parameter] public int? MaxTags { get; set; }
+    
+    /// <summary>Allow duplicate tags</summary>
+    [Parameter] public bool AllowDuplicates { get; set; }
+    
+    /// <summary>Disabled state</summary>
+    [Parameter] public bool IsDisabled { get; set; }
+    
+    /// <summary>Read-only state</summary>
+    [Parameter] public bool IsReadOnly { get; set; }
+    
+    /// <summary>Keys that trigger tag addition</summary>
+    [Parameter] public string[] TriggerKeys { get; set; } = new[] { "Enter", "Tab", "," };
+    
+    [Parameter] public EventCallback<string> OnTagAdded { get; set; }
+    [Parameter] public EventCallback<string> OnTagRemoved { get; set; }
+    
+    /// <summary>Fired when tags change</summary>
+    [Parameter] public EventCallback<List<string>> OnChange { get; set; }
+    
+    /// <summary>Expression for validation binding</summary>
+    [Parameter] public Expression<Func<List<string>>>? For { get; set; }
+    
+    #endregion
+
+    #region Private Fields
+    
+    private FieldIdentifier _fieldIdentifier;
+    private IEnumerable<string> _validationMessages = Enumerable.Empty<string>();
+    private string _inputValue = "";
+    
+    #endregion
+
+    #region Computed Properties
+    
+    private BwFormDensity EffectiveDensity => Density ?? CascadedDensity ?? BwFormDensity.Normal;
+    private BwHelpTextMode EffectiveHelpTextMode => HelpTextMode ?? CascadedHelpTextMode ?? BwHelpTextMode.Inline;
+    
+    #endregion
+
+    #region Lifecycle
+    
+    protected override void OnInitialized()
+    {
+        if (CascadedEditContext != null && For != null)
+        {
+            _fieldIdentifier = FieldIdentifier.Create(For);
+            CascadedEditContext.OnValidationStateChanged += HandleValidationStateChanged;
+        }
+    }
+    
+    private void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
+    {
+        _validationMessages = CascadedEditContext!.GetValidationMessages(_fieldIdentifier);
+        StateHasChanged();
+    }
+    
+    #endregion
+
+    #region Event Handlers
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (TriggerKeys.Contains(e.Key) && !string.IsNullOrWhiteSpace(_inputValue))
+        {
+            await AddTag(_inputValue.Trim().TrimEnd(','));
+        }
+        else if (e.Key == "Backspace" && string.IsNullOrEmpty(_inputValue) && Tags.Count > 0)
+        {
+            await RemoveTag(Tags.Last());
+        }
+    }
+
+    private async Task AddTag(string tag)
+    {
+        if (string.IsNullOrWhiteSpace(tag)) return;
+        if (!AllowDuplicates && Tags.Contains(tag)) return;
+        if (MaxTags.HasValue && Tags.Count >= MaxTags) return;
+        
+        Tags.Add(tag);
+        _inputValue = "";
+        
+        await TagsChanged.InvokeAsync(Tags);
+        await OnTagAdded.InvokeAsync(tag);
+        await OnChange.InvokeAsync(Tags);
+        
+        if (CascadedEditContext != null && For != null)
+        {
+            CascadedEditContext.NotifyFieldChanged(_fieldIdentifier);
+        }
+    }
+
+    private async Task RemoveTag(string tag)
+    {
+        if (Tags.Remove(tag))
+        {
+            await TagsChanged.InvokeAsync(Tags);
+            await OnTagRemoved.InvokeAsync(tag);
+            await OnChange.InvokeAsync(Tags);
+        }
+    }
+    
+    #endregion
+    
+    public void Dispose()
+    {
+        if (CascadedEditContext != null)
+        {
+            CascadedEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
+        }
+    }
+}

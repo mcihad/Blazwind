@@ -1,0 +1,195 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@using System.Globalization
+@inherits BwBaseInput<DateTime?>
+
+@{
+    var sizeClass = GetSizeClass();
+    var baseClass = GetBaseInputClass();
+    var stateClass = GetStateClass();
+    var disabledClass = GetDisabledClass();
+    var marginClass = GetDensityMarginClass();
+    var labelSpacingClass = GetLabelSpacingClass();
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @switch (EffectiveLabelPosition)
+    {
+        case BwLabelPosition.Top:
+            @if (HasLabel)
+            {
+                <div class="flex items-center gap-1 @labelSpacingClass">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                    @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                    {
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    }
+                </div>
+            }
+            <div class="relative">
+                <input type="date"
+                       class="@baseClass @sizeClass @stateClass @disabledClass"
+                       value="@(Value?.ToString("yyyy-MM-dd"))"
+                       min="@(Min?.ToString("yyyy-MM-dd"))"
+                       max="@(Max?.ToString("yyyy-MM-dd"))"
+                       disabled="@IsDisabled"
+                       readonly="@IsReadOnly"
+                       @onchange="HandleDateChange"
+                       @onfocus="HandleFocusEvent"
+                       @onblur="HandleBlurEvent" />
+            </div>
+            break;
+            
+        case BwLabelPosition.Left:
+            <div class="flex items-start gap-3">
+                @if (HasLabel)
+                {
+                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                            @Label
+                            @if (IsRequired)
+                            {
+                                <span class="text-red-500 ml-0.5">*</span>
+                            }
+                        </label>
+                        @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                        {
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        }
+                    </div>
+                }
+                <div class="flex-1">
+                    <input type="date"
+                           class="@baseClass @sizeClass @stateClass @disabledClass"
+                           value="@(Value?.ToString("yyyy-MM-dd"))"
+                           min="@(Min?.ToString("yyyy-MM-dd"))"
+                           max="@(Max?.ToString("yyyy-MM-dd"))"
+                           disabled="@IsDisabled"
+                           readonly="@IsReadOnly"
+                           @onchange="HandleDateChange"
+                           @onfocus="HandleFocusEvent"
+                           @onblur="HandleBlurEvent" />
+                </div>
+            </div>
+            break;
+            
+        case BwLabelPosition.Floating:
+            <div class="relative">
+                <input type="date"
+                       class="@baseClass @sizeClass @stateClass @disabledClass"
+                       value="@(Value?.ToString("yyyy-MM-dd"))"
+                       min="@(Min?.ToString("yyyy-MM-dd"))"
+                       max="@(Max?.ToString("yyyy-MM-dd"))"
+                       disabled="@IsDisabled"
+                       readonly="@IsReadOnly"
+                       @onchange="HandleDateChange"
+                       @onfocus="HandleFocusEvent"
+                       @onblur="HandleBlurEvent" />
+                @if (HasLabel)
+                {
+                    <label class="absolute left-3 transition-all duration-200 pointer-events-none
+                                  @(Value.HasValue || IsFocused 
+                                      ? "top-0 -translate-y-1/2 text-xs bg-white dark:bg-gray-800 px-1 text-blue-600 dark:text-blue-400" 
+                                      : "top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400")">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                }
+                @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                {
+                    <div class="absolute right-10 top-1/2 -translate-y-1/2">
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    </div>
+                }
+            </div>
+            break;
+            
+        default:
+            <input type="date"
+                   class="@baseClass @sizeClass @stateClass @disabledClass"
+                   value="@(Value?.ToString("yyyy-MM-dd"))"
+                   min="@(Min?.ToString("yyyy-MM-dd"))"
+                   max="@(Max?.ToString("yyyy-MM-dd"))"
+                   disabled="@IsDisabled"
+                   readonly="@IsReadOnly"
+                   @onchange="HandleDateChange"
+                   @onfocus="HandleFocusEvent"
+                   @onblur="HandleBlurEvent" />
+            break;
+    }
+    
+    @* Error/Helper Messages *@
+    @if (HasError)
+    {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @DisplayError
+        </p>
+    }
+    else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+    {
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+    }
+</div>
+
+@code {
+    /// <summary>Minimum selectable date</summary>
+    [Parameter] public DateTime? Min { get; set; }
+    
+    /// <summary>Maximum selectable date</summary>
+    [Parameter] public DateTime? Max { get; set; }
+    
+    /// <summary>Culture for date formatting (default: Turkish)</summary>
+    [Parameter] public CultureInfo Culture { get; set; } = new CultureInfo("tr-TR");
+    
+    /// <summary>Date format string</summary>
+    [Parameter] public string Format { get; set; } = "dd.MM.yyyy";
+
+    private async Task HandleDateChange(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var date))
+        {
+            Value = date;
+        }
+        else
+        {
+            Value = null;
+        }
+        
+        await ValueChanged.InvokeAsync(Value);
+        await OnChange.InvokeAsync(Value);
+        
+        if (CascadedEditContext != null && For != null)
+        {
+            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+        }
+    }
+    
+    private async Task HandleFocusEvent(FocusEventArgs e)
+    {
+        IsFocused = true;
+        await HandleFocus(e);
+    }
+
+    private async Task HandleBlurEvent(FocusEventArgs e)
+    {
+        IsFocused = false;
+        await HandleBlur(e);
+    }
+    
+    /// <summary>Get formatted date string</summary>
+    public string GetFormattedDate()
+    {
+        return Value?.ToString(Format, Culture) ?? string.Empty;
+    }
+}

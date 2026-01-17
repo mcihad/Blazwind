@@ -1,0 +1,70 @@
+@page "/charts/themeriver"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>ThemeRiver - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="ThemeRiver (Tema Nehri)" 
+            Description="Zaman içinde değişen kategorik verileri göstermek için ideal grafik tipi."
+            Icon="fa-solid fa-water"
+            Color="BwColor.Info" />
+
+    @* Başvuru Türleri *@
+    <BwCard Title="Aylık Başvuru Türleri" Subtitle="Başvuru türlerinin zaman içindeki değişimi." Icon="fa-solid fa-file-alt" Color="BwColor.Primary">
+        <BwChart Options="_applicationRiver" Height="400px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _applicationRiver = new
+    {
+        title = new { text = "Başvuru Türleri Akışı (2025)", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Axis, axisPointer = new { type = ChartAxisPointerType.Line } },
+        legend = new { top = ChartPosition.Bottom },
+        singleAxis = new { type = "time", bottom = "15%" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.ThemeRiver,
+                data = new object[]
+                {
+                    // [tarih, değer, kategori]
+                    new object[] { "2025/01/01", 120, "Dilekçe" },
+                    new object[] { "2025/01/01", 80, "İmar" },
+                    new object[] { "2025/01/01", 50, "Ruhsat" },
+                    new object[] { "2025/01/01", 30, "Şikayet" },
+                    
+                    new object[] { "2025/02/01", 150, "Dilekçe" },
+                    new object[] { "2025/02/01", 90, "İmar" },
+                    new object[] { "2025/02/01", 60, "Ruhsat" },
+                    new object[] { "2025/02/01", 40, "Şikayet" },
+                    
+                    new object[] { "2025/03/01", 180, "Dilekçe" },
+                    new object[] { "2025/03/01", 120, "İmar" },
+                    new object[] { "2025/03/01", 80, "Ruhsat" },
+                    new object[] { "2025/03/01", 35, "Şikayet" },
+                    
+                    new object[] { "2025/04/01", 200, "Dilekçe" },
+                    new object[] { "2025/04/01", 150, "İmar" },
+                    new object[] { "2025/04/01", 100, "Ruhsat" },
+                    new object[] { "2025/04/01", 45, "Şikayet" },
+                    
+                    new object[] { "2025/05/01", 220, "Dilekçe" },
+                    new object[] { "2025/05/01", 180, "İmar" },
+                    new object[] { "2025/05/01", 120, "Ruhsat" },
+                    new object[] { "2025/05/01", 50, "Şikayet" },
+                    
+                    new object[] { "2025/06/01", 250, "Dilekçe" },
+                    new object[] { "2025/06/01", 200, "İmar" },
+                    new object[] { "2025/06/01", 150, "Ruhsat" },
+                    new object[] { "2025/06/01", 60, "Şikayet" }
+                }
+            }
+        },
+        color = new[] { "#3b82f6", "#10b981", "#f59e0b", "#ef4444" }
+    };
+}

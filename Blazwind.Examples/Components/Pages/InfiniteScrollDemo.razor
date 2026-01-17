@@ -1,0 +1,117 @@
+@page "/components/infinite-scroll"
+@using Blazwind.Components.Scroll
+
+<PageTitle>Infinite Scroll - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Infinite Scroll" Description="Automatically loads more content when approaching the page bottom."
+            Icon="fa-solid fa-arrows-down-to-line" Color="BwColor.Info"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="More items load as you scroll down" Icon="fa-solid fa-spinner"
+            Color="BwColor.Success">
+        <div style="height: 400px; overflow: auto;">
+            <BwInfiniteScroll OnLoadMore="@LoadMore" HasMore="@_hasMore">
+                @foreach (var item in _items)
+                {
+                    <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+                            @item.Id
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900 dark:text-white">@item.Title</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">@item.Description</div>
+                        </div>
+                        <div class="text-xs text-gray-400">@item.CreatedAt.ToString("HH:mm")</div>
+                    </div>
+                }
+            </BwInfiniteScroll>
+        </div>
+
+        <div class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            Total loaded: <strong>@_items.Count</strong> items
+        </div>
+    </BwCard>
+
+    @* Features *@
+    <BwCard Title="Features" Subtitle="Infinite scroll features" Icon="fa-solid fa-list-check" Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid sm:grid-cols-2 lg:grid-cols-4">
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-eye text-2xl text-blue-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">IntersectionObserver</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Modern browser API</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-spinner text-2xl text-green-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Loading Indicator</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Customizable template</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-flag-checkered text-2xl text-purple-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">End Control</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Controlled by HasMore</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-ruler text-2xl text-orange-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Threshold Distance</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Trigger distance</p>
+            </div>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<FeedItem> _items = new();
+    private bool _hasMore = true;
+    private int _page;
+    private const int PageSize = 20;
+    private const int MaxItems = 100;
+
+    protected override void OnInitialized()
+    {
+        LoadInitialItems();
+    }
+
+    private void LoadInitialItems()
+    {
+        _items = GenerateItems(0, PageSize);
+        _page = 1;
+    }
+
+    private async Task LoadMore()
+    {
+        await Task.Delay(500); // Simulate API call
+
+        var newItems = GenerateItems(_page * PageSize, PageSize);
+        _items.AddRange(newItems);
+        _page++;
+
+        if (_items.Count >= MaxItems)
+        {
+            _hasMore = false;
+        }
+    }
+
+    private List<FeedItem> GenerateItems(int startIndex, int count)
+    {
+        return Enumerable.Range(startIndex + 1, count)
+            .Select(i => new FeedItem
+            {
+                Id = i,
+                Title = $"Post #{i}",
+                Description = $"This is the content of post {i}. Sample text.",
+                CreatedAt = DateTime.Now.AddMinutes(-i * 5)
+            })
+            .ToList();
+    }
+
+    private class FeedItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+    }
+
+}

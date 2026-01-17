@@ -1,0 +1,127 @@
+@page "/charts/chord"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Chord Diagram - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Chord Diagram" 
+            Description="ECharts 6.0+ ile gelen Chord diyagramı - varlıklar arasındaki akış ve ilişkileri gösterir."
+            Icon="fa-solid fa-circle-nodes"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Departmanlar Arası İletişim" Subtitle="Chord diyagramı ile departmanlar arası iletişim hacmi." Icon="fa-solid fa-arrows-spin" Color="BwColor.Primary">
+        <BwChart Options="_departmentChord" Height="600px" />
+    </BwCard>
+
+    <BwCard Title="Belediye Hizmetleri Akışı" Subtitle="Hizmet talepleri ve yönlendirmeleri." Icon="fa-solid fa-share-nodes" Color="BwColor.Info">
+        <BwChart Options="_serviceChord" Height="600px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _departmentChord = new
+    {
+        title = new { text = "Departmanlar Arası İletişim", left = ChartPosition.Center },
+        tooltip = new 
+        { 
+            trigger = ChartTooltipTrigger.Item,
+            formatter = "{a} <br/>{b}: {c}"
+        },
+        legend = new { top = ChartPosition.Bottom, data = new[] { "Yazı İşleri", "İmar", "Fen İşleri", "Mali Hizmetler", "Bilgi İşlem", "İnsan Kaynakları" } },
+        series = new object[]
+        {
+            new
+            {
+                name = "İletişim",
+                type = ChartSeriesType.Sankey,
+                layout = "none",
+                emphasis = new { focus = ChartEmphasisFocus.Adjacency },
+                data = new object[]
+                {
+                    new { name = "Yazı İşleri" },
+                    new { name = "İmar" },
+                    new { name = "Fen İşleri" },
+                    new { name = "Mali Hizmetler" },
+                    new { name = "Bilgi İşlem" },
+                    new { name = "İnsan Kaynakları" },
+                    new { name = "Başkanlık" }
+                },
+                links = new object[]
+                {
+                    new { source = "Yazı İşleri", target = "Başkanlık", value = 150 },
+                    new { source = "İmar", target = "Başkanlık", value = 120 },
+                    new { source = "Fen İşleri", target = "Başkanlık", value = 100 },
+                    new { source = "Mali Hizmetler", target = "Başkanlık", value = 80 },
+                    new { source = "Bilgi İşlem", target = "Başkanlık", value = 60 },
+                    new { source = "İnsan Kaynakları", target = "Başkanlık", value = 40 },
+                    new { source = "İmar", target = "Fen İşleri", value = 90 },
+                    new { source = "Mali Hizmetler", target = "İmar", value = 50 },
+                    new { source = "Bilgi İşlem", target = "Fen İşleri", value = 30 },
+                    new { source = "Yazı İşleri", target = "İnsan Kaynakları", value = 70 }
+                },
+                lineStyle = new { color = "gradient", curveness = 0.5 }
+            }
+        },
+        color = new[] { "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452" }
+    };
+
+    private object _serviceChord = new
+    {
+        title = new { text = "Hizmet Talep Akışı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        series = new object[]
+        {
+            new
+            {
+                name = "Akış",
+                type = ChartSeriesType.Sankey,
+                left = "10%",
+                right = "10%",
+                emphasis = new { focus = ChartEmphasisFocus.Adjacency },
+                data = new object[]
+                {
+                    // Kaynak
+                    new { name = "Vatandaş Başvurusu" },
+                    new { name = "Online Talep" },
+                    new { name = "Telefon" },
+                    // Birimler
+                    new { name = "Çağrı Merkezi" },
+                    new { name = "Zabıta" },
+                    new { name = "Temizlik" },
+                    new { name = "Park Bahçe" },
+                    new { name = "Sosyal Hizmetler" },
+                    // Sonuç
+                    new { name = "Çözümlendi" },
+                    new { name = "Beklemede" }
+                },
+                links = new object[]
+                {
+                    // Kaynaktan merkezlere
+                    new { source = "Vatandaş Başvurusu", target = "Çağrı Merkezi", value = 200 },
+                    new { source = "Online Talep", target = "Çağrı Merkezi", value = 150 },
+                    new { source = "Telefon", target = "Çağrı Merkezi", value = 100 },
+                    // Merkezden birimlere
+                    new { source = "Çağrı Merkezi", target = "Zabıta", value = 120 },
+                    new { source = "Çağrı Merkezi", target = "Temizlik", value = 150 },
+                    new { source = "Çağrı Merkezi", target = "Park Bahçe", value = 100 },
+                    new { source = "Çağrı Merkezi", target = "Sosyal Hizmetler", value = 80 },
+                    // Birimlerden sonuçlara
+                    new { source = "Zabıta", target = "Çözümlendi", value = 100 },
+                    new { source = "Zabıta", target = "Beklemede", value = 20 },
+                    new { source = "Temizlik", target = "Çözümlendi", value = 140 },
+                    new { source = "Temizlik", target = "Beklemede", value = 10 },
+                    new { source = "Park Bahçe", target = "Çözümlendi", value = 85 },
+                    new { source = "Park Bahçe", target = "Beklemede", value = 15 },
+                    new { source = "Sosyal Hizmetler", target = "Çözümlendi", value = 60 },
+                    new { source = "Sosyal Hizmetler", target = "Beklemede", value = 20 }
+                },
+                lineStyle = new { color = "source", curveness = 0.5 },
+                label = new { show = true, fontSize = 12 }
+            }
+        },
+        color = new[] { "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4", "#22c55e", "#eab308", "#14b8a6", "#ef4444" }
+    };
+}

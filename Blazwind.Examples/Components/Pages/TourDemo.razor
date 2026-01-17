@@ -1,0 +1,75 @@
+@page "/components/tour"
+@using Blazwind.Components.Tour
+@inject TourService Tour
+
+<BwHero Title="Guided Tour (Service)" Description="Create step-by-step guided tours for users."
+              Icon="fa-solid fa-route" Color="BwColor.Primary" />
+
+<BwCard Class="mb-8">
+    <div class="flex flex-col gap-4">
+        <p class="text-gray-600">
+            The tour now runs as a <strong>Service</strong> (TourService).
+            You don't need to add any component to the page. Inject the service and call the StartTour method.
+        </p>
+
+        <BwButton Color="BwColor.Primary" Variant="BwVariant.Filled" OnClick="StartTour" Icon="fa-solid fa-play">Start
+            Tour
+        </BwButton>
+    </div>
+</BwCard>
+
+<BwRow Spacing="BwSpacing.Lg">
+    <BwColumn Span="12" Md="6">
+        <BwCard Title="Panel 1" Subtitle="Starting Point" id="tour-demo-step-1">
+            <div class="p-4 bg-gray-50 rounded border border-dashed border-gray-300">
+                <p>This is the <strong>first stop</strong> on the tour.</p>
+            </div>
+        </BwCard>
+    </BwColumn>
+
+    <BwColumn Span="12" Md="6">
+        <BwCard Title="Panel 2" Subtitle="Second Spot" id="tour-demo-step-2">
+            <div class="p-4 bg-gray-50 rounded border border-dashed border-gray-300">
+                <p>This is the <strong>second stop</strong> on the tour.</p>
+            </div>
+        </BwCard>
+    </BwColumn>
+</BwRow>
+
+<div class="mt-8 flex justify-center">
+    <BwButton Variant="BwVariant.Outline" id="tour-demo-step-3">Final Step Button</BwButton>
+</div>
+
+@code {
+
+    private async Task StartTour()
+    {
+        var steps = new List<TourStep>
+        {
+            new()
+            {
+                TargetSelector = "#tour-demo-step-1",
+                Title = "Welcome",
+                Content = "With the Blazwind Tour Service you can easily introduce your application features.",
+                Placement = "right"
+            },
+            new()
+            {
+                TargetSelector = "#tour-demo-step-2",
+                Title = "Features",
+                Content = "You can target any DOM element, and provide title and content for each step.",
+                Placement = "left"
+            },
+            new()
+            {
+                TargetSelector = "#tour-demo-step-3",
+                Title = "Completed",
+                Content = "Your tour has finished successfully!",
+                Placement = "top"
+            }
+        };
+
+        await Tour.StartTour(steps, new TourOptions { SmoothScroll = true });
+    }
+
+}

@@ -1,0 +1,140 @@
+@namespace Blazwind.Components.Affix
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div id="@($"{_elementId}-placeholder")" style="@(_isAffixed ? $"height: {_originalHeight}px;" : "display: none;")">
+</div>
+<div class="@CombineClasses(_isAffixed ? "fixed z-40 transition-none" : "transition-none")"
+    style="@(_isAffixed? GetAffixedStyle() : "") @Style" id="@_elementId" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public int OffsetTop { get; set; } = 0;
+    [Parameter] public int OffsetBottom { get; set; } = 0;
+    [Parameter] public bool UseBottom { get; set; } = false;
+    [Parameter] public string? Target { get; set; }
+
+    [Parameter] public EventCallback<bool> OnChange { get; set; }
+
+    private bool _isAffixed = false;
+    private double _originalHeight = 0;
+    private double _originalWidth = 0;
+    private double _initialTop = 0;
+    private double _initialLeft = 0;
+    private DotNetObjectReference<BwAffix>? _dotNetRef;
+    private string _elementId = "";
+
+    protected override void OnInitialized()
+    {
+        _elementId = Id ?? $"bw-affix-{Guid.NewGuid():N}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+
+            var dimensions = await JS.InvokeAsync<double[]>("eval", $@"
+(function() {{
+var el = document.getElementById('{_elementId}');
+if (el) {{
+var rect = el.getBoundingClientRect();
+return [rect.height, rect.width, rect.top + window.scrollY, rect.left];
+}}
+return [0, 0, 0, 0];
+}})()
+");
+
+            _originalHeight = dimensions[0];
+            _originalWidth = dimensions[1];
+            _initialTop = dimensions[2];
+            _initialLeft = dimensions[3];
+
+            await JS.InvokeVoidAsync("eval", $@"
+(function() {{
+var offsetTop = {OffsetTop};
+var offsetBottom = {OffsetBottom};
+var useBottom = {(UseBottom ? "true" : "false")};
+var initialTop = {_initialTop.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+var initialLeft = {_initialLeft.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+var elementId = '{_elementId}';
+var originalHeight = {_originalHeight.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+var originalWidth = {_originalWidth.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+var lastAffixed = false;
+
+function checkAffix() {{
+var scrollY = window.scrollY;
+var viewportHeight = window.innerHeight;
+var isAffixed = false;
+
+if (useBottom) {{
+isAffixed = (scrollY + viewportHeight) < (document.body.scrollHeight - offsetBottom);
+}} else {{
+isAffixed = scrollY > (initialTop - offsetTop);
+}}
+
+var el = document.getElementById(elementId);
+var placeholder = document.getElementById(elementId + '-placeholder');
+
+if (el && isAffixed !== lastAffixed) {{
+lastAffixed = isAffixed;
+
+if (isAffixed) {{
+el.classList.add('fixed', 'z-40');
+if (useBottom) {{
+el.style.bottom = offsetBottom + 'px';
+}} else {{
+el.style.top = offsetTop + 'px';
+}}
+el.style.left = initialLeft + 'px';
+el.style.width = originalWidth + 'px';
+if (placeholder) placeholder.style.height = originalHeight + 'px';
+if (placeholder) placeholder.style.display = 'block';
+}} else {{
+el.classList.remove('fixed', 'z-40');
+el.style.top = '';
+el.style.bottom = '';
+el.style.left = '';
+el.style.width = '';
+if (placeholder) placeholder.style.display = 'none';
+}}
+}}
+}}
+
+window.addEventListener('scroll', checkAffix);
+checkAffix();
+
+window['bwAffix_{_elementId}_cleanup'] = function() {{
+window.removeEventListener('scroll', checkAffix);
+}};
+}})()
+");
+        }
+    }
+
+    private string GetAffixedStyle()
+    {
+        if (UseBottom)
+        {
+            return $"bottom: {OffsetBottom}px; left: {_initialLeft}px; width: {_originalWidth}px;";
+        }
+        return $"top: {OffsetTop}px; left: {_initialLeft}px; width: {_originalWidth}px;";
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", $"if(window['bwAffix_{_elementId}_cleanup']) window['bwAffix_{_elementId}_cleanup']();");
+        }
+        catch { }
+        _dotNetRef?.Dispose();
+    }
+}

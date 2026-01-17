@@ -1,0 +1,293 @@
+@namespace Blazwind.Components.Tabs
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+
+@inject Blazwind.Components.Services.DialogService DialogService
+@inject IJSRuntime JS
+
+<CascadingValue Value="this">
+    @{
+        var isVertical = Vertical;
+        var containerClass = isVertical ? "flex flex-row gap-6" : "flex flex-col";
+        // If ScrollControls are enabled (Horizontal only), wrapper handles layout.
+        // We pass tabListClass to the scroll container.
+        var tabListClass = GetTabListClass();
+        var contentClass = isVertical ? "flex-1 min-w-0" : "";
+        
+        var showControls = !Vertical && Scrollable && ShowScrollControls;
+    }
+    <div class="@containerClass @Class">
+        @* Tab Headers *@
+        @if (showControls)
+        {
+            <div class="relative group">
+                @* Left Button *@
+                <button type="button" 
+                        @ref="_prevBtnRef"
+                        class="absolute left-0 top-0 bottom-0 z-10 w-8 flex items-center justify-center bg-gradient-to-r from-white via-white dark:from-gray-800 dark:via-gray-800 to-transparent invisible opacity-0 transition-opacity duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                
+                @* Scroll Container *@
+                <div role="tablist" class="@tabListClass" @ref="_tabListRef">
+                    @RenderTabItems()
+                </div>
+                
+                @* Right Button *@
+                <button type="button" 
+                        @ref="_nextBtnRef"
+                        class="absolute right-0 top-0 bottom-0 z-10 w-8 flex items-center justify-center bg-gradient-to-l from-white via-white dark:from-gray-800 dark:via-gray-800 to-transparent invisible opacity-0 transition-opacity duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div role="tablist" class="@tabListClass">
+                @RenderTabItems()
+            </div>
+        }
+        
+        @* Tab Content *@
+        <div role="tabpanel" class="@contentClass">
+            @ChildContent
+        </div>
+    </div>
+</CascadingValue>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Ghost;
+    [Parameter] public bool Vertical { get; set; } = false;
+    [Parameter] public int DefaultActiveIndex { get; set; } = 0;
+    [Parameter] public bool Justified { get; set; } = false;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public bool Scrollable { get; set; }
+    [Parameter] public bool ShowScrollControls { get; set; }
+    [Parameter] public int? MaxTabs { get; set; }
+    [Parameter] public EventCallback<int> ActiveIndexChanged { get; set; }
+
+    private List<BwTabItem> _tabs = new();
+    private int _activeIndex = 0;
+    
+    private ElementReference _tabListRef;
+    private ElementReference _prevBtnRef;
+    private ElementReference _nextBtnRef;
+
+    protected override void OnInitialized()
+    {
+        _activeIndex = DefaultActiveIndex;
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !Vertical && Scrollable && ShowScrollControls)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.Tabs.init", _tabListRef, _prevBtnRef, _nextBtnRef);
+            }
+            catch (JSDisconnectedException) { }
+        }
+    }
+
+    internal void RegisterTab(BwTabItem tab)
+    {
+        if (MaxTabs.HasValue && _tabs.Count >= MaxTabs.Value) return;
+        _tabs.Add(tab);
+        StateHasChanged();
+    }
+
+    internal void UnregisterTab(BwTabItem tab)
+    {
+        var index = _tabs.IndexOf(tab);
+        _tabs.Remove(tab);
+        
+        if (_activeIndex >= _tabs.Count && _tabs.Count > 0)
+        {
+            _activeIndex = _tabs.Count - 1;
+        }
+        StateHasChanged();
+    }
+
+    internal bool IsActive(BwTabItem tab) => _tabs.IndexOf(tab) == _activeIndex;
+
+    public void SetActiveTab(int index)
+    {
+        if (index < 0 || index >= _tabs.Count) return;
+        if (_tabs[index].IsDisabled) return;
+        
+        _activeIndex = index;
+        ActiveIndexChanged.InvokeAsync(index);
+        StateHasChanged();
+    }
+
+    public async Task CloseTab(BwTabItem tab)
+    {
+        if (tab.ConfirmClose)
+        {
+            var confirmed = await DialogService.ShowConfirmAsync("Sekmeyi Kapat", tab.ConfirmCloseMessage, BwColor.Warning);
+            if (!confirmed) return;
+        }
+
+        await tab.OnClose.InvokeAsync(tab.Name ?? tab.Title);
+    }
+
+    public void ActivateTab(string name)
+    {
+        var tab = _tabs.FirstOrDefault(t => t.Name == name);
+        if (tab != null)
+        {
+            SetActiveTab(_tabs.IndexOf(tab));
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (!Vertical && Scrollable && ShowScrollControls)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.Tabs.dispose", _tabListRef);
+            }
+            catch (Exception) { }
+        }
+    }
+
+    private string GetTabListClass()
+    {
+        var baseClass = Vertical 
+            ? "flex flex-col shrink-0 w-48" 
+            : (Variant == BwVariant.Soft || Variant == BwVariant.Filled 
+                ? "flex flex-row bg-gray-100 dark:bg-gray-800 p-1 rounded" 
+                : "flex flex-row");
+
+        var borderClass = !Vertical && Variant == BwVariant.Ghost // Ghost/Underline
+            ? "border-b-2 border-gray-200"
+            : (Variant == BwVariant.Outline // Boxed
+                ? "border-b border-gray-200 dark:border-gray-700"
+                : (Vertical 
+                    ? "border-r border-gray-200 dark:border-gray-700 pr-0" 
+                    : ""));
+
+        // Wrap vs Scroll
+        var overflowClass = "";
+        if (Scrollable)
+        {
+            // overflow-y-hidden prevents vertical scrollbar
+            overflowClass = "flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar";
+        }
+        else
+        {
+             if (Variant == BwVariant.Soft || Variant == BwVariant.Filled)
+             {
+                 overflowClass = "flex-wrap";
+             }
+             else
+             {
+                 overflowClass = "";
+             }
+        }
+        
+        var gapClass = (Variant == BwVariant.Soft || Variant == BwVariant.Filled) 
+            ? "gap-1" 
+            : (Variant == BwVariant.Outline ? "gap-px" : "gap-0");
+
+        var justifyClass = Justified && !Vertical ? "" : "";
+
+        return $"{baseClass} {borderClass} {overflowClass} {gapClass} {justifyClass}".Trim();
+    }
+
+    private string GetTabClass(bool isActive, bool isDisabled)
+    {
+        var sizeClass = Size switch
+        {
+            BwSize.Small => "px-3 py-2 text-xs",
+            BwSize.Large => "px-6 py-3 text-base",
+            _ => "px-4 py-2.5 text-sm"
+        };
+
+        var disabledClass = isDisabled ? "!opacity-40 !cursor-not-allowed" : "cursor-pointer";
+        var justifyClass = Justified && !Vertical ? "flex-1 justify-center text-center" : "";
+
+        var styleClass = Variant switch
+        {
+            // PILLS (Soft/Filled): Button-like with background
+            BwVariant.Soft or BwVariant.Filled => isActive 
+                ? "bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 font-semibold shadow-sm rounded" 
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 rounded",
+            
+            // BOXED (Outline): Card-style tabs
+            BwVariant.Outline => isActive 
+                ? "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 border-b-white dark:border-b-gray-800 text-gray-900 dark:text-white font-semibold -mb-px rounded-t" 
+                : "bg-gray-100 dark:bg-gray-900 border border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-t",
+
+            // Vertical Override
+            _ => Vertical 
+                ? (isActive 
+                    ? "bg-blue-600 text-white font-semibold border-l-4 border-blue-800 pl-3" 
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200 border-l-4 border-transparent pl-3")
+                : (isActive // Default (Ghost/Underline)
+                    ? "border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-semibold bg-blue-50/50 dark:bg-blue-900/20 -mb-0.5" 
+                    : "border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 -mb-0.5")
+        };
+
+        // If not vertical, and NOT scrollable (wrapped), whitespace-nowrap is fine (items don't wrap internally).
+        return $"flex items-center gap-2 transition-all duration-150 whitespace-nowrap {sizeClass} {styleClass} {disabledClass} {justifyClass}".Trim();
+    }
+    
+    private RenderFragment RenderTabItems() => __builder =>
+    {
+        for (int i = 0; i < _tabs.Count; i++)
+        {
+            var tab = _tabs[i];
+            var index = i;
+            var isActive = _activeIndex == index;
+            var tabClass = GetTabClass(isActive, tab.IsDisabled);
+            
+            <button type="button"
+                    role="tab"
+                    aria-selected="@isActive"
+                    disabled="@tab.IsDisabled"
+                    class="@tabClass"
+                    @onclick="() => SetActiveTab(index)">
+                @if (!string.IsNullOrEmpty(tab.Icon))
+                {
+                    <i class="@tab.Icon"></i>
+                }
+                @if (tab.TitleTemplate != null)
+                {
+                    @tab.TitleTemplate
+                }
+                else
+                {
+                    <span>@tab.Title</span>
+                }
+                @if (tab.Badge != null)
+                {
+                    <span class="ml-2">@tab.Badge</span>
+                }
+                @if (tab.Closable)
+                {
+                    <span class="ml-2 -mr-1 hover:bg-black/10 dark:hover:bg-white/10 rounded-full p-0.5 inline-flex items-center justify-center w-4 h-4 transition-colors"
+                          @onclick:stopPropagation="true"
+                          @onclick="() => CloseTab(tab)">
+                        <i class="fa-solid fa-xmark text-[10px]"></i>
+                    </span>
+                }
+            </button>
+        }
+    };
+}
+
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>

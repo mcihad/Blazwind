@@ -1,0 +1,239 @@
+@page "/components/list"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Dropdown
+@using Blazwind.Components.Input
+@inject ToastService ToastService
+
+<PageTitle>List Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="List" Description="Advanced list component: selection, sorting, search and more."
+            Icon="fa-solid fa-list-ul" Color="BwColor.Primary"/>
+
+    @* Selection Lists *@
+    <BwRow Spacing="BwSpacing.Md" Class="grid md:grid-cols-2">
+        <BwCard Title="Single Selection (Items API)" Subtitle="Creating list with Items parameter"
+                Icon="fa-solid fa-square-check" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwList TItem="DemoItem" Items="@_items" SelectionMode="BwSelectionMode.Single"
+                        SelectedIndicesChanged="@(s => OnSingleSelectionChanged(s))" ItemText="@(x => x.Name)"
+                        ItemDescription="@(x => x.Description)" ItemIcon="@(x => x.Icon)"/>
+
+                <DemoSummaryBox Title="Selection Status">
+                    Selected Index: @(_singleSelectedIndex?.ToString() ?? "None")
+                </DemoSummaryBox>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Multiple Selection (Max 3)" Subtitle="Custom appearance with ItemTemplate"
+                Icon="fa-solid fa-list-check" Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwList TItem="DemoItem" Items="@_items" SelectionMode="BwSelectionMode.Multiple" MaxSelectedItems="3"
+                        SelectedIndicesChanged="@(s => OnMultipleSelectionChanged(s))">
+                    <ItemTemplate Context="item">
+                        <BwListItem Title="@item.Name">
+                            <EndContent>
+                                <BwBadge Color="@item.StatusVariant" Size="BwSize.ExtraSmall">@item.Status</BwBadge>
+                            </EndContent>
+                        </BwListItem>
+                    </ItemTemplate>
+                </BwList>
+
+                <DemoSummaryBox Title="Selection Status">
+                    Selected: @(string.Join(", ", _multipleSelectedIndices.OrderBy(x => x)))
+                </DemoSummaryBox>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Searchable List *@
+    <BwCard Title="Searchable List" Subtitle="Filtering with search" Icon="fa-solid fa-magnifying-glass"
+            Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInput @bind-Value="_searchQuery" Placeholder="Search..." IconLeft="fa-solid fa-search"/>
+
+            <BwList TItem="SearchItem" Items="@_filteredSearchItems" EmptyText="No results found">
+                <ItemTemplate Context="item">
+                    <BwListItem Title="@item.Name" Description="@item.Email">
+                        <EndContent>
+                            <BwBadge Color="@GetRoleColor(item.Role)" Size="BwSize.ExtraSmall">@item.Role</BwBadge>
+                        </EndContent>
+                    </BwListItem>
+                </ItemTemplate>
+                <EmptyTemplate>
+                    <BwColumn Spacing="BwSpacing.Sm" Class="p-8 text-center">
+                        <i class="fa-solid fa-search text-3xl text-gray-300"></i>
+                        <span class="text-gray-500">No results found</span>
+                    </BwColumn>
+                </EmptyTemplate>
+            </BwList>
+
+            <span class="text-sm text-gray-500">@_filteredSearchItems.Count() / @_searchableItems.Count results</span>
+        </BwColumn>
+    </BwCard>
+
+    @* Sortable List *@
+    <BwCard Title="Sortable List" Subtitle="Sorting with drag and drop" Icon="fa-solid fa-arrow-down-short-wide"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwFlex JustifyContent="BwMainAxisAlignment.SpaceBetween" AlignItems="BwCrossAxisAlignment.Center">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Enable Sorting</span>
+                <BwSwitch @bind-Value="_enableSorting"/>
+            </BwFlex>
+
+            <BwList TItem="string" Items="@_sortableItems" EnableSorting="@_enableSorting"
+                    OnOrderChange="OnOrderChanged" ItemText="@(x => x)">
+                <ItemTemplate Context="item">
+                    <BwListItem Title="@item">
+                        <EndContent>
+                            <i class="fa-solid fa-bars text-gray-300"></i>
+                        </EndContent>
+                    </BwListItem>
+                </ItemTemplate>
+            </BwList>
+        </BwColumn>
+    </BwCard>
+
+    @* Rich Content Example *@
+    <BwCard Title="Rich Content & Actions" Subtitle="Advanced dashboard-style list" Icon="fa-solid fa-list-check"
+            Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.None">
+            <BwList TItem="RichItem" Items="@_richItems">
+                <ItemTemplate Context="item">
+                    <BwListItem Title="@item.Name" Description="@($"{item.Title} • {item.Department}")">
+                        <LeadingContent>
+                            <div
+                                class="h-10 w-10 rounded-full @item.BgColor flex items-center justify-center @item.TextColor font-bold">
+                                @item.Initials
+                            </div>
+                        </LeadingContent>
+                        <EndContent>
+                            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                                <BwBadge Color="@item.StatusVariant" IsPill="true" Size="BwSize.ExtraSmall"
+                                         ShowDot="true">@item.Status</BwBadge>
+
+                                <BwButton Variant="BwVariant.Ghost" Icon="fa-solid fa-envelope"
+                                          OnClick="@(() => ShowEmailToast(item.Name))" Size="BwSize.Small"/>
+
+                                <BwDropdown Alignment="BwDirection.Right">
+                                    <TriggerContent>
+                                        <BwButton Variant="BwVariant.Ghost" Icon="fa-solid fa-ellipsis-vertical"
+                                                  Size="BwSize.Small"/>
+                                    </TriggerContent>
+                                    <ChildContent>
+                                        <BwDropdownItem Text="View" Icon="fa-solid fa-eye"/>
+                                        <BwDropdownItem Text="Edit" Icon="fa-solid fa-pencil"/>
+                                        <div class="h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+                                        <BwDropdownItem Text="Delete" Icon="fa-solid fa-trash" Class="text-red-500"/>
+                                    </ChildContent>
+                                </BwDropdown>
+                            </BwFlex>
+                        </EndContent>
+                    </BwListItem>
+                </ItemTemplate>
+            </BwList>
+
+            <BwFlex JustifyContent="BwMainAxisAlignment.Center"
+                    Class="p-3 border-t border-gray-200 dark:border-gray-700">
+                <BwButton Text="View All" Variant="BwVariant.Ghost" Color="BwColor.Primary"
+                          IconRight="fa-solid fa-arrow-right" Size="BwSize.Small"/>
+            </BwFlex>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private readonly List<DemoItem> _items = new()
+    {
+        new DemoItem("Dashboard Design", "UI/UX Task", "fa-solid fa-layer-group", "InProgress", BwColor.Info),
+        new DemoItem("API Integration", "Backend Task", "fa-solid fa-server", "Pending", BwColor.Warning),
+        new DemoItem("Unit Testing", "QA Task", "fa-solid fa-vial", "Done", BwColor.Success),
+        new DemoItem("Documentation", "Tech Writing", "fa-solid fa-book", "Draft", BwColor.Secondary),
+        new DemoItem("Deploy to Prod", "DevOps Task", "fa-solid fa-rocket", "Blocked", BwColor.Danger)
+    };
+
+    private int? _singleSelectedIndex;
+    private HashSet<int> _multipleSelectedIndices = new();
+    private bool _enableSorting = true;
+
+    private readonly List<string> _sortableItems = new() { "Kanban Board", "Gantt Chart", "Calendar View", "List View", "Map View" };
+
+    private readonly List<RichItem> _richItems = new()
+    {
+        new RichItem("John Doe", "JD", "Project Manager", "Engineering", "Active", BwColor.Success, "bg-indigo-100",
+            "text-indigo-600"),
+        new RichItem("Alice Smith", "AS", "Lead Designer", "Design Team", "Away", BwColor.Warning, "bg-emerald-100",
+            "text-emerald-600"),
+        new RichItem("Mike Kerr", "MK", "Backend Dev", "Platform", "Offline", BwColor.Secondary, "bg-gray-100", "text-gray-500")
+    };
+
+    private async Task ShowEmailToast(string name)
+    {
+        await ToastService.SuccessAsync($"Sending email to {name}...", "Email");
+    }
+
+    // Search
+    private string _searchQuery = "";
+
+    private readonly List<SearchItem> _searchableItems = new()
+    {
+        new SearchItem("Alice Johnson", "alice@example.com", "Admin"),
+        new SearchItem("Bob Smith", "bob@example.com", "Editor"),
+        new SearchItem("Charlie Brown", "charlie@example.com", "Viewer"),
+        new SearchItem("Diana Prince", "diana@example.com", "Admin"),
+        new SearchItem("Edward Stark", "edward@example.com", "Editor"),
+        new SearchItem("Fiona Green", "fiona@example.com", "Viewer"),
+        new SearchItem("George Wilson", "george@example.com", "Viewer")
+    };
+
+    private IEnumerable<SearchItem> _filteredSearchItems => string.IsNullOrWhiteSpace(_searchQuery)
+        ? _searchableItems
+        : _searchableItems.Where(x =>
+            x.Name.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
+            x.Email.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase) ||
+            x.Role.Contains(_searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    private BwColor GetRoleColor(string role)
+    {
+        return role switch
+        {
+            "Admin" => BwColor.Danger,
+            "Editor" => BwColor.Warning,
+            _ => BwColor.Success
+        };
+    }
+
+    private void OnOrderChanged((int oldIndex, int newIndex) args)
+    {
+        var item = _sortableItems[args.oldIndex];
+        _sortableItems.RemoveAt(args.oldIndex);
+        _sortableItems.Insert(args.newIndex, item);
+    }
+
+    private void OnSingleSelectionChanged(HashSet<int> selected)
+    {
+        _singleSelectedIndex = selected.FirstOrDefault();
+        if (selected.Count == 0) _singleSelectedIndex = null;
+    }
+
+    private void OnMultipleSelectionChanged(HashSet<int> selected)
+    {
+        _multipleSelectedIndices = new HashSet<int>(selected);
+    }
+
+    record DemoItem(string Name, string Description, string Icon, string Status, BwColor StatusVariant);
+
+    record SearchItem(string Name, string Email, string Role);
+
+    record RichItem(
+        string Name,
+        string Initials,
+        string Title,
+        string Department,
+        string Status,
+        BwColor StatusVariant,
+        string BgColor,
+        string TextColor);
+
+}

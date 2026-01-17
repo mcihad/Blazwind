@@ -1,0 +1,94 @@
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Services
+@using Blazwind.Components.Dialog
+
+@namespace Blazwind.Components.Dialog
+
+<div class="flex flex-col h-full rounded overflow-hidden border @ContainerClass shadow-sm">
+    <div class="p-5 flex flex-col gap-4">
+        @* Header Section within same padding *@
+        <div class="flex items-start gap-4">
+            <div class="mt-0.5 text-3xl shrink-0">
+                @((MarkupString)GetIconHtml())
+            </div>
+            <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">@Title</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty mb-4">@Message</p>
+                
+                 @* Input placed properly within the flow *@
+                 <div class="w-full">
+                     @if(!string.IsNullOrEmpty(Placeholder))
+                     {
+                         <label for="dialog-input-razor" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5 uppercase tracking-wide">
+                             @Placeholder
+                         </label>
+                     }
+                     <input type="@InputType" 
+                       class="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 outline-none transition-all placeholder-gray-400 dark:placeholder-gray-500 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-700"
+                       placeholder="@Placeholder"
+                       value="@_value"
+                       @onchange="@((ChangeEventArgs e) => _value = e.Value?.ToString() ?? "")"
+                       id="dialog-input-razor" />
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-2">
+             <BwButton Text="@CancelText" Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Medium" OnClick="Cancel" Class="!px-4 !py-2" />
+             <BwButton Text="@ConfirmText" Color="@Color" Variant="BwVariant.Filled" Size="BwSize.Medium" OnClick="Confirm" Class="!px-4 !py-2 shadow-sm" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] Blazwind.Components.Services.DialogInstance DialogInstance { get; set; } = default!;
+    [Inject] DialogService DialogService { get; set; } = default!;
+
+    [Parameter] public string Title { get; set; } = "Giriş Yapın";
+    [Parameter] public string Message { get; set; } = "Değer giriniz.";
+    [Parameter] public string Placeholder { get; set; } = "Değer";
+    [Parameter] public string DefaultValue { get; set; } = "";
+    [Parameter] public string InputType { get; set; } = "text"; 
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string ConfirmText { get; set; } = "Tamam";
+    [Parameter] public string CancelText { get; set; } = "İptal";
+
+    private string _value = "";
+
+    protected override void OnInitialized()
+    {
+        _value = DefaultValue;
+    }
+
+    private string ContainerClass => Color switch
+    {
+        BwColor.Success => "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30",
+        BwColor.Warning => "bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30",
+        BwColor.Danger => "bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30",
+        BwColor.Info => "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30",
+        _ => "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+    };
+
+    private string GetIconHtml()
+    {
+         var iconClass = "";
+        return Color switch
+        {
+            BwColor.Success => $"<i class=\"fa-solid fa-circle-check {iconClass} text-emerald-600\"></i>",
+            BwColor.Warning => $"<i class=\"fa-solid fa-triangle-exclamation {iconClass} text-amber-600\"></i>",
+            BwColor.Danger => $"<i class=\"fa-solid fa-circle-xmark {iconClass} text-red-600\"></i>",
+            _ => $"<i class=\"fa-solid fa-circle-info {iconClass} text-blue-600\"></i>"
+        };
+    }
+
+    private void Confirm()
+    {
+        DialogService.Close(DialogInstance, DialogResult.Ok((object)_value));
+    }
+
+    private void Cancel()
+    {
+        DialogService.Close(DialogInstance, DialogResult.Cancel());
+    }
+}

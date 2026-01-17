@@ -1,0 +1,260 @@
+@page "/components/button-group"
+@using Blazwind.Components.Typography
+
+<PageTitle>Button Group - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Button Group"
+            Description="Group buttons horizontally or vertically. Ideal for segmented control, pagination and toolbar."
+            Icon="fa-solid fa-grip-lines-vertical" Color="BwColor.Info"/>
+
+    @* Horizontal Basic *@
+    <BwCard Title="Horizontal Grouping" Subtitle="Default direction" Icon="fa-solid fa-arrows-left-right"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Segmented Control
+                </BwTypography>
+                <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md">
+                    <BwButtonGroup>
+                        <BwButton Text="Year" Color="@(_selectedPeriod == "year" ? BwColor.Primary : BwColor.Secondary)"
+                                  OnClick="@(() => _selectedPeriod = "year")"/>
+                        <BwButton Text="Month"
+                                  Color="@(_selectedPeriod == "month" ? BwColor.Primary : BwColor.Secondary)"
+                                  OnClick="@(() => _selectedPeriod = "month")"/>
+                        <BwButton Text="Week" Color="@(_selectedPeriod == "week" ? BwColor.Primary : BwColor.Secondary)"
+                                  OnClick="@(() => _selectedPeriod = "week")"/>
+                        <BwButton Text="Day" Color="@(_selectedPeriod == "day" ? BwColor.Primary : BwColor.Secondary)"
+                                  OnClick="@(() => _selectedPeriod = "day")"/>
+                    </BwButtonGroup>
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Selected:
+                        <BwTypography
+                            Weight="BwFontWeight.Bold" Inline="true">@_selectedPeriod</BwTypography>
+                    </BwTypography>
+                </BwFlex>
+            </BwColumn>
+
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Pagination</BwTypography>
+                <BwButtonGroup>
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-chevron-left"
+                              IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Secondary" Text="1"/>
+                    <BwButton Color="BwColor.Secondary" Text="2"/>
+                    <BwButton Color="BwColor.Primary" Text="3"/>
+                    <BwButton Color="BwColor.Secondary" Text="4"/>
+                    <BwButton Color="BwColor.Secondary" Text="5"/>
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-chevron-right"
+                              IconPosition="BwIconPosition.Only"/>
+                </BwButtonGroup>
+            </BwColumn>
+
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Toolbar Actions</BwTypography>
+                <BwFlex Gap="BwSpacing.Md" AlignItems="BwCrossAxisAlignment.Center">
+                    <BwButtonGroup>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-bold"
+                                  IconPosition="BwIconPosition.Only"/>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-italic"
+                                  IconPosition="BwIconPosition.Only"/>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-underline"
+                                  IconPosition="BwIconPosition.Only"/>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-strikethrough"
+                                  IconPosition="BwIconPosition.Only"/>
+                    </BwButtonGroup>
+                    <BwTypography Color="BwColor.Secondary" Opacity="0.3">|</BwTypography>
+                    <BwButtonGroup>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-align-left"
+                                  IconPosition="BwIconPosition.Only"/>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-align-center"
+                                  IconPosition="BwIconPosition.Only"/>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-align-right"
+                                  IconPosition="BwIconPosition.Only"/>
+                        <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-align-justify"
+                                  IconPosition="BwIconPosition.Only"/>
+                    </BwButtonGroup>
+                </BwFlex>
+            </BwColumn>
+        </BwColumn>
+    </BwCard>
+
+    @* Vertical *@
+    <BwCard Title="Vertical Grouping" Subtitle="Orientation=Vertical" Icon="fa-solid fa-arrows-up-down"
+            Color="BwColor.Success">
+        <BwFlex Gap="BwSpacing.Xl" AlignItems="BwCrossAxisAlignment.Start">
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Menu Style</BwTypography>
+                <BwButtonGroup Orientation="BwOrientation.Vertical">
+                    <BwButton Text="Profile" Icon="fa-solid fa-user" Color="BwColor.Secondary"/>
+                    <BwButton Text="Settings" Icon="fa-solid fa-gear" Color="BwColor.Secondary"/>
+                    <BwButton Text="Messages" Icon="fa-solid fa-envelope" Color="BwColor.Secondary"/>
+                    <BwButton Text="Logout" Icon="fa-solid fa-right-from-bracket" Color="BwColor.Danger"/>
+                </BwButtonGroup>
+            </BwColumn>
+
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Stepper</BwTypography>
+                <BwButtonGroup Orientation="BwOrientation.Vertical">
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-plus" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-minus" IconPosition="BwIconPosition.Only"/>
+                </BwButtonGroup>
+            </BwColumn>
+
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Navigation</BwTypography>
+                <BwButtonGroup Orientation="BwOrientation.Vertical">
+                    <BwButton Color="BwColor.Primary" Icon="fa-solid fa-house" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-magnifying-glass"
+                              IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-bell" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Secondary" Icon="fa-solid fa-user" IconPosition="BwIconPosition.Only"/>
+                </BwButtonGroup>
+            </BwColumn>
+        </BwFlex>
+    </BwCard>
+
+    @* Attached vs Gap *@
+    <BwCard Title="Attached vs Separate" Subtitle="IsAttached parameter" Icon="fa-solid fa-link"
+            Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Lg" Wrap="true">
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">IsAttached=true (Default)
+                </BwTypography>
+                <BwButtonGroup IsAttached="true">
+                    <BwButton Text="Left" Color="BwColor.Primary"/>
+                    <BwButton Text="Middle" Color="BwColor.Primary"/>
+                    <BwButton Text="Right" Color="BwColor.Primary"/>
+                </BwButtonGroup>
+            </BwColumn>
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">IsAttached=false</BwTypography>
+                <BwButtonGroup IsAttached="false">
+                    <BwButton Text="Left" Color="BwColor.Primary"/>
+                    <BwButton Text="Middle" Color="BwColor.Primary"/>
+                    <BwButton Text="Right" Color="BwColor.Primary"/>
+                </BwButtonGroup>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Variants *@
+    <BwCard Title="Variants" Subtitle="Filled, Outline, Ghost, Soft" Icon="fa-solid fa-palette" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Filled (Default)</BwTypography>
+                <BwButtonGroup>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Text="Left"/>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Text="Middle"/>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Text="Right"/>
+                </BwButtonGroup>
+            </BwColumn>
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Outline</BwTypography>
+                <BwButtonGroup>
+                    <BwButton Variant="BwVariant.Outline" Color="BwColor.Primary" Text="Left"/>
+                    <BwButton Variant="BwVariant.Outline" Color="BwColor.Primary" Text="Middle"/>
+                    <BwButton Variant="BwVariant.Outline" Color="BwColor.Primary" Text="Right"/>
+                </BwButtonGroup>
+            </BwColumn>
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Ghost</BwTypography>
+                <BwButtonGroup>
+                    <BwButton Variant="BwVariant.Ghost" Color="BwColor.Primary" Text="Left"/>
+                    <BwButton Variant="BwVariant.Ghost" Color="BwColor.Primary" Text="Middle"/>
+                    <BwButton Variant="BwVariant.Ghost" Color="BwColor.Primary" Text="Right"/>
+                </BwButtonGroup>
+            </BwColumn>
+            <BwColumn>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-2">Soft</BwTypography>
+                <BwButtonGroup>
+                    <BwButton Variant="BwVariant.Soft" Color="BwColor.Primary" Text="Left"/>
+                    <BwButton Variant="BwVariant.Soft" Color="BwColor.Primary" Text="Middle"/>
+                    <BwButton Variant="BwVariant.Soft" Color="BwColor.Primary" Text="Right"/>
+                </BwButtonGroup>
+            </BwColumn>
+        </BwColumn>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md">
+                <BwButtonGroup>
+                    <BwButton Size="BwSize.Small" Text="Small"/>
+                    <BwButton Size="BwSize.Small" Text="Left"/>
+                    <BwButton Size="BwSize.Small" Text="Right"/>
+                </BwButtonGroup>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Small</BwTypography>
+            </BwFlex>
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md">
+                <BwButtonGroup>
+                    <BwButton Size="BwSize.Medium" Text="Medium"/>
+                    <BwButton Size="BwSize.Medium" Text="Left"/>
+                    <BwButton Size="BwSize.Medium" Text="Right"/>
+                </BwButtonGroup>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Medium (Default)</BwTypography>
+            </BwFlex>
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md">
+                <BwButtonGroup>
+                    <BwButton Size="BwSize.Large" Text="Large"/>
+                    <BwButton Size="BwSize.Large" Text="Left"/>
+                    <BwButton Size="BwSize.Large" Text="Right"/>
+                </BwButtonGroup>
+                <BwTypography Size="BwSize.Medium" Color="BwColor.Secondary">Large</BwTypography>
+            </BwFlex>
+        </BwColumn>
+    </BwCard>
+
+    @* Full Width *@
+    <BwCard Title="Full Width" Subtitle="IsFullWidth=true" Icon="fa-solid fa-arrows-left-right-to-line"
+            Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwButtonGroup IsFullWidth="true">
+                <BwButton Class="flex-1" Text="Back" Icon="fa-solid fa-chevron-left" Color="BwColor.Secondary"/>
+                <BwButton Class="flex-1" Text="Save" Icon="fa-solid fa-save" Color="BwColor.Primary"/>
+                <BwButton Class="flex-1" Text="Next" Icon="fa-solid fa-chevron-right"
+                          IconPosition="BwIconPosition.Right" Color="BwColor.Secondary"/>
+            </BwButtonGroup>
+
+            <BwButtonGroup IsFullWidth="true">
+                <BwButton Class="flex-1" Variant="BwVariant.Outline" Color="BwColor.Danger" Text="Cancel"/>
+                <BwButton Class="flex-1" Variant="BwVariant.Filled" Color="BwColor.Success" Text="Confirm"/>
+            </BwButtonGroup>
+        </BwColumn>
+    </BwCard>
+
+    @* Color Variants *@
+    <BwCard Title="Color Variants" Subtitle="Compatible with all colors" Icon="fa-solid fa-swatchbook"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Md">
+                <BwButtonGroup>
+                    <BwButton Color="BwColor.Primary" Icon="fa-solid fa-check" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Primary" Text="Primary"/>
+                </BwButtonGroup>
+                <BwButtonGroup>
+                    <BwButton Color="BwColor.Success" Icon="fa-solid fa-check" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Success" Text="Success"/>
+                </BwButtonGroup>
+                <BwButtonGroup>
+                    <BwButton Color="BwColor.Warning" Icon="fa-solid fa-exclamation"
+                              IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Warning" Text="Warning"/>
+                </BwButtonGroup>
+                <BwButtonGroup>
+                    <BwButton Color="BwColor.Danger" Icon="fa-solid fa-xmark" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Danger" Text="Danger"/>
+                </BwButtonGroup>
+                <BwButtonGroup>
+                    <BwButton Color="BwColor.Info" Icon="fa-solid fa-info" IconPosition="BwIconPosition.Only"/>
+                    <BwButton Color="BwColor.Info" Text="Info"/>
+                </BwButtonGroup>
+            </BwFlex>
+        </BwColumn>
+    </BwCard>
+
+</BwColumn>
+
+@code {
+    private string _selectedPeriod = "month";
+}

@@ -1,0 +1,110 @@
+@page "/charts/pie-on-geo"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@inject HttpClient Http
+
+<PageTitle>Pie Charts on Geo - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Pie Charts on GEO Map" 
+            Description="Coğrafi konumlarda pasta grafikleri ile bölgesel veri dağılımı (ECharts v5.4.0+)."
+            Icon="fa-solid fa-chart-pie"
+            Color="BwColor.Warning" />
+
+    <BwCard Title="İzlanda Bölgesel Harcama Dağılımı" Subtitle="Her bölgede harcama kategorileri." Icon="fa-solid fa-map-pin" Color="BwColor.Primary">
+        @if (_isLoading)
+        {
+            <div class="flex items-center justify-center h-96">
+                <span class="text-gray-500">Harita yükleniyor...</span>
+            </div>
+        }
+        else
+        {
+            <BwChart Options="_pieOnGeo" Height="650px" />
+        }
+    </BwCard>
+</BwColumn>
+
+@code {
+    private bool _isLoading = true;
+    private object? _pieOnGeo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var geoJson = await Http.GetStringAsync("iceland.geo.json");
+
+            _pieOnGeo = new
+            {
+                title = new { text = "Bölgesel Harcama Analizi", left = ChartPosition.Center },
+                tooltip = new { trigger = ChartTooltipTrigger.Item },
+                legend = new 
+                { 
+                    data = new[] { "Yatırım", "Personel", "Hizmet", "Malzeme" },
+                    bottom = "0"
+                },
+                geo = new
+                {
+                    map = "iceland",
+                    roam = true,
+                    label = new { show = false },
+                    itemStyle = new { areaColor = "#e5e7eb", borderColor = "#9ca3af" },
+                    emphasis = new
+                    {
+                        label = new { show = true },
+                        itemStyle = new { areaColor = "#bfdbfe" }
+                    }
+                },
+                series = GeneratePieSeries(),
+                color = new[] { "#3b82f6", "#10b981", "#f59e0b", "#ef4444" },
+                registerMap = new { name = "iceland", geoJSON = geoJson }
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"GeoJSON yükleme hatası: {ex.Message}");
+        }
+
+        _isLoading = false;
+    }
+
+    private object[] GeneratePieSeries()
+    {
+        var locations = new[]
+        {
+            ("Reykjavik", -21.9426, 64.1466, 35),
+            ("Akureyri", -18.0878, 65.6885, 25),
+            ("Egilsstaðir", -14.3948, 65.2644, 20),
+            ("Ísafjörður", -23.1353, 66.0748, 20)
+        };
+
+        var random = new Random(42);
+        var series = new List<object>();
+
+        foreach (var (name, lon, lat, size) in locations)
+        {
+            series.Add(new
+            {
+                type = ChartSeriesType.Pie,
+                coordinateSystem = "geo",
+                center = new[] { lon, lat },
+                radius = size,
+                label = new { show = false },
+                labelLine = new { show = false },
+                data = new object[]
+                {
+                    new { name = "Yatırım", value = random.Next(20, 50) },
+                    new { name = "Personel", value = random.Next(15, 40) },
+                    new { name = "Hizmet", value = random.Next(10, 30) },
+                    new { name = "Malzeme", value = random.Next(5, 25) }
+                },
+                tooltip = new { formatter = $"{name}<br/>{{b}}: {{c}} ({{d}}%)" }
+            });
+        }
+
+        return series.ToArray();
+    }
+}

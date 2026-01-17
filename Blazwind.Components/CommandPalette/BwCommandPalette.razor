@@ -1,0 +1,241 @@
+@namespace Blazwind.Components.CommandPalette
+@using Microsoft.JSInterop
+@using Blazwind.Components.Services
+@using Blazwind.Components.Input
+@inject CommandPaletteService CommandService
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+@if (_isVisible)
+{
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1060] flex items-start justify-center pt-[15vh] animate-in fade-in duration-150" @onclick="Close">
+        <div class="w-full max-w-[560px] bg-white dark:bg-gray-800 rounded shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200" @onclick:stopPropagation="true">
+            <div class="flex items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700 gap-3">
+                <i class="fa-solid fa-search text-gray-400"></i>
+                <input type="text" 
+                       id="@_inputId"
+                       class="flex-1 border-none outline-none focus:outline-none focus:ring-0 text-base text-gray-900 dark:text-gray-100 bg-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                       placeholder="@Placeholder"
+                       @bind="_searchQuery"
+                       @bind:event="oninput"
+                       @bind:after="OnSearchChanged"
+                       @onkeydown="HandleKeyDown"
+                       @onkeydown:preventDefault="_preventKeyDefault" />
+                <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">ESC</kbd>
+            </div>
+            
+            <div class="max-h-[400px] overflow-y-auto py-2" id="@_resultsId">
+                @if (_filteredCommands.Any())
+                {
+                    @foreach (var group in _groupedCommands)
+                    {
+                        <div class="px-2">
+                            <div class="px-3 py-2 pt-2 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">@group.Key</div>
+                            @foreach (var command in group.Value)
+                            {
+                                var index = _filteredCommands.IndexOf(command);
+                                var activeClass = index == _activeIndex ? "bg-blue-100 dark:bg-blue-900/30" : "hover:bg-gray-50 dark:hover:bg-gray-700";
+                                
+                                <button type="button"
+                                        class="w-full flex items-center gap-3 px-3 py-2.5 my-0.5 border-none rounded cursor-pointer text-left transition-colors @activeClass"
+                                        @onclick="() => ExecuteCommand(command)">
+                                    @if (!string.IsNullOrEmpty(command.Icon))
+                                    {
+                                        <i class="@command.Icon w-5 text-center text-sm @(index == _activeIndex ? "text-blue-600" : "text-gray-500")"></i>
+                                    }
+                                    <div class="flex-1 flex flex-col gap-0.5 min-w-0">
+                                        <span class="text-sm font-medium @(index == _activeIndex ? "text-blue-900 dark:text-blue-100" : "text-gray-900 dark:text-gray-100")">@command.Label</span>
+                                        @if (!string.IsNullOrEmpty(command.Description))
+                                        {
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap">@command.Description</span>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(command.Shortcut))
+                                    {
+                                        <kbd class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">@command.Shortcut</kbd>
+                                    }
+                                </button>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="py-8 px-4 text-center text-gray-400 dark:text-gray-500">
+                        <i class="fa-solid fa-search text-3xl mb-2"></i>
+                        <p class="m-0 text-sm">Sonuç bulunamadı</p>
+                    </div>
+                }
+            </div>
+            
+            <div class="flex gap-4 px-4 py-2.5 border-t border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↑↓</kbd> Gezin</span>
+                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↵</kbd> Seç</span>
+                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">ESC</kbd> Kapat</span>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Placeholder { get; set; } = "Komut ara...";
+    
+    private DotNetObjectReference<BwCommandPalette>? _dotNetRef;
+    private string _inputId = $"cmd-input-{Guid.NewGuid():N}";
+    private string _resultsId = $"cmd-results-{Guid.NewGuid():N}";
+    private string _searchQuery = "";
+    private int _activeIndex = 0;
+    private bool _isVisible = false;
+    private bool _isInitialized = false;
+    
+    private List<CommandItem> _filteredCommands = new();
+    private Dictionary<string, List<CommandItem>> _groupedCommands = new();
+    private bool _preventKeyDefault = false;
+    
+    protected override void OnInitialized()
+    {
+        CommandService.OnVisibilityChanged += HandleVisibilityChanged;
+        CommandService.OnCommandsChanged += RefreshCommands;
+        
+        _dotNetRef = DotNetObjectReference.Create(this);
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isInitialized = true;
+            try 
+            {
+                await JS.InvokeVoidAsync("Blazwind.commandPalette.registerKeyboardShortcut", _dotNetRef);
+            }
+            catch (JSException)
+            {
+                // JS might not be ready
+            }
+        }
+        
+        if (_isVisible && _isInitialized)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.commandPalette.focusInput", _inputId);
+            }
+            catch (JSException)
+            {
+                // JS might not be ready
+            }
+        }
+    }
+    
+    private void HandleVisibilityChanged()
+    {
+        _isVisible = CommandService.IsVisible;
+        if (_isVisible)
+        {
+            _searchQuery = "";
+            _activeIndex = 0;
+            RefreshCommands();
+        }
+        InvokeAsync(StateHasChanged);
+    }
+    
+    private void HandleInput(ChangeEventArgs e)
+    {
+        _searchQuery = e.Value?.ToString() ?? "";
+        UpdateFilteredCommands();
+    }
+    
+    private void OnSearchChanged()
+    {
+        UpdateFilteredCommands();
+    }
+    
+    private void UpdateFilteredCommands()
+    {
+        _groupedCommands = CommandService.GetGroupedCommands(_searchQuery);
+        _filteredCommands = _groupedCommands.Values.SelectMany(x => x).ToList();
+        _activeIndex = Math.Min(_activeIndex, Math.Max(0, _filteredCommands.Count - 1));
+    }
+    
+    private void RefreshCommands()
+    {
+        UpdateFilteredCommands();
+        InvokeAsync(StateHasChanged);
+    }
+    
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowDown":
+                _activeIndex = (_activeIndex + 1) % Math.Max(1, _filteredCommands.Count);
+                break;
+            case "ArrowUp":
+                _activeIndex = (_activeIndex - 1 + _filteredCommands.Count) % Math.Max(1, _filteredCommands.Count);
+                break;
+            case "Enter":
+                if (_filteredCommands.Count > _activeIndex && _activeIndex >= 0)
+                {
+                    _ = ExecuteCommand(_filteredCommands[_activeIndex]);
+                }
+                break;
+            case "Escape":
+                Close();
+                break;
+            default:
+                _activeIndex = 0;
+                RefreshCommands();
+                break;
+        }
+    }
+    
+    private async Task ExecuteCommand(CommandItem command)
+    {
+        await CommandService.ExecuteCommand(command);
+    }
+    
+    private void Close()
+    {
+        CommandService.Hide();
+    }
+    
+    [JSInvokable]
+    public void OnShortcutPressed()
+    {
+        CommandService.Toggle();
+    }
+    
+    [JSInvokable]
+    public void OnEscapePressed()
+    {
+        if (_isVisible)
+        {
+            CommandService.Hide();
+        }
+    }
+    
+    [JSInvokable]
+    public void SetActiveIndex(int index)
+    {
+        _activeIndex = index;
+        StateHasChanged();
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        CommandService.OnVisibilityChanged -= HandleVisibilityChanged;
+        CommandService.OnCommandsChanged -= RefreshCommands;
+        
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.commandPalette.unregisterKeyboardShortcut");
+        }
+        catch
+        {
+            // Ignore disposal errors
+        }
+        
+        _dotNetRef?.Dispose();
+    }
+}

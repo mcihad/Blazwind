@@ -1,0 +1,294 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+
+@{
+    var hasError = !string.IsNullOrEmpty(Error);
+    var hasLabel = !string.IsNullOrEmpty(Label);
+    var hasHelper = !string.IsNullOrEmpty(HelperText);
+    var hasPrefixIcon = !string.IsNullOrEmpty(PrefixIcon);
+    var hasSuffixIcon = !string.IsNullOrEmpty(SuffixIcon);
+    var actualType = _showPassword ? "text" : Type;
+
+    var sizeClass = Size switch
+    {
+        BwSize.Small => "h-8 text-xs",
+        BwSize.Large => "h-12 text-base",
+        _ => "h-10 text-sm"
+    };
+
+    var iconSize = Size switch
+    {
+        BwSize.Small => "text-xs",
+        BwSize.Large => "text-lg",
+        _ => "text-sm"
+    };
+
+    var inputPadding = Size switch
+    {
+        BwSize.Small => hasPrefixIcon ? "pl-7 pr-2.5" : "px-2.5",
+        BwSize.Large => hasPrefixIcon ? "pl-11 pr-4" : "px-4",
+        _ => hasPrefixIcon ? "pl-9 pr-3" : "px-3"
+    };
+
+    var baseClass = "flex-1 bg-transparent border-0 appearance-none focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none w-full";
+    var stateClass = hasError
+    ? "text-red-900 dark:text-red-400 placeholder-red-300"
+    : "text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500";
+    var disabledClass = IsDisabled ? "bg-gray-50 dark:bg-gray-900 text-gray-400 cursor-not-allowed" : "";
+
+    var wrapperBorder = hasError
+    ? "border-red-300 dark:border-red-700 focus-within:border-red-500 focus-within:ring-red-500/20"
+    : "border-gray-300 dark:border-gray-700 focus-within:border-blue-500 focus-within:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600";
+}
+
+<div class="@Class">
+    @if (hasLabel)
+    {
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+            @Label
+            @if (IsRequired)
+            {
+                <span class="text-red-500 ml-0.5">*</span>
+            }
+        </label>
+    }
+
+    <div
+        class="flex @sizeClass rounded overflow-hidden border transition-colors duration-150 focus-within:ring-2 focus-within:ring-offset-0 @wrapperBorder @(IsDisabled ? "bg-gray-50 dark:bg-gray-900" : "bg-white dark:bg-gray-800")">
+        @* Prepend Content (Custom) *@
+        @if (PrependContent != null)
+        {
+            <div class="flex items-center border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                @PrependContent
+            </div>
+        }
+
+        @* Input Field with Optional Prefix/Suffix Icons *@
+        <div class="flex-1 relative flex items-center">
+            @if (hasPrefixIcon)
+            {
+                <span class="absolute left-3 text-gray-400 @iconSize pointer-events-none">
+                    <i class="@PrefixIcon"></i>
+                </span>
+            }
+
+            <input type="@actualType" @ref="_inputRef" class="@baseClass @inputPadding @stateClass @disabledClass"
+                style="outline: none !important; box-shadow: none !important;" placeholder="@Placeholder" value="@Value"
+                disabled="@IsDisabled" readonly="@IsReadOnly" @oninput="OnInput" @onclick="OnInputClick"
+                @onclick:stopPropagation="true" @onkeydown="OnKeyDown" />
+
+            @* Suffix buttons inside input area *@
+            <div class="absolute right-2 flex items-center gap-1">
+                @if (_isLoading)
+                {
+                    <span class="text-blue-500 @iconSize">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                    </span>
+                }
+                else
+                {
+                    @if (ShowClear && !string.IsNullOrEmpty(Value) && !IsDisabled && !IsReadOnly)
+                    {
+                        <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
+                            @onclick="ClearValue" @onclick:stopPropagation="true">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    }
+
+                    @if (Type == "password" && ShowPasswordToggle)
+                    {
+                        <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
+                            @onclick="TogglePassword" @onclick:stopPropagation="true">
+                            <i class="@(_showPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye")"></i>
+                        </button>
+                    }
+
+                    @if (ShowCopy && !string.IsNullOrEmpty(Value))
+                    {
+                        <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
+                            @onclick="CopyToClipboard" @onclick:stopPropagation="true" title="Kopyala">
+                            <i class="@(_copied ? "fa-solid fa-check text-green-500" : "fa-solid fa-copy")"></i>
+                        </button>
+                    }
+
+                    @if (hasSuffixIcon && Buttons == null && AppendContent == null && !ShowCopy && !(Type == "password" &&
+                                    ShowPasswordToggle))
+                    {
+                        <span class="text-gray-400 @iconSize pointer-events-none">
+                            <i class="@SuffixIcon"></i>
+                        </span>
+                    }
+                }
+            </div>
+        </div>
+
+        @* Buttons (Shorthand for common button patterns) *@
+        @if (Buttons != null)
+        {
+            <div class="flex items-center">
+                @Buttons
+            </div>
+        }
+
+        @* Append Content (Custom) *@
+        @if (AppendContent != null)
+        {
+            <div class="flex items-center border-l border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                @AppendContent
+            </div>
+        }
+    </div>
+
+    @if (hasError)
+    {
+        <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @Error
+        </p>
+    }
+    else if (hasHelper)
+    {
+        <p class="mt-1.5 text-xs text-gray-500">@HelperText</p>
+    }
+</div>
+
+@code {
+    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+    
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string? HelperText { get; set; }
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public bool IsDisabled { get; set; }
+    [Parameter] public bool IsReadOnly { get; set; }
+    [Parameter] public bool IsRequired { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public string? Class { get; set; }
+
+    /// <summary>Prefix icon class (e.g., "fa-solid fa-search")</summary>
+    [Parameter] public string? PrefixIcon { get; set; }
+
+    /// <summary>Suffix icon class (e.g., "fa-solid fa-check")</summary>
+    [Parameter] public string? SuffixIcon { get; set; }
+
+    /// <summary>Show clear button when value is not empty</summary>
+    [Parameter] public bool ShowClear { get; set; }
+
+    /// <summary>Show password toggle button (for password type)</summary>
+    [Parameter] public bool ShowPasswordToggle { get; set; } = true;
+
+    /// <summary>Show copy to clipboard button</summary>
+    [Parameter] public bool ShowCopy { get; set; }
+
+    /// <summary>Custom prepend content (left side, with border)</summary>
+    [Parameter] public RenderFragment? PrependContent { get; set; }
+
+    /// <summary>Custom append content (right side, with border)</summary>
+    [Parameter] public RenderFragment? AppendContent { get; set; }
+
+    /// <summary>Buttons to append (no border, direct inline)</summary>
+    [Parameter] public RenderFragment? Buttons { get; set; }
+
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public EventCallback OnEnterPressed { get; set; }
+    [Parameter] public EventCallback OnClear { get; set; }
+    
+    /// <summary>Expression for validation binding</summary>
+    [Parameter] public Expression<Func<string>>? For { get; set; }
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    private ElementReference _inputRef;
+    private bool _showPassword;
+    private bool _copied;
+    private bool _isLoading;
+    private FieldIdentifier _fieldIdentifier;
+    
+    protected override void OnInitialized()
+    {
+        if (CascadedEditContext != null && For != null)
+        {
+            _fieldIdentifier = FieldIdentifier.Create(For);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        _isLoading = IsLoading;
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async Task OnInputClick()
+    {
+        await OnClick.InvokeAsync();
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && OnEnterPressed.HasDelegate)
+        {
+            await OnEnterPressed.InvokeAsync();
+        }
+    }
+
+    private void TogglePassword()
+    {
+        _showPassword = !_showPassword;
+    }
+
+    private async Task ClearValue()
+    {
+        Value = "";
+        await ValueChanged.InvokeAsync(Value);
+        if (OnClear.HasDelegate)
+        {
+            await OnClear.InvokeAsync();
+        }
+        await _inputRef.FocusAsync();
+    }
+
+    private async Task CopyToClipboard()
+    {
+        if (!string.IsNullOrEmpty(Value))
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("navigator.clipboard.writeText", Value);
+                _copied = true;
+                StateHasChanged();
+
+                await Task.Delay(2000);
+                _copied = false;
+                StateHasChanged();
+            }
+            catch
+            {
+                // Clipboard API not available
+            }
+        }
+    }
+
+    /// <summary>Focus the input programmatically</summary>
+    public async Task FocusAsync()
+    {
+        await _inputRef.FocusAsync();
+    }
+
+    /// <summary>Select all text in the input</summary>
+    public async Task SelectAsync()
+    {
+        await JS.InvokeVoidAsync("eval", $"document.activeElement?.select?.()");
+    }
+}

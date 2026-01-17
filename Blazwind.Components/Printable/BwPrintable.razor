@@ -1,0 +1,156 @@
+@namespace Blazwind.Components.Printable
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<div class="bw-printable @Class" style="@Style">
+    @if (ShowToolbar)
+    {
+        <div class="flex items-center gap-2 mb-4 print:hidden">
+            <BwButton Color="BwColor.Primary" Variant="BwVariant.Filled" OnClick="PrintAsync" Icon="fa-solid fa-print">
+                @PrintButtonText
+            </BwButton>
+            
+            @if (ToolbarContent != null)
+            {
+                @ToolbarContent
+            }
+        </div>
+    }
+    
+    <div @ref="_printArea" class="@_printAreaClass">
+        @if (HeaderTemplate != null)
+        {
+            <div class="print-header mb-4">
+                @HeaderTemplate
+            </div>
+        }
+        
+        @ChildContent
+        
+        @if (FooterTemplate != null)
+        {
+            <div class="print-footer mt-4">
+                @FooterTemplate
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private ElementReference _printArea;
+    
+    private string _printAreaClass => $"print-area {(ShowBorder ? "border-2 border-dashed border-gray-300 dark:border-gray-700 p-4 rounded print:border-0 print:p-0" : "")} {PrintAreaClass}";
+    
+    #region Parameters
+    
+    /// <summary>
+    /// CSS class
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>
+    /// CSS style
+    /// </summary>
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>
+    /// Class for print area
+    /// </summary>
+    [Parameter] public string? PrintAreaClass { get; set; }
+    
+    /// <summary>
+    /// Content to print
+    /// </summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Header template for print
+    /// </summary>
+    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
+    
+    /// <summary>
+    /// Footer template for print
+    /// </summary>
+    [Parameter] public RenderFragment? FooterTemplate { get; set; }
+    
+    /// <summary>
+    /// Additional toolbar content
+    /// </summary>
+    [Parameter] public RenderFragment? ToolbarContent { get; set; }
+    
+    /// <summary>
+    /// Show print toolbar
+    /// </summary>
+    [Parameter] public bool ShowToolbar { get; set; } = true;
+    
+    /// <summary>
+    /// Print button text
+    /// </summary>
+    [Parameter] public string PrintButtonText { get; set; } = "Yazdır";
+    
+    /// <summary>
+    /// Document title
+    /// </summary>
+    [Parameter] public string? Title { get; set; }
+    
+    /// <summary>
+    /// Page size
+    /// </summary>
+    [Parameter] public PrintPageSize PageSize { get; set; } = PrintPageSize.A4;
+    
+    /// <summary>
+    /// Page orientation
+    /// </summary>
+    [Parameter] public PrintOrientation Orientation { get; set; } = PrintOrientation.Portrait;
+    
+    /// <summary>
+    /// Page margin
+    /// </summary>
+    [Parameter] public string Margin { get; set; } = "20mm";
+    
+    /// <summary>
+    /// Show page numbers
+    /// </summary>
+    [Parameter] public bool ShowPageNumbers { get; set; }
+    
+    /// <summary>
+    /// Custom CSS styles for print
+    /// </summary>
+    [Parameter] public string? CustomStyles { get; set; }
+    
+    /// <summary>
+    /// Show a dashed border around the print area on screen
+    /// </summary>
+    [Parameter] public bool ShowBorder { get; set; }
+    
+    #endregion
+    
+    /// <summary>
+    /// Print the content
+    /// </summary>
+    public async Task PrintAsync()
+    {
+        var options = new
+        {
+            title = Title,
+            pageSize = PageSize.ToString(),
+            orientation = Orientation.ToString().ToLower(),
+            margin = Margin,
+            showPageNumbers = ShowPageNumbers,
+            styles = CustomStyles
+        };
+        
+        await JS.InvokeVoidAsync("Blazwind.Printable.print", _printArea, options);
+    }
+    
+    /// <summary>
+    /// Get HTML content of print area
+    /// </summary>
+    public async Task<string> GetHtmlAsync()
+    {
+        return await JS.InvokeAsync<string>("Blazwind.Printable.getElementHtml", _printArea);
+    }
+}

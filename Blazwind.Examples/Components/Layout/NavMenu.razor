@@ -1,0 +1,233 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using Blazwind.Components.Navigation
+
+<BwNavMenu>
+    <Header>
+        <BwNavHeader Title="Blazwind" Subtitle="v1.0.0" Icon="fa-solid fa-wind"/>
+    </Header>
+
+    <Search>
+        <BwNavSearch Placeholder="Search components..."/>
+    </Search>
+
+    <ChildContent>
+        @* General *@
+        <BwNavMenuGroup Title="General" Icon="fa-solid fa-house" DefaultExpanded="true">
+            <BwNavMenuItem Label="Home" Href="" Icon="fa-solid fa-home" Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Setup" Href="getting-started" Icon="fa-solid fa-book"/>
+        </BwNavMenuGroup>
+
+        @* Form *@
+        <BwNavMenuGroup Title="Form" Icon="fa-solid fa-rectangle-list">
+            <BwNavMenuItem Label="Form Layouts" Href="components/form-layout" Icon="fa-solid fa-table-cells"/>
+            <BwNavMenuItem Label="Form Validation" Href="components/form-validation" Icon="fa-solid fa-shield"/>
+            <BwNavMenuItem Label="Input" Href="components/input" Icon="fa-solid fa-font" Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Input Button" Href="components/inputbutton" Icon="fa-solid fa-keyboard"/>
+            <BwNavMenuItem Label="Transfer" Href="components/transfer" Icon="fa-solid fa-arrow-right-arrow-left"/>
+            <BwNavMenuItem Label="Autocomplete" Href="components/autocomplete"
+                           Icon="fa-solid fa-magnifying-glass-location"/>
+            <BwNavMenuItem Label="Checkbox" Href="components/checkbox" Icon="fa-solid fa-square-check"/>
+            <BwNavMenuItem Label="Switch" Href="components/switch" Icon="fa-solid fa-toggle-on"/>
+            <BwNavMenuItem Label="Radio" Href="components/radio" Icon="fa-regular fa-circle-dot"/>
+            <BwNavMenuItem Label="Select" Href="components/select" Icon="fa-solid fa-list-check"/>
+            <BwNavMenuItem Label="Textarea" Href="components/textarea" Icon="fa-solid fa-align-left"/>
+            <BwNavMenuItem Label="File Upload" Href="components/file-upload" Icon="fa-solid fa-cloud-arrow-up"/>
+            <BwNavMenuItem Label="Color Picker" Href="components/color-picker" Icon="fa-solid fa-palette"/>
+            <BwNavMenuItem Label="Rating" Href="components/rating" Icon="fa-solid fa-star"/>
+            <BwNavMenuItem Label="Slider" Href="components/slider" Icon="fa-solid fa-sliders"/>
+            <BwNavMenuItem Label="Range" Href="components/range" Icon="fa-solid fa-arrows-left-right"
+                           Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Range Brush" Href="components/range-brush" Icon="fa-solid fa-chart-area"/>
+            <BwNavMenuItem Label="Masked Input" Href="components/masked-input" Icon="fa-solid fa-hashtag"/>
+            <BwNavMenuItem Label="Tag Input" Href="components/tag-input" Icon="fa-solid fa-tags"/>
+            <BwNavMenuItem Label="DatePicker" Href="components/datepicker" Icon="fa-solid fa-calendar-days"/>
+            <BwNavMenuItem Label="TimePicker" Href="components/timepicker" Icon="fa-solid fa-clock"/>
+            <BwNavMenuItem Label="Button" Href="components/button" Icon="fa-solid fa-stop" Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Button Group" Href="components/button-group" Icon="fa-solid fa-grip-lines-vertical"/>
+            <BwNavMenuItem Label="OTP Input" Href="components/otp-input" Icon="fa-solid fa-lock"/>
+            <BwNavMenuItem Label="Mentions" Href="components/mentions" Icon="fa-solid fa-at"/>
+            <BwNavMenuItem Label="Segmented" Href="components/segmented" Icon="fa-solid fa-toggle-on"/>
+            <BwNavMenuItem Label="Signature Pad" Href="components/signature-pad" Icon="fa-solid fa-signature"/>
+        </BwNavMenuGroup>
+
+        @* Layout *@
+        <BwNavMenuGroup Title="Layout" Icon="fa-solid fa-table-columns">
+            <BwNavMenuItem Label="Row & Column" Href="components/layout" Icon="fa-solid fa-grip"/>
+            <BwNavMenuItem Label="Flex" Href="components/flex" Icon="fa-solid fa-arrows-left-right-to-line"/>
+            <BwNavMenuItem Label="User Profile" Href="components/userprofile" Icon="fa-solid fa-user-circle"/>
+            <BwNavMenuItem Label="Card" Href="components/card" Icon="fa-solid fa-id-card"/>
+            <BwNavMenuItem Label="Panel" Href="components/panel" Icon="fa-solid fa-table-list"/>
+            <BwNavMenuItem Label="Grid" Href="components/grid" Icon="fa-solid fa-border-all"/>
+            <BwNavMenuItem Label="Flow" Href="components/flow" Icon="fa-solid fa-grip-lines"/>
+            <BwNavMenuItem Label="Border" Href="components/border" Icon="fa-regular fa-square"/>
+            <BwNavMenuItem Label="Padding & Margin" Href="components/padding-margin" Icon="fa-solid fa-expand"/>
+            <BwNavMenuItem Label="Split Panel" Href="components/split-panel" Icon="fa-solid fa-columns"/>
+        </BwNavMenuGroup>
+
+        @* Utilities *@
+        <BwNavMenuGroup Title="Utilities" Icon="fa-solid fa-wrench">
+            <BwNavMenuItem Label="Copy Button" Href="components/copy-button" Icon="fa-regular fa-copy"/>
+            <BwNavMenuItem Label="Virtual Scroll" Href="components/virtual-scroll" Icon="fa-solid fa-list-ul"/>
+            <BwNavMenuItem Label="Infinite Scroll" Href="components/infinite-scroll"
+                           Icon="fa-solid fa-arrows-down-to-line"/>
+            <BwNavMenuItem Label="Sortable" Href="components/sortable" Icon="fa-solid fa-sort"/>
+            <BwNavMenuItem Label="Collapse" Href="components/collapse" Icon="fa-solid fa-chevron-down"/>
+            <BwNavMenuItem Label="BackToTop" Href="components/back-to-top" Icon="fa-solid fa-arrow-up"/>
+            <BwNavMenuItem Label="Affix" Href="components/affix" Icon="fa-solid fa-thumbtack"/>
+            <BwNavMenuItem Label="Watermark" Href="components/watermark" Icon="fa-solid fa-stamp"/>
+            <BwNavMenuItem Label="Printable" Href="components/printable" Icon="fa-solid fa-print"/>
+            <BwNavMenuItem Label="KPI Cards" Href="components/kpi" Icon="fa-solid fa-chart-line"/>
+            <BwNavMenuItem Label="Guided Tour" Href="components/tour" Icon="fa-solid fa-route"/>
+            <BwNavMenuItem Label="Help Tooltip" Href="components/help-tooltip" Icon="fa-solid fa-circle-question"/>
+        </BwNavMenuGroup>
+
+        @* Data Display *@
+        <BwNavMenuGroup Title="Data Display" Icon="fa-solid fa-database">
+            <BwNavMenuItem Label="List" Href="components/list" Icon="fa-solid fa-list-ul"/>
+            <BwNavMenuItem Label="Table" Href="components/table" Icon="fa-solid fa-table"/>
+            <BwNavMenuItem Label="DataGrid" Href="components/datagrid" Icon="fa-solid fa-table-cells"/>
+            <BwNavMenuItem Label="Tree" Href="components/tree" Icon="fa-solid fa-folder-tree"/>
+            <BwNavMenuItem Label="Label" Href="components/label" Icon="fa-solid fa-font"/>
+            <BwNavMenuItem Label="Badge" Href="components/badge" Icon="fa-solid fa-tag"/>
+            <BwNavMenuItem Label="Avatar" Href="components/avatar" Icon="fa-solid fa-users"/>
+            <BwNavMenuItem Label="Stat Card" Href="components/stat-card" Icon="fa-solid fa-chart-simple"/>
+            <BwNavMenuItem Label="Image Preview" Href="components/imagepreview" Icon="fa-solid fa-images"/>
+            <BwNavMenuItem Label="Skeleton" Href="components/skeleton" Icon="fa-solid fa-spinner"/>
+            <BwNavMenuItem Label="Calendar" Href="components/calendar" Icon="fa-solid fa-calendar-days"/>
+            <BwNavMenuItem Label="RRULE Designer" Href="components/rrule" Icon="fa-solid fa-repeat"/>
+            <BwNavMenuItem Label="Carousel" Href="components/carousel" Icon="fa-solid fa-images"/>
+            <BwNavMenuItem Label="QR Code" Href="components/qr-code" Icon="fa-solid fa-qrcode"/>
+            <BwNavMenuItem Label="CodeBlock" Href="components/code-block" Icon="fa-solid fa-code"/>
+            <BwNavMenuItem Label="Countdown" Href="components/countdown" Icon="fa-solid fa-hourglass-half"/>
+            <BwNavMenuItem Label="Marquee" Href="components/marquee" Icon="fa-solid fa-scroll"/>
+            <BwNavMenuItem Label="Kanban" Href="components/kanban" Icon="fa-solid fa-columns"/>
+            <BwNavMenuItem Label="Barcode" Href="components/barcode" Icon="fa-solid fa-barcode"/>
+            <BwNavMenuItem Label="OrgChart" Href="components/org-chart" Icon="fa-solid fa-sitemap"/>
+            <BwNavMenuItem Label="Workflow" Href="components/workflow" Icon="fa-solid fa-diagram-project"/>
+            <BwNavMenuItem Label="Approval Chain" Href="components/approval-chain" Icon="fa-solid fa-check-double"/>
+            <BwNavMenuItem Label="Comments" Href="components/comment" Icon="fa-regular fa-comments"/>
+            <BwNavMenuItem Label="Chat" Href="components/chat" Icon="fa-solid fa-message"/>
+            <BwNavMenuItem Label="Gantt" Href="components/gantt" Icon="fa-solid fa-bars-progress"/>
+            <BwNavMenuItem Label="Document Viewer" Href="components/document-viewer" Icon="fa-solid fa-file-pdf"/>
+        </BwNavMenuGroup>
+
+        @* Charts (Apache ECharts) *@
+        <BwNavMenuGroup Title="Charts" Icon="fa-solid fa-chart-pie">
+            <BwNavMenuItem Label="Overview" Href="charts" Icon="fa-solid fa-chart-simple" Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Line Chart" Href="charts/line" Icon="fa-solid fa-chart-line"/>
+            <BwNavMenuItem Label="Bar Chart" Href="charts/bar" Icon="fa-solid fa-chart-bar"/>
+            <BwNavMenuItem Label="Pie Chart" Href="charts/pie" Icon="fa-solid fa-chart-pie" Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Area Chart" Href="charts/area" Icon="fa-solid fa-chart-area"/>
+            <BwNavMenuItem Label="Scatter" Href="charts/scatter" Icon="fa-solid fa-braille"/>
+            <BwNavMenuItem Label="Radar" Href="charts/radar" Icon="fa-solid fa-star"/>
+            <BwNavMenuItem Label="Gauge" Href="charts/gauge" Icon="fa-solid fa-gauge-high"/>
+            <BwNavMenuItem Label="Funnel" Href="charts/funnel" Icon="fa-solid fa-filter"/>
+            <BwNavMenuItem Label="Heatmap" Href="charts/heatmap" Icon="fa-solid fa-fire"/>
+            <BwNavMenuItem Label="Treemap" Href="charts/treemap" Icon="fa-solid fa-table-cells"/>
+            <BwNavMenuItem Label="Sunburst" Href="charts/sunburst" Icon="fa-solid fa-sun"/>
+            <BwNavMenuItem Label="Candlestick" Href="charts/candlestick" Icon="fa-solid fa-arrows-up-down"/>
+            <BwNavMenuItem Label="Graph" Href="charts/graph" Icon="fa-solid fa-diagram-project"/>
+            <BwNavMenuItem Label="Boxplot" Href="charts/boxplot" Icon="fa-solid fa-chart-gantt"/>
+            <BwNavMenuItem Label="Sankey" Href="charts/sankey" Icon="fa-solid fa-arrow-right-arrow-left"/>
+            <BwNavMenuItem Label="Parallel" Href="charts/parallel" Icon="fa-solid fa-grip-lines-vertical"/>
+            <BwNavMenuItem Label="ThemeRiver" Href="charts/themeriver" Icon="fa-solid fa-water"/>
+            <BwNavMenuItem Label="Polar" Href="charts/polar" Icon="fa-solid fa-circle-dot"/>
+            <BwNavMenuItem Label="Tree" Href="charts/tree" Icon="fa-solid fa-folder-tree"/>
+            <BwNavMenuItem Label="Pictorial" Href="charts/pictorial" Icon="fa-solid fa-icons"/>
+            <BwNavMenuItem Label="Calendar" Href="charts/calendar" Icon="fa-solid fa-calendar-days"/>
+            <BwNavMenuItem Label="Municipal Dashboard" Href="charts/municipal" Icon="fa-solid fa-city"/>
+            <BwNavMenuItem Label="CBS/GIS" Href="charts/gis" Icon="fa-solid fa-map-location-dot"/>
+
+            <BwNavMenuGroup Title="Advanced & AI" Icon="fa-solid fa-robot">
+                <BwNavMenuItem Label="Knowledge Graph" Href="charts/knowledge-graph" Icon="fa-solid fa-circle-nodes"/>
+                <BwNavMenuItem Label="Correlation" Href="charts/correlation"
+                               Icon="fa-solid fa-magnifying-glass-chart"/>
+                <BwNavMenuItem Label="Clustering" Href="charts/clustering" Icon="fa-solid fa-users-viewfinder"/>
+                <BwNavMenuItem Label="Bar Race" Href="charts/bar-race" Icon="fa-solid fa-flag-checkered"/>
+                <BwNavMenuItem Label="Confidence" Href="charts/confidence" Icon="fa-solid fa-shield-halved"/>
+                <BwNavMenuItem Label="Effect Scatter" Href="charts/effect-scatter" Icon="fa-solid fa-bullseye"/>
+                <BwNavMenuItem Label="Dynamic Data" Href="charts/dynamic" Icon="fa-solid fa-heart-pulse"/>
+                <BwNavMenuItem Label="Nightingale" Href="charts/nightingales" Icon="fa-solid fa-fan"/>
+                <BwNavMenuItem Label="Dataset" Href="charts/dataset" Icon="fa-solid fa-database"/>
+                <BwNavMenuItem Label="Mixed Chart" Href="charts/mixed" Icon="fa-solid fa-layer-group"/>
+                <BwNavMenuItem Label="Stacked Area" Href="charts/stacked-area" Icon="fa-solid fa-layer-group"/>
+                <BwNavMenuItem Label="Gradient Area" Href="charts/gradient-stacked-area" Icon="fa-solid fa-fill-drip"/>
+                <BwNavMenuItem Label="Les Misérables" Href="charts/les-miserables" Icon="fa-solid fa-circle-nodes"/>
+                <BwNavMenuItem Label="Chord" Href="charts/chord" Icon="fa-solid fa-arrows-spin"/>
+            </BwNavMenuGroup>
+
+            <BwNavMenuGroup Title="Geo Charts" Icon="fa-solid fa-globe">
+                <BwNavMenuItem Label="Geo Graph" Href="charts/geo-graph" Icon="fa-solid fa-plane"/>
+                <BwNavMenuItem Label="Geo Choropleth" Href="charts/geo-choropleth" Icon="fa-solid fa-map"/>
+                <BwNavMenuItem Label="Pie on Geo" Href="charts/pie-on-geo" Icon="fa-solid fa-map-pin"/>
+            </BwNavMenuGroup>
+        </BwNavMenuGroup>
+
+        @* Map (MapLibre) *@
+        <BwNavMenuGroup Title="Map" Icon="fa-solid fa-map">
+            <BwNavMenuItem Label="Overview" Href="maps" Icon="fa-solid fa-map-location-dot" Match="NavLinkMatch.All"/>
+            <BwNavMenuItem Label="Basic Map" Href="maps/basic" Icon="fa-solid fa-image"/>
+            <BwNavMenuItem Label="Markers" Href="maps/markers" Icon="fa-solid fa-location-dot"/>
+            <BwNavMenuItem Label="Layers" Href="maps/layers" Icon="fa-solid fa-layer-group"/>
+            <BwNavMenuItem Label="Advanced" Href="maps/advanced" Icon="fa-solid fa-wand-magic-sparkles"/>
+            <BwNavMenuItem Label="Events" Href="maps/events" Icon="fa-solid fa-file-waveform"/>
+            <BwNavMenuItem Label="Context Menu" Href="maps/context-menu" Icon="fa-solid fa-computer-mouse"/>
+            <BwNavMenuItem Label="Fullscreen Demo" Href="demos/fullscreen-map" Icon="fa-solid fa-expand"/>
+        </BwNavMenuGroup>
+
+
+
+        @* Feedback *@
+        <BwNavMenuGroup Title="Feedback" Icon="fa-solid fa-bell">
+            <BwNavMenuItem Label="Alert" Href="components/alert" Icon="fa-solid fa-triangle-exclamation"/>
+            <BwNavMenuItem Label="Toast" Href="components/toast" Icon="fa-solid fa-bell"/>
+            <BwNavMenuItem Label="Dialog" Href="components/dialog" Icon="fa-solid fa-window-restore"/>
+            <BwNavMenuItem Label="Drawer" Href="components/drawer" Icon="fa-solid fa-bars-staggered"/>
+            <BwNavMenuItem Label="Progress" Href="components/progress" Icon="fa-solid fa-bars-progress"/>
+            <BwNavMenuItem Label="Tooltip" Href="components/tooltip" Icon="fa-solid fa-comment-dots"/>
+            <BwNavMenuItem Label="Popover" Href="components/popover" Icon="fa-solid fa-comment"/>
+            <BwNavMenuItem Label="Notification Center" Href="components/notificationcenter"
+                           Icon="fa-solid fa-bell-concierge"/>
+            <BwNavMenuItem Label="Confetti" Href="components/confetti" Icon="fa-solid fa-gift"/>
+            <BwNavMenuItem Label="Empty State" Href="components/emptystate" Icon="fa-solid fa-box-open"/>
+            <BwNavMenuItem Label="Result" Href="components/result" Icon="fa-solid fa-circle-check"/>
+        </BwNavMenuGroup>
+
+        @* Navigation *@
+        <BwNavMenuGroup Title="Navigation" Icon="fa-solid fa-compass">
+            <BwNavMenuItem Label="Nav Menu" Href="components/navmenu" Icon="fa-solid fa-bars"/>
+            <BwNavMenuItem Label="Tabs" Href="components/tabs" Icon="fa-solid fa-layer-group"/>
+            <BwNavMenuItem Label="Accordion" Href="components/accordion" Icon="fa-solid fa-align-justify"/>
+            <BwNavMenuItem Label="Breadcrumb" Href="components/breadcrumb" Icon="fa-solid fa-route"/>
+            <BwNavMenuItem Label="Pagination" Href="components/pagination" Icon="fa-solid fa-angles-right"/>
+            <BwNavMenuItem Label="Timeline" Href="components/timeline" Icon="fa-solid fa-timeline"/>
+            <BwNavMenuItem Label="Stepper" Href="components/stepper" Icon="fa-solid fa-shoe-prints"/>
+            <BwNavMenuItem Label="FAB" Href="components/fab" Icon="fa-solid fa-circle-plus"/>
+            <BwNavMenuItem Label="Toolbar" Href="components/toolbar" Icon="fa-solid fa-toolbox"/>
+            <BwNavMenuItem Label="Bottom Nav" Href="components/bottomnav" Icon="fa-solid fa-mobile-alt"/>
+            <BwNavMenuItem Label="Command Palette" Href="components/commandpalette" Icon="fa-solid fa-terminal"/>
+
+            @* Sub group example *@
+            <BwNavMenuGroup Title="Sub Menus" Icon="fa-solid fa-folder">
+                <BwNavMenuItem Label="Dropdown" Href="components/dropdown" Icon="fa-solid fa-square-caret-down"/>
+                <BwNavMenuItem Label="Context Menu" Href="components/context-menu" Icon="fa-solid fa-computer-mouse"/>
+
+                @* Deeper *@
+                <BwNavMenuGroup Title="Custom Menus">
+                    <BwNavMenuItem Label="Mega Menu" Href="components/mega-menu" Icon="fa-solid fa-bars"/>
+                    <BwNavMenuItem Label="Side Panel" Href="components/side-panel" Icon="fa-solid fa-table-columns"/>
+                </BwNavMenuGroup>
+            </BwNavMenuGroup>
+        </BwNavMenuGroup>
+    </ChildContent>
+
+    <Footer>
+        <BwNavFooter Title="Cihad" Subtitle="Admin" Icon="fa-solid fa-user">
+            <button
+                class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        </BwNavFooter>
+    </Footer>
+</BwNavMenu>

@@ -1,0 +1,81 @@
+@page "/components/avatar"
+@using Blazwind.Components.Typography
+
+<PageTitle>Avatar Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Avatar"
+            Description="Avatar components for user profiles and groups."
+            Icon="fa-solid fa-user-circle"
+            Color="BwColor.Primary"/>
+
+    @* Single Avatar *@
+    <BwCard Title="Single Avatar" Subtitle="Name initials or image." Icon="fa-regular fa-user" Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwAvatar Name="Ali Yılmaz"/>
+            <BwAvatar Name="Mehmet Demir" Size="BwSize.Large"/>
+            <BwAvatar Name="Small User" Size="BwSize.Small"/>
+        </BwRow>
+    </BwCard>
+
+    @* Status *@
+    <BwCard Title="Status Indicator" Subtitle="Reporting status with StatusColor." Icon="fa-solid fa-circle-dot"
+            Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Spacing="BwSpacing.Xs" Class="items-center">
+                <BwAvatar Name="Online" StatusColor="BwColor.Success"/>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Online</BwTypography>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Xs" Class="items-center">
+                <BwAvatar Name="Offline" StatusColor="BwColor.Secondary"/>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Offline</BwTypography>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Xs" Class="items-center">
+                <BwAvatar Name="Busy" StatusColor="BwColor.Danger"/>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Busy</BwTypography>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Xs" Class="items-center">
+                <BwAvatar Name="Away" StatusColor="BwColor.Warning"/>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Away</BwTypography>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Avatar Group *@
+    <BwCard Title="Avatar Group" Subtitle="Basic Usage" Icon="fa-solid fa-users" Color="BwColor.Primary">
+        <BwAvatarGroup Avatars="@_avatars"/>
+    </BwCard>
+
+    @* Max Display *@
+    <BwCard Title="Group Limit" Subtitle="Setting limit with MaxDisplay" Icon="fa-solid fa-hashtag"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">MaxDisplay=3</BwTypography>
+                <BwAvatarGroup Avatars="@_manyAvatars" MaxDisplay="3"/>
+            </BwColumn>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private readonly List<AvatarItem> _avatars = new()
+    {
+        new AvatarItem { Name = "Ahmet Yılmaz" },
+        new AvatarItem { Name = "Mehmet Demir" },
+        new AvatarItem { Name = "Ayşe Kaya" }
+    };
+
+    private readonly List<AvatarItem> _manyAvatars = new()
+    {
+        new AvatarItem { Name = "Ahmet Yılmaz" },
+        new AvatarItem { Name = "Mehmet Demir" },
+        new AvatarItem { Name = "Ayşe Kaya" },
+        new AvatarItem { Name = "Fatma Çelik" },
+        new AvatarItem { Name = "Ali Öztürk" },
+        new AvatarItem { Name = "Zeynep Arslan" },
+        new AvatarItem { Name = "Can Koç" }
+    };
+
+}

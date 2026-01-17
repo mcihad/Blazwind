@@ -1,0 +1,99 @@
+@page "/components/notificationcenter"
+@using Blazwind.Components.Notification
+
+<PageTitle>NotificationCenter Demo - Blazwind</PageTitle>
+@inject NotificationService NotificationService
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwRow MainAxisAlignment="BwMainAxisAlignment.SpaceBetween" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+        <BwHero Title="Notification Center" Description="Notification center component." Icon="fa-solid fa-bell"
+                Color="BwColor.Primary"/>
+
+        <BwNotificationCenter/>
+    </BwRow>
+
+    <BwCard Title="Add Notification" Subtitle="Add different types of notifications" Icon="fa-solid fa-plus-circle">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Variant="BwVariant.Outline" Color="BwColor.Info" OnClick="AddInfo" Icon="fa-solid fa-info-circle"
+                      Text="Info"/>
+            <BwButton Variant="BwVariant.Outline" Color="BwColor.Success" OnClick="AddSuccess"
+                      Icon="fa-solid fa-check-circle" Text="Success"/>
+            <BwButton Variant="BwVariant.Outline" Color="BwColor.Warning" OnClick="AddWarning"
+                      Icon="fa-solid fa-exclamation-triangle" Text="Warning"/>
+            <BwButton Variant="BwVariant.Outline" Color="BwColor.Danger" OnClick="AddError"
+                      Icon="fa-solid fa-times-circle" Text="Error"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Bulk Operations" Subtitle="Manage multiple notifications" Icon="fa-solid fa-tasks"
+            Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Variant="BwVariant.Ghost" OnClick="AddBulk" Icon="fa-solid fa-plus" Text="Add 5 Notifications"/>
+            <BwButton Variant="BwVariant.Ghost" OnClick="MarkAllRead" Icon="fa-solid fa-check-double"
+                      Text="Mark All as Read"/>
+            <BwButton Variant="BwVariant.Ghost" Color="BwColor.Danger" OnClick="ClearAll" Icon="fa-solid fa-trash"
+                      Text="Clear All"/>
+        </BwRow>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Badge Counter" Subtitle="Unread notification count" Icon="fa-solid fa-bell"
+                Color="BwColor.Danger"/>
+        <BwCard Title="Type Colors" Subtitle="Info, Success, Warning, Error" Icon="fa-solid fa-palette"
+                Color="BwColor.Info"/>
+        <BwCard Title="Time Display" Subtitle='In "2 min ago" format' Icon="fa-solid fa-clock"
+                Color="BwColor.Success"/>
+        <BwCard Title="Read Status" Subtitle="Click to mark as read" Icon="fa-solid fa-eye" Color="BwColor.Warning"/>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Lg">
+        <BwStatCard Title="Total Notifications" Value="@NotificationService.Notifications.Count.ToString()"
+                    Icon="fa-solid fa-bell" Color="BwColor.Secondary"/>
+        <BwStatCard Title="Unread" Value="@NotificationService.UnreadCount.ToString()" Icon="fa-solid fa-envelope"
+                    Color="BwColor.Primary"/>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private int _counter = 1;
+
+    private void AddInfo()
+    {
+        NotificationService.AddInfo($"Info message #{_counter++}");
+    }
+
+    private void AddSuccess()
+    {
+        NotificationService.AddSuccess($"Operation completed successfully #{_counter++}");
+    }
+
+    private void AddWarning()
+    {
+        NotificationService.AddWarning($"Warning! Warning message #{_counter++}");
+    }
+
+    private void AddError()
+    {
+        NotificationService.AddError($"An error occurred #{_counter++}");
+    }
+
+    private void AddBulk()
+    {
+        NotificationService.AddInfo("New update available");
+        NotificationService.AddSuccess("File uploaded");
+        NotificationService.AddWarning("Disk space is running low");
+        NotificationService.AddError("Connection timed out");
+        NotificationService.AddInfo("You have 5 new messages");
+    }
+
+    private void MarkAllRead()
+    {
+        NotificationService.MarkAllAsRead();
+    }
+
+    private void ClearAll()
+    {
+        NotificationService.ClearAll();
+    }
+
+}

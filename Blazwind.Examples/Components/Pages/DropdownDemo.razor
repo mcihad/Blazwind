@@ -1,0 +1,102 @@
+@page "/components/dropdown"
+@using Blazwind.Components.Dropdown
+@inject ToastService ToastService
+@inject DialogService DialogService
+
+<PageTitle>Dropdown Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Dropdown" Description="Dropdown menu that hides actions or options and shows them when clicked."
+            Icon="fa-solid fa-square-caret-down" Color="BwColor.Primary"/>
+
+    @* Basic Examples *@
+    <BwCard Title="Basic Usage" Subtitle="Dropdown menus with button and icon triggers" Icon="fa-solid fa-list"
+            Color="BwColor.Primary">
+        <DemoDropdownContainer>
+            <BwDropdown>
+                <TriggerContent>
+                    <BwButton Text="Options" Icon="fa-solid fa-chevron-down" IconPosition="BwIconPosition.Right"/>
+                </TriggerContent>
+                <ChildContent>
+                    <BwDropdownItem Text="Edit" Icon="fa-solid fa-pen"/>
+                    <BwDropdownItem Text="Copy" Icon="fa-solid fa-copy"/>
+                    <BwDropdownItem IsDivider="true"/>
+                    <BwDropdownItem Text="Delete" Icon="fa-solid fa-trash"
+                                    Class="text-red-600 hover:text-red-700 hover:bg-red-50"/>
+                </ChildContent>
+            </BwDropdown>
+
+            <BwDropdown>
+                <TriggerContent>
+                    <BwButton Color="BwColor.Secondary" Variant="BwVariant.Ghost"
+                              Icon="fa-solid fa-ellipsis-vertical"/>
+                </TriggerContent>
+                <ChildContent>
+                    <BwDropdownItem Text="Details" Icon="fa-solid fa-info" OnClick="ShowDetails"/>
+                    <BwDropdownItem Text="Share" Icon="fa-solid fa-share" OnClick="ShowShareToast"/>
+                    <BwDropdownItem Text="Print" Icon="fa-solid fa-print" OnClick="ShowPrintToast"/>
+                    <BwDropdownItem IsDivider="true"/>
+
+                    <BwDropdownItem Text="Settings" Icon="fa-solid fa-gear" OnClick="ShowSettings"/>
+                    <BwDropdownItem Text="Logout" Icon="fa-solid fa-sign-out"
+                                    Class="text-red-600 hover:text-red-700 hover:bg-red-50" OnClick="Logout"/>
+                </ChildContent>
+            </BwDropdown>
+
+            @* Left Aligned Example *@
+            <BwDropdown Alignment="BwDirection.Left">
+                <TriggerContent>
+                    <BwButton Text="Left Aligned" Icon="fa-solid fa-align-left" IconPosition="BwIconPosition.Left"
+                              Color="BwColor.Success"/>
+                </TriggerContent>
+                <ChildContent>
+                    <BwDropdownItem Text="Left 1"/>
+                    <BwDropdownItem Text="Left 2"/>
+                </ChildContent>
+            </BwDropdown>
+        </DemoDropdownContainer>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private async Task ShowDetails()
+    {
+        await DialogService.ShowAlertAsync("Details", "Detailed information about this item will be here.");
+    }
+
+    private async Task ShowShareToast()
+    {
+        await ToastService.SuccessAsync("Content shared successfully.", "Shared");
+    }
+
+    private async Task ShowPrintToast()
+    {
+        await ToastService.InfoAsync("Document sent to printer...", "Printing");
+    }
+
+    private async Task ShowClose()
+    {
+        var result = await DialogService.ShowConfirmAsync("Close", "Are you sure you want to close the window?", "Yes", "No");
+        if (result)
+        {
+            await ToastService.InfoAsync("Operation canceled.", "Closed");
+        }
+    }
+
+    private async Task ShowSettings()
+    {
+        await ToastService.WarningAsync("Redirecting to settings page.", "Settings");
+    }
+
+    private async Task Logout()
+    {
+        var result = await DialogService.ShowConfirmAsync("Logout", "Are you sure you want to logout?", "Yes, Logout", "Cancel",
+            BwColor.Danger);
+        if (result)
+        {
+            await ToastService.SuccessAsync("Session terminated successfully.", "Logged Out");
+        }
+    }
+
+}

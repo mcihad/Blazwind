@@ -1,0 +1,42 @@
+@using Blazwind.Components.Shared
+@namespace Blazwind.Components.Layout
+
+@{
+    var positionClasses = Position == BwDirection.Left 
+        ? "left-0 border-r -translate-x-full lg:translate-x-0" 
+        : "right-0 border-l translate-x-full lg:translate-x-0";
+    
+    // We expect 3 values: bg, text, border
+    // We expect 3 values: bg, text, border
+    var (bgClass, textClass, borderClass) = Color switch
+    {
+        BwColor.Dark => ("bg-slate-900", "text-slate-300", "border-slate-800"),
+        BwColor.Primary => ("bg-blue-900", "text-blue-100", "border-blue-800"),
+        _ => ("bg-white dark:bg-gray-900", "text-gray-900 dark:text-gray-100", "border-gray-200 dark:border-gray-800") // Light/Default
+    };
+}
+
+@* Mobile Overlay *@
+<div id="bw-sidebar-overlay" 
+     class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity"
+     onclick="Blazwind.Sidebar.close()">
+</div>
+
+@* Sidebar - z-40 so dialogs (z-50) appear above *@
+<aside id="bw-sidebar" 
+       class="fixed top-0 z-40 @Width h-screen @bgClass @textClass @borderClass
+              transform lg:translate-x-0
+              transition-transform duration-300 ease-in-out
+              flex flex-col overflow-y-auto @positionClasses @Class">
+    <CascadingValue Value="Color">
+        @ChildContent
+    </CascadingValue>
+</aside>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string Width { get; set; } = "w-64";
+    [Parameter] public BwDirection Position { get; set; } = BwDirection.Left;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Light;
+}

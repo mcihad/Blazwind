@@ -1,0 +1,140 @@
+@page "/components/panel"
+@using Blazwind.Components.Dropdown
+
+<PageTitle>Panel Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Panel Component"
+            Description="Advanced container providing content grouping, header, toolbox and footer support. Now variant supported!"
+            Icon="fa-solid fa-rectangle-list"
+            Color="BwColor.Info"/>
+
+    <BwPanel Title="Panel Variants" Color="BwColor.Secondary">
+        <ChildContent>
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwRow Wrap="true">
+                    <BwColumn Span="12" Md="6">
+                        <BwPanel Title="Primary Variant" Color="BwColor.Primary">
+                            <ChildContent>Primary color scheme.</ChildContent>
+                        </BwPanel>
+                    </BwColumn>
+                    <BwColumn Span="12" Md="6">
+                        <BwPanel Title="Success Variant" Color="BwColor.Success">
+                            <ChildContent>Success color scheme.</ChildContent>
+                        </BwPanel>
+                    </BwColumn>
+                </BwRow>
+
+                <BwRow Wrap="true">
+                    <BwColumn Span="12" Md="6">
+                        <BwPanel Title="Warning Variant" Color="BwColor.Warning">
+                            <ChildContent>Warning color scheme.</ChildContent>
+                        </BwPanel>
+                    </BwColumn>
+                    <BwColumn Span="12" Md="6">
+                        <BwPanel Title="Danger Variant" Color="BwColor.Danger">
+                            <ChildContent>Danger color scheme.</ChildContent>
+                        </BwPanel>
+                    </BwColumn>
+                </BwRow>
+
+                <BwRow Wrap="true">
+                    <BwColumn Span="12" Md="6">
+                        <BwPanel Title="Info Variant" Color="BwColor.Info">
+                            <ChildContent>Info color scheme.</ChildContent>
+                        </BwPanel>
+                    </BwColumn>
+                    <BwColumn Span="12" Md="6">
+                        <BwPanel Title="Dark Variant" Color="BwColor.Dark">
+                            <ChildContent>Dark mode panel.</ChildContent>
+                        </BwPanel>
+                    </BwColumn>
+                </BwRow>
+            </BwColumn>
+        </ChildContent>
+    </BwPanel>
+
+    <BwCard Title="Advanced Features" Subtitle="Collapsible, Fullscreen and Footer Support"
+            Icon="fa-solid fa-wand-magic-sparkles" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwPanel Title="Interactive Panel" Subtitle="Collapsible and Fullscreen" Collapsible="true"
+                     IsFullscreenable="true" Color="BwColor.Primary">
+                <Toolbox>
+                    <BwButton Icon="fa-solid fa-arrows-rotate" Size="BwSize.Small" Color="BwColor.Primary"
+                              Variant="BwVariant.Ghost" OnClick="@(() => ShowToast("Data refreshed"))"/>
+                    <BwButton Icon="fa-solid fa-gear" Size="BwSize.Small" Color="BwColor.Primary"
+                              Variant="BwVariant.Ghost" OnClick="@(() => ShowToast("Settings opened"))"/>
+                    <BwDropdown>
+                        <TriggerContent>
+                            <BwButton Icon="fa-solid fa-ellipsis" Size="BwSize.Small" Color="BwColor.Primary"
+                                      Variant="BwVariant.Ghost"/>
+                        </TriggerContent>
+                        <ChildContent>
+                            <BwDropdownItem Text="Export" Icon="fa-solid fa-file-export"
+                                            OnClick="@(() => ShowToast("Exporting..."))"/>
+                            <BwDropdownItem Text="Print" Icon="fa-solid fa-print"
+                                            OnClick="@(() => ShowToast("Printing..."))"/>
+                            <BwDropdownItem Text="Share" Icon="fa-solid fa-share-nodes"
+                                            OnClick="@(() => ShowToast("Share link copied"))"/>
+                            <BwDropdownItem IsDivider="true"/>
+                            <BwDropdownItem Text="Copy" Icon="fa-solid fa-copy"
+                                            OnClick="@(() => ShowToast("Panel copied"))"/>
+                            <BwDropdownItem Text="Move" Icon="fa-solid fa-arrows-up-down-left-right"
+                                            OnClick="@(() => ShowToast("Move mode active"))"/>
+                            <BwDropdownItem IsDivider="true"/>
+                            <BwDropdownItem Text="Delete" Icon="fa-solid fa-trash"
+                                            Class="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                            OnClick="@(() => ShowToast("Panel deleted", BwColor.Danger))"/>
+                        </ChildContent>
+                    </BwDropdown>
+                </Toolbox>
+                <ChildContent>
+                    <div
+                        class="h-64 flex flex-col items-center justify-center bg-gray-50 rounded border border-dashed border-gray-200">
+                        <i class="fa-solid fa-chart-line text-4xl text-gray-300 mb-2"></i>
+                        <span class="text-gray-500">Panel Content (Chart, Form, List etc.)</span>
+                        <p class="text-xs text-gray-400 mt-2 text-center max-w-md">
+                            You can collapse or fullscreen this panel using the buttons in the header.
+                            In fullscreen mode, you can exit using the "Esc" key or the minimize button.
+                        </p>
+                    </div>
+                </ChildContent>
+            </BwPanel>
+
+            <BwPanel Title="Footer and Actions" Subtitle="Using button groups in the bottom section">
+                <ChildContent>
+                    <p class="text-gray-600">
+                        This panel includes a "Footer" area that is ideal for scenarios such as form operations or
+                        confirmation dialogs.
+                        The right-aligned button group is created with a standard BwRow.
+                    </p>
+                </ChildContent>
+                <Footer>
+                    <BwRow Class="w-full" MainAxisAlignment="BwMainAxisAlignment.End" Spacing="BwSpacing.Sm">
+                        <BwButton Text="Cancel" Color="BwColor.Secondary" Variant="BwVariant.Ghost"
+                                  OnClick="@(() => ShowToast("Operation cancelled", BwColor.Info))"/>
+                        <BwButton Text="Save" Color="BwColor.Primary" Icon="fa-solid fa-check"
+                                  OnClick="@(() => ShowToast("Changes saved", BwColor.Success))"/>
+                    </BwRow>
+                </Footer>
+            </BwPanel>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@inject ToastService ToastService
+
+@code {
+
+    private async Task ShowToast(string message, BwColor color = BwColor.Success)
+    {
+        await ToastService.ShowAsync(new ToastOptions
+        {
+            Message = message,
+            Color = color,
+            Position = BwToastPosition.BottomRight,
+            Duration = 3000
+        });
+    }
+
+}

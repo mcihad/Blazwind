@@ -1,0 +1,185 @@
+@page "/components/kanban"
+@using Blazwind.Components.Kanban
+@using static Blazwind.Components.Kanban.BwKanban
+@inject ToastService ToastService
+
+<PageTitle>Kanban Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Kanban Component" Description="Drag-and-drop supported Kanban board component."
+            Icon="fa-solid fa-columns" Color="BwColor.Info"/>
+
+    <BwCard Title="Project Management" Subtitle="Task tracking board" Icon="fa-solid fa-tasks" Color="BwColor.Primary">
+        <BwKanban Columns="_columns" OnItemMoved="HandleItemMoved" OnItemClick="HandleItemClick"
+                  OnAddClick="HandleAddClick"/>
+    </BwCard>
+
+    <BwCard Title="Simple Kanban" Subtitle="Basic usage" Icon="fa-solid fa-list-check" Color="BwColor.Success">
+        <BwKanban Columns="_simpleColumns" ShowAddButton="false"/>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<KanbanColumn> _columns = new();
+    private List<KanbanColumn> _simpleColumns = new();
+
+    protected override void OnInitialized()
+    {
+        _columns = new List<KanbanColumn>
+        {
+            new()
+            {
+                Id = "backlog",
+                Title = "Backlog",
+                Icon = "fa-solid fa-inbox",
+                Color = BwColor.Secondary,
+                Items = new List<KanbanItem>
+                {
+                    new()
+                    {
+                        Title = "User Research",
+                        Description = "User research will be conducted for the target audience",
+                        Tags = new List<string> { "Research", "UX" },
+                        DueDate = DateTime.Today.AddDays(7)
+                    },
+                    new()
+                    {
+                        Title = "Competitor Analysis",
+                        Description = "Market research and competitor product analysis",
+                        Tags = new List<string> { "Analysis" }
+                    }
+                }
+            },
+            new()
+            {
+                Id = "todo",
+                Title = "To Do",
+                Icon = "fa-solid fa-list",
+                Color = BwColor.Primary,
+                Items = new List<KanbanItem>
+                {
+                    new()
+                    {
+                        Title = "API Integration",
+                        Description = "Frontend integration with backend API",
+                        Tags = new List<string> { "Backend", "API" },
+                        Assignee = new KanbanAssignee { Name = "Ahmet Y.", Avatar = "https://i.pravatar.cc/150?img=1" },
+                        DueDate = DateTime.Today.AddDays(3)
+                    },
+                    new()
+                    {
+                        Title = "Unit Tests",
+                        Description = "Unit tests to be written for critical functions",
+                        Tags = new List<string> { "Test" },
+                        Assignee = new KanbanAssignee { Name = "Mehmet K." }
+                    }
+                }
+            },
+            new()
+            {
+                Id = "inprogress",
+                Title = "In Progress",
+                Icon = "fa-solid fa-spinner",
+                Color = BwColor.Warning,
+                Items = new List<KanbanItem>
+                {
+                    new()
+                    {
+                        Title = "Dashboard Design",
+                        Description = "Main page dashboard design and implementation",
+                        Tags = new List<string> { "UI", "Frontend" },
+                        Assignee = new KanbanAssignee { Name = "Ayşe D.", Avatar = "https://i.pravatar.cc/150?img=5" },
+                        DueDate = DateTime.Today.AddDays(1)
+                    }
+                }
+            },
+            new()
+            {
+                Id = "review",
+                Title = "Review",
+                Icon = "fa-solid fa-eye",
+                Color = BwColor.Info,
+                Items = new List<KanbanItem>
+                {
+                    new()
+                    {
+                        Title = "Login Page",
+                        Description = "User login page waiting for code review",
+                        Tags = new List<string> { "Auth", "Review" },
+                        Assignee = new KanbanAssignee { Name = "Fatma Ş." }
+                    }
+                }
+            },
+            new()
+            {
+                Id = "done",
+                Title = "Done",
+                Icon = "fa-solid fa-check",
+                Color = BwColor.Success,
+                Items = new List<KanbanItem>
+                {
+                    new()
+                    {
+                        Title = "Project Setup",
+                        Description = "Blazor project and basic configuration",
+                        Tags = new List<string> { "Setup" },
+                        Assignee = new KanbanAssignee { Name = "Ali Ö." }
+                    }
+                }
+            }
+        };
+
+        _simpleColumns = new List<KanbanColumn>
+        {
+            new()
+            {
+                Title = "To Do",
+                Color = BwColor.Primary,
+                Items = new List<KanbanItem>
+                {
+                    new() { Title = "Task 1" },
+                    new() { Title = "Task 2" }
+                }
+            },
+            new()
+            {
+                Title = "In Progress",
+                Color = BwColor.Warning,
+                Items = new List<KanbanItem>
+                {
+                    new() { Title = "Task 3" }
+                }
+            },
+            new()
+            {
+                Title = "Done",
+                Color = BwColor.Success,
+                Items = new List<KanbanItem>
+                {
+                    new() { Title = "Task 4" }
+                }
+            }
+        };
+    }
+
+    private async Task HandleItemMoved(KanbanMoveEvent e)
+    {
+        await ToastService.ShowAsync(new ToastOptions { Message = $"'{e.Item?.Title}' moved: {e.SourceColumn?.Title} → {e.TargetColumn?.Title}", Color = BwColor.Success });
+    }
+
+    private async Task HandleItemClick(KanbanItem item)
+    {
+        await ToastService.ShowAsync(new ToastOptions { Message = $"Card selected: {item.Title}", Color = BwColor.Info });
+    }
+
+    private async Task HandleAddClick(KanbanColumn column)
+    {
+        await ToastService.ShowAsync(new ToastOptions
+        {
+            Message = $"New card will be added to '{column.Title}' column",
+            Color =
+                BwColor.Info
+        });
+    }
+
+}

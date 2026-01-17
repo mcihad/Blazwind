@@ -1,0 +1,72 @@
+@page "/components/breadcrumb"
+@using Blazwind.Components.Breadcrumb
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Typography
+<PageTitle>Breadcrumb Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Breadcrumb"
+            Description="Navigation component that shows the user's position in the site hierarchy."
+            Icon="fa-solid fa-slash"
+            Color="BwColor.Secondary"/>
+
+    @* Basic Examples *@
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Basic Usage" Subtitle="Standard navigation path" Icon="fa-solid fa-route"
+                    Color="BwColor.Primary">
+                <BwBreadcrumb>
+                    <BwBreadcrumbItem Text="Home" Href="/" Icon="fa-solid fa-home"/>
+                    <BwBreadcrumbItem Text="Components" Href="/components"/>
+                    <BwBreadcrumbItem Text="Breadcrumb" IsActive="true"/>
+                </BwBreadcrumb>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Icon Usage" Subtitle="Icon support for each step" Icon="fa-solid fa-icons"
+                    Color="BwColor.Primary">
+                <BwBreadcrumb>
+                    <BwBreadcrumbItem Text="Home" Href="/" Icon="fa-solid fa-house"/>
+                    <BwBreadcrumbItem Text="Projects" Href="#" Icon="fa-solid fa-diagram-project"/>
+                    <BwBreadcrumbItem Text="Settings" IsActive="true" Icon="fa-solid fa-gear"/>
+                </BwBreadcrumb>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Custom Separators *@
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Custom Separator (Text)" Subtitle="Using SeparatorTemplate for custom characters"
+                    Icon="fa-solid fa-hashtag" Color="BwColor.Warning">
+                <BwBreadcrumb>
+                    <SeparatorTemplate>
+                        <BwTypography Class="mx-1 text-gray-300">/</BwTypography>
+                    </SeparatorTemplate>
+                    <ChildContent>
+                        <BwBreadcrumbItem Text="Root" Href="#"/>
+                        <BwBreadcrumbItem Text="Branch" Href="#"/>
+                        <BwBreadcrumbItem Text="Leaf" IsActive="true"/>
+                    </ChildContent>
+                </BwBreadcrumb>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Custom Separator (Icon)" Subtitle="Using SeparatorTemplate for icon"
+                    Icon="fa-solid fa-arrow-right" Color="BwColor.Success">
+                <BwBreadcrumb>
+                    <SeparatorTemplate>
+                        <BwIcon Name="fa-solid fa-chevron-right" Size="BwSize.ExtraSmall" Class="mx-1 text-gray-300"/>
+                    </SeparatorTemplate>
+                    <ChildContent>
+                        <BwBreadcrumbItem Text="Step 1" Href="#"/>
+                        <BwBreadcrumbItem Text="Step 2" Href="#"/>
+                        <BwBreadcrumbItem Text="Step 3" IsActive="true"/>
+                    </ChildContent>
+                </BwBreadcrumb>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+</BwColumn>

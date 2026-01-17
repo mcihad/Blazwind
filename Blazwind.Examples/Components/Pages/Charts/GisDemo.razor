@@ -1,0 +1,199 @@
+@page "/charts/gis"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>CBS/GIS Grafikleri - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="CBS (Coğrafi Bilgi Sistemi) Grafikleri" 
+            Description="Coğrafi veri analizi ve görselleştirme için özel grafikler."
+            Icon="fa-solid fa-map-location-dot"
+            Color="BwColor.Success" />
+
+    @* Bilgi Kutusu *@
+    <div class="p-4 bg-blue-50 border border-blue-200 rounded">
+        <div class="flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-blue-600 text-xl mt-0.5"></i>
+            <div>
+                <h4 class="font-semibold text-blue-800 mb-1">CBS Entegrasyonu Hakkında</h4>
+                <p class="text-sm text-blue-700">
+                    Gerçek harita görselleştirmesi için <a href="/components/maplibre" class="underline hover:text-blue-900">BwMapLibre</a> bileşenini kullanabilirsiniz.
+                    Bu sayfa, CBS verilerinin grafik olarak analizini göstermektedir.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Arazi Kullanımı *@
+        <BwCard Title="Arazi Kullanım Dağılımı" Subtitle="Şehir arazi sınıflandırması." Icon="fa-solid fa-layer-group" Color="BwColor.Primary">
+            <BwChart Options="_landUsePie" Height="300px" />
+        </BwCard>
+
+        @* Yoğunluk Analizi *@
+        <BwCard Title="Bölge Yoğunluk Analizi" Subtitle="Nüfus/alan oranı." Icon="fa-solid fa-users-rectangle" Color="BwColor.Info">
+            <BwChart Options="_densityBar" Height="300px" />
+        </BwCard>
+    </BwRow>
+
+    @* Altyapı Durumu *@
+    <BwCard Title="Altyapı Kapsama Oranları" Subtitle="Mahalle bazlı altyapı durumu." Icon="fa-solid fa-network-wired" Color="BwColor.Warning">
+        <BwChart Options="_infrastructureRadar" Height="400px" />
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Mesafe Analizi *@
+        <BwCard Title="Hizmet Noktası Mesafe Analizi" Subtitle="Ortalama erişim mesafeleri." Icon="fa-solid fa-route" Color="BwColor.Success">
+            <BwChart Options="_distanceChart" Height="280px" />
+        </BwCard>
+
+        @* Bölge Karşılaştırma *@
+        <BwCard Title="Bölge Performans Karşılaştırması" Subtitle="Çok boyutlu analiz." Icon="fa-solid fa-balance-scale" Color="BwColor.Danger">
+            <BwChart Options="_regionCompare" Height="280px" />
+        </BwCard>
+    </BwRow>
+
+    @* Zaman Serisi Harita Verisi *@
+    <BwCard Title="Yıllık Yapılaşma Trendi" Subtitle="Yeni inşaat ve yıkım sayıları." Icon="fa-solid fa-building" Color="BwColor.Secondary">
+        <BwChart Options="_constructionTrend" Height="320px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _landUsePie = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        legend = new { bottom = "0" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Pie,
+                radius = new[] { "40%", "70%" },
+                data = new object[]
+                {
+                    new { value = 35, name = "Konut Alanı" },
+                    new { value = 20, name = "Ticari Alan" },
+                    new { value = 18, name = "Yeşil Alan" },
+                    new { value = 12, name = "Sanayi" },
+                    new { value = 8, name = "Kamu Alanı" },
+                    new { value = 7, name = "Diğer" }
+                }
+            }
+        },
+        color = new[] { "#f59e0b", "#3b82f6", "#10b981", "#6366f1", "#ef4444", "#94a3b8" }
+    };
+
+    private object _densityBar = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Merkez", "Kuzey", "Güney", "Doğu", "Batı" }
+        },
+        yAxis = new { type = ChartAxisType.Value, name = "kişi/km²" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Bar,
+                data = new[] { 8500, 4200, 5800, 3100, 4800 },
+                itemStyle = new { borderRadius = 4 }
+            }
+        },
+        color = new[] { "#8b5cf6" }
+    };
+
+    private object _infrastructureRadar = new
+    {
+        tooltip = new { trigger = "item" },
+        legend = new { data = new[] { "Merkez Mah.", "Yeni Mah.", "Atatürk Mah." }, bottom = "0" },
+        radar = new
+        {
+            indicator = new object[]
+            {
+                new { name = "Su Şebekesi", max = 100 },
+                new { name = "Kanalizasyon", max = 100 },
+                new { name = "Doğalgaz", max = 100 },
+                new { name = "Fiber İnternet", max = 100 },
+                new { name = "Asfalt Yol", max = 100 },
+                new { name = "Aydınlatma", max = 100 }
+            }
+        },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Radar,
+                data = new object[]
+                {
+                    new { value = new[] { 98, 95, 92, 85, 90, 95 }, name = "Merkez Mah." },
+                    new { value = new[] { 85, 80, 75, 60, 78, 82 }, name = "Yeni Mah." },
+                    new { value = new[] { 92, 88, 85, 70, 85, 90 }, name = "Atatürk Mah." }
+                }
+            }
+        },
+        color = new[] { "#3b82f6", "#10b981", "#f59e0b" }
+    };
+
+    private object _distanceChart = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        xAxis = new { type = ChartAxisType.Value, name = "Mesafe (m)" },
+        yAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Okul", "Hastane", "Park", "Market", "Toplu Taşıma" }
+        },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Bar,
+                data = new[] { 450, 1200, 280, 180, 350 },
+                itemStyle = new { borderRadius = 4 }
+            }
+        },
+        color = new[] { "#10b981" }
+    };
+
+    private object _regionCompare = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        legend = new { data = new[] { "Kuzey", "Güney" } },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Nüfus", "Alan", "Yeşil Alan", "Yol Uzunluğu" }
+        },
+        yAxis = new { type = ChartAxisType.Value, name = "Skor" },
+        series = new object[]
+        {
+            new { name = "Kuzey", type = ChartSeriesType.Bar, data = new[] { 75, 82, 68, 78 } },
+            new { name = "Güney", type = ChartSeriesType.Bar, data = new[] { 85, 70, 90, 65 } }
+        },
+        color = new[] { "#3b82f6", "#ef4444" }
+    };
+
+    private object _constructionTrend = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        legend = new { data = new[] { "Yeni İnşaat", "Yıkım", "Tadilat" }, bottom = "0" },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "2020", "2021", "2022", "2023", "2024", "2025" }
+        },
+        yAxis = new { type = ChartAxisType.Value, name = "Adet" },
+        series = new object[]
+        {
+            new { name = "Yeni İnşaat", type = ChartSeriesType.Bar, stack = "total", data = new[] { 120, 145, 180, 165, 200, 175 } },
+            new { name = "Yıkım", type = ChartSeriesType.Bar, stack = "total", data = new[] { 25, 30, 45, 38, 52, 40 } },
+            new { name = "Tadilat", type = ChartSeriesType.Bar, stack = "total", data = new[] { 80, 95, 110, 125, 140, 120 } }
+        },
+        color = new[] { "#10b981", "#ef4444", "#f59e0b" }
+    };
+}

@@ -1,0 +1,120 @@
+@page "/components/card"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Typography
+
+<PageTitle>Card Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Card & Hero Components"
+            Description="Cards for content presentation and hero components for page titles."
+            Icon="fa-solid fa-layer-group"
+            Color="BwColor.Warning"/>
+
+    @* Hero Examples *@
+    <BwCard Title="Hero Component" Subtitle="For page titles and descriptions." Icon="fa-solid fa-heading"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwHero Title="Default Hero" Description="Standard gradient and icon usage."/>
+
+            <BwHero Title="Red Gradient" Description="BwColor.Danger usage." Icon="fa-solid fa-fire"
+                    Color="BwColor.Danger"/>
+
+            <BwHero Title="Green Gradient" Description="BwColor.Success usage." Icon="fa-solid fa-leaf"
+                    Color="BwColor.Success"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Card Examples *@
+    <BwCard Title="Card Component" Subtitle="BwCard usage examples." Icon="fa-solid fa-id-card" Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Lg">
+            @* Simple Card *@
+            <BwColumn Span="12" Md="6">
+                <BwCard Title="Simple Card" Subtitle="Subtitle description.">
+                    <BwTypography Color="BwColor.Secondary">
+                        This is a simple card example. Title and Subtitle parameters are used to create it.
+                        Content is written to the ChildContent slot.
+                    </BwTypography>
+                </BwCard>
+            </BwColumn>
+
+            @* Card with Icon *@
+            <BwColumn Span="12" Md="6">
+                <BwCard Title="Card with Icon" Subtitle="Customizable icon." Icon="fa-solid fa-star"
+                        Color="BwColor.Warning">
+                    <BwTypography Color="BwColor.Secondary">
+                        Icon display in the top left corner. Color parameter automatically adjusts colors.
+                    </BwTypography>
+                    <BwFlex Gap="BwSpacing.Sm" Class="mt-4">
+                        <BwBadge Text="Tag 1" Color="BwColor.Secondary" Variant="BwVariant.Soft"
+                                 Size="BwSize.ExtraSmall"/>
+                        <BwBadge Text="Tag 2" Color="BwColor.Secondary" Variant="BwVariant.Soft"
+                                 Size="BwSize.ExtraSmall"/>
+                    </BwFlex>
+                </BwCard>
+            </BwColumn>
+
+            @* Custom Header/Footer *@
+            <BwColumn Span="12" Md="6">
+                <BwCard>
+                    <Header>
+                        <BwFlex JustifyContent="BwMainAxisAlignment.SpaceBetween"
+                                AlignItems="BwCrossAxisAlignment.Center">
+                            <BwTypography Weight="BwFontWeight.Bold" Size="BwSize.Large">Custom Header</BwTypography>
+                            <BwBadge Color="BwColor.Primary" Size="BwSize.ExtraSmall">PRO</BwBadge>
+                        </BwFlex>
+                    </Header>
+                    <ChildContent>
+                        <BwTypography Color="BwColor.Secondary" Class="mb-4">
+                            Header and Footer slots are used to create completely customized header and footer sections.
+                        </BwTypography>
+                        <BwColumn Spacing="BwSpacing.Sm">
+                            <BwFlex Gap="BwSpacing.Sm" AlignItems="BwCrossAxisAlignment.Center">
+                                <BwIcon Icon="fa-solid fa-check" Color="BwColor.Success"/>
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Feature 1</BwTypography>
+                            </BwFlex>
+                            <BwFlex Gap="BwSpacing.Sm" AlignItems="BwCrossAxisAlignment.Center">
+                                <BwIcon Icon="fa-solid fa-check" Color="BwColor.Success"/>
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Feature 2</BwTypography>
+                            </BwFlex>
+                            <BwFlex Gap="BwSpacing.Sm" AlignItems="BwCrossAxisAlignment.Center">
+                                <BwIcon Icon="fa-solid fa-check" Color="BwColor.Success"/>
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Feature 3</BwTypography>
+                            </BwFlex>
+                        </BwColumn>
+                    </ChildContent>
+                    <Footer>
+                        <BwFlex JustifyContent="BwMainAxisAlignment.SpaceBetween"
+                                AlignItems="BwCrossAxisAlignment.Center" Class="w-full">
+                            <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary" Opacity="0.6">Last update:
+                                10 min ago
+                            </BwTypography>
+                            <BwButton Text="Details" Size="BwSize.Small" Variant="BwVariant.Ghost"/>
+                        </BwFlex>
+                    </Footer>
+                </BwCard>
+            </BwColumn>
+
+            @* Image Card *@
+            <BwColumn Span="12" Md="6">
+                <BwCard BodyClass="p-0">
+                    <BwFlex Direction="BwFlexDirection.Column" AlignItems="BwCrossAxisAlignment.Center"
+                            JustifyContent="BwMainAxisAlignment.Center"
+                            Class="h-48 bg-gray-100 dark:bg-gray-800 w-full">
+                        <BwIcon Icon="fa-solid fa-image" Size="BwSize.ExtraLarge" Color="BwColor.Secondary"
+                                Opacity="0.4"/>
+                        <BwTypography Color="BwColor.Secondary" Opacity="0.5" Class="mt-2">Image Area</BwTypography>
+                    </BwFlex>
+                    <BwPadding All="BwSpacing.Lg">
+                        <BwTypography Weight="BwFontWeight.Bold" Size="BwSize.Large" Class="mb-2">Media Card
+                        </BwTypography>
+                        <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Class="mb-4">
+                            `BodyClass="p-0"` can be used to remove padding and place the image in full width.
+                        </BwTypography>
+                        <BwButton Text="View" Color="BwColor.Primary" IsFullWidth="true"/>
+                    </BwPadding>
+                </BwCard>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+</BwColumn>

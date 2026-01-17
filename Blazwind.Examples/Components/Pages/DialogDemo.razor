@@ -1,0 +1,414 @@
+@page "/components/dialog"
+@using Blazwind.Examples.Components.Samples
+
+@inject DialogService DialogService
+@inject ToastService ToastService
+
+<PageTitle>Dialog Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Dialog Windows"
+            Description="Modal dialog windows that require user interaction. Alert, Confirm, Input and Razor Component support."
+            Icon="fa-solid fa-window-restore" Color="BwColor.Primary"/>
+
+    @* Razor Component Dialog *@
+    <BwCard Title="Advanced Razor Dialog" Subtitle="Opening dynamic components with DialogService.ShowAsync<T>."
+            Icon="fa-solid fa-code" Color="BwColor.Primary">
+        <div class="flex flex-col gap-4">
+            <p class="text-sm text-gray-600">
+                When you click the button below, the `UserFormDialog` component will open modally, parameters will be
+                passed, and the result will be returned.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4">
+                <BwButton Icon="fa-solid fa-user-edit" Text="Standard Dialog" Color="BwColor.Primary"
+                          OnClick="ShowUserDialog"/>
+                <BwButton Icon="fa-solid fa-arrows-up-down-left-right" Text="Draggable" Color="BwColor.Secondary"
+                          OnClick="ShowDraggableDialog"/>
+                <BwButton Icon="fa-solid fa-expand" Text="Full Screen" Color="BwColor.Info"
+                          OnClick="ShowFullScreenDialog"/>
+                <BwButton Icon="fa-solid fa-clone" Text="Nested" Color="BwColor.Warning" OnClick="ShowNestedDialog"/>
+
+                @if (userDialogResult != null)
+                {
+                    <span class="text-sm bg-purple-50 text-purple-700 px-3 py-1 rounded border border-purple-100">
+                        <strong>Result:</strong> @userDialogResult
+                    </span>
+                }
+            </div>
+        </div>
+    </BwCard>
+
+    @* Title Customization *@
+    <BwCard Title="Title Customization" Subtitle="Change the title style with TitleColor and TitleSize parameters."
+            Icon="fa-solid fa-palette" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <p class="text-sm text-gray-600">
+                Dialog titles can now be customized in terms of color and size. Set via DialogOptions.
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <BwButton Icon="fa-solid fa-circle" Text="Default" Color="BwColor.Secondary" Variant="BwVariant.Outline"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Primary, BwSize.Medium))"/>
+
+                <BwButton Icon="fa-solid fa-check-circle" Text="Success (Green)" Color="BwColor.Success"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Success, BwSize.Medium))"/>
+
+                <BwButton Icon="fa-solid fa-exclamation-circle" Text="Danger (Red)" Color="BwColor.Danger"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Danger, BwSize.Medium))"/>
+
+                <BwButton Icon="fa-solid fa-exclamation-triangle" Text="Warning (Amber)" Color="BwColor.Warning"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Warning, BwSize.Medium))"/>
+
+                <BwButton Icon="fa-solid fa-info-circle" Text="Info (Blue)" Color="BwColor.Info"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Info, BwSize.Medium))"/>
+
+                <BwButton Icon="fa-solid fa-text-height" Text="Small Title" Color="BwColor.Secondary"
+                          Variant="BwVariant.Outline"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Primary, BwSize.Small))"/>
+
+                <BwButton Icon="fa-solid fa-text-height" Text="Large Title" Color="BwColor.Secondary"
+                          Variant="BwVariant.Outline"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Primary, BwSize.Large))"/>
+
+                <BwButton Icon="fa-solid fa-text-height" Text="Extra Large" Color="BwColor.Primary"
+                          OnClick="@(() => ShowStyledDialog(BwColor.Primary, BwSize.ExtraLarge))"/>
+            </div>
+
+            <div class="p-3 bg-gray-50 rounded border text-xs text-gray-600 font-mono">
+                <span class="text-purple-600">new</span> DialogOptions { TitleColor = BwColor.Danger, TitleSize =
+                BwSize.Large }
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Alert Dialogs *@
+    <BwCard Title="Standard Dialogs" Subtitle="Fast dialogs based on JSInterop." Icon="fa-solid fa-bell"
+            Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Icon="fa-solid fa-circle-info" Text="Info" Color="BwColor.Info"
+                      OnClick="@(async () => await DialogService.ShowInfoAsync("Info", "This is an information message"))"/>
+            <BwButton Icon="fa-solid fa-circle-check" Text="Success" Color="BwColor.Success"
+                      OnClick="@(async () => await DialogService.ShowSuccessAsync("Successful", "Operation completed successfully"))"/>
+            <BwButton Icon="fa-solid fa-triangle-exclamation" Text="Warning" Color="BwColor.Warning"
+                      OnClick="@(async () => await DialogService.ShowWarningAsync("Warning", "You should be careful"))"/>
+            <BwButton Icon="fa-solid fa-circle-xmark" Text="Error" Color="BwColor.Danger"
+                      OnClick="@(async () => await DialogService.ShowErrorAsync("Error", "An error occurred"))"/>
+            <BwButton Icon="fa-solid fa-circle-dot" Text="Normal" Color="BwColor.Secondary"
+                      OnClick="@(async () => await DialogService.ShowNormalAsync("Normal", "Normal notification"))"/>
+        </BwRow>
+    </BwCard>
+
+    @* Features Grid *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Confirmation Dialog" Subtitle="Gets yes/no confirmation from the user."
+                Icon="fa-solid fa-question-circle" Color="BwColor.Danger">
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <BwButton Icon="fa-solid fa-trash" Text="Delete Confirmation" Color="BwColor.Danger"
+                          OnClick="ShowConfirm"/>
+                <BwButton Icon="fa-solid fa-circle-question" Text="Custom Confirmation (Delete/Cancel)"
+                          Color="BwColor.Primary" OnClick="ShowCustomConfirm"/>
+                @if (!string.IsNullOrEmpty(confirmResult))
+                {
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded">
+                        Result: <strong>@confirmResult</strong>
+                    </span>
+                }
+            </BwRow>
+        </BwCard>
+
+        <BwCard Title="Input Dialog" Subtitle="Gets text input from the user." Icon="fa-solid fa-keyboard"
+                Color="BwColor.Primary">
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <BwButton Icon="fa-solid fa-keyboard" Text="Ask for Name" OnClick="ShowInput"/>
+                @if (!string.IsNullOrEmpty(inputResult))
+                {
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded">
+                        Entered: <strong>@inputResult</strong>
+                    </span>
+                }
+            </BwRow>
+        </BwCard>
+
+        <BwCard Title="Premium Loading Dialogs" Subtitle="Loading, Progress, Busy, Countdown and more."
+                Icon="fa-solid fa-spinner" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div class="flex flex-wrap gap-3">
+                    <BwButton Icon="fa-solid fa-spinner" Text="Standard Loading" Color="BwColor.Secondary"
+                              OnClick="ShowLoading"/>
+                    <BwButton Icon="fa-solid fa-square-poll-vertical" Text="Square Loading" Color="BwColor.Primary"
+                              OnClick="ShowSquareLoading"/>
+                    <BwButton Icon="fa-solid fa-circle-dot" Text="Pulse Loading" Color="BwColor.Info"
+                              OnClick="ShowPulseLoading"/>
+                    <BwButton Icon="fa-solid fa-hourglass-start" Text="Busy (Blocking)" Color="BwColor.Danger"
+                              OnClick="ShowBusy"/>
+                    <BwButton Icon="fa-solid fa-stopwatch" Text="Countdown" Color="BwColor.Warning"
+                              OnClick="ShowCountdown"/>
+                    <BwButton Icon="fa-solid fa-bars-progress" Text="Progress Bar" Disabled="@isProgressRunning"
+                              IsLoading="@isProgressRunning" OnClick="ShowProgress"/>
+                </div>
+                <div class="flex flex-wrap gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <BwButton Icon="fa-solid fa-check-circle" Text="Success Animation" Color="BwColor.Success"
+                              OnClick="ShowSuccessAnimation"/>
+                    <BwButton Icon="fa-solid fa-times-circle" Text="Error Animation" Color="BwColor.Danger"
+                              OnClick="ShowErrorAnimation"/>
+                    <BwButton Icon="fa-solid fa-image" Text="Image Preview" Color="BwColor.Secondary"
+                              Variant="BwVariant.Outline" OnClick="ShowImagePreview"/>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private string? confirmResult;
+    private string? inputResult;
+    private string? userDialogResult;
+    private bool isProgressRunning;
+
+    // --- Razor Dialog Demo ---
+    private async Task ShowUserDialog()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "Id", 12345 }
+        };
+
+        var options = new DialogOptions
+        {
+            Width = "500px"
+        };
+
+        var dialog = await DialogService.ShowAsync<UserFormDialog>("Edit User",
+            parameters, options);
+
+        if (!dialog.Canceled && dialog.Data != null)
+        {
+            // Data is dynamic object from snippet
+            dynamic data = dialog.Data;
+            userDialogResult = $"{data.Username} ({data.Role}) - {data.UpdatedAt:HH:mm:ss}";
+            await ToastService.SuccessAsync("Form saved!");
+        }
+        else
+        {
+            userDialogResult = "Canceled.";
+            await ToastService.InfoAsync("Dialog closed.");
+        }
+    }
+
+    private async Task ShowDraggableDialog()
+    {
+        var options = new DialogOptions
+        {
+            Width = "600px",
+            Draggable = true,
+            Resizable = true
+        };
+        await DialogService.ShowAsync<UserFormDialog>("Draggable & Resizable", null,
+            options);
+    }
+
+    private async Task ShowFullScreenDialog()
+    {
+        var options = new DialogOptions
+        {
+            FullScreen = true
+        };
+        await DialogService.ShowAsync<UserFormDialog>("Full Screen Mode", null, options);
+    }
+
+    private async Task ShowNestedDialog()
+    {
+        var options = new DialogOptions { Width = "400px", Draggable = true };
+        await DialogService.ShowAsync<NestedTestDialog>("Nested Dialog - Layer 1", null,
+            options);
+    }
+
+    private async Task ShowStyledDialog(BwColor color, BwSize size)
+    {
+        var colorName = color switch
+        {
+            BwColor.Success => "Success",
+            BwColor.Danger => "Danger",
+            BwColor.Warning => "Warning",
+            BwColor.Info => "Info",
+            _ => "Default"
+        };
+
+        var sizeName = size switch
+        {
+            BwSize.ExtraSmall => "Extra Small",
+            BwSize.Small => "Small",
+            BwSize.Large => "Large",
+            BwSize.ExtraLarge => "Extra Large",
+            _ => "Medium"
+        };
+
+        var options = new DialogOptions
+        {
+            Width = "500px",
+            TitleColor = color,
+            TitleSize = size,
+            Draggable = true
+        };
+
+        await DialogService.ShowAsync<StyledDialogContent>(
+            $"{colorName} - {sizeName} Title",
+            new Dictionary<string, object>
+            {
+                { "ColorName", colorName },
+                { "SizeName", sizeName },
+                { "Color", color },
+                { "Size", size }
+            },
+            options);
+    }
+
+    // --- JS Dialogs ---
+
+    private async Task ShowAlertInfo()
+    {
+        await DialogService.ShowAlertAsync("Bilgi", "Bu bir bilgi mesajıdır.");
+    }
+
+    private async Task ShowAlertSuccess()
+    {
+        await DialogService.ShowAlertAsync("Başarılı", "İşlem başarıyla tamamlandı!", BwColor.Success);
+    }
+
+    private async Task ShowAlertWarning()
+    {
+        await DialogService.ShowAlertAsync("Dikkat", "Bu işlem geri alınamaz!", BwColor.Warning);
+    }
+
+    private async Task ShowAlertError()
+    {
+        await DialogService.ShowAlertAsync("Hata", "Bir hata oluştu, lütfen tekrar deneyin.", BwColor.Danger);
+    }
+
+    private async Task ShowConfirm()
+    {
+        var result = await DialogService.ShowConfirmAsync(
+            "Delete Record",
+            "Are you sure you want to delete this record? This action cannot be undone.",
+            BwColor.Danger);
+
+        confirmResult = result ? "Yes" : "No";
+
+        if (result)
+        {
+            await ToastService.SuccessAsync("Record deleted!");
+        }
+    }
+
+    private async Task ShowCustomConfirm()
+    {
+        // New overload with custom button texts
+        var result = await DialogService.ShowConfirmAsync("Custom Confirmation", 
+            "This operation will be applied permanently. Do you want to continue?",
+            "Yes, Continue", "I'm Canceling");
+
+        confirmResult = result ? "Custom Approved" : "Custom Rejected";
+
+        if (result)
+        {
+            await ToastService.SuccessAsync("Custom approval received!");
+        }
+        else
+        {
+            await ToastService.InfoAsync("Operation canceled.");
+        }
+    }
+
+    private async Task ShowInput()
+    {
+        var result = await DialogService.ShowInputAsync(
+            "Enter Name",
+            "Please enter your name:",
+            "Your name...");
+
+        if (result != null)
+        {
+            inputResult = result;
+            await ToastService.SuccessAsync($"Hello, {result}!");
+        }
+        else
+        {
+            inputResult = "(Canceled)";
+        }
+    }
+
+    private async Task ShowProgress()
+    {
+        isProgressRunning = true;
+        StateHasChanged();
+
+        await using var dialog = await DialogService.ShowProgressAsync("Operation Status", "Processing files...");
+
+        for (var i = 0; i <= 100; i += 10)
+        {
+            await dialog.UpdateAsync(i, $"{i}/100 files processed");
+            await Task.Delay(300);
+        }
+
+        isProgressRunning = false;
+        await ToastService.SuccessAsync("All files processed!");
+    }
+
+    private async Task ShowLoading()
+    {
+        var handle = await DialogService.ShowLoadingAsync("Processing...");
+        await Task.Delay(3000);
+        await handle.CloseAsync();
+    }
+
+    private async Task ShowSquareLoading()
+    {
+        var handle = await DialogService.ShowSquareLoadingAsync("Processing photos...");
+        await Task.Delay(3000);
+        await handle.CloseAsync();
+    }
+
+    private async Task ShowBusy()
+    {
+        // BusyAsync blocks UI until task completes
+        await DialogService.BusyAsync(async () => { await Task.Delay(4000); }, "Critical Database Operation (Blocking)...");
+
+        await ToastService.SuccessAsync("Operation completed!");
+    }
+
+    private async Task ShowCountdown()
+    {
+        await DialogService.ShowCountdownAsync("Session Closing", "Your time is about to expire...", 5);
+        // After 5s dialog closes automatically handled by JS
+    }
+
+    private async Task ShowSuccessAnimation()
+    {
+        await DialogService.ShowSuccessAnimationAsync("Operation Completed", "All changes saved successfully.");
+    }
+
+    private async Task ShowErrorAnimation()
+    {
+        await DialogService.ShowErrorAnimationAsync("Operation Failed", "Could not save due to server error.");
+    }
+
+    private async Task ShowImagePreview()
+    {
+        await DialogService.ShowImagePreviewAsync(
+            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200",
+            "Mountain View",
+            "Swiss Alps - Image Preview Example"
+        );
+    }
+
+    private async Task ShowPulseLoading()
+    {
+        var handle = await DialogService.ShowPulseLoadingAsync("Synchronizing...", "cloud-arrow-up");
+        await Task.Delay(3000);
+        await handle.CloseAsync();
+    }
+
+}

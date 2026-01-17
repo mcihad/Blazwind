@@ -1,0 +1,109 @@
+@page "/components/kpi"
+@using Blazwind.Components.KPI
+
+<PageTitle>KPI Cards - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwKPI" Description="KPI indicator cards. Value, trend, progress and different formats."
+            Icon="fa-solid fa-chart-line" Color="BwColor.Success"/>
+
+    @* Ana Örnekler *@
+    <BwCard Title="Dashboard Example" Subtitle="Real world usage scenario." Icon="fa-solid fa-gauge-high"
+            Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwKPI Title="Total Revenue" Subtitle="This month" Value="125450" Prefix="₺" Format="KpiFormat.Currency"
+                       Icon="fa-solid fa-coins" Color="BwColor.Success" TrendValue="12.5"
+                       TrendLabel="compared to last month" Class="w-full"/>
+            </BwColumn>
+
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwKPI Title="Active Users" Value="8432" Icon="fa-solid fa-users" Color="BwColor.Primary"
+                       TrendValue="-3.2" TrendLabel="compared to last week" Class="w-full"/>
+            </BwColumn>
+
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwKPI Title="Completion Rate" Value="87.5" Suffix="%" Format="KpiFormat.Percent"
+                       Icon="fa-solid fa-check-circle" Color="BwColor.Info" TrendValue="5.8" ShowProgress="true"
+                       Progress="87.5" Class="w-full"/>
+            </BwColumn>
+
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwKPI Title="Average Duration" Value="4.2" Suffix="days" Format="KpiFormat.Decimal"
+                       Icon="fa-solid fa-clock" Color="BwColor.Warning" TrendValue="-15.0" TrendPositiveIsGood="false"
+                       Class="w-full"/>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Boyutlar *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium and Large." Icon="fa-solid fa-ruler" Color="BwColor.Secondary">
+        <div class="flex flex-wrap gap-4 items-start">
+            <BwKPI Title="Küçük" Value="1250" Size="BwSize.Small" Icon="fa-solid fa-chart-simple" TrendValue="5.2"/>
+
+            <BwKPI Title="Orta" Value="4580" Size="BwSize.Medium" Icon="fa-solid fa-chart-bar" TrendValue="8.7"/>
+
+            <BwKPI Title="Büyük" Value="12500" Size="BwSize.Large" Icon="fa-solid fa-chart-area" TrendValue="-2.3"
+                   ShowProgress="true" Progress="65"/>
+        </div>
+    </BwCard>
+
+    @* Renkler *@
+    <BwCard Title="Color Options" Subtitle="Different color themes." Icon="fa-solid fa-palette" Color="BwColor.Info">
+        <div class="flex flex-wrap gap-4">
+            <BwKPI Title="Primary" Value="1000" Color="BwColor.Primary" Icon="fa-solid fa-star" TrendValue="10"/>
+            <BwKPI Title="Success" Value="2000" Color="BwColor.Success" Icon="fa-solid fa-check" TrendValue="15"/>
+            <BwKPI Title="Warning" Value="3000" Color="BwColor.Warning" Icon="fa-solid fa-exclamation"
+                   TrendValue="-5"/>
+            <BwKPI Title="Danger" Value="4000" Color="BwColor.Danger" Icon="fa-solid fa-times" TrendValue="-20"/>
+            <BwKPI Title="Info" Value="5000" Color="BwColor.Info" Icon="fa-solid fa-info" TrendValue="0"/>
+        </div>
+    </BwCard>
+
+    @* API *@
+    <BwCard Title="API Reference" Subtitle="Component parameters." Icon="fa-solid fa-code" Color="BwColor.Dark">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="text-left p-3 font-medium">Parameter</th>
+                    <th class="text-left p-3 font-medium">Type</th>
+                    <th class="text-left p-3 font-medium">Description</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y">
+                <tr>
+                    <td class="p-3"><code>Title</code></td>
+                    <td class="p-3">string</td>
+                    <td class="p-3">KPI title</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>Value</code></td>
+                    <td class="p-3">double</td>
+                    <td class="p-3">Value to display</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>Format</code></td>
+                    <td class="p-3">KpiFormat</td>
+                    <td class="p-3">Number, Currency, Percent, Decimal</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>TrendValue</code></td>
+                    <td class="p-3">double?</td>
+                    <td class="p-3">Trend percentage (+/-)</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>ShowProgress</code></td>
+                    <td class="p-3">bool</td>
+                    <td class="p-3">Show progress bar</td>
+                </tr>
+                <tr>
+                    <td class="p-3"><code>Progress</code></td>
+                    <td class="p-3">double?</td>
+                    <td class="p-3">Progress percentage</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </BwCard>
+</BwColumn>

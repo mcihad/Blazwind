@@ -1,0 +1,79 @@
+@page "/charts/scatter"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Dağılım Grafik - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Dağılım Grafik (Scatter Chart)" 
+            Description="Korelasyon ve dağılım analizi için ideal grafik tipi."
+            Icon="fa-solid fa-braille"
+            Color="BwColor.Danger" />
+
+    @* Temel Scatter *@
+    <BwCard Title="Temel Dağılım Grafik" Subtitle="Basic scatter plot." Icon="fa-solid fa-braille" Color="BwColor.Primary">
+        <BwChart Options="_basicScatter" Height="400px" />
+    </BwCard>
+
+    @* Bubble Chart *@
+    <BwCard Title="Bubble Chart" Subtitle="Boyutlu dağılım grafik." Icon="fa-solid fa-circle" Color="BwColor.Info">
+        <BwChart Options="_bubbleScatter" Height="400px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _basicScatter = new()
+    {
+        Title = new ChartTitle { Text = "Boy-Kilo Dağılımı", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        XAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Boy (cm)" },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Kilo (kg)" },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Type = ChartSeriesType.Scatter,
+                Data = new List<List<double>>
+                {
+                    new() { 161.2, 51.6 }, new() { 167.5, 59.0 }, new() { 159.5, 49.2 }, new() { 157.0, 63.0 },
+                    new() { 155.8, 53.6 }, new() { 170.0, 59.0 }, new() { 159.1, 47.6 }, new() { 166.0, 69.8 },
+                    new() { 176.2, 66.8 }, new() { 160.2, 75.2 }, new() { 172.5, 55.2 }, new() { 170.9, 54.2 },
+                    new() { 172.9, 62.5 }, new() { 153.4, 42.0 }, new() { 160.0, 50.0 }, new() { 147.2, 49.8 },
+                    new() { 168.2, 49.2 }, new() { 175.0, 73.2 }, new() { 157.0, 47.8 }, new() { 167.6, 68.8 },
+                    new() { 159.5, 50.6 }, new() { 175.0, 82.5 }, new() { 166.8, 57.2 }, new() { 176.5, 87.8 }
+                }
+            }
+        },
+        Color = new List<string> { "#ef4444" }
+    };
+
+    private ChartOptions _bubbleScatter = new()
+    {
+        Title = new ChartTitle { Text = "Şehir Nüfus ve Gelir", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item },
+        XAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Nüfus (milyon)" },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Gelir (TL)" },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Şehirler",
+                Type = ChartSeriesType.Scatter,
+                Data = new List<List<double>>
+                {
+                    new() { 15, 85000, 50 },
+                    new() { 5, 72000, 30 },
+                    new() { 3, 68000, 20 },
+                    new() { 2, 55000, 15 },
+                    new() { 1.5, 48000, 12 },
+                    new() { 1, 42000, 10 },
+                    new() { 0.8, 38000, 8 },
+                    new() { 0.5, 35000, 6 }
+                }
+            }
+        },
+        Color = new List<string> { "#8b5cf6" }
+    };
+}

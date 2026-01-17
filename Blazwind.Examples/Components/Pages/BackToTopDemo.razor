@@ -1,0 +1,120 @@
+@page "/components/back-to-top"
+@using Blazwind.Components.BackToTop
+@using Blazwind.Components.Typography
+
+<PageTitle>Back To Top Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Back To Top Component" Description="Button used to quickly return to the top of the page."
+            Icon="fa-solid fa-arrow-up" Color="BwColor.Primary"/>
+
+    <BwCard Title="Example Usage" Subtitle="Scroll down to see the button" Icon="fa-solid fa-scroll"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <p class="text-gray-600">
+                When you scroll down the page, a "back to top" button will appear in the bottom right corner.
+                This button appears after 300px of scrolling.
+            </p>
+
+            <div class="bg-blue-50 rounded-lg p-4">
+                <p class="text-sm text-blue-700">
+                    <i class="fa-solid fa-info-circle mr-2"></i>
+                    Scroll down the page to see the button.
+                </p>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height"
+                    Color="BwColor.Success">
+                <BwFlex Gap="BwSpacing.Md" AlignItems="BwCrossAxisAlignment.End">
+                    <div class="text-center">
+                        <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Small</BwTypography>
+                        <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-up text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Medium</BwTypography>
+                        <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-up text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Large</BwTypography>
+                        <div class="w-14 h-14 rounded-full bg-blue-500 text-white flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-up text-xl"></i>
+                        </div>
+                    </div>
+                </BwFlex>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Colors" Subtitle="Different color options" Icon="fa-solid fa-palette"
+                    Color="BwColor.Warning">
+                <BwFlex Gap="BwSpacing.Sm" Wrap="BwFlexWrap.Wrap">
+                    <div
+                        class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full bg-gray-900 text-white flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </div>
+                </BwFlex>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    <BwCard Title="Shapes" Subtitle="Circle, Square, Rounded" Icon="fa-solid fa-shapes" Color="BwColor.Info">
+        <BwFlex Gap="BwSpacing.Md" AlignItems="BwCrossAxisAlignment.Center">
+            <div class="text-center">
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Circle</BwTypography>
+                <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </div>
+            </div>
+            <div class="text-center">
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Rounded</BwTypography>
+                <div class="w-12 h-12 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </div>
+            </div>
+            <div class="text-center">
+                <BwTypography Size="BwSize.Small" Class="text-gray-500 mb-2">Square</BwTypography>
+                <div class="w-12 h-12 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </div>
+            </div>
+        </BwFlex>
+    </BwCard>
+
+    @* Uzun içerik - scroll için *@
+    @for (var i = 0; i < 5; i++)
+    {
+        <BwCard Title="@($"Example Content {i + 1}")" Subtitle="Content created for scroll" Color="BwColor.Secondary">
+            <p class="text-gray-600">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+        </BwCard>
+    }
+</BwColumn>
+
+<BwBackToTop Id="backToTop" Color="BwColor.Primary" Size="BwSize.Medium"/>

@@ -1,0 +1,88 @@
+@namespace Blazwind.Components.QRCode
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div class="@CombineClasses("inline-block")" style="width: @(Size)px; height: @(Size)px; @Style" id="@_elementId"
+    @attributes="AdditionalAttributes">
+    <div class="bw-qr-svg w-full h-full"></div>
+</div>
+
+@code {
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public int Size { get; set; } = 200;
+    [Parameter] public string ForegroundColor { get; set; } = "#000000";
+    [Parameter] public string BackgroundColor { get; set; } = "#FFFFFF";
+    [Parameter] public int Margin { get; set; } = 2;
+    [Parameter] public string ErrorCorrectionLevel { get; set; } = "M"; // L, M, Q, H
+
+    private string _lastValue = "";
+    private bool _firstRenderComplete = false;
+    private string _elementId = "";
+
+    protected override void OnInitialized()
+    {
+        _elementId = Id ?? $"bw-qrcode-{Guid.NewGuid():N}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _firstRenderComplete = true;
+
+            // Generate QR code on first render if value is set
+            if (!string.IsNullOrEmpty(Value))
+            {
+                _lastValue = Value;
+                await GenerateQRCode();
+            }
+        }
+        else if (_firstRenderComplete && !string.IsNullOrEmpty(Value) && _lastValue != Value)
+        {
+            _lastValue = Value;
+            await GenerateQRCode();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Mark for re-render if value changed - actual JS call happens in OnAfterRenderAsync
+        if (_firstRenderComplete && Value != _lastValue)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task GenerateQRCode()
+    {
+        if (string.IsNullOrEmpty(Value)) return;
+
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.QRCode.generateSVG", _elementId, Value, new
+            {
+                width = Size,
+                margin = Margin,
+                color = new
+                {
+                    dark = ForegroundColor,
+                    light = BackgroundColor
+                },
+                errorCorrectionLevel = ErrorCorrectionLevel
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"QR Code generation failed: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        // Cleanup if needed
+    }
+}

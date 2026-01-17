@@ -1,0 +1,74 @@
+@namespace Blazwind.Components.Layout
+
+@{
+    var style = BuildStyle();
+}
+
+<div class="bw-flow-item shrink-0 @Class" style="@style" @onclick="OnClick">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Fixed width for this item (overrides parent's ItemWidth)
+    /// </summary>
+    [Parameter] public string? Width { get; set; }
+    
+    /// <summary>
+    /// Fixed height for this item
+    /// </summary>
+    [Parameter] public string? Height { get; set; }
+    
+    /// <summary>
+    /// Flex grow value (0 = don't grow, 1+ = grow)
+    /// </summary>
+    [Parameter] public int Grow { get; set; } = 0;
+    
+    /// <summary>
+    /// Flex shrink value (0 = don't shrink, 1+ = shrink)
+    /// </summary>
+    [Parameter] public int Shrink { get; set; } = 0;
+    
+    /// <summary>
+    /// Click event handler
+    /// </summary>
+    [Parameter] public EventCallback OnClick { get; set; }
+    
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    private string BuildStyle()
+    {
+        var styles = new List<string>();
+        
+        // Use parent's CSS variable or own width
+        if (!string.IsNullOrWhiteSpace(Width))
+        {
+            styles.Add($"width: {Width}");
+            styles.Add($"flex-basis: {Width}");
+        }
+        else
+        {
+            // Use CSS variable from parent if available
+            styles.Add("width: var(--bw-flow-item-width, auto)");
+            styles.Add("flex-basis: var(--bw-flow-item-width, auto)");
+        }
+        
+        if (!string.IsNullOrWhiteSpace(Height))
+        {
+            styles.Add($"height: {Height}");
+        }
+        
+        styles.Add($"flex-grow: {Grow}");
+        styles.Add($"flex-shrink: {Shrink}");
+        
+        if (!string.IsNullOrWhiteSpace(Style))
+        {
+            styles.Add(Style.TrimEnd(';'));
+        }
+        
+        return string.Join("; ", styles) + ";";
+    }
+}

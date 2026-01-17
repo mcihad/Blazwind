@@ -1,0 +1,240 @@
+@page "/components/org-chart"
+@using Blazwind.Components.Input
+@using Blazwind.Components.OrgChart
+@inject ToastService ToastService
+
+<PageTitle>OrgChart Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Organization Chart"
+            Description="Municipality organization structure and organization visualization component. Color support and interactive features."
+            Icon="fa-solid fa-sitemap" Color="BwColor.Primary"/>
+
+    @* Belediye Teşkilat Şeması *@
+    <BwCard Title="Municipality Organization Chart" Subtitle="Example municipality organization structure (colored)"
+            Icon="fa-solid fa-building-columns" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Sm">
+                <BwButton Text="Expand All" Icon="fa-solid fa-expand" Size="BwSize.Small" Variant="BwVariant.Outline"
+                          OnClick="ExpandAllAsync"/>
+                <BwButton Text="Collapse All" Icon="fa-solid fa-compress" Size="BwSize.Small"
+                          Variant="BwVariant.Outline" OnClick="CollapseAllAsync"/>
+            </BwRow>
+
+            <BwOrgChart @ref="_orgChart" Data="_municipalityOrg" Height="500px" NodeWidth="_nodeWidth"
+                        NodeHeight="_nodeHeight" HorizontalSpacing="_hSpacing" VerticalSpacing="_vSpacing"
+                        OnNodeClick="HandleNodeClick"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Seçili Kişi Bilgisi *@
+    @if (_selectedNode != null)
+    {
+        <BwCard Title="Selected Personnel" Subtitle="@_selectedNode.Title" Icon="fa-solid fa-user" Color="BwColor.Info">
+            <BwRow Spacing="BwSpacing.Lg">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white"
+                     style="background-color: @(_selectedNode.Color ?? "#3b82f6")">
+                    @GetInitials(_selectedNode.Name)
+                </div>
+                <BwColumn Spacing="BwSpacing.Xs" Class="flex-1">
+                    <h3 class="text-lg font-semibold">@_selectedNode.Name</h3>
+                    <p class="text-gray-600">@_selectedNode.Title</p>
+                    @if (!string.IsNullOrEmpty(_selectedNode.Department))
+                    {
+                        <p class="text-sm text-gray-500">
+                            <i class="fa-solid fa-building mr-2"></i>@_selectedNode.Department
+                        </p>
+                    }
+                    @if (!string.IsNullOrEmpty(_selectedNode.Email))
+                    {
+                        <p class="text-sm text-gray-500">
+                            <i class="fa-solid fa-envelope mr-2"></i>@_selectedNode.Email
+                        </p>
+                    }
+                    @if (!string.IsNullOrEmpty(_selectedNode.Phone))
+                    {
+                        <p class="text-sm text-gray-500">
+                            <i class="fa-solid fa-phone mr-2"></i>@_selectedNode.Phone
+                        </p>
+                    }
+                </BwColumn>
+            </BwRow>
+        </BwCard>
+    }
+
+    @* Ayarlar *@
+    <BwCard Title="Display Settings" Subtitle="Customize the chart display." Icon="fa-solid fa-sliders"
+            Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Lg" Wrap="true" Class="grid md:grid-cols-4">
+            <BwColumn Spacing="BwSpacing.Xs">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Node Width</label>
+                <BwSlider Min="120" Max="250" Value="_nodeWidth"
+                          ValueChanged="async v => { _nodeWidth = (int)v; if (_orgChart != null) await _orgChart.UpdateOptionsAsync(); }"/>
+                <span class="text-xs text-gray-500">@_nodeWidth px</span>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Xs">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Node Height</label>
+                <BwSlider Min="60" Max="120" Value="_nodeHeight"
+                          ValueChanged="async v => { _nodeHeight = (int)v; if (_orgChart != null) await _orgChart.UpdateOptionsAsync(); }"/>
+                <span class="text-xs text-gray-500">@_nodeHeight px</span>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Xs">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Horizontal Spacing</label>
+                <BwSlider Min="10" Max="60" Value="_hSpacing"
+                          ValueChanged="async v => { _hSpacing = (int)v; if (_orgChart != null) await _orgChart.UpdateOptionsAsync(); }"/>
+                <span class="text-xs text-gray-500">@_hSpacing px</span>
+            </BwColumn>
+            <BwColumn Spacing="BwSpacing.Xs">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Vertical Spacing</label>
+                <BwSlider Min="20" Max="80" Value="_vSpacing"
+                          ValueChanged="async v => { _vSpacing = (int)v; if (_orgChart != null) await _orgChart.UpdateOptionsAsync(); }"/>
+                <span class="text-xs text-gray-500">@_vSpacing px</span>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwOrgChart? _orgChart;
+    private OrgChartNode? _selectedNode;
+
+    private int _nodeWidth = 180;
+    private int _nodeHeight = 80;
+    private int _hSpacing = 20;
+    private int _vSpacing = 40;
+
+    private readonly OrgChartNode _municipalityOrg = new()
+    {
+        Id = "baskan",
+        Name = "Dr. Adem UZUN",
+        Title = "Mayor",
+        Department = "Mayor's Office",
+        Email = "adem.uzun@blazwind.com",
+        Phone = "(0346) 221 10 10",
+        Color = "#1e40af", // Dark blue for mayor
+        Children = new List<OrgChartNode>
+        {
+            new()
+            {
+                Id = "genel-sekreter",
+                Name = "Ahmet Yılmaz",
+                Title = "General Secretary",
+                Department = "General Secretariat",
+                Color = "#7c3aed", // Purple
+                Children = new List<OrgChartNode>
+                {
+                    new()
+                    {
+                        Id = "yazi-isleri",
+                        Name = "Mehmet Kaya",
+                        Title = "Administrative Affairs Manager",
+                        Department = "Administrative Affairs Directorate",
+                        Color = "#8b5cf6"
+                    },
+                    new()
+                    {
+                        Id = "insan-kaynaklari",
+                        Name = "Ayşe Demir",
+                        Title = "Human Resources Manager",
+                        Department = "Human Resources Directorate",
+                        Color = "#a78bfa"
+                    }
+                }
+            },
+            new()
+            {
+                Id = "baskan-yardimcisi-1",
+                Name = "Mustafa TOPÇU",
+                Title = "Deputy Mayor",
+                Department = "Technical Affairs",
+                Color = "#059669", // Green
+                Children = new List<OrgChartNode>
+                {
+                    new()
+                    {
+                        Id = "fen-isleri",
+                        Name = "Hasan Çelik",
+                        Title = "Public Works Manager",
+                        Department = "Public Works Directorate",
+                        Color = "#10b981"
+                    },
+                    new()
+                    {
+                        Id = "imar",
+                        Name = "Fatma Yıldız",
+                        Title = "Urban Planning Manager",
+                        Department = "Urban Planning and Zoning Directorate",
+                        Color = "#34d399"
+                    },
+                    new()
+                    {
+                        Id = "park-bahce",
+                        Name = "Ali Arslan",
+                        Title = "Parks and Gardens Manager",
+                        Department = "Parks and Gardens Directorate",
+                        Color = "#6ee7b7"
+                    }
+                }
+            },
+            new()
+            {
+                Id = "baskan-yardimcisi-2",
+                Name = "Zeynep Koç",
+                Title = "Deputy Mayor",
+                Department = "Financial Affairs",
+                Color = "#ea580c", // Orange
+                Children = new List<OrgChartNode>
+                {
+                    new()
+                    {
+                        Id = "mali-hizmetler",
+                        Name = "Osman Şahin",
+                        Title = "Financial Services Manager",
+                        Department = "Financial Services Directorate",
+                        Color = "#f97316"
+                    },
+                    new()
+                    {
+                        Id = "bilgi-islem",
+                        Name = "Emre Aydın",
+                        Title = "IT Manager",
+                        Department = "IT Directorate",
+                        Email = "bilgiislem@sivas.bel.tr",
+                        Color = "#fb923c"
+                    }
+                }
+            }
+        }
+    };
+
+    private async Task HandleNodeClick(OrgChartNode node)
+    {
+        _selectedNode = node;
+        await ToastService.InfoAsync($"{node.Name} selected", node.Title ?? "");
+        StateHasChanged();
+    }
+
+    private async Task ExpandAllAsync()
+    {
+        if (_orgChart != null)
+        {
+            await _orgChart.ExpandAllAsync();
+            await ToastService.SuccessAsync("All expanded");
+        }
+    }
+
+    private async Task CollapseAllAsync()
+    {
+        if (_orgChart != null)
+        {
+            await _orgChart.CollapseAllAsync();
+            await ToastService.InfoAsync("All collapsed");
+        }
+    }
+
+    private string GetInitials(string name)
+    {
+        return string.Join("", name.Split(' ').Take(2).Select(n => n[0])).ToUpper();
+    }
+
+}

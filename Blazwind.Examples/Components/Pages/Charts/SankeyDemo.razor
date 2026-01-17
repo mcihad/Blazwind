@@ -1,0 +1,109 @@
+@page "/charts/sankey"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Sankey - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Sankey Diyagramı" 
+            Description="Akış ve enerji transferlerini göstermek için ideal grafik tipi."
+            Icon="fa-solid fa-arrow-right-arrow-left"
+            Color="BwColor.Warning" />
+
+    @* Bütçe Akışı *@
+    <BwCard Title="Bütçe Akışı" Subtitle="Gelirden gidere para akışı." Icon="fa-solid fa-money-bill-transfer" Color="BwColor.Primary">
+        <BwChart Options="_budgetSankey" Height="500px" />
+    </BwCard>
+
+    @* Başvuru Akışı *@
+    <BwCard Title="Başvuru Akışı" Subtitle="Başvuru durumu geçişleri." Icon="fa-solid fa-file-import" Color="BwColor.Info">
+        <BwChart Options="_applicationSankey" Height="400px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _budgetSankey = new
+    {
+        title = new { text = "Belediye Bütçe Akışı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item, triggerOn = "mousemove" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Sankey,
+                emphasis = new { focus = "adjacency" },
+                nodeAlign = ChartPosition.Left,
+                data = new object[]
+                {
+                    new { name = "Merkezi Bütçe" },
+                    new { name = "Öz Gelir" },
+                    new { name = "Vergiler" },
+                    new { name = "Harçlar" },
+                    new { name = "Personel" },
+                    new { name = "Yatırım" },
+                    new { name = "Hizmet" },
+                    new { name = "Cari Gider" },
+                    new { name = "Maaş" },
+                    new { name = "Sigorta" },
+                    new { name = "Altyapı" },
+                    new { name = "BT" }
+                },
+                links = new object[]
+                {
+                    new { source = "Merkezi Bütçe", target = "Personel", value = 200 },
+                    new { source = "Merkezi Bütçe", target = "Yatırım", value = 150 },
+                    new { source = "Öz Gelir", target = "Personel", value = 100 },
+                    new { source = "Öz Gelir", target = "Hizmet", value = 80 },
+                    new { source = "Öz Gelir", target = "Cari Gider", value = 70 },
+                    new { source = "Vergiler", target = "Öz Gelir", value = 180 },
+                    new { source = "Harçlar", target = "Öz Gelir", value = 70 },
+                    new { source = "Personel", target = "Maaş", value = 250 },
+                    new { source = "Personel", target = "Sigorta", value = 50 },
+                    new { source = "Yatırım", target = "Altyapı", value = 100 },
+                    new { source = "Yatırım", target = "BT", value = 50 }
+                },
+                lineStyle = new { color = "gradient", curveness = 0.5 }
+            }
+        }
+    };
+
+    private object _applicationSankey = new
+    {
+        title = new { text = "Başvuru Durum Akışı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Sankey,
+                data = new object[]
+                {
+                    new { name = "Yeni Başvuru" },
+                    new { name = "İnceleme" },
+                    new { name = "Belge Eksik" },
+                    new { name = "Belge Tamamlandı" },
+                    new { name = "Onay Bekliyor" },
+                    new { name = "Onaylandı" },
+                    new { name = "Reddedildi" },
+                    new { name = "Tamamlandı" }
+                },
+                links = new object[]
+                {
+                    new { source = "Yeni Başvuru", target = "İnceleme", value = 1000 },
+                    new { source = "İnceleme", target = "Belge Eksik", value = 200 },
+                    new { source = "İnceleme", target = "Onay Bekliyor", value = 700 },
+                    new { source = "İnceleme", target = "Reddedildi", value = 100 },
+                    new { source = "Belge Eksik", target = "Belge Tamamlandı", value = 150 },
+                    new { source = "Belge Eksik", target = "Reddedildi", value = 50 },
+                    new { source = "Belge Tamamlandı", target = "Onay Bekliyor", value = 150 },
+                    new { source = "Onay Bekliyor", target = "Onaylandı", value = 750 },
+                    new { source = "Onay Bekliyor", target = "Reddedildi", value = 100 },
+                    new { source = "Onaylandı", target = "Tamamlandı", value = 750 }
+                },
+                lineStyle = new { color = "source", curveness = 0.5 }
+            }
+        }
+    };
+}

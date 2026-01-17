@@ -1,0 +1,210 @@
+@namespace Blazwind.Components.OrgChart
+@using Blazwind.Components.Shared
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using System.Text.Json
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div class="bw-orgchart @Class" style="@_containerStyle">
+    <div @ref="_container" class="w-full h-full overflow-auto"></div>
+</div>
+
+@code {
+    private ElementReference _container;
+    private string? _instanceId;
+    private DotNetObjectReference<BwOrgChart>? _netRef;
+    private bool _isInitialized;
+    
+    private string _containerStyle => $"height: {Height}; {Style}";
+    
+    #region Parameters
+    
+    /// <summary>
+    /// CSS class
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>
+    /// CSS style
+    /// </summary>
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>
+    /// Chart height
+    /// </summary>
+    [Parameter] public string Height { get; set; } = "500px";
+    
+    /// <summary>
+    /// Organization data
+    /// </summary>
+    [Parameter] public OrgChartNode? Data { get; set; }
+    
+    /// <summary>
+    /// Node width
+    /// </summary>
+    [Parameter] public int NodeWidth { get; set; } = 180;
+    
+    /// <summary>
+    /// Node height
+    /// </summary>
+    [Parameter] public int NodeHeight { get; set; } = 80;
+    
+    /// <summary>
+    /// Horizontal spacing between nodes
+    /// </summary>
+    [Parameter] public int HorizontalSpacing { get; set; } = 20;
+    
+    /// <summary>
+    /// Vertical spacing between levels
+    /// </summary>
+    [Parameter] public int VerticalSpacing { get; set; } = 40;
+    
+    /// <summary>
+    /// Allow node expand/collapse
+    /// </summary>
+    [Parameter] public bool Expandable { get; set; } = true;
+    
+    /// <summary>
+    /// Callback when a node is clicked
+    /// </summary>
+    [Parameter] public EventCallback<OrgChartNode> OnNodeClick { get; set; }
+    
+    #endregion
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Data != null)
+        {
+            await InitializeAsync();
+        }
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_isInitialized && Data != null)
+        {
+            await UpdateAsync();
+        }
+    }
+    
+    private async Task InitializeAsync()
+    {
+        if (Data == null) return;
+        
+        _netRef = DotNetObjectReference.Create(this);
+        
+        var options = new
+        {
+            nodeWidth = NodeWidth,
+            nodeHeight = NodeHeight,
+            horizontalSpacing = HorizontalSpacing,
+            verticalSpacing = VerticalSpacing,
+            expandable = Expandable
+        };
+        
+        _instanceId = await JS.InvokeAsync<string>("Blazwind.OrgChart.init", _container, Data, options, _netRef);
+        _isInitialized = true;
+    }
+    
+    private async Task UpdateAsync()
+    {
+        if (_instanceId != null && Data != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.OrgChart.update", _instanceId, Data);
+        }
+    }
+    
+    /// <summary>
+    /// Update chart options dynamically (for settings panel)
+    /// </summary>
+    public async Task UpdateOptionsAsync()
+    {
+        if (_instanceId != null)
+        {
+            var options = new
+            {
+                nodeWidth = NodeWidth,
+                nodeHeight = NodeHeight,
+                horizontalSpacing = HorizontalSpacing,
+                verticalSpacing = VerticalSpacing,
+                expandable = Expandable
+            };
+            await JS.InvokeVoidAsync("Blazwind.OrgChart.updateOptions", _instanceId, options);
+        }
+    }
+    
+    [JSInvokable]
+    public async Task HandleNodeClick(string nodeId, string nodeJson)
+    {
+        try
+        {
+            var node = JsonSerializer.Deserialize<OrgChartNode>(nodeJson, new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            });
+            if (node != null)
+            {
+                await OnNodeClick.InvokeAsync(node);
+            }
+        }
+        catch { }
+    }
+    
+    /// <summary>
+    /// Expand all nodes
+    /// </summary>
+    public async Task ExpandAllAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.OrgChart.expandAll", _instanceId);
+        }
+    }
+    
+    /// <summary>
+    /// Collapse all nodes
+    /// </summary>
+    public async Task CollapseAllAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.OrgChart.collapseAll", _instanceId);
+        }
+    }
+    
+    /// <summary>
+    /// Expand specific node
+    /// </summary>
+    public async Task ExpandNodeAsync(string nodeId)
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.OrgChart.expandNode", _instanceId, nodeId);
+        }
+    }
+    
+    /// <summary>
+    /// Collapse specific node
+    /// </summary>
+    public async Task CollapseNodeAsync(string nodeId)
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.OrgChart.collapseNode", _instanceId, nodeId);
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_instanceId != null)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.OrgChart.dispose", _instanceId);
+            }
+            catch { }
+        }
+        _netRef?.Dispose();
+    }
+}

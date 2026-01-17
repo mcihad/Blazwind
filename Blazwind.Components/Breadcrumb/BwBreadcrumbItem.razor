@@ -1,0 +1,54 @@
+@namespace Blazwind.Components.Breadcrumb
+@using Blazwind.Components.Shared
+@inherits BwBase
+
+<li class="inline-flex items-center @Class" style="@Style">
+    @* Separator *@
+    <span class="bw-breadcrumb-separator mx-1 text-gray-400 dark:text-gray-600">
+        @if (SeparatorTemplate != null)
+        {
+            @SeparatorTemplate
+        }
+        else
+        {
+            <svg class="w-3 h-3 text-gray-400 dark:text-gray-600 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+            </svg>
+        }
+    </span>
+    
+    @* Content *@
+    @if (!string.IsNullOrEmpty(Href) && !IsActive)
+    {
+        <a href="@Href" target="@Target" class="inline-flex items-center text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+             @if (!string.IsNullOrEmpty(Icon))
+             {
+                 <i class="@Icon mr-2"></i>
+             }
+             @Text
+             @ChildContent
+        </a>
+    }
+    else
+    {
+        <span class="inline-flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 @(IsActive ? "text-gray-500 dark:text-gray-400 cursor-default" : "text-gray-700 dark:text-gray-300")">
+            @if (!string.IsNullOrEmpty(Icon))
+            {
+                 <i class="@Icon mr-2"></i>
+            }
+            @Text
+            @ChildContent
+        </span>
+    }
+</li>
+
+@code {
+    [CascadingParameter(Name = "BreadcrumbSeparator")] public RenderFragment? SeparatorTemplate { get; set; }
+    
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public string? Target { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public bool IsActive { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

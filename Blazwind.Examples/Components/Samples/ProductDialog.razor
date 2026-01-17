@@ -1,0 +1,81 @@
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Button
+@using Blazwind.Components.Table
+@inject DialogService DialogService
+
+<div class="flex flex-col gap-4">
+    <BwTable TItem="ProductItem" Items="_products" SelectionMode="BwSelectionMode.Multiple"
+        SelectedItems="_selectedProducts" SelectedItemsChanged="@(items => _selectedProducts = items.ToList())"
+        Striped="true" Hoverable="true" EnablePagination="true" PageSize="5">
+        <BwTableColumn TItem="ProductItem" Title="Product Name" Field="@(x => x.Name)" Sortable="true" />
+        <BwTableColumn TItem="ProductItem" Title="Category" Field="@(x => x.Category)" Sortable="true" />
+        <BwTableColumn TItem="ProductItem" Title="Price" Field="@(x => x.Price)" Sortable="true">
+            <Template Context="item">
+                <span class="font-medium">@item.Price.ToString("N2") ₺</span>
+            </Template>
+        </BwTableColumn>
+        <BwTableColumn TItem="ProductItem" Title="Stock" Field="@(x => x.Stock)" Sortable="true" />
+    </BwTable>
+
+    <div class="flex justify-end gap-2 pt-4 border-t border-gray-100">
+        <BwButton Text="Cancel" Color="BwColor.Secondary" OnClick="Close" />
+        <BwButton Color="BwColor.Primary" OnClick="Confirm">
+            <i class="fa-solid fa-check mr-2"></i>
+            Confirm Selection (@_selectedProducts.Count)
+        </BwButton>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+
+    [Parameter] public List<ProductItem>? InitialSelection { get; set; }
+    [Parameter] public EventCallback<List<ProductItem>> OnConfirm { get; set; }
+
+    private List<ProductItem> _selectedProducts = new();
+
+    private List<ProductItem> _products = new()
+{
+new ProductItem { Id = 1, Name = "Laptop", Category = "Electronics", Price = 25000, Stock = 15 },
+new ProductItem { Id = 2, Name = "Keyboard", Category = "Electronics", Price = 500, Stock = 50 },
+new ProductItem { Id = 3, Name = "Mouse", Category = "Electronics", Price = 250, Stock = 100 },
+new ProductItem { Id = 4, Name = "Monitor", Category = "Electronics", Price = 8000, Stock = 20 },
+new ProductItem { Id = 5, Name = "Headphones", Category = "Electronics", Price = 1500, Stock = 30 },
+new ProductItem { Id = 6, Name = "Webcam", Category = "Electronics", Price = 800, Stock = 25 },
+new ProductItem { Id = 7, Name = "USB Hub", Category = "Accessory", Price = 150, Stock = 80 },
+new ProductItem { Id = 8, Name = "Mouse Pad", Category = "Accessory", Price = 100, Stock = 200 },
+new ProductItem { Id = 9, Name = "Cable", Category = "Accessory", Price = 50, Stock = 500 },
+new ProductItem { Id = 10, Name = "Bag", Category = "Accessory", Price = 300, Stock = 40 }
+};
+
+    protected override void OnInitialized()
+    {
+        if (InitialSelection != null)
+        {
+            _selectedProducts = new List<ProductItem>(InitialSelection);
+        }
+    }
+
+    private void Close()
+    {
+        if (DialogInstance != null)
+        {
+            DialogService.Close(DialogInstance);
+        }
+    }
+
+    private async Task Confirm()
+    {
+        await OnConfirm.InvokeAsync(_selectedProducts);
+        Close();
+    }
+
+    public class ProductItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Category { get; set; } = "";
+        public decimal Price { get; set; }
+        public int Stock { get; set; }
+    }
+}

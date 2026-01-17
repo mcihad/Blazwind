@@ -1,0 +1,125 @@
+@page "/charts/bar-race"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using System.Timers
+@implements IDisposable
+
+<PageTitle>Bar Race - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Bar Race" 
+            Description="Dinamik sıralamalı çubuk grafiği. Zaman içindeki değişimleri yarış formatında gösterir."
+            Icon="fa-solid fa-flag-checkered"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Model Popülaritesi" Subtitle="Zamanla indirme sayıları (Simülasyon)" Icon="fa-solid fa-ranking-star" Color="BwColor.Primary">
+        <BwChart @ref="_chart" Options="_raceOptions" Height="500px" />
+        <div class="mt-4">
+            <BwButton Text="@(_isRunning ? "Durdur" : "Başlat")" 
+                      OnClick="ToggleRace" 
+                      Color="@(_isRunning ? BwColor.Danger : BwColor.Primary)" />
+        </div>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwChart? _chart;
+    private Timer? _timer;
+    private bool _isRunning = false;
+    private Random _rng = new();
+    private List<string> _models = new() { "GPT-4", "Claude 3", "Llama 3", "Gemini", "Mistral", "Falcon" };
+    private Dictionary<string, int> _scores = new();
+
+    private ChartOptions _raceOptions = new();
+
+    protected override void OnInitialized()
+    {
+        foreach (var m in _models) _scores[m] = _rng.Next(100, 1000);
+        UpdateChartOptions();
+    }
+
+    private void UpdateChartOptions()
+    {
+        // Simple manual sort for compatibility if realtimeSort is tricky in wrapper
+        var sorted = _scores.OrderBy(x => x.Value).ToList();
+        
+        _raceOptions = new ChartOptions
+        {
+            Title = new ChartTitle { Text = "Revenue Race", Subtext = "Dynamic Ranking of Departments" },
+            XAxis = new ChartAxis 
+            { 
+                Type = ChartAxisType.Value,
+                Max = "dataMax" 
+            },
+            YAxis = new ChartAxis 
+            { 
+                Type = ChartAxisType.Category, 
+                Data = sorted.Select(x => x.Key).ToList(),
+                AnimationDuration = 300,
+                AnimationDurationUpdate = 300
+            },
+            Series = new List<ChartSeries>
+            {
+                new()
+                {
+                    Type = ChartSeriesType.Bar,
+                    Data = sorted.Select(x => (object)x.Value).ToList(),
+                    RealtimeSort = true,
+                    SeriesLayoutBy = "column",
+                    Label = new ChartLabel { Show = true, Position = ChartPosition.Right, ValueAnimation = true },
+                    ItemStyle = new ChartItemStyle
+                    {
+                        Color = new { 
+                            type = "linear", x = 0, y = 0, x2 = 1, y2 = 0,
+                            colorStops = new List<object> 
+                            { 
+                                new { offset = 0, color = "#2dd4bf" }, 
+                                new { offset = 1, color = "#3b82f6" } 
+                            }
+                        }
+                    }
+                }
+            },
+            AnimationDuration = 0,
+            AnimationDurationUpdate = 1000,
+            AnimationEasing = "linear",
+            AnimationEasingUpdate = "linear",
+            Grid = new ChartGrid { Top = 10, Bottom = 30, Left = 100, Right = 80 }
+        };
+    }
+
+    private void ToggleRace()
+    {
+        if (_isRunning)
+        {
+            _timer?.Stop();
+            _isRunning = false;
+        }
+        else
+        {
+            _timer = new Timer(1500);
+            _timer.Elapsed += async (s, e) => await Tick();
+            _timer.Start();
+            _isRunning = true;
+        }
+    }
+
+    private async Task Tick()
+    {
+        foreach (var key in _scores.Keys.ToList())
+        {
+            if (_rng.NextDouble() > 0.1)
+                _scores[key] += _rng.Next(10, 100);
+        }
+        
+        UpdateChartOptions();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+}

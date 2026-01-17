@@ -1,0 +1,165 @@
+@namespace Blazwind.Components.Calendar
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+@{
+    var slotCount = (EndHour - StartHour) * 60 / SlotMinutes;
+    var slotHeight = 48; // px
+    var dayEvents = Events?
+        .Where(e => e.StartTime.Date == SelectedDate.Date && !e.IsAllDay)
+        .ToList() ?? new();
+    var allDayEvents = Events?
+        .Where(e => e.StartTime.Date == SelectedDate.Date && e.IsAllDay)
+        .ToList() ?? new();
+        
+    // Empty slot filtering
+    var visibleSlots = Enumerable.Range(0, slotCount).ToList();
+    if (HideEmptySlots && dayEvents.Any())
+    {
+        var filledHours = new HashSet<int>();
+        foreach (var e in dayEvents)
+        {
+            var startMinute = (e.StartTime.Hour - StartHour) * 60 + e.StartTime.Minute;
+            var endMinute = (e.EndTime.Hour - StartHour) * 60 + e.EndTime.Minute;
+            for (var m = startMinute; m < endMinute; m += SlotMinutes)
+            {
+                filledHours.Add(m / SlotMinutes);
+            }
+        }
+        visibleSlots = visibleSlots.Where(s => filledHours.Contains(s) || filledHours.Contains(s - 1) || filledHours.Contains(s + 1)).ToList();
+    }
+}
+
+<div id="@containerId" 
+     class="relative flex flex-col h-full"
+     data-start-hour="@StartHour"
+     data-slot-minutes="@SlotMinutes"
+     data-slot-height="@slotHeight">
+    
+    @* All Day Events *@
+    @if (allDayEvents.Any())
+    {
+        <div class="flex-shrink-0 p-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <div class="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">Tüm gün</div>
+            <div class="flex flex-wrap gap-1">
+                @foreach (var calendarEvent in allDayEvents)
+                {
+                    var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
+                    <BwCalendarEvent Event="@calendarEvent" 
+                                     CalendarColor="@calendar?.Color" 
+                                     Compact="true"
+                                     EventTemplate="@EventTemplate"
+                                     OnClick="@OnEventClicked" />
+                }
+            </div>
+        </div>
+    }
+    
+    @* Time Grid *@
+    <div class="flex-1 overflow-y-auto relative">
+        @* Current Time Indicator *@
+        @if (SelectedDate.Date == DateTime.Today)
+        {
+            <div class="bw-time-indicator absolute left-0 right-0 z-20 pointer-events-none flex items-center" style="display: none;">
+                <div class="w-2 h-2 rounded-full bg-red-500 ml-14 sm:ml-16"></div>
+                <div class="flex-1 h-0.5 bg-red-500"></div>
+            </div>
+        }
+        
+        <div class="relative min-h-full">
+            @foreach (var slotIndex in visibleSlots)
+            {
+                var minute = StartHour * 60 + slotIndex * SlotMinutes;
+                var hour = minute / 60;
+                var minutePart = minute % 60;
+                var timeStr = $"{hour:D2}:{minutePart:D2}";
+                var slotStart = SelectedDate.Date.AddMinutes(minute);
+                var slotEnd = slotStart.AddMinutes(SlotMinutes);
+                
+                <div class="flex border-b border-gray-100 dark:border-gray-800 relative group hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer"
+                     style="height: @(slotHeight)px;"
+                     @onclick="() => HandleSlotClick(slotStart, slotEnd)">
+                    
+                    @* Time Label *@
+                    <div class="flex-shrink-0 w-14 sm:w-16 text-right pr-2 pt-1 text-xs text-gray-400 dark:text-gray-500 select-none">
+                        @if (minutePart == 0)
+                        {
+                            <span class="font-medium">@timeStr</span>
+                        }
+                    </div>
+                    
+                    @* Slot Area *@
+                    <div class="flex-1 relative border-l border-gray-200 dark:border-gray-700">
+                    </div>
+                </div>
+            }
+            
+            @* Events (Overlay) *@
+            <div class="absolute left-16 sm:left-18 right-1 top-0 select-none">
+                @foreach (var calendarEvent in dayEvents)
+                {
+                    var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
+                    var startMinute = (calendarEvent.StartTime.Hour - StartHour) * 60 + calendarEvent.StartTime.Minute;
+                    var endMinute = (calendarEvent.EndTime.Hour - StartHour) * 60 + calendarEvent.EndTime.Minute;
+                    var top = (startMinute * slotHeight) / (double)SlotMinutes;
+                    var height = Math.Max(slotHeight, ((endMinute - startMinute) * slotHeight) / (double)SlotMinutes);
+                    
+                    <div class="absolute left-1 right-1 bw-event-container" 
+                         style="top: @(top)px; height: @(height)px;">
+                        <BwCalendarEvent Event="@calendarEvent" 
+                                         CalendarColor="@calendar?.Color"
+                                         AllowResize="@AllowResize"
+                                         StyleOverride="height: 100%;"
+                                         EventTemplate="@EventTemplate"
+                                         OnClick="@OnEventClicked"
+                                         OnResizeStart="@HandleResizeStart" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime SelectedDate { get; set; }
+    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
+    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
+    [Parameter] public int SlotMinutes { get; set; } = 30;
+    [Parameter] public int StartHour { get; set; } = 7;
+    [Parameter] public int EndHour { get; set; } = 22;
+    [Parameter] public bool HideEmptySlots { get; set; }
+    [Parameter] public bool AllowDrag { get; set; } = true;
+    [Parameter] public bool AllowResize { get; set; } = true;
+    [Parameter] public string TodayHeaderClass { get; set; } = "bg-blue-600 text-white";
+    [Parameter] public string TodayBackgroundClass { get; set; } = "bg-blue-50 dark:bg-blue-900/10";
+    [Parameter] public string TodayTextClass { get; set; } = "text-blue-600 dark:text-blue-400";
+    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+    [Parameter] public EventCallback<(DateTime Start, DateTime End)> OnSlotSelected { get; set; }
+    [Parameter] public EventCallback<CalendarEvent> OnEventChanged { get; set; }
+    
+    private string containerId = $"bw-calendar-day-{Guid.NewGuid():N}";
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && SelectedDate.Date == DateTime.Today)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Calendar.startTimeIndicatorUpdate", containerId);
+            await JS.InvokeVoidAsync("Blazwind.Calendar.scrollToNow", containerId);
+        }
+    }
+    
+    private async Task HandleSlotClick(DateTime start, DateTime end)
+    {
+        await OnSlotSelected.InvokeAsync((start, end));
+    }
+    
+
+    
+    private async Task HandleResizeStart((string EventId, double ClientY) args)
+    {
+        await JS.InvokeVoidAsync("Blazwind.Calendar.startResize", args.EventId, args.ClientY, 48, SlotMinutes);
+    }
+}

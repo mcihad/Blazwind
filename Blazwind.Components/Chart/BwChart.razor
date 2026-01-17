@@ -1,0 +1,231 @@
+@namespace Blazwind.Components.Chart
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Services
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using System.Text.Json
+@inject IJSRuntime JS
+@inject ScriptLoaderService ScriptLoader
+@implements IAsyncDisposable
+
+<div @ref="_container" class="bw-chart @Class" style="@_containerStyle"></div>
+
+@code {
+    private const string ScriptPath = "_content/Blazwind.Components/blazwind.chart.js";
+    
+    private ElementReference _container;
+    private string? _instanceId;
+    private DotNetObjectReference<BwChart>? _netRef;
+    private bool _isInitialized;
+    private bool _scriptLoaded;
+    
+    private string _containerStyle => $"width: {Width}; height: {Height}; {Style}";
+    
+    #region Parameters
+    
+    /// <summary>
+    /// CSS class
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>
+    /// CSS style
+    /// </summary>
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>
+    /// Chart width
+    /// </summary>
+    [Parameter] public string Width { get; set; } = "100%";
+    
+    /// <summary>
+    /// Chart height
+    /// </summary>
+    [Parameter] public string Height { get; set; } = "400px";
+    
+    /// <summary>
+    /// Chart options (ECharts format) - can be ChartOptions or anonymous object
+    /// </summary>
+    [Parameter] public object? Options { get; set; }
+    
+    /// <summary>
+    /// Chart theme
+    /// </summary>
+    [Parameter] public ChartTheme Theme { get; set; } = ChartTheme.Default;
+    
+    /// <summary>
+    /// Show loading indicator initially
+    /// </summary>
+    [Parameter] public bool ShowLoading { get; set; } = false;
+    
+    /// <summary>
+    /// Click event callback
+    /// </summary>
+    [Parameter] public EventCallback<ChartClickEventArgs> OnClick { get; set; }
+    
+    #endregion
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                // Lazy load chart script
+                await ScriptLoader.LoadScriptAsync(ScriptPath);
+                _scriptLoaded = true;
+                
+                if (Options != null)
+                {
+                    await InitializeAsync();
+                }
+            }
+            catch (JSDisconnectedException) { }
+            catch (ObjectDisposedException) { }
+        }
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_isInitialized && Options != null)
+        {
+            try
+            {
+                await SetOptionAsync(Options);
+            }
+            catch (JSDisconnectedException) { }
+            catch (ObjectDisposedException) { }
+        }
+    }
+    
+    private async Task InitializeAsync()
+    {
+        if (!_scriptLoaded || Options == null) return;
+        
+        _netRef = DotNetObjectReference.Create(this);
+        
+        var themeStr = Theme == ChartTheme.Default ? null : Theme.ToString().ToLower();
+        var optionsJson = JsonSerializer.Serialize(Options, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        });
+        
+        _instanceId = await JS.InvokeAsync<string>(
+            "BwChart.init", 
+            _container, 
+            JsonSerializer.Deserialize<object>(optionsJson),
+            themeStr, 
+            _netRef
+        );
+        _isInitialized = true;
+        
+        if (ShowLoading)
+        {
+            await ShowLoadingAsync();
+        }
+    }
+    
+    [JSInvokable]
+    public async Task HandleChartClick(string eventDataJson)
+    {
+        try
+        {
+            var eventData = JsonSerializer.Deserialize<ChartClickEventArgs>(eventDataJson, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            if (eventData != null)
+            {
+                await OnClick.InvokeAsync(eventData);
+            }
+        }
+        catch { }
+    }
+    
+    /// <summary>
+    /// Update chart options
+    /// </summary>
+    public async Task SetOptionAsync(object options, bool notMerge = false)
+    {
+        if (_instanceId != null)
+        {
+            var optionsJson = JsonSerializer.Serialize(options, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            });
+            
+            await JS.InvokeVoidAsync("BwChart.setOption", _instanceId, JsonSerializer.Deserialize<object>(optionsJson), notMerge);
+        }
+    }
+    
+    /// <summary>
+    /// Resize chart
+    /// </summary>
+    public async Task ResizeAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("BwChart.resize", _instanceId);
+        }
+    }
+    
+    /// <summary>
+    /// Get chart as data URL
+    /// </summary>
+    public async Task<string> GetDataUrlAsync(string type = "png")
+    {
+        if (_instanceId != null)
+        {
+            return await JS.InvokeAsync<string>("BwChart.getDataURL", _instanceId, type);
+        }
+        return string.Empty;
+    }
+    
+    /// <summary>
+    /// Show loading indicator
+    /// </summary>
+    public async Task ShowLoadingAsync(string text = "Yükleniyor...")
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("BwChart.showLoading", _instanceId, text);
+        }
+    }
+    
+    /// <summary>
+    /// Hide loading indicator
+    /// </summary>
+    public async Task HideLoadingAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("BwChart.hideLoading", _instanceId);
+        }
+    }
+    
+    /// <summary>
+    /// Clear chart
+    /// </summary>
+    public async Task ClearAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("BwChart.clear", _instanceId);
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_instanceId != null)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("BwChart.dispose", _instanceId);
+            }
+            catch { }
+        }
+        _netRef?.Dispose();
+    }
+}

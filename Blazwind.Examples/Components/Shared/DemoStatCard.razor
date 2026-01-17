@@ -1,0 +1,19 @@
+<div class="@BgClass rounded p-5 text-white shadow-lg @ShadowClass h-full">
+    <div class="flex justify-between items-start mb-4">
+        <div class="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+            <i class="fa-solid @Icon text-xl"></i>
+        </div>
+        <span class="text-xs font-medium bg-white/20 px-2 py-1 rounded backdrop-blur-sm">@Trend</span>
+    </div>
+    <h3 class="text-3xl font-bold mb-1">@Value</h3>
+    <p class="text-white/80 text-sm">@Label</p>
+</div>
+
+@code {
+    [Parameter] public string Icon { get; set; } = "fa-chart-line";
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public string Trend { get; set; } = "";
+    [Parameter] public string BgClass { get; set; } = "bg-gradient-to-br from-blue-500 to-blue-600";
+    [Parameter] public string ShadowClass { get; set; } = "shadow-blue-200";
+}

@@ -1,0 +1,151 @@
+@page "/charts"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Charts - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Apache ECharts" 
+            Description="Güçlü ve esnek veri görselleştirme kütüphanesi. Lazy loading ile sadece kullanıldığında yüklenir (~1MB)."
+            Icon="fa-solid fa-chart-pie"
+            Color="BwColor.Primary" />
+
+    @* Bilgi *@
+    <div class="p-4 bg-blue-50 border border-blue-200 rounded">
+        <div class="flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-blue-600 text-xl mt-0.5"></i>
+            <div>
+                <h4 class="font-semibold text-blue-800 mb-1">BwChart Bileşeni Hakkında</h4>
+                <p class="text-sm text-blue-700 mb-2">
+                    Bu bileşen <a href="https://echarts.apache.org" target="_blank" class="underline hover:text-blue-900">Apache ECharts</a> 
+                    kütüphanesini kullanır. Sol menüden farklı grafik tiplerinin detaylı örneklerini inceleyebilirsiniz.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @* Grafik Tipleri Grid *@
+    <BwGrid Gap="BwSpacing.Md" MinItemWidth="200px">
+        @foreach (var chart in _chartTypes)
+        {
+            <a href="@chart.Href" class="block p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-400 hover:shadow-md transition-all group h-full">
+                <div class="flex flex-col items-center text-center h-full">
+                    <div class="w-12 h-12 rounded-full bg-@(chart.Color)-100 text-@(chart.Color)-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <i class="@chart.Icon text-xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">@chart.Name</h3>
+                    <p class="text-xs text-gray-500 mt-1">@chart.Description</p>
+                </div>
+            </a>
+        }
+    </BwGrid>
+
+    @* Örnek Grafikler *@
+    <BwCard Title="Hızlı Önizleme" Subtitle="Birkaç örnek grafik." Icon="fa-solid fa-eye" Color="BwColor.Info">
+        <BwGrid Gap="BwSpacing.Md" MinItemWidth="300px">
+            <BwChart Options="_linePreview" Height="200px" />
+            <BwChart Options="_piePreview" Height="200px" />
+            <BwChart Options="_barPreview" Height="200px" />
+        </BwGrid>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private record ChartTypeInfo(string Name, string Description, string Icon, string Color, string Href);
+
+    private List<ChartTypeInfo> _chartTypes = new()
+    {
+        // Basic Charts
+        new("Çizgi Grafik", "Trend analizi", "fa-solid fa-chart-line", "blue", "charts/line"),
+        new("Çubuk Grafik", "Karşılaştırma", "fa-solid fa-chart-bar", "green", "charts/bar"),
+        new("Pasta Grafik", "Oran gösterimi", "fa-solid fa-chart-pie", "orange", "charts/pie"),
+        new("Alan Grafik", "Kümülatif veri", "fa-solid fa-chart-area", "purple", "charts/area"),
+        new("Dağılım", "Korelasyon", "fa-solid fa-braille", "pink", "charts/scatter"),
+        
+        // Advanced Charts
+        new("Radar", "Çok boyutlu", "fa-solid fa-star", "red", "charts/radar"),
+        new("Gösterge", "KPI gösterimi", "fa-solid fa-gauge-high", "cyan", "charts/gauge"),
+        new("Huni", "Dönüşüm analizi", "fa-solid fa-filter", "amber", "charts/funnel"),
+        new("Isı Haritası", "Yoğunluk gösterimi", "fa-solid fa-fire", "rose", "charts/heatmap"),
+        
+        // Hierarchical
+        new("Treemap", "Hiyerarşik veri", "fa-solid fa-table-cells", "indigo", "charts/treemap"),
+        new("Sunburst", "Katmanlı veri", "fa-solid fa-sun", "yellow", "charts/sunburst"),
+        new("Tree", "Ağaç yapısı", "fa-solid fa-network-wired", "teal", "charts/tree"),
+        
+        // Flow & Relation
+        new("Sankey", "Akış diyagramı", "fa-solid fa-arrow-right-arrow-left", "blue", "charts/sankey"),
+        new("Graph", "İlişki ağı", "fa-solid fa-diagram-project", "violet", "charts/graph"),
+        new("ThemeRiver", "Zaman akışı", "fa-solid fa-water", "cyan", "charts/themeriver"),
+        new("Parallel", "Çok değişkenli", "fa-solid fa-grip-lines-vertical", "fuchsia", "charts/parallel"),
+        
+        // Financial & Others
+        new("Candlestick", "Finansal analiz", "fa-solid fa-arrows-up-down", "emerald", "charts/candlestick"),
+        new("Boxplot", "İstatistiksel", "fa-solid fa-chart-simple", "slate", "charts/boxplot"),
+        new("Calendar", "Takvim ısısı", "fa-solid fa-calendar-days", "orange", "charts/calendar"),
+        new("Pictorial", "Sembolik", "fa-solid fa-icons", "rose", "charts/pictorial"),
+        new("Polar", "Polar koordinat", "fa-solid fa-circle-notch", "sky", "charts/polar"),
+
+        // AI & Advanced Analytics
+        new("Knowledge Graph", "AI İlişki Ağı", "fa-solid fa-circle-nodes", "indigo", "charts/knowledge-graph"),
+        new("Correlation", "Özellik İlişkisi", "fa-solid fa-magnifying-glass-chart", "rose", "charts/correlation"),
+        new("Clustering", "K-Means Kümeleme", "fa-solid fa-users-viewfinder", "teal", "charts/clustering"),
+        new("Bar Race", "Dinamik Yarış", "fa-solid fa-flag-checkered", "purple", "charts/bar-race"),
+        new("Confidence", "Risk/Güven Skoru", "fa-solid fa-shield-halved", "red", "charts/confidence"),
+        new("Effect Scatter", "Attention Map", "fa-solid fa-bullseye", "blue", "charts/effect-scatter"),
+        new("Dynamic Data", "Real-time Loss", "fa-solid fa-heart-pulse", "amber", "charts/dynamic"),
+        new("Nightingale", "Model Sınıfları", "fa-solid fa-fan", "cyan", "charts/nightingales"),
+        new("Dataset", "Veri Seti (Encoding)", "fa-solid fa-database", "slate", "charts/dataset"),
+        new("Mixed", "Pareto / Karma", "fa-solid fa-layer-group", "orange", "charts/mixed"),
+        
+        // Advanced Charts
+        new("Stacked Area", "Yığılmış Alan", "fa-solid fa-layer-group", "emerald", "charts/stacked-area"),
+        new("Gradient Area", "Gradyan Alan", "fa-solid fa-fill-drip", "violet", "charts/gradient-stacked-area"),
+        new("Les Misérables", "Karakter Ağı", "fa-solid fa-circle-nodes", "amber", "charts/les-miserables"),
+        new("Chord", "Akış Diyagramı", "fa-solid fa-arrows-spin", "teal", "charts/chord"),
+        
+        // Geo Charts
+        new("Geo Graph", "Harita Ağı", "fa-solid fa-plane", "blue", "charts/geo-graph"),
+        new("Geo Choropleth", "Renk Haritası", "fa-solid fa-map", "green", "charts/geo-choropleth"),
+        new("Pie on Geo", "Harita Pasta", "fa-solid fa-map-pin", "rose", "charts/pie-on-geo")
+    };
+    
+    // ... rest of preview options ...
+    private ChartOptions _linePreview = new()
+    {
+        XAxis = new ChartAxis { Type = ChartAxisType.Category, Data = new List<string> { "Pzt", "Sal", "Çar", "Per", "Cum" } },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries> { new() { Type = ChartSeriesType.Line, Data = new List<int> { 120, 200, 150, 80, 170 }, Smooth = true } },
+        Color = new List<string> { "#3b82f6" }
+    };
+
+    private ChartOptions _piePreview = new()
+    {
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "40%", "70%" },
+                Data = new List<PieDataItem>
+                {
+                    new() { Name = "A", Value = 40 },
+                    new() { Name = "B", Value = 30 },
+                    new() { Name = "C", Value = 20 },
+                    new() { Name = "D", Value = 10 }
+                }
+            }
+        },
+        Color = new List<string> { "#10b981", "#f59e0b", "#ef4444", "#8b5cf6" }
+    };
+
+    private ChartOptions _barPreview = new()
+    {
+        XAxis = new ChartAxis { Type = ChartAxisType.Category, Data = new List<string> { "A", "B", "C", "D" } },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries> { new() { Type = ChartSeriesType.Bar, Data = new List<int> { 120, 200, 150, 80 } } },
+        Color = new List<string> { "#6366f1" }
+    };
+}

@@ -1,0 +1,119 @@
+@page "/components/watermark"
+@using Blazwind.Components.Watermark
+
+<PageTitle>Watermark Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Watermark Component" Description="Component used to add watermark over content."
+            Icon="fa-solid fa-stamp" Color="BwColor.Secondary"/>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Default watermark" Icon="fa-solid fa-water" Color="BwColor.Primary">
+            <BwWatermark Text="Blazwind">
+                <div class="h-48 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+                    <p class="text-gray-700">
+                        This content has a repeating "Blazwind" watermark pattern on top.
+                    </p>
+                </div>
+            </BwWatermark>
+        </BwCard>
+
+        <BwCard Title="Custom Text" Subtitle="Different watermark text" Icon="fa-solid fa-font" Color="BwColor.Success">
+            <BwWatermark Text="CONFIDENTIAL" Opacity="0.2">
+                <div class="h-48 bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4">
+                    <h3 class="font-bold text-red-800 mb-2">Confidential Document</h3>
+                    <p class="text-gray-700 text-sm">
+                        This document is confidential and should only be viewed by authorized personnel.
+                    </p>
+                </div>
+            </BwWatermark>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Rotation Angle" Subtitle="Different rotation values" Icon="fa-solid fa-rotate"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">-45 degrees</p>
+                    <BwWatermark Text="SAMPLE" Rotate="-45">
+                        <div class="h-32 bg-gray-100 rounded-lg"></div>
+                    </BwWatermark>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">0 degrees (horizontal)</p>
+                    <BwWatermark Text="SAMPLE" Rotate="0">
+                        <div class="h-32 bg-gray-100 rounded-lg"></div>
+                    </BwWatermark>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Opacity" Subtitle="Different transparency levels" Icon="fa-solid fa-eye" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md">
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">%10 opacity</p>
+                    <BwWatermark Text="Light" Opacity="0.1">
+                        <div class="h-24 bg-gray-100 rounded-lg"></div>
+                    </BwWatermark>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500 mb-2">%30 opacity</p>
+                    <BwWatermark Text="Medium" Opacity="0.3">
+                        <div class="h-24 bg-gray-100 rounded-lg"></div>
+                    </BwWatermark>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwCard Title="Colored Watermarks" Subtitle="Different color options" Icon="fa-solid fa-palette"
+            Color="BwColor.Danger">
+        <div class="grid grid-cols-3 gap-4">
+            <div>
+                <p class="text-sm text-gray-500 mb-2 text-center">Primary</p>
+                <BwWatermark Text="Blue" Color="BwColor.Primary" Opacity="0.25">
+                    <div class="h-32 bg-blue-50 rounded-lg"></div>
+                </BwWatermark>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 mb-2 text-center">Success</p>
+                <BwWatermark Text="Green" Color="BwColor.Success" Opacity="0.25">
+                    <div class="h-32 bg-emerald-50 rounded-lg"></div>
+                </BwWatermark>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 mb-2 text-center">Danger</p>
+                <BwWatermark Text="Red" Color="BwColor.Danger" Opacity="0.25">
+                    <div class="h-32 bg-red-50 rounded-lg"></div>
+                </BwWatermark>
+            </div>
+        </div>
+    </BwCard>
+
+    <BwCard Title="Real Usage Scenario" Subtitle="Document preview" Icon="fa-solid fa-file-alt"
+            Color="BwColor.Secondary">
+        <BwWatermark Text="DRAFT - UNAPPROVED" Opacity="0.15" Rotate="-30" Gap="150">
+            <div class="bg-white border rounded-lg p-8 shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Project Proposal</h2>
+                <div class="space-y-4 text-gray-600">
+                    <p>
+                        <strong>Project Name:</strong> Blazwind UI Library<br/>
+                        <strong>Date:</strong> @DateTime.Now.ToShortDateString()<br/>
+                        <strong>Prepared by:</strong> Development Team
+                    </p>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris.
+                        Vivamus hendrerit arcu sed erat molestie vehicula. Sed auctor neque eu tellus
+                        rhoncus ut eleifend nibh porttitor.
+                    </p>
+                    <p>
+                        Ut in nulla enim. Phasellus molestie magna non est bibendum non venenatis nisl
+                        tempor. Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor
+                        posuere. Praesent id metus massa, ut blandit odio.
+                    </p>
+                </div>
+            </div>
+        </BwWatermark>
+    </BwCard>
+</BwColumn>

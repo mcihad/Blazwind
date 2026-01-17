@@ -1,0 +1,120 @@
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Badge
+@inject DialogService DialogService
+
+<BwColumn Spacing="BwSpacing.Md">
+    @if (Event != null)
+    {
+        @* Header with Calendar Color *@
+        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm"
+            Class="pb-3 border-b border-gray-200 dark:border-gray-700">
+            @if (!string.IsNullOrEmpty(CalendarColor))
+            {
+                <div class="w-4 h-4 rounded-full flex-shrink-0" style="background-color: @CalendarColor"></div>
+            }
+            <BwColumn Spacing="BwSpacing.None">
+                <BwTypography Tag="BwTypographyTag.H3" Size="BwSize.Large" Weight="BwFontWeight.Semibold"
+                    Color="BwColor.Dark">@Event.Title</BwTypography>
+                @if (!string.IsNullOrEmpty(CalendarName))
+                {
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.ExtraSmall" Color="BwColor.Secondary">@CalendarName
+                    </BwTypography>
+                }
+            </BwColumn>
+        </BwRow>
+
+        @* Date & Time *@
+        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Start" Spacing="BwSpacing.Sm">
+            <BwIcon Name="fa-solid fa-clock" Color="BwColor.Gray" Class="mt-1" />
+            <BwColumn Spacing="BwSpacing.None">
+                <BwTypography Tag="BwTypographyTag.P" Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Dark">
+                    @Event.StartTime.ToString("dd MMMM yyyy dddd", culture)
+                </BwTypography>
+                <BwTypography Tag="BwTypographyTag.P" Size="BwSize.Small" Color="BwColor.Secondary">
+                    @Event.StartTime.ToString("HH:mm") - @Event.EndTime.ToString("HH:mm")
+                    <BwTypography Tag="BwTypographyTag.Span" Color="BwColor.Gray">(@Event.DurationMinutes minutes)
+                    </BwTypography>
+                </BwTypography>
+            </BwColumn>
+        </BwRow>
+
+        @* Location *@
+        @if (!string.IsNullOrEmpty(Event.Location))
+        {
+            <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Start" Spacing="BwSpacing.Sm">
+                <BwIcon Name="fa-solid fa-location-dot" Color="BwColor.Gray" Class="mt-1" />
+                <BwTypography Tag="BwTypographyTag.P" Size="BwSize.Small" Color="BwColor.Secondary">@Event.Location
+                </BwTypography>
+            </BwRow>
+        }
+
+        @* Description *@
+        @if (!string.IsNullOrEmpty(Event.Description))
+        {
+            <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Start" Spacing="BwSpacing.Sm">
+                <BwIcon Name="fa-solid fa-align-left" Color="BwColor.Gray" Class="mt-1" />
+                <BwTypography Tag="BwTypographyTag.P" Size="BwSize.Small" Color="BwColor.Secondary">@Event.Description
+                </BwTypography>
+            </BwRow>
+        }
+
+        @* ExtraData - Extensibility Demo *@
+        @if (Event.ExtraData != null && Event.ExtraData.Count > 0)
+        {
+            <BwColumn Class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700" Spacing="BwSpacing.Sm">
+                <BwTypography Tag="BwTypographyTag.H4" Size="BwSize.ExtraSmall" Weight="BwFontWeight.Semibold"
+                    Color="BwColor.Secondary" Class="uppercase tracking-wider mb-2">
+                    <BwIcon Name="fa-solid fa-puzzle-piece" Class="mr-1" /> Additional Information (ExtraData)
+                </BwTypography>
+                <BwGrid Columns="1" Gap="BwSpacing.Sm">
+                    @foreach (var item in Event.ExtraData)
+                    {
+                        <BwRow Spacing="BwSpacing.Sm" Class="text-sm">
+                            <BwTypography Tag="BwTypographyTag.Span" Weight="BwFontWeight.Medium" Color="BwColor.Secondary"
+                                Class="min-w-24">@item.Key:</BwTypography>
+                            <BwTypography Tag="BwTypographyTag.Span" Color="BwColor.Dark">@item.Value</BwTypography>
+                        </BwRow>
+                    }
+                </BwGrid>
+            </BwColumn>
+        }
+
+        @* All Day Badge *@
+        @if (Event.IsAllDay)
+        {
+            <div>
+                <BwBadge Color="BwColor.Primary" Variant="BwVariant.Soft" Icon="fa-solid fa-calendar-day"
+                    Text="All Day Event" />
+            </div>
+        }
+    }
+    else
+    {
+        <BwTypography Tag="BwTypographyTag.P" Color="BwColor.Secondary">Event not found.</BwTypography>
+    }
+
+    @* Footer *@
+    <BwRow MainAxisAlignment="BwMainAxisAlignment.End" Spacing="BwSpacing.Sm"
+        Class="pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+        <BwButton Text="Close" Color="BwColor.Secondary" Variant="BwVariant.Ghost" OnClick="Close" />
+    </BwRow>
+</BwColumn>
+
+@code {
+    [Parameter] public CalendarEvent? Event { get; set; }
+    [Parameter] public string? CalendarColor { get; set; }
+    [Parameter] public string? CalendarName { get; set; }
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+
+    private System.Globalization.CultureInfo culture = new("tr-TR");
+
+    private void Close()
+    {
+        if (DialogInstance != null) DialogService.Close(DialogInstance);
+    }
+}

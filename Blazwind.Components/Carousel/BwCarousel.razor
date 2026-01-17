@@ -1,0 +1,153 @@
+@namespace Blazwind.Components.Carousel
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IDisposable
+
+@{
+    var baseClasses = "relative w-full overflow-hidden rounded-lg";
+}
+
+<div class="@CombineClasses(baseClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    <div class="relative h-full">
+        @foreach (var (item, index) in Items.Select((x, i) => (x, i)))
+        {
+            var isActive = index == _currentIndex;
+            var slideClasses = isActive
+            ? "opacity-100 z-10"
+            : "opacity-0 z-0 absolute inset-0";
+            var transition = Fade ? "transition-opacity duration-500" : "transition-transform duration-500";
+
+            <div class="w-full @slideClasses @transition">
+                @if (ItemTemplate != null)
+                {
+                    @ItemTemplate(item)
+                }
+                else if (item is string imageUrl)
+                {
+                    <img src="@imageUrl" alt="Slide @(index + 1)" class="w-full h-full object-cover" />
+                }
+            </div>
+        }
+    </div>
+
+    @if (ShowArrows && Items.Count > 1)
+    {
+        <button type="button"
+            class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 shadow-lg flex items-center justify-center transition-all hover:scale-110"
+            @onclick="Previous">
+            <i class="fa-solid fa-chevron-left text-gray-700 dark:text-gray-200"></i>
+        </button>
+
+        <button type="button"
+            class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 shadow-lg flex items-center justify-center transition-all hover:scale-110"
+            @onclick="Next">
+            <i class="fa-solid fa-chevron-right text-gray-700 dark:text-gray-200"></i>
+        </button>
+    }
+
+    @if (ShowIndicators && Items.Count > 1)
+    {
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+            @for (int i = 0; i < Items.Count; i++)
+            {
+                var index = i;
+                var isActive = index == _currentIndex;
+                var indicatorClasses = isActive
+                ? "w-8 bg-white"
+                : "w-2 bg-white/50 hover:bg-white/75";
+
+                <button type="button" class="h-2 rounded-full transition-all duration-300 @indicatorClasses"
+                    @onclick="() => GoTo(index)">
+                </button>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<object> Items { get; set; } = new();
+    [Parameter] public RenderFragment<object>? ItemTemplate { get; set; }
+    [Parameter] public bool AutoPlay { get; set; } = false;
+    [Parameter] public int Interval { get; set; } = 5000;
+    [Parameter] public bool ShowArrows { get; set; } = true;
+    [Parameter] public bool ShowIndicators { get; set; } = true;
+    [Parameter] public bool Fade { get; set; } = true;
+    [Parameter] public bool PauseOnHover { get; set; } = true;
+    [Parameter] public bool Loop { get; set; } = true;
+
+    [Parameter] public EventCallback<int> OnSlideChange { get; set; }
+
+    private int _currentIndex = 0;
+    private Timer? _timer;
+    private bool _isPaused = false;
+
+    protected override void OnInitialized()
+    {
+        if (AutoPlay && Items.Count > 1)
+        {
+            StartAutoPlay();
+        }
+    }
+
+    private void StartAutoPlay()
+    {
+        _timer = new Timer(async _ =>
+        {
+            if (!_isPaused)
+            {
+                await InvokeAsync(Next);
+            }
+        }, null, Interval, Interval);
+    }
+
+    public async Task Next()
+    {
+        if (_currentIndex < Items.Count - 1)
+        {
+            _currentIndex++;
+        }
+        else if (Loop)
+        {
+            _currentIndex = 0;
+        }
+
+        await OnSlideChange.InvokeAsync(_currentIndex);
+        StateHasChanged();
+    }
+
+    public async Task Previous()
+    {
+        if (_currentIndex > 0)
+        {
+            _currentIndex--;
+        }
+        else if (Loop)
+        {
+            _currentIndex = Items.Count - 1;
+        }
+
+        await OnSlideChange.InvokeAsync(_currentIndex);
+        StateHasChanged();
+    }
+
+    public async Task GoTo(int index)
+    {
+        if (index >= 0 && index < Items.Count)
+        {
+            _currentIndex = index;
+            await OnSlideChange.InvokeAsync(_currentIndex);
+            StateHasChanged();
+        }
+    }
+
+    public void Pause() => _isPaused = true;
+    public void Resume() => _isPaused = false;
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+}

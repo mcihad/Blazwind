@@ -1,0 +1,70 @@
+@page "/components/rating"
+@using Blazwind.Components.Input
+@using Blazwind.Components.Typography
+
+<PageTitle>Rating Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Rating"
+            Description="Star rating component for user evaluations."
+            Icon="fa-solid fa-star"
+            Color="BwColor.Warning"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Standard 5 stars" Icon="fa-solid fa-star" Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRating Label="Product Evaluation" @bind-Value="_basicRating"/>
+            <BwTypography Size="BwSize.Small" Class="text-gray-500">Selected value: @_basicRating</BwTypography>
+        </BwColumn>
+    </BwCard>
+
+    @* Half Stars *@
+    <BwCard Title="Half Stars" Subtitle="AllowHalf=true" Icon="fa-solid fa-star-half-stroke" Color="BwColor.Primary">
+        <BwRating Label="Detailed Rating"
+                  AllowHalf="true"
+                  ShowValue="true"
+                  @bind-Value="_halfRating"/>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRating Label="Small" Size="BwSize.Small" Value="3"/>
+            <BwRating Label="Medium" Size="BwSize.Medium" Value="4"/>
+            <BwRating Label="Large" Size="BwSize.Large" Value="5"/>
+        </BwColumn>
+    </BwCard>
+
+    @* Custom Icons *@
+    <BwCard Title="Custom Icons" Subtitle="Heart, emoji etc." Icon="fa-solid fa-icons" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRating Label="Like"
+                      FilledIcon="fa-solid fa-heart"
+                      EmptyIcon="fa-regular fa-heart"
+                      Color="BwColor.Danger"
+                      @bind-Value="_heartRating"/>
+
+            <BwRating Label="Thumbs Up"
+                      FilledIcon="fa-solid fa-thumbs-up"
+                      EmptyIcon="fa-regular fa-thumbs-up"
+                      Color="BwColor.Success"
+                      MaxValue="3"
+                      @bind-Value="_thumbRating"/>
+        </BwColumn>
+    </BwCard>
+
+    @* States *@
+    <BwCard Title="States" Subtitle="ReadOnly, Disabled" Icon="fa-solid fa-toggle-on" Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRating Label="Read Only (4.5)" Value="4.5" AllowHalf="true" IsReadOnly="true" ShowValue="true"/>
+            <BwRating Label="Disabled" Value="3" IsDisabled="true"/>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private double _basicRating = 3;
+    private double _halfRating = 3.5;
+    private double _heartRating = 4;
+    private double _thumbRating = 2;
+}

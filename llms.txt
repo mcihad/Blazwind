@@ -1,0 +1,104 @@
+# Blazwind
+
+> Blazor için Tailwind CSS tabanlı kurumsal UI bileşen kütüphanesi.
+> Özellikle belediye MIS/CBS uygulamaları için tasarlanmıştır.
+
+## Genel Bakış
+
+Blazwind, geliştiricilerin Tailwind sınıflarını manuel yazmadan tamamen bileşen parametreleri üzerinden UI oluşturmasını sağlar. Tüm Tailwind sınıfları bileşenler içinde kapsüllenmiştir.
+
+## Teknoloji Yığını
+
+- **Framework:** Blazor (.NET 10+)
+- **Styling:** Tailwind CSS (bileşenler içinde kapsüllenmiş)
+- **JS Interop:** TypeScript → Vite ile derlenir
+- **Harita:** MapLibre GL JS
+- **Grafikler:** Apache ECharts
+
+## Proje Yapısı
+
+```
+Blazwind/
+├── Blazwind.Components/           # Ana kütüphane
+│   ├── Components/                # Tüm Blazor bileşenleri (kategori bazlı)
+│   ├── Shared/                    # Ortak enum ve modeller (BwSpacing, BwColor, BwSize, BwVariant vb.)
+│   ├── frontend/                  # TypeScript + Vite kaynakları
+│   └── COMPONENTS.md              # Tam bileşen listesi
+├── Blazwind.Examples/             # Demo/dokümantasyon sitesi
+└── Blazwind.Components.Reporting/ # Raporlama modülü
+```
+
+## Temel Tasarım Kuralları
+
+1. **Bileşen İsimlendirme:** Tüm bileşenler `Bw` prefix'i ile başlar (BwButton, BwCard, BwInput vb.)
+2. **Tailwind Kapsülleme:** Consumers asla direkt Tailwind sınıfı yazmaz
+3. **Border Radius:** Maksimum 4px (rounded-md)
+4. **CSS Prefix:** Özel CSS sınıfları `bw-` ile başlar
+5. **Shared Tipler:** Tüm enumlar Shared dizininde, `Bw` prefix'li
+
+## Ortak Parametreler
+
+Çoğu bileşen şu standart parametreleri destekler:
+
+| Parametre | Tip | Açıklama |
+|-----------|-----|----------|
+| Color | BwColor | Primary, Secondary, Success, Warning, Danger, Info, Dark |
+| Size | BwSize | ExtraSmall, Small, Medium, Large, ExtraLarge |
+| Variant | BwVariant | Solid, Outline, Ghost, Soft, Filled |
+| Class | string | Ek CSS sınıfları |
+| Style | string | Inline stil |
+
+## Bileşen Kategorileri
+
+### Layout (7 bileşen)
+BwGrid, BwRow, BwColumn, BwFlex, BwFlow, BwPanel, BwDrawer, BwSidebar
+
+### Form & Input (18+ bileşen)
+BwInput, BwTextarea, BwSelect, BwAutocomplete, BwCheckbox, BwRadio, BwSwitch, BwDatePicker, BwTimePicker, BwColorPicker, BwFileUpload, BwSlider, BwTagInput, BwMaskedInput, BwOtpInput, BwMentions, BwSignaturePad
+
+### Data Display (20+ bileşen)
+BwDataGrid, BwTable, BwCard, BwList, BwTree, BwTimeline, BwCarousel, BwChart, BwGantt, BwKanban, BwOrgChart, BwWorkflow, BwCalendar, BwCodeBlock, BwQRCode, BwBarcode
+
+### Navigation (8 bileşen)
+BwTabs, BwDropdown, BwBreadcrumb, BwPagination, BwStepper, BwBottomNav, BwFloatingActionButton, BwCommandPalette
+
+### Feedback (10 bileşen)
+BwDialog, BwToast, BwAlert, BwProgress, BwSkeleton, BwResult, BwEmptyState, BwPopover, BwNotificationCenter, BwConfetti
+
+### Map/CBS (6 bileşen)
+BwMapLibre, BwMapLibreMarker, BwMapLibrePopup, BwMapLibreSource, BwMapLibreLayer, BwMapLayout
+
+## Kullanım Örneği
+
+```razor
+@using Blazwind.Components.Button
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<BwColumn Spacing="BwSpacing.Md">
+    <BwCard Title="Kullanıcı Bilgileri" Color="BwColor.Primary">
+        <BwInput Label="Ad Soyad" @bind-Value="name" />
+        <BwButton Text="Kaydet" Color="BwColor.Success" OnClick="Save" />
+    </BwCard>
+</BwColumn>
+```
+
+## Servisler
+
+- **ToastService** - Bildirim gösterimi
+- **DialogService** - Modal/confirm diyalogları
+- **ScriptLoaderService** - Dinamik JS/CSS yükleme
+
+## Referans Dosyalar
+
+- `/Blazwind.Components/COMPONENTS.md` - Tam bileşen listesi ve doküman linkleri
+- `/coding-rules.md` - Geliştirme standartları
+- `/design-rules.md` - Tasarım kuralları (renk paleti, tipografi, spacing)
+
+## Dikkat Edilecekler
+
+1. Her bileşenin dokümantasyonu kendi dizinindeki `Docs/` klasöründe
+2. Demo sayfaları `Blazwind.Examples/Components/Pages/` altında
+3. TypeScript kodları `Blazwind.Components/frontend/src/` altında
+4. Build: `make build` (frontend + dotnet)

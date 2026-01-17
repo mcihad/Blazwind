@@ -1,0 +1,202 @@
+@page "/components/context-menu"
+@using Blazwind.Components.ContextMenu
+@inject ToastService ToastService
+@inject DialogService DialogService
+
+<PageTitle>Context Menu Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Context Menu" Description="Customizable right-click (context) menu."
+            Icon="fa-solid fa-computer-mouse" Color="BwColor.Primary"/>
+
+    @* Basic Example *@
+    <BwCard Title="Basic Usage" Subtitle="Right-click on the area below to display the menu"
+            Icon="fa-solid fa-arrow-pointer" Color="BwColor.Primary">
+        <BwContextMenu>
+            <ChildContent>
+                <div
+                    class="h-32 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-computer-mouse"></i>
+                        Right-click on this area
+                    </span>
+                </div>
+            </ChildContent>
+            <MenuContent>
+                <BwContextMenuItem Text="Refresh" Icon="fa-solid fa-rotate" OnClick="ShowRefresh"/>
+                <BwContextMenuItem Text="Save As..." Icon="fa-solid fa-floppy-disk" OnClick="ShowSave"/>
+                <BwContextMenuItem IsDivider="true"/>
+                <BwContextMenuItem Text="Delete" Icon="fa-solid fa-trash"
+                                   Class="text-red-600 hover:bg-red-50 hover:text-red-700" OnClick="ShowDelete"/>
+            </MenuContent>
+        </BwContextMenu>
+    </BwCard>
+
+    @* Dynamic Positioning Example *@
+    <BwCard Title="Dynamic Positioning" Subtitle="Clicks near screen edges are automatically adjusted"
+            Icon="fa-solid fa-up-down-left-right" Color="BwColor.Warning">
+        <div class="grid grid-cols-2 gap-4">
+            <BwContextMenu>
+                <ChildContent>
+                    <div
+                        class="h-24 bg-yellow-50 border border-yellow-200 rounded flex items-center justify-center text-yellow-700 cursor-context-menu">
+                        Left Edge Test
+                    </div>
+                </ChildContent>
+                <MenuContent>
+                    <BwContextMenuItem Text="Item 1"/>
+                    <BwContextMenuItem Text="Item 2"/>
+                    <BwContextMenuItem Text="Item 3"/>
+                </MenuContent>
+            </BwContextMenu>
+
+            <BwContextMenu>
+                <ChildContent>
+                    <div
+                        class="h-24 bg-yellow-50 border border-yellow-200 rounded flex items-center justify-center text-yellow-700 cursor-context-menu">
+                        Right Edge Test (Right Aligned)
+                    </div>
+                </ChildContent>
+                <MenuContent>
+                    <BwContextMenuItem Text="Long Menu Item Name Test"/>
+                    <BwContextMenuItem Text="This menu should open to the left"/>
+                </MenuContent>
+            </BwContextMenu>
+        </div>
+    </BwCard>
+
+    @* List Example *@
+    <BwCard Title="List Integration" Subtitle="Dynamic menu content for each list item" Icon="fa-solid fa-list-ul"
+            Color="BwColor.Primary">
+        <div class="border rounded divide-y">
+            @foreach (var item in new[] { "File 1.txt", "Report.pdf", "Image.png" })
+            {
+                <BwContextMenu Class="block">
+                    <ChildContent>
+                        <div class="p-4 hover:bg-gray-50 cursor-context-menu flex items-center gap-3 transition-colors">
+                            <i class="fa-solid fa-file text-gray-400"></i>
+                            <span class="text-gray-700">@item</span>
+                        </div>
+                    </ChildContent>
+                    <MenuContent>
+                        <BwContextMenuItem Text="Open" Icon="fa-solid fa-folder-open"
+                                           OnClick="@(() => ShowOpen(item))"/>
+                        <BwContextMenuItem Text="Download" Icon="fa-solid fa-download"
+                                           OnClick="@(() => ShowDownload(item))"/>
+                        <BwContextMenuItem IsDivider="true"/>
+                        <BwContextMenuItem Text="Properties" Icon="fa-solid fa-circle-info"
+                                           OnClick="@(() => ShowProperties(item))"/>
+                    </MenuContent>
+                </BwContextMenu>
+            }
+        </div>
+    </BwCard>
+
+    @* Table Row Example *@
+    <BwCard Title="Table Rows" Subtitle="Right-click menu in table rows" Icon="fa-solid fa-table" Color="BwColor.Info">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Product</th>
+                    <th scope="col" class="px-6 py-3">Category</th>
+                    <th scope="col" class="px-6 py-3">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var product in _products)
+                {
+                    <tr class="bg-white border-b hover:bg-gray-50">
+                        <td colspan="3" class="p-0">
+                            <BwContextMenu Class="contents">
+                                <ChildContent>
+                                    <div class="grid grid-cols-3 w-full px-6 py-4 cursor-context-menu">
+                                        <div>@product.Name</div>
+                                        <div>@product.Category</div>
+                                        <div>@product.Price</div>
+                                    </div>
+                                </ChildContent>
+                                <MenuContent>
+                                    <BwContextMenuItem Text="Edit" Icon="fa-solid fa-pen"/>
+                                    <BwContextMenuItem Text="Stock Status" Icon="fa-solid fa-box"/>
+                                    <BwContextMenuItem IsDivider="true"/>
+                                    <BwContextMenuItem Text="Delete" Icon="fa-solid fa-trash" Class="text-red-600"/>
+                                </MenuContent>
+                            </BwContextMenu>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </BwCard>
+
+    <div class="h-32"></div> @* Extra space for scrolling layout *@
+</BwColumn>
+
+@code {
+
+    private async Task ShowRefresh()
+    {
+        await ToastService.ShowAsync(new ToastOptions
+        {
+            Message = "Page refreshed.",
+            Title = "Refresh",
+            Color = BwColor.Success
+        });
+    }
+
+    private async Task ShowSave()
+    {
+        var result = await DialogService.ShowInputAsync("Save As", "Enter file name:", "File Name", "New File.txt");
+        if (!string.IsNullOrEmpty(result))
+        {
+            await ToastService.SuccessAsync($"File saved as '{result}'.");
+        }
+    }
+
+    private async Task ShowDelete()
+    {
+        var result = await DialogService.ShowConfirmAsync("Delete", "Are you sure you want to delete this item?", "Yes, Delete",
+            "Cancel", BwColor.Danger);
+        if (result)
+        {
+            await ToastService.ErrorAsync("Item deleted.", "Deleted");
+        }
+    }
+
+    // List Handlers
+
+    private async Task ShowOpen(string item)
+    {
+        await ToastService.InfoAsync($"{item} opening...", "Opening");
+    }
+
+    private async Task ShowDownload(string item)
+    {
+        var loading = await DialogService.ShowLoadingAsync($"{item} downloading...");
+        await Task.Delay(2000); // Fake work
+        await loading.CloseAsync();
+        await ToastService.SuccessAsync($"{item} downloaded successfully.");
+    }
+
+    private async Task ShowProperties(string item)
+    {
+        await DialogService.ShowAlertAsync("Properties", $"File: {item}\nSize: 1.2 MB\nDate: 28.12.2025");
+    }
+
+    private class Product
+    {
+        public string Name { get; set; } = "";
+        public string Category { get; set; } = "";
+        public string Price { get; set; } = "";
+    }
+
+    private readonly List<Product> _products = new()
+    {
+        new Product { Name = "Laptop Pro X1", Category = "Electronics", Price = "₺24,500" },
+        new Product { Name = "Wireless Mouse", Category = "Accessory", Price = "₺450" },
+        new Product { Name = "Mechanical Keyboard", Category = "Accessory", Price = "₺1,200" }
+    };
+
+}

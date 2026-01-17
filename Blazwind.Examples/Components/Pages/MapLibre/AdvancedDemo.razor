@@ -1,0 +1,217 @@
+@page "/maps/advanced"
+@using Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Button
+@using Blazwind.Components.Input
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Shared
+
+<PageTitle>Advanced Features - MapLibre</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Advanced Features" 
+            Description="Fly events, coordinate display, layer group and click order mechanisms."
+            Icon="fa-solid fa-wand-magic-sparkles"
+            Color="BwColor.Secondary" />
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        @* Map *@
+        <div class="lg:col-span-3 h-[500px] relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+            <BwMapLibre @ref="_map" StyleUrl="osm_style.json" Center="@SivasCenter" Zoom="@((double)15)"
+                NavigationControl="true" ScaleControl="true" OnLoad="OnMapLoaded"
+                OnFlyStart="OnFlyStart" OnFlyEnd="OnFlyEnd" OnClick="OnMapClick">
+            </BwMapLibre>
+
+            @* Status Badge *@
+            @if (!string.IsNullOrEmpty(_flyStatus))
+            {
+                <div class="absolute top-4 right-4 z-[1000]">
+                    <BwBadge Text="@_flyStatus" Color="@(_flyStatus.Contains("Started") ? BwColor.Warning : BwColor.Success)" />
+                </div>
+            }
+
+            @* Coordinates *@
+            @if (!string.IsNullOrEmpty(_lastCoordClick))
+            {
+                <div class="absolute bottom-4 left-4 z-[1000]">
+                    <BwCard Class="bg-white/95 dark:bg-gray-800/95 backdrop-blur">
+                        <div class="text-xs space-y-1">
+                            <div><strong>Last click:</strong> @_lastCoordClick</div>
+                        </div>
+                    </BwCard>
+                </div>
+            }
+        </div>
+
+        @* Control Panel *@
+        <div class="space-y-4">
+            <BwCard Title="Demo Layers" Icon="fa-solid fa-layer-group" Color="BwColor.Success">
+                <div class="space-y-3">
+                    <BwCheckbox Label="Demo Buildings" IsChecked="_advancedLayersVisible"
+                        IsCheckedChanged="ToggleAdvancedLayers" />
+                    <div class="text-xs text-gray-500 space-y-1">
+                        <p>Clicked layer: <strong>@_lastGroupClick</strong></p>
+                        <p>Hover state: <strong>@(_isHovering ? "Over" : "Outside")</strong></p>
+                    </div>
+                </div>
+            </BwCard>
+
+            <BwCard Title="Fly Events" Icon="fa-solid fa-plane" Color="BwColor.Primary">
+                <div class="space-y-3">
+                    <BwButton Text="Fly to Center" Icon="fa-solid fa-plane-departure" Color="BwColor.Primary"
+                        Size="BwSize.Small" Class="w-full" OnClick="FlyToCenter" />
+                    <BwButton Text="Fly to Distant Point" Icon="fa-solid fa-plane-arrival" Color="BwColor.Secondary"
+                        Variant="BwVariant.Outline" Size="BwSize.Small" Class="w-full" OnClick="FlyToFarPoint" />
+                    <div class="text-xs text-gray-500">
+                        <strong>Last status:</strong> @(_flyStatus ?? "Waiting")
+                    </div>
+                </div>
+            </BwCard>
+
+            <BwCard Title="Info" Icon="fa-solid fa-info-circle" Color="BwColor.Info">
+                <div class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                    <p>• <strong>ClickOrder:</strong> Higher value = clicked first</p>
+                    <p>• <strong>OnFlyStart/End:</strong> animation events</p>
+                    <p>• <strong>Map click:</strong> shows coordinates</p>
+                </div>
+            </BwCard>
+        </div>
+    </div>
+</BwColumn>
+
+@code {
+    private BwMapLibre? _map;
+    private double[] SivasCenter => [37.0150, 39.7505];
+
+    // State
+    private bool _advancedLayersLoaded = false;
+    private bool _advancedLayersVisible = false;
+    private string? _flyStatus;
+    private string _lastGroupClick = "-";
+    private bool _isHovering = false;
+    private string? _lastCoordClick;
+
+    // Demo GeoJSON verisi
+    private const string DemoGeoJsonData = @"{
+        ""type"": ""FeatureCollection"",
+        ""features"": [
+            {
+                ""type"": ""Feature"",
+                ""properties"": { ""name"": ""Demo Bina 1"", ""type"": ""building"" },
+                ""geometry"": {
+                    ""type"": ""Polygon"",
+                    ""coordinates"": [[[37.0140, 39.7500], [37.0155, 39.7500], [37.0155, 39.7515], [37.0140, 39.7515], [37.0140, 39.7500]]]
+                }
+            },
+            {
+                ""type"": ""Feature"",
+                ""properties"": { ""name"": ""Demo Bina 2"", ""type"": ""building"" },
+                ""geometry"": {
+                    ""type"": ""Polygon"",
+                    ""coordinates"": [[[37.0160, 39.7490], [37.0175, 39.7490], [37.0175, 39.7505], [37.0160, 39.7505], [37.0160, 39.7490]]]
+                }
+            }
+        ]
+    }";
+
+    private readonly Dictionary<string, object> _buildingFillPaint = new()
+    {
+        ["fill-color"] = "#3b82f6",
+        ["fill-opacity"] = 0.6
+    };
+
+    private readonly Dictionary<string, object> _buildingOutlinePaint = new()
+    {
+        ["line-color"] = "#1d4ed8",
+        ["line-width"] = 2
+    };
+
+    private void OnMapLoaded()
+    {
+        _advancedLayersLoaded = false;
+    }
+
+    private void OnFlyStart(MapFlyEventArgs e) 
+    { 
+        _flyStatus = "🛫 Flight Started"; 
+        StateHasChanged(); 
+    }
+    
+    private void OnFlyEnd(MapFlyEventArgs e) 
+    { 
+        _flyStatus = "🛬 Flight Completed"; 
+        StateHasChanged(); 
+    }
+
+    private void OnMapClick(MapMouseEventArgs e)
+    {
+        if (e.LngLat == null) return;
+        _lastCoordClick = $"{e.LngLat.Lng:F6}, {e.LngLat.Lat:F6}";
+        StateHasChanged();
+    }
+
+    private async Task ToggleAdvancedLayers(bool value)
+    {
+        if (_map == null) return;
+        _advancedLayersVisible = value;
+
+        if (value && !_advancedLayersLoaded)
+        {
+            await _map.AddSourceAsync(new MapSource
+            {
+                Id = "demo-source",
+                Type = MapSourceType.GeoJson,
+                Data = DemoGeoJsonData
+            });
+
+            await _map.AddLayerAsync(new MapLayer
+            {
+                Id = "demo-buildings-fill",
+                Type = MapLayerType.Fill,
+                SourceId = "demo-source",
+                Interactive = true,
+                ClickOrder = 10,
+                Paint = _buildingFillPaint
+            });
+
+            await _map.AddLayerAsync(new MapLayer
+            {
+                Id = "demo-buildings-outline",
+                Type = MapLayerType.Line,
+                SourceId = "demo-source",
+                Paint = _buildingOutlinePaint
+            });
+
+            _advancedLayersLoaded = true;
+        }
+        else if (_advancedLayersLoaded)
+        {
+            await _map.SetLayerVisibilityAsync("demo-buildings-fill", value);
+            await _map.SetLayerVisibilityAsync("demo-buildings-outline", value);
+        }
+    }
+
+    private async Task FlyToCenter()
+    {
+        if (_map == null) return;
+        await _map.FlyToAsync(new FlyToOptions
+        {
+            Center = new LngLat(37.0150, 39.7505),
+            Zoom = 16,
+            Duration = 2000
+        });
+    }
+
+    private async Task FlyToFarPoint()
+    {
+        if (_map == null) return;
+        await _map.FlyToAsync(new FlyToOptions
+        {
+            Center = new LngLat(37.0300, 39.7600),
+            Zoom = 13,
+            Duration = 3000
+        });
+    }
+}

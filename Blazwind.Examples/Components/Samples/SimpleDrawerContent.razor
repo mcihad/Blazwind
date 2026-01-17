@@ -1,0 +1,26 @@
+@using Blazwind.Components.Drawer
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Button
+
+@inject DrawerService DrawerService
+
+<div class="space-y-4">
+    <BwTypography Size="BwSize.Large" Weight="BwFontWeight.Medium" Class="text-gray-700">@Message</BwTypography>
+    
+    <div class="p-4 bg-gray-50 rounded border border-gray-200">
+        <BwTypography Size="BwSize.Small" Class="text-gray-500">
+            This is a simple drawer content example. You can place any Razor component inside the drawer.
+        </BwTypography>
+    </div>
+    
+    <BwButton Color="BwColor.Secondary" Text="Close" OnClick="Close" />
+</div>
+
+@code {
+    [Parameter] public string Message { get; set; } = "Drawer content";
+    
+    private void Close()
+    {
+        DrawerService.Close();
+    }
+}

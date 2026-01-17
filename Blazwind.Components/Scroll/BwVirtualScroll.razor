@@ -1,0 +1,87 @@
+@namespace Blazwind.Components.Scroll
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+@typeparam TItem
+
+<div @ref="_containerRef" 
+     class="overflow-auto relative @Class" 
+     style="height: @(ContainerHeight)px; @Style"
+     @onscroll="HandleScroll">
+    
+    @* Spacer for total height *@
+    <div style="height: @(_totalHeight)px; position: relative;">
+        @* Visible items container *@
+        <div style="position: absolute; top: @(_offsetY)px; left: 0; right: 0;">
+            @foreach (var item in _visibleItems)
+            {
+                <div style="height: @(ItemHeight)px;">
+                    @ItemTemplate(item)
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+    [Parameter, EditorRequired] public RenderFragment<TItem> ItemTemplate { get; set; } = default!;
+    [Parameter] public int ItemHeight { get; set; } = 48;
+    [Parameter] public int ContainerHeight { get; set; } = 400;
+    [Parameter] public int BufferCount { get; set; } = 5;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    private ElementReference _containerRef;
+    private List<TItem> _visibleItems = new();
+    private int _totalHeight;
+    private int _offsetY;
+    private int _scrollTop;
+    
+    protected override void OnParametersSet()
+    {
+        UpdateVisibleItems();
+    }
+    
+    private void UpdateVisibleItems()
+    {
+        var items = Items?.ToList() ?? new();
+        _totalHeight = items.Count * ItemHeight;
+        
+        var startIndex = Math.Max(0, (_scrollTop / ItemHeight) - BufferCount);
+        var visibleCount = (ContainerHeight / ItemHeight) + (BufferCount * 2);
+        var endIndex = Math.Min(items.Count, startIndex + visibleCount);
+        
+        _offsetY = startIndex * ItemHeight;
+        _visibleItems = items.Skip(startIndex).Take(endIndex - startIndex).ToList();
+    }
+    
+    private void HandleScroll(EventArgs e)
+    {
+        // Note: For real implementation, we'd need JS interop to get scrollTop
+        // This is a simplified version
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await SetupScrollListener();
+        }
+    }
+    
+    private async Task SetupScrollListener()
+    {
+        await JS.InvokeVoidAsync("Blazwind.VirtualScroll.initialize", _containerRef, DotNetObjectReference.Create(this));
+    }
+    
+    [JSInvokable]
+    public void OnScroll(int scrollTop)
+    {
+        _scrollTop = scrollTop;
+        UpdateVisibleItems();
+        StateHasChanged();
+    }
+}

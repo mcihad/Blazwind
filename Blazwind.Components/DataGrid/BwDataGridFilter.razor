@@ -1,0 +1,190 @@
+@namespace Blazwind.Components.DataGrid
+@using Blazwind.Components.DataGrid.Models
+@using Blazwind.Components.Shared
+
+<div class="flex flex-col gap-1">
+    @switch (FilterType)
+    {
+        case FilterType.Boolean:
+            <select class="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    @onchange="HandleBooleanChange">
+                <option value="">Tümü</option>
+                <option value="true" selected="@(CurrentValue?.ToString()?.ToLower() == "true")">Evet</option>
+                <option value="false" selected="@(CurrentValue?.ToString()?.ToLower() == "false")">Hayır</option>
+            </select>
+            break;
+            
+        case FilterType.Select:
+            <select class="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    @onchange="HandleSelectChange">
+                <option value="">Tümü</option>
+                @if (FilterOptions != null)
+                {
+                    @foreach (var option in FilterOptions)
+                    {
+                        <option value="@option.Value" selected="@(CurrentValue?.ToString() == option.Value?.ToString())">@option.Text</option>
+                    }
+                }
+            </select>
+            break;
+            
+        case FilterType.Number:
+            <div class="flex gap-1">
+                <select class="w-20 px-1 py-1 text-xs border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        @onchange="HandleOperatorChange">
+                    <option value="@FilterOperator.Equals" selected="@(CurrentOperator == FilterOperator.Equals)">=</option>
+                    <option value="@FilterOperator.NotEquals" selected="@(CurrentOperator == FilterOperator.NotEquals)">≠</option>
+                    <option value="@FilterOperator.GreaterThan" selected="@(CurrentOperator == FilterOperator.GreaterThan)">&gt;</option>
+                    <option value="@FilterOperator.GreaterThanOrEqual" selected="@(CurrentOperator == FilterOperator.GreaterThanOrEqual)">≥</option>
+                    <option value="@FilterOperator.LessThan" selected="@(CurrentOperator == FilterOperator.LessThan)">&lt;</option>
+                    <option value="@FilterOperator.LessThanOrEqual" selected="@(CurrentOperator == FilterOperator.LessThanOrEqual)">≤</option>
+                </select>
+                <input type="number"
+                       class="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       placeholder="Değer..."
+                       value="@CurrentValue"
+                       @onchange="HandleValueChange" />
+            </div>
+            break;
+            
+        case FilterType.Date:
+        case FilterType.DateTime:
+            <div class="flex gap-1">
+                <select class="w-16 px-1 py-1 text-xs border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        @onchange="HandleOperatorChange">
+                    <option value="@FilterOperator.Equals" selected="@(CurrentOperator == FilterOperator.Equals)">=</option>
+                    <option value="@FilterOperator.GreaterThan" selected="@(CurrentOperator == FilterOperator.GreaterThan)">&gt;</option>
+                    <option value="@FilterOperator.GreaterThanOrEqual" selected="@(CurrentOperator == FilterOperator.GreaterThanOrEqual)">≥</option>
+                    <option value="@FilterOperator.LessThan" selected="@(CurrentOperator == FilterOperator.LessThan)">&lt;</option>
+                    <option value="@FilterOperator.LessThanOrEqual" selected="@(CurrentOperator == FilterOperator.LessThanOrEqual)">≤</option>
+                </select>
+                <input type="@(FilterType == FilterType.DateTime ? "datetime-local" : "date")"
+                       class="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       value="@FormatDateValue()"
+                       @onchange="HandleDateChange" />
+            </div>
+            break;
+            
+        default: // Text
+            <div class="flex gap-1">
+                <select class="w-20 px-1 py-1 text-xs border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        title="Filtre türü"
+                        @onchange="HandleOperatorChange">
+                    <option value="@FilterOperator.Contains" selected="@(CurrentOperator == FilterOperator.Contains)">İçerir</option>
+                    <option value="@FilterOperator.Equals" selected="@(CurrentOperator == FilterOperator.Equals)">Eşittir</option>
+                    <option value="@FilterOperator.StartsWith" selected="@(CurrentOperator == FilterOperator.StartsWith)">İle başlar</option>
+                    <option value="@FilterOperator.EndsWith" selected="@(CurrentOperator == FilterOperator.EndsWith)">İle biter</option>
+                    <option value="@FilterOperator.NotContains" selected="@(CurrentOperator == FilterOperator.NotContains)">İçermez</option>
+                </select>
+                <input type="text"
+                       class="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       placeholder="Filtrele..."
+                       value="@CurrentValue"
+                       @onchange="HandleValueChange" />
+            </div>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter] public FilterType FilterType { get; set; } = FilterType.Text;
+    [Parameter] public FilterDescriptor? CurrentFilter { get; set; }
+    [Parameter] public EventCallback<FilterDescriptor?> OnFilterChanged { get; set; }
+    [Parameter] public IEnumerable<FilterOption>? FilterOptions { get; set; }
+    
+    private FilterOperator CurrentOperator => CurrentFilter?.Operator ?? GetDefaultOperator();
+    private object? CurrentValue => CurrentFilter?.Value;
+    
+    private FilterOperator GetDefaultOperator() => FilterType switch
+    {
+        FilterType.Text => FilterOperator.Contains,
+        FilterType.Number => FilterOperator.Equals,
+        FilterType.Date => FilterOperator.Equals,
+        FilterType.DateTime => FilterOperator.Equals,
+        FilterType.Boolean => FilterOperator.Equals,
+        FilterType.Select => FilterOperator.Equals,
+        _ => FilterOperator.Contains
+    };
+    
+    private string FormatDateValue()
+    {
+        if (CurrentValue is DateTime dt)
+        {
+            return FilterType == FilterType.DateTime 
+                ? dt.ToString("yyyy-MM-ddTHH:mm")
+                : dt.ToString("yyyy-MM-dd");
+        }
+        return CurrentValue?.ToString() ?? "";
+    }
+    
+    private async Task HandleOperatorChange(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<FilterOperator>(e.Value?.ToString(), out var op))
+        {
+            if (CurrentValue != null)
+            {
+                await OnFilterChanged.InvokeAsync(new FilterDescriptor { Operator = op, Value = CurrentValue });
+            }
+        }
+    }
+    
+    private async Task HandleValueChange(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        if (string.IsNullOrEmpty(value))
+        {
+            await OnFilterChanged.InvokeAsync(null);
+        }
+        else
+        {
+            object typedValue = FilterType switch
+            {
+                FilterType.Number when decimal.TryParse(value, out var num) => num,
+                _ => value
+            };
+            await OnFilterChanged.InvokeAsync(new FilterDescriptor { Operator = CurrentOperator, Value = typedValue });
+        }
+    }
+    
+    private async Task HandleDateChange(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        if (string.IsNullOrEmpty(value))
+        {
+            await OnFilterChanged.InvokeAsync(null);
+        }
+        else if (DateTime.TryParse(value, out var dt))
+        {
+            await OnFilterChanged.InvokeAsync(new FilterDescriptor { Operator = CurrentOperator, Value = dt });
+        }
+    }
+    
+    private async Task HandleBooleanChange(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        if (string.IsNullOrEmpty(value))
+        {
+            await OnFilterChanged.InvokeAsync(null);
+        }
+        else
+        {
+            var boolValue = value.ToLower() == "true";
+            await OnFilterChanged.InvokeAsync(new FilterDescriptor { Operator = FilterOperator.Equals, Value = boolValue });
+        }
+    }
+    
+    private async Task HandleSelectChange(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        if (string.IsNullOrEmpty(value))
+        {
+            await OnFilterChanged.InvokeAsync(null);
+        }
+        else
+        {
+            await OnFilterChanged.InvokeAsync(new FilterDescriptor { Operator = FilterOperator.Equals, Value = value });
+        }
+    }
+}
+
+@* Supporting class for select options *@

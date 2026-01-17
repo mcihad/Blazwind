@@ -1,0 +1,76 @@
+@page "/components/virtual-scroll"
+@using Blazwind.Components.Scroll
+
+<PageTitle>Virtual Scroll - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Virtual Scroll"
+            Description="Virtual scrolling for large lists. Renders only visible items to improve performance."
+            Icon="fa-solid fa-list-ul"
+            Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="10,000-item list — only visible items are rendered" Icon="fa-solid fa-rocket"
+            Color="BwColor.Success">
+        <BwVirtualScroll Items="@_largeList" ItemHeight="48" ContainerHeight="400">
+            <ItemTemplate Context="item">
+                <div
+                    class="flex items-center gap-3 px-4 py-2 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 text-sm font-medium">
+                        @item.Id
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900 dark:text-white">@item.Title</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">@item.Description</div>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </BwVirtualScroll>
+    </BwCard>
+
+    @* Features *@
+    <BwCard Title="Features" Subtitle="Advantages of virtual scroll" Icon="fa-solid fa-list-check" Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid sm:grid-cols-2 lg:grid-cols-3">
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-bolt text-2xl text-yellow-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">High Performance</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Renders only visible items</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-memory text-2xl text-green-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Low Memory</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimizes DOM nodes</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-infinity text-2xl text-purple-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Unlimited List</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Supports thousands of items</p>
+            </div>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<ListItem> _largeList = new();
+
+    protected override void OnInitialized()
+    {
+        _largeList = Enumerable.Range(1, 10000)
+            .Select(i => new ListItem
+            {
+                Id = i,
+                Title = $"Item #{i}",
+                Description = $"This is the description for item {i}."
+            })
+            .ToList();
+    }
+
+    private class ListItem
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+
+}

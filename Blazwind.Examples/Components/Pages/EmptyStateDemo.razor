@@ -1,0 +1,45 @@
+@page "/components/emptystate"
+@using Blazwind.Components.EmptyState
+
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Empty State"
+            Description="Used to inform the user in empty data situations."
+            Icon="fa-solid fa-box-open"
+            Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Default View" Subtitle="Boxed empty state notification" Icon="fa-solid fa-square"
+            Color="BwColor.Secondary">
+        <BwPadding All="BwSpacing.Xl"
+                   Class="border-2 border-dashed border-gray-200 hover:border-gray-300 transition-colors rounded-xl bg-gray-50/50">
+            <BwEmptyState/>
+        </BwPadding>
+    </BwCard>
+
+    @* Custom Text & Icon *@
+    <BwCard Title="Customized Content" Subtitle="Icon and description text customization" Icon="fa-solid fa-pen-nib"
+            Color="BwColor.Info">
+        <BwPadding All="BwSpacing.Xl" Class="border border-gray-200 rounded-xl bg-white shadow-sm">
+            <BwEmptyState Title="Folder Empty"
+                          Description="No files found to display. Start by uploading a new file."
+                          Icon="fa-regular fa-folder-open"/>
+        </BwPadding>
+    </BwCard>
+
+    @* With Action *@
+    <BwCard Title="Action Guidance" Subtitle="Buttons that prompt user action" Icon="fa-solid fa-hand-pointer"
+            Color="BwColor.Success">
+        <BwPadding All="BwSpacing.Xl" Class="border border-gray-200 rounded-xl bg-white shadow-sm flex justify-center">
+            <BwEmptyState Title="Invite Team Member"
+                          Description="You don't have anyone on your team yet. Start collaborating by inviting your friends.">
+                <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.Center">
+                    <BwButton Variant="BwVariant.Outline" Color="BwColor.Secondary">Maybe Later</BwButton>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Icon="fa-solid fa-paper-plane">
+                        Send Invitation
+                    </BwButton>
+                </BwRow>
+            </BwEmptyState>
+        </BwPadding>
+    </BwCard>
+</BwColumn>

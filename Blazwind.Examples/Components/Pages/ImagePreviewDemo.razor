@@ -1,0 +1,65 @@
+@page "/components/imagepreview"
+@using Blazwind.Components.ImagePreview
+
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Image Preview" Description="Used for image galleries and lightbox experience."
+            Icon="fa-solid fa-images" Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Standard Gallery" Subtitle="Automatic grid layout with image preview" Icon="fa-regular fa-images"
+            Color="BwColor.Primary">
+        <BwPadding All="BwSpacing.Md" Class="border rounded-lg bg-gray-50 dark:bg-gray-900 shadow-inner">
+            <BwImagePreview Images="@Images1"/>
+        </BwPadding>
+    </BwCard>
+
+    @* Custom Size *@
+    <BwCard Title="Custom Sizing" Subtitle="Customize thumbnail dimensions (200x120px)" Icon="fa-solid fa-compress"
+            Color="BwColor.Info">
+        <BwPadding All="BwSpacing.Xl" Class="border rounded-lg bg-gray-50 dark:bg-gray-900 shadow-inner">
+            <BwImagePreview Images="@Images2" ThumbnailWidth="200px" ThumbnailHeight="120px"/>
+        </BwPadding>
+        <BwPadding Top="BwSpacing.Sm" Class="text-sm text-gray-500 italic">
+            * Images are rendered as 200x120px thumbnails.
+        </BwPadding>
+    </BwCard>
+
+    @* Max Count *@
+    <BwCard Title="Limited Display" Subtitle="'+N' display for galleries with many images"
+            Icon="fa-solid fa-layer-group" Color="BwColor.Warning">
+        <BwPadding All="BwSpacing.Md" Class="border rounded-lg bg-gray-50 dark:bg-gray-900 shadow-inner">
+            <BwImagePreview Images="@ImagesMany" MaxCount="5" ThumbnailWidth="120px" ThumbnailHeight="120px"/>
+        </BwPadding>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private readonly List<string> Images1 = new()
+    {
+        "https://picsum.photos/id/10/800/600",
+        "https://picsum.photos/id/11/800/600",
+        "https://picsum.photos/id/12/800/600"
+    };
+
+    private readonly List<string> Images2 = new()
+    {
+        "https://picsum.photos/id/20/800/600",
+        "https://picsum.photos/id/21/800/600",
+        "https://picsum.photos/id/22/800/600",
+        "https://picsum.photos/id/23/800/600"
+    };
+
+    private readonly List<string> ImagesMany = new();
+
+    protected override void OnInitialized()
+    {
+        // Generate dummy images
+        for (var i = 30; i < 40; i++)
+        {
+            ImagesMany.Add($"https://picsum.photos/id/{i}/800/600");
+        }
+    }
+
+}

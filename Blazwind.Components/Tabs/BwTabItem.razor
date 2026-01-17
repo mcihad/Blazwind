@@ -1,0 +1,35 @@
+@namespace Blazwind.Components.Tabs
+@implements IDisposable
+
+@if (ParentTabs?.IsActive(this) ?? false)
+{
+    <div class="py-4">
+        @ChildContent
+    </div>
+}
+
+@code {
+    [CascadingParameter] public BwTabs? ParentTabs { get; set; }
+    
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public RenderFragment? TitleTemplate { get; set; }
+    [Parameter] public RenderFragment? Badge { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public bool IsDisabled { get; set; } = false;
+    [Parameter] public bool Closable { get; set; } = false;
+    [Parameter] public bool ConfirmClose { get; set; } = false;
+    [Parameter] public string ConfirmCloseMessage { get; set; } = "Bu sekmeyi kapatmak istediğinize emin misiniz?";
+    [Parameter] public EventCallback<string> OnClose { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ParentTabs?.RegisterTab(this);
+    }
+
+    public void Dispose()
+    {
+        ParentTabs?.UnregisterTab(this);
+    }
+}

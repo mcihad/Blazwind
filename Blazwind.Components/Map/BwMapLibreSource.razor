@@ -1,0 +1,248 @@
+@namespace Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@implements IAsyncDisposable
+
+<CascadingValue Value="this" IsFixed="true">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+
+    #region Required Parameters
+
+    /// <summary>
+    /// Unique source identifier
+    /// </summary>
+    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+
+    /// <summary>
+    /// Source type: vector, raster, raster-dem, geojson, image, video, canvas
+    /// </summary>
+    [Parameter] public string Type { get; set; } = MapSourceType.Vector;
+
+    /// <summary>
+    /// Nested content (Layers)
+    /// </summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    #endregion
+
+    #region Tile Sources (Vector, Raster, Raster-DEM)
+
+    /// <summary>
+    /// URL to TileJSON resource
+    /// </summary>
+    [Parameter] public string? Url { get; set; }
+
+    /// <summary>
+    /// Array of tile URLs with {z}, {x}, {y} placeholders
+    /// </summary>
+    [Parameter] public List<string>? Tiles { get; set; }
+
+    /// <summary>
+    /// Tile size in pixels (default: 512)
+    /// </summary>
+    [Parameter] public int? TileSize { get; set; }
+
+    /// <summary>
+    /// Minimum zoom level (0-22)
+    /// </summary>
+    [Parameter] public int? MinZoom { get; set; }
+
+    /// <summary>
+    /// Maximum zoom level (0-22)
+    /// </summary>
+    [Parameter] public int? MaxZoom { get; set; }
+
+    /// <summary>
+    /// Tile scheme: xyz or tms
+    /// </summary>
+    [Parameter] public string? Scheme { get; set; }
+
+    /// <summary>
+    /// Bounds [west, south, east, north]
+    /// </summary>
+    [Parameter] public double[]? Bounds { get; set; }
+
+    /// <summary>
+    /// Attribution HTML
+    /// </summary>
+    [Parameter] public string? Attribution { get; set; }
+
+    #endregion
+
+    #region GeoJSON Source
+
+    /// <summary>
+    /// GeoJSON data (object) or URL to GeoJSON file (string)
+    /// </summary>
+    [Parameter] public object? Data { get; set; }
+
+    /// <summary>
+    /// Whether to generate IDs for features
+    /// </summary>
+    [Parameter] public bool? GenerateId { get; set; }
+
+    /// <summary>
+    /// Property name to use as feature ID
+    /// </summary>
+    [Parameter] public string? PromoteId { get; set; }
+
+    /// <summary>
+    /// Max zoom level for clustering (default: source maxzoom)
+    /// </summary>
+    [Parameter] public int? ClusterMaxZoom { get; set; }
+
+    /// <summary>
+    /// Radius for clustering points (default: 50)
+    /// </summary>
+    [Parameter] public int? ClusterRadius { get; set; }
+
+    /// <summary>
+    /// Whether to cluster points
+    /// </summary>
+    [Parameter] public bool? Cluster { get; set; }
+
+    /// <summary>
+    /// Cluster properties (aggregated properties for clusters)
+    /// </summary>
+    [Parameter] public Dictionary<string, object>? ClusterProperties { get; set; }
+
+    /// <summary>
+    /// Buffer around tiles for rendering (default: 128)
+    /// </summary>
+    [Parameter] public int? Buffer { get; set; }
+
+    /// <summary>
+    /// Douglas-Peucker simplification tolerance
+    /// </summary>
+    [Parameter] public double? Tolerance { get; set; }
+
+    /// <summary>
+    /// Whether to calculate line metrics
+    /// </summary>
+    [Parameter] public bool? LineMetrics { get; set; }
+
+    #endregion
+
+    #region Image/Video Source
+
+    /// <summary>
+    /// Image/Video URL
+    /// </summary>
+    [Parameter] public string? ImageUrl { get; set; }
+
+    /// <summary>
+    /// Video URLs (multiple formats)
+    /// </summary>
+    [Parameter] public List<string>? VideoUrls { get; set; }
+
+    /// <summary>
+    /// Coordinates for image/video corners [[lng, lat], ...]
+    /// </summary>
+    [Parameter] public double[][]? Coordinates { get; set; }
+
+    #endregion
+
+    #region Raster-DEM Specific
+
+    /// <summary>
+    /// Encoding for raster-dem: terrarium, mapbox, custom
+    /// </summary>
+    [Parameter] public string? Encoding { get; set; }
+
+    /// <summary>
+    /// Red factor for custom encoding
+    /// </summary>
+    [Parameter] public double? RedFactor { get; set; }
+
+    /// <summary>
+    /// Blue factor for custom encoding
+    /// </summary>
+    [Parameter] public double? BlueFactor { get; set; }
+
+    /// <summary>
+    /// Green factor for custom encoding
+    /// </summary>
+    [Parameter] public double? GreenFactor { get; set; }
+
+    /// <summary>
+    /// Base shift for custom encoding
+    /// </summary>
+    [Parameter] public double? BaseShift { get; set; }
+
+    #endregion
+
+    private bool _isAdded;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && ParentMap != null)
+        {
+            await AddSourceAsync();
+        }
+    }
+
+    private async Task AddSourceAsync()
+    {
+        if (ParentMap == null || _isAdded) return;
+
+        var source = new MapSource
+        {
+            Id = Id,
+            Type = Type,
+            Url = Url,
+            Tiles = Tiles,
+            TileSize = TileSize,
+            MinZoom = MinZoom,
+            MaxZoom = MaxZoom,
+            Scheme = Scheme,
+            Bounds = Bounds,
+            Attribution = Attribution,
+            Data = Data,
+            GenerateId = GenerateId,
+            PromoteId = PromoteId,
+            Cluster = Cluster,
+            ClusterMaxZoom = ClusterMaxZoom,
+            ClusterRadius = ClusterRadius,
+            ClusterProperties = ClusterProperties,
+            Buffer = Buffer,
+            Tolerance = Tolerance,
+            LineMetrics = LineMetrics,
+            Coordinates = Coordinates,
+            Encoding = Encoding,
+            RedFactor = RedFactor,
+            BlueFactor = BlueFactor,
+            GreenFactor = GreenFactor,
+            BaseShift = BaseShift
+        };
+
+        await ParentMap.AddSourceAsync(source);
+        _isAdded = true;
+    }
+
+    /// <summary>
+    /// Update GeoJSON data
+    /// </summary>
+    public async Task SetDataAsync(object data)
+    {
+        Data = data;
+        if (ParentMap != null && _isAdded && Type == MapSourceType.GeoJson)
+        {
+            await ParentMap.SetGeoJsonDataAsync(Id, data);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (ParentMap != null && _isAdded)
+        {
+            try
+            {
+                await ParentMap.RemoveSourceAsync(Id);
+            }
+            catch { }
+        }
+    }
+}

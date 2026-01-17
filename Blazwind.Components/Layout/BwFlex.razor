@@ -1,0 +1,152 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+@{
+    // Display
+    var displayClass = Inline ? "inline-flex" : "flex";
+    
+    // Direction
+    var directionClass = Direction switch
+    {
+        BwFlexDirection.Row => "flex-row",
+        BwFlexDirection.RowReverse => "flex-row-reverse",
+        BwFlexDirection.Column => "flex-col",
+        BwFlexDirection.ColumnReverse => "flex-col-reverse",
+        _ => "flex-row"
+    };
+    
+    // Wrap
+    var wrapClass = Wrap switch
+    {
+        BwFlexWrap.NoWrap => "flex-nowrap",
+        BwFlexWrap.Wrap => "flex-wrap",
+        BwFlexWrap.WrapReverse => "flex-wrap-reverse",
+        _ => "flex-nowrap"
+    };
+    
+    // Justify Content (Main Axis)
+    var justifyClass = JustifyContent switch
+    {
+        BwMainAxisAlignment.Start => "justify-start",
+        BwMainAxisAlignment.Center => "justify-center",
+        BwMainAxisAlignment.End => "justify-end",
+        BwMainAxisAlignment.SpaceBetween => "justify-between",
+        BwMainAxisAlignment.SpaceAround => "justify-around",
+        BwMainAxisAlignment.SpaceEvenly => "justify-evenly",
+        _ => "justify-start"
+    };
+    
+    // Align Items (Cross Axis)
+    var alignItemsClass = AlignItems switch
+    {
+        BwCrossAxisAlignment.Start => "items-start",
+        BwCrossAxisAlignment.Center => "items-center",
+        BwCrossAxisAlignment.End => "items-end",
+        BwCrossAxisAlignment.Stretch => "items-stretch",
+        BwCrossAxisAlignment.Baseline => "items-baseline",
+        _ => "items-stretch"
+    };
+    
+    // Align Content (Multi-line)
+    var alignContentClass = AlignContent switch
+    {
+        BwAlignContent.Normal => "content-normal",
+        BwAlignContent.Start => "content-start",
+        BwAlignContent.Center => "content-center",
+        BwAlignContent.End => "content-end",
+        BwAlignContent.SpaceBetween => "content-between",
+        BwAlignContent.SpaceAround => "content-around",
+        BwAlignContent.SpaceEvenly => "content-evenly",
+        BwAlignContent.Stretch => "content-stretch",
+        null => "",
+        _ => ""
+    };
+    
+    // Gap - use Tailwind classes for standard spacing, inline style for custom GapX/GapY
+    var gapClass = "";
+    var gapStyle = "";
+    
+    if (GapX.HasValue || GapY.HasValue)
+    {
+        // Use inline style for custom gap values
+        // Tailwind spacing scale: 1 = 0.25rem, 2 = 0.5rem, 4 = 1rem, 6 = 1.5rem, 8 = 2rem, 12 = 3rem
+        var gxRem = (GapX ?? 0) * 0.25;
+        var gyRem = (GapY ?? 0) * 0.25;
+        gapStyle = $"column-gap: {gxRem}rem; row-gap: {gyRem}rem;";
+    }
+    else
+    {
+        gapClass = Gap switch
+        {
+            BwSpacing.None => "",
+            BwSpacing.Xs => "gap-1",
+            BwSpacing.Sm => "gap-2",
+            BwSpacing.Md => "gap-4",
+            BwSpacing.Lg => "gap-6",
+            BwSpacing.Xl => "gap-8",
+            BwSpacing.Xxl => "gap-12",
+            _ => ""
+        };
+    }
+}
+
+<div class="@displayClass @directionClass @wrapClass @justifyClass @alignItemsClass @alignContentClass @gapClass @Class" style="@gapStyle">
+    @ChildContent
+</div>
+
+@code {
+    /// <summary>
+    /// Child content to render inside the flex container
+    /// </summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Flex direction (row, column, row-reverse, column-reverse)
+    /// </summary>
+    [Parameter] public BwFlexDirection Direction { get; set; } = BwFlexDirection.Row;
+    
+    /// <summary>
+    /// Flex wrap behavior
+    /// </summary>
+    [Parameter] public BwFlexWrap Wrap { get; set; } = BwFlexWrap.NoWrap;
+    
+    /// <summary>
+    /// Main axis alignment (justify-content)
+    /// </summary>
+    [Parameter] public BwMainAxisAlignment JustifyContent { get; set; } = BwMainAxisAlignment.Start;
+    
+    /// <summary>
+    /// Cross axis alignment (align-items)
+    /// </summary>
+    [Parameter] public BwCrossAxisAlignment AlignItems { get; set; } = BwCrossAxisAlignment.Stretch;
+    
+    /// <summary>
+    /// Multi-line content alignment (align-content). Only applies when Wrap is enabled.
+    /// </summary>
+    [Parameter] public BwAlignContent? AlignContent { get; set; }
+    
+    /// <summary>
+    /// Gap between items using spacing scale
+    /// </summary>
+    [Parameter] public BwSpacing Gap { get; set; } = BwSpacing.None;
+    
+    /// <summary>
+    /// Horizontal gap (overrides Gap for x-axis)
+    /// </summary>
+    [Parameter] public int? GapX { get; set; }
+    
+    /// <summary>
+    /// Vertical gap (overrides Gap for y-axis)
+    /// </summary>
+    [Parameter] public int? GapY { get; set; }
+    
+    /// <summary>
+    /// Use inline-flex instead of flex
+    /// </summary>
+    [Parameter] public bool Inline { get; set; } = false;
+    
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+}

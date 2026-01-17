@@ -1,0 +1,89 @@
+@page "/charts/parallel"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Parallel Coordinates - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Paralel Koordinatlar" 
+            Description="Çok boyutlu veri karşılaştırması için ideal grafik tipi."
+            Icon="fa-solid fa-grip-lines-vertical"
+            Color="BwColor.Danger" />
+
+    @* Personel Karşılaştırma *@
+    <BwCard Title="Personel Performans Karşılaştırması" Subtitle="Çok boyutlu değerlendirme." Icon="fa-solid fa-users" Color="BwColor.Primary">
+        <BwChart Options="_staffParallel" Height="450px" />
+    </BwCard>
+
+    @* Proje Karşılaştırma *@
+    <BwCard Title="Proje Metrikleri" Subtitle="Projelerin çok boyutlu analizi." Icon="fa-solid fa-project-diagram" Color="BwColor.Info">
+        <BwChart Options="_projectParallel" Height="400px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _staffParallel = new
+    {
+        title = new { text = "Personel Performans Matrisi", left = ChartPosition.Center },
+        parallelAxis = new object[]
+        {
+            new { dim = 0, name = "Deneyim (yıl)" },
+            new { dim = 1, name = "Teknik Puan" },
+            new { dim = 2, name = "İletişim" },
+            new { dim = 3, name = "Takım Çalışması" },
+            new { dim = 4, name = "Problem Çözme" },
+            new { dim = 5, name = "Genel Puan" }
+        },
+        parallel = new { left = "5%", right = "15%", bottom = "10%", top = "15%" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Parallel,
+                lineStyle = new { width = 2 },
+                data = new object[]
+                {
+                    new[] { 5, 85, 90, 88, 82, 87 },
+                    new[] { 3, 78, 85, 92, 75, 82 },
+                    new[] { 8, 92, 88, 85, 90, 89 },
+                    new[] { 2, 70, 95, 90, 68, 80 },
+                    new[] { 6, 88, 82, 78, 88, 84 },
+                    new[] { 4, 80, 75, 80, 85, 80 },
+                    new[] { 10, 95, 85, 82, 92, 90 }
+                }
+            }
+        }
+    };
+
+    private object _projectParallel = new
+    {
+        title = new { text = "Proje Karşılaştırma Matrisi", left = ChartPosition.Center },
+        parallelAxis = new object[]
+        {
+            new { dim = 0, name = "Bütçe (M TL)" },
+            new { dim = 1, name = "Süre (ay)" },
+            new { dim = 2, name = "Ekip Sayısı" },
+            new { dim = 3, name = "Risk Skoru" },
+            new { dim = 4, name = "Tamamlanma %" }
+        },
+        parallel = new { left = "5%", right = "15%", bottom = "10%", top = "15%" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Parallel,
+                lineStyle = new { width = 2, opacity = 0.7 },
+                data = new object[]
+                {
+                    new[] { 5.2, 12, 8, 3, 85 },
+                    new[] { 2.8, 6, 4, 2, 100 },
+                    new[] { 8.5, 18, 12, 4, 60 },
+                    new[] { 1.5, 4, 3, 1, 95 },
+                    new[] { 12.0, 24, 20, 5, 45 }
+                }
+            }
+        }
+    };
+}

@@ -1,0 +1,226 @@
+@namespace Blazwind.Components.Range
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div id="@_elementId" class="bw-range @Class" style="@Style">
+    <div class="flex items-center gap-4">
+        @if (!string.IsNullOrEmpty(Label))
+        {
+            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[80px]">@Label</label>
+        }
+
+        <div class="flex-1 flex items-center gap-3">
+            @* Min Value Display *@
+            @if (ShowValues)
+            {
+                <span class="text-xs text-gray-500 dark:text-gray-400 min-w-[40px] text-right">@FormatValue(Min)</span>
+            }
+
+            @* Dual Range Slider Track *@
+            <div class="bw-range-track flex-1 relative h-10 flex items-center select-none">
+                @* Track Background *@
+                <div class="absolute inset-x-0 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+
+                @* Active Range *@
+                <div class="absolute h-2 rounded-full @GetColorClass()"
+                    style="left: @(_startPercent)%; width: @(_endPercent - _startPercent)%;"></div>
+
+                @* Start Thumb *@
+                <div class="bw-range-thumb-start absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
+                    style="left: @(_startPercent)%;">
+                    @if (ShowTooltip && _isDraggingStart)
+                    {
+                        <div
+                            class="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap @GetColorClass()">
+                            @FormatValue(_currentStart)
+                        </div>
+                    }
+                </div>
+
+                @* End Thumb *@
+                <div class="bw-range-thumb-end absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
+                    style="left: @(_endPercent)%;">
+                    @if (ShowTooltip && _isDraggingEnd)
+                    {
+                        <div
+                            class="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap @GetColorClass()">
+                            @FormatValue(_currentEnd)
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Max Value Display *@
+            @if (ShowValues)
+            {
+                <span class="text-xs text-gray-500 dark:text-gray-400 min-w-[40px]">@FormatValue(Max)</span>
+            }
+        </div>
+    </div>
+
+    @* Current Selection Display *@
+    @if (ShowSelection)
+    {
+        <div class="mt-2 text-center">
+            <span
+                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-full @GetSelectionBgClass()">
+                <span>@FormatValue(_currentStart)</span>
+                <i class="fa-solid fa-arrow-right text-xs opacity-60"></i>
+                <span>@FormatValue(_currentEnd)</span>
+            </span>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public double Min { get; set; } = 0;
+    [Parameter] public double Max { get; set; } = 100;
+    [Parameter] public double Step { get; set; } = 1;
+    [Parameter] public double Start { get; set; } = 0;
+    [Parameter] public double End { get; set; } = 100;
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool ShowValues { get; set; } = true;
+    [Parameter] public bool ShowSelection { get; set; } = true;
+    [Parameter] public bool ShowTooltip { get; set; } = true;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Format { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<RangeChangedEventArgs<double>> OnRangeChanged { get; set; }
+
+    private string _elementId = "";
+    private DotNetObjectReference<BwRange>? _dotNetRef;
+    private double _currentStart;
+    private double _currentEnd;
+    private double _startPercent;
+    private double _endPercent;
+    private bool _isDraggingStart;
+    private bool _isDraggingEnd;
+
+    protected override void OnInitialized()
+    {
+        _elementId = $"bw-range-{Guid.NewGuid():N}";
+        _currentStart = Start;
+        _currentEnd = End;
+        UpdatePercentages();
+    }
+
+    protected override void OnParametersSet()
+    {
+        _currentStart = Start;
+        _currentEnd = End;
+        UpdatePercentages();
+    }
+
+    private void UpdatePercentages()
+    {
+        if (Max > Min)
+        {
+            _startPercent = ((_currentStart - Min) / (Max - Min)) * 100;
+            _endPercent = ((_currentEnd - Min) / (Max - Min)) * 100;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await JS.InvokeVoidAsync("Blazwind.RangeSlider.initialize", _elementId, _dotNetRef, Min, Max, Step, _startPercent,
+            _endPercent);
+        }
+    }
+
+    [JSInvokable]
+    public async Task HandleThumbChanged(string thumb, double percent)
+    {
+        var value = Min + (Max - Min) * (percent / 100);
+        value = SnapToStep(value);
+
+        if (thumb == "start")
+        {
+            _isDraggingStart = true;
+            _isDraggingEnd = false;
+            _currentStart = Math.Min(value, _currentEnd - Step);
+            _currentStart = Math.Max(_currentStart, Min);
+        }
+        else
+        {
+            _isDraggingStart = false;
+            _isDraggingEnd = true;
+            _currentEnd = Math.Max(value, _currentStart + Step);
+            _currentEnd = Math.Min(_currentEnd, Max);
+        }
+
+        UpdatePercentages();
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public async Task HandleDragEnd()
+    {
+        _isDraggingStart = false;
+        _isDraggingEnd = false;
+
+        await OnRangeChanged.InvokeAsync(new RangeChangedEventArgs<double>
+        {
+            Start = _currentStart,
+            End = _currentEnd,
+            Min = Min,
+            Max = Max
+        });
+
+        StateHasChanged();
+    }
+
+    private double SnapToStep(double value) => Math.Round(value / Step) * Step;
+
+    private string FormatValue(double value) => string.IsNullOrEmpty(Format) ? value.ToString("N0") :
+    value.ToString(Format);
+
+    private string GetColorClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-500",
+        BwColor.Secondary => "bg-gray-500",
+        BwColor.Success => "bg-green-500",
+        BwColor.Danger => "bg-red-500",
+        BwColor.Warning => "bg-yellow-500",
+        BwColor.Info => "bg-cyan-500",
+        _ => "bg-blue-500"
+    };
+
+    private string GetThumbBorderClass() => Color switch
+    {
+        BwColor.Primary => "border-blue-500 hover:border-blue-600",
+        BwColor.Secondary => "border-gray-500 hover:border-gray-600",
+        BwColor.Success => "border-green-500 hover:border-green-600",
+        BwColor.Danger => "border-red-500 hover:border-red-600",
+        BwColor.Warning => "border-yellow-500 hover:border-yellow-600",
+        BwColor.Info => "border-cyan-500 hover:border-cyan-600",
+        _ => "border-blue-500 hover:border-blue-600"
+    };
+
+    private string GetSelectionBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+        BwColor.Secondary => "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+        BwColor.Warning => "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
+        _ => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+    };
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.RangeSlider.dispose", _elementId);
+        }
+        catch { }
+
+        _dotNetRef?.Dispose();
+    }
+}

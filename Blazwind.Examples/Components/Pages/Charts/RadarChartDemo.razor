@@ -1,0 +1,93 @@
+@page "/charts/radar"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using System.Text.Json.Serialization
+
+<PageTitle>Radar Grafik - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Radar Grafik (Radar Chart)" 
+            Description="Çok boyutlu karşılaştırmalar için ideal grafik tipi."
+            Icon="fa-solid fa-star"
+            Color="BwColor.Warning" />
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Temel Radar *@
+        <BwCard Title="Temel Radar" Subtitle="Basic radar chart." Icon="fa-solid fa-star" Color="BwColor.Primary">
+            <BwChart Options="_basicRadar" Height="350px" />
+        </BwCard>
+
+        @* Çoklu Radar *@
+        <BwCard Title="Karşılaştırmalı Radar" Subtitle="Multiple series radar." Icon="fa-solid fa-code-compare" Color="BwColor.Info">
+            <BwChart Options="_multiRadar" Height="350px" />
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private object _basicRadar = new
+    {
+        title = new { text = "Personel Değerlendirme", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        legend = new { data = new[] { "Ahmet Yılmaz" }, bottom = "0" },
+        radar = new
+        {
+            indicator = new[]
+            {
+                new { name = "Teknik Bilgi", max = 100 },
+                new { name = "İletişim", max = 100 },
+                new { name = "Takım Çalışması", max = 100 },
+                new { name = "Problem Çözme", max = 100 },
+                new { name = "Yaratıcılık", max = 100 },
+                new { name = "Liderlik", max = 100 }
+            }
+        },
+        series = new[]
+        {
+            new
+            {
+                name = "Değerlendirme",
+                type = ChartSeriesType.Radar,
+                data = new[]
+                {
+                    new { value = new[] { 85, 90, 78, 92, 70, 65 }, name = "Ahmet Yılmaz" }
+                }
+            }
+        },
+        color = new[] { "#3b82f6" }
+    };
+
+    private object _multiRadar = new
+    {
+        title = new { text = "Departman Karşılaştırması", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        legend = new { data = new[] { "Bilgi İşlem", "Fen İşleri" }, bottom = "0" },
+        radar = new
+        {
+            indicator = new[]
+            {
+                new { name = "Verimlilik", max = 100 },
+                new { name = "Kalite", max = 100 },
+                new { name = "Hız", max = 100 },
+                new { name = "Maliyet", max = 100 },
+                new { name = "Müşteri Memnuniyeti", max = 100 }
+            }
+        },
+        series = new[]
+        {
+            new
+            {
+                name = "Karşılaştırma",
+                type = ChartSeriesType.Radar,
+                data = new[]
+                {
+                    new { value = new[] { 90, 85, 88, 70, 92 }, name = "Bilgi İşlem" },
+                    new { value = new[] { 75, 90, 70, 85, 80 }, name = "Fen İşleri" }
+                }
+            }
+        },
+        color = new[] { "#10b981", "#f59e0b" }
+    };
+}

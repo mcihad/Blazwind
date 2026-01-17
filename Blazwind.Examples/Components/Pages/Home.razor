@@ -1,0 +1,93 @@
+﻿@page "/"
+@using Blazwind.Components.Typography
+@inject NavigationManager NavigationManager
+
+<PageTitle>Blazwind - Enterprise Component Library</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    @* Hero *@
+    <BwHero Title="Blazwind"
+            Description="Modern, accessible and high-performance enterprise component library designed for Blazor."
+            Icon="fa-solid fa-wind" Color="BwColor.Primary">
+        <BwFlex Wrap="BwFlexWrap.Wrap" AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md" Class="mt-6">
+            <BwButton OnClick="@(() => NavigateTo("getting-started"))" Variant="BwVariant.Filled" Color="BwColor.White"
+                      Class="text-primary-700 border-0 font-semibold px-6">
+                Get Started <i class="fa-solid fa-arrow-right ml-2"></i>
+            </BwButton>
+
+            <div class="hidden sm:flex items-center gap-3 bg-black/20 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10 text-sm font-mono text-white">
+                <span class="text-white/60">$</span>
+                <span>dotnet add package Blazwind.Components</span>
+                <button type="button" class="ml-2 text-white/60 hover:text-white transition-colors"
+                        onclick="navigator.clipboard.writeText('dotnet add package Blazwind.Components')">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </BwFlex>
+    </BwHero>
+
+    @* Features *@
+    <BwGrid MinItemWidth="300px" Gap="BwSpacing.Md">
+        <BwCard Title="50+ Components" Subtitle="Rich Library" Icon="fa-solid fa-cube" Color="BwColor.Primary">
+            <BwTypography Size="BwSize.Small" Class="text-gray-600">
+                Everything you need for form, layout, data display and advanced interface elements.
+            </BwTypography>
+        </BwCard>
+
+        <BwCard Title="Accessible" Subtitle="WCAG 2.1 AA" Icon="fa-solid fa-universal-access" Color="BwColor.Success">
+            <BwTypography Size="BwSize.Small" Class="text-gray-600">
+                Fully compatible with screen readers, keyboard navigation and high contrast support.
+            </BwTypography>
+        </BwCard>
+
+        <BwCard Title="Mobile-First" Subtitle="Responsive Design" Icon="fa-solid fa-mobile-screen"
+                Color="BwColor.Warning">
+            <BwTypography Size="BwSize.Small" Class="text-gray-600">
+                All components are optimized for seamless experience from mobile to desktop.
+            </BwTypography>
+        </BwCard>
+    </BwGrid>
+
+    @* Tech Stack Panel *@
+    <BwPanel Title="Technology Stack" Icon="fa-solid fa-layer-group" Color="BwColor.Dark">
+        <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm" Class="p-4">
+            <BwButton Color="BwColor.Secondary" Class="bg-white/10 text-white hover:bg-white/20 border-0"
+                      Size="BwSize.Small">
+                <i class="fa-brands fa-microsoft mr-2"></i> Blazor
+            </BwButton>
+            <BwButton Color="BwColor.Secondary" Class="bg-white/10 text-white hover:bg-white/20 border-0"
+                      Size="BwSize.Small">
+                <i class="fa-brands fa-css3-alt mr-2"></i> Tailwind CSS
+            </BwButton>
+            <BwButton Color="BwColor.Secondary" Class="bg-white/10 text-white hover:bg-white/20 border-0"
+                      Size="BwSize.Small">
+                <i class="fa-brands fa-js mr-2"></i> TypeScript
+            </BwButton>
+            <BwButton Color="BwColor.Secondary" Class="bg-white/10 text-white hover:bg-white/20 border-0"
+                      Size="BwSize.Small">
+                <i class="fa-solid fa-bolt mr-2"></i> Vite
+            </BwButton>
+        </BwFlex>
+    </BwPanel>
+
+    @* Quick Actions *@
+    <BwCard Title="Quick Access" Subtitle="Popular component demos" Icon="fa-solid fa-rocket" Color="BwColor.Primary">
+        <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+            <BwButton OnClick="@(() => NavigateTo("components/table"))" Color="BwColor.Primary" Variant="BwVariant.Outline"
+                      Icon="fa-solid fa-table" Text="Data Grid"/>
+            <BwButton OnClick="@(() => NavigateTo("components/dialog"))" Color="BwColor.Primary" Variant="BwVariant.Outline"
+                      Icon="fa-solid fa-window-restore" Text="Dialog"/>
+            <BwButton OnClick="@(() => NavigateTo("components/input"))" Color="BwColor.Primary" Variant="BwVariant.Outline"
+                      Icon="fa-solid fa-font" Text="Form Inputs"/>
+            <BwButton OnClick="@(() => NavigateTo("components/stepper"))" Color="BwColor.Primary" Variant="BwVariant.Outline"
+                      Icon="fa-solid fa-shoe-prints" Text="Stepper"/>
+        </BwFlex>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private void NavigateTo(string url)
+    {
+        NavigationManager.NavigateTo(url);
+    }
+}

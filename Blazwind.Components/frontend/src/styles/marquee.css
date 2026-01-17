@@ -1,0 +1,41 @@
+/* Marquee Animations */
+@keyframes marquee-horizontal {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes marquee-vertical {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+.bw-marquee-content {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.bw-marquee-horizontal {
+    animation: marquee-horizontal var(--marquee-duration, 20s) linear infinite;
+    animation-direction: var(--marquee-direction, normal);
+}
+
+.bw-marquee-vertical {
+    flex-direction: column;
+    animation: marquee-vertical var(--marquee-duration, 20s) linear infinite;
+    animation-direction: var(--marquee-direction, normal);
+}
+
+/* Pause all marquee content when the container is hovered */
+.bw-marquee-pause-container:hover .bw-marquee-content {
+    animation-play-state: paused !important;
+}

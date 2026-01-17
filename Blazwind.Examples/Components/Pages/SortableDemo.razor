@@ -1,0 +1,128 @@
+@page "/components/sortable"
+@using Blazwind.Components.Sortable
+
+@inject ToastService ToastService
+
+<PageTitle>Sortable - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Sortable"
+            Description="Drag-and-drop list component for reordering items."
+            Icon="fa-solid fa-sort"
+            Color="BwColor.Warning"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Drag and drop to reorder items" Icon="fa-solid fa-grip-vertical"
+            Color="BwColor.Primary">
+        <BwSortable Items="@_tasks" OnReorder="@(async (List<TaskItem> items) => await HandleReorder(items))">
+            <ItemTemplate Context="task">
+                <div
+                    class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded mb-2">
+                    <div
+                        class="w-8 h-8 rounded-full @(task.Priority == "high" ? "bg-red-100 text-red-600" : task.Priority == "medium" ? "bg-yellow-100 text-yellow-600" : "bg-green-100 text-green-600") flex items-center justify-center text-sm">
+                        @task.Order
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-900 dark:text-white">@task.Title</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">@task.Category</div>
+                    </div>
+                    <span
+                        class="px-2 py-1 text-xs rounded @(task.Priority == "high" ? "bg-red-100 text-red-700" : task.Priority == "medium" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700")">
+                        @(task.Priority == "high" ? "Yüksek" : task.Priority == "medium" ? "Orta" : "Düşük")
+                    </span>
+                </div>
+            </ItemTemplate>
+        </BwSortable>
+    </BwCard>
+
+    @* Simple List *@
+    <BwCard Title="Simple List" Subtitle="Minimal view" Icon="fa-solid fa-list" Color="BwColor.Success">
+        <BwSortable Items="@_simpleList" OnReorder="@(async (List<string> items) => await HandleSimpleReorder(items))"
+                    Class="space-y-1">
+            <ItemTemplate Context="item">
+                <div class="px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded text-sm text-gray-700 dark:text-gray-300">
+                    @item
+                </div>
+            </ItemTemplate>
+        </BwSortable>
+    </BwCard>
+
+    @* Features *@
+    <BwCard Title="Features" Subtitle="Sortable component features" Icon="fa-solid fa-list-check" Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid sm:grid-cols-2 lg:grid-cols-4">
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-grip-vertical text-2xl text-blue-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Drag Handle</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Easy dragging</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-eye text-2xl text-green-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Visual Feedback</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Drag effects</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-code text-2xl text-purple-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Generics</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Works for any type</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-bell text-2xl text-orange-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">OnReorder Callback</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">New order notification</p>
+            </div>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<TaskItem> _tasks = new();
+    private List<string> _simpleList = new();
+
+    protected override void OnInitialized()
+    {
+        _tasks = new List<TaskItem>
+        {
+            new() { Order = 1, Title = "Proje planlaması", Category = "Planlama", Priority = "high" },
+            new() { Order = 2, Title = "UI tasarımı", Category = "Tasarım", Priority = "medium" },
+            new() { Order = 3, Title = "Backend geliştirme", Category = "Geliştirme", Priority = "high" },
+            new() { Order = 4, Title = "Testlerin yazılması", Category = "Test", Priority = "medium" },
+            new() { Order = 5, Title = "Dokümantasyon", Category = "Dokümantasyon", Priority = "low" },
+            new() { Order = 6, Title = "Deployment", Category = "DevOps", Priority = "high" }
+        };
+
+        _simpleList = new List<string>
+        {
+            "Birinci öğe",
+            "İkinci öğe",
+            "Üçüncü öğe",
+            "Dördüncü öğe",
+            "Beşinci öğe"
+        };
+    }
+
+    private async Task HandleReorder(List<TaskItem> newOrder)
+    {
+        for (var i = 0; i < newOrder.Count; i++)
+        {
+            newOrder[i].Order = i + 1;
+        }
+
+        _tasks = newOrder;
+        await ToastService.InfoAsync("Görevler yeniden sıralandı");
+    }
+
+    private Task HandleSimpleReorder(List<string> newOrder)
+    {
+        _simpleList = newOrder;
+        return Task.CompletedTask;
+    }
+
+    private class TaskItem
+    {
+        public int Order { get; set; }
+        public string Title { get; set; } = "";
+        public string Category { get; set; } = "";
+        public string Priority { get; set; } = "low";
+    }
+
+}

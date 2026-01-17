@@ -1,0 +1,74 @@
+@namespace Blazwind.Components.Timeline
+@using Blazwind.Components.Shared
+
+@{
+    var sizeClass = Size switch
+    {
+        BwSize.Small => "small",
+        BwSize.Large => "large",
+        _ => ""
+    };
+    
+    var layoutClass = Horizontal ? "horizontal" : Alternate ? "alternate" : "vertical";
+    
+    var variantClass = Variant switch
+    {
+        BwVariant.Ghost => "minimal",
+        BwVariant.Outline => "cards",
+        _ => ""
+    };
+    
+    var connectorClass = ConnectorStyle switch
+    {
+        "dashed" => "dashed",
+        "dotted" => "dotted",
+        _ => ""
+    };
+}
+
+<CascadingValue Value="this">
+    <div class="bw-timeline @layoutClass @sizeClass @variantClass @connectorClass @Class">
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+    /// <summary>Visual style variant</summary>
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Filled;
+    
+    /// <summary>Alternate items left/right (zig-zag layout)</summary>
+    [Parameter] public bool Alternate { get; set; }
+    
+    /// <summary>Horizontal orientation instead of vertical</summary>
+    [Parameter] public bool Horizontal { get; set; }
+    
+    /// <summary>Reverse item order</summary>
+    [Parameter] public bool Reverse { get; set; }
+    
+    /// <summary>Size of dots and connectors</summary>
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    
+    /// <summary>Connector line style (solid, dashed, dotted)</summary>
+    [Parameter] public string ConnectorStyle { get; set; } = "solid";
+    
+    /// <summary>Custom CSS classes</summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Timeline items</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    // Internal tracking
+    private int _itemIndex = 0;
+    private int _totalItems = 0;
+    
+    internal int GetNextItemIndex() => _itemIndex++;
+    internal void IncrementTotalItems() => _totalItems++;
+    internal int TotalItems => _totalItems;
+    internal bool IsLastItem(int index) => index == _totalItems - 1;
+    
+    protected override void OnParametersSet()
+    {
+        _itemIndex = 0;
+        _totalItems = 0;
+    }
+}

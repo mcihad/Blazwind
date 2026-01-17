@@ -1,0 +1,270 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Linq.Expressions
+@inherits BwBaseInput<TValue>
+@typeparam TValue
+
+@{
+    var baseClass = "w-full border rounded transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-0 cursor-pointer";
+    var stateClass = GetStateClass();
+    var disabledClass = GetDisabledClass();
+    var sizeClass = GetSizeClass();
+    
+    // Custom size adjustment for select usually needs slightly different padding/height in some cases, 
+    // but BwBaseInput's GetSizeClass is generally fine. 
+    // If we need specific overrides, we can do it here.
+    // For multiple select, we might need height override.
+    if (IsMultiple)
+    {
+        sizeClass = Size switch
+        {
+            BwSize.Small => "px-2.5 text-xs py-1.5",
+            BwSize.Large => "px-4 text-base py-3",
+            _ => "px-3 text-sm py-2"
+        };
+    }
+}
+
+<div class="@GetDensityMarginClass() @Class" style="@Style">
+    @switch (EffectiveLabelPosition)
+    {
+        case BwLabelPosition.Top:
+            @if (HasLabel)
+            {
+                <div class="flex items-center gap-1 @GetLabelSpacingClass()">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                    @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                    {
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    }
+                </div>
+            }
+            @RenderSelect(baseClass, sizeClass, stateClass, disabledClass)
+            break;
+            
+        case BwLabelPosition.Left:
+            <div class="flex items-start gap-3">
+                @if (HasLabel)
+                {
+                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                            @Label
+                            @if (IsRequired)
+                            {
+                                <span class="text-red-500 ml-0.5">*</span>
+                            }
+                        </label>
+                        @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                        {
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        }
+                    </div>
+                }
+                <div class="flex-1">
+                    @RenderSelect(baseClass, sizeClass, stateClass, disabledClass)
+                </div>
+            </div>
+            break;
+            
+        case BwLabelPosition.Hidden:
+        default:
+            @RenderSelect(baseClass, sizeClass, stateClass, disabledClass)
+            break;
+    }
+    
+    @* Error/Helper Messages *@
+    @if (HasError)
+    {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @DisplayError
+        </p>
+    }
+    else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+    {
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+    }
+</div>
+
+@code {
+    #region Select-Specific Parameters
+    
+    /// <summary>Data source for list. Renamed from Data to Items.</summary>
+    [Parameter] public IEnumerable<BwSelectItem<TValue>>? Items { get; set; }
+    
+    /// <summary>Enable multiple selection mode</summary>
+    [Parameter] public bool IsMultiple { get; set; }
+    
+    /// <summary>Number of visible rows in multiple mode</summary>
+    [Parameter] public int VisibleRows { get; set; } = 4;
+    
+    /// <summary>Selected values for multiple selection mode</summary>
+    [Parameter] public List<TValue>? SelectedValues { get; set; }
+    [Parameter] public EventCallback<List<TValue>> SelectedValuesChanged { get; set; }
+    
+    /// <summary>Selected Item object (Two-way binding)</summary>
+    [Parameter] public BwSelectItem<TValue>? SelectedItem { get; set; }
+    [Parameter] public EventCallback<BwSelectItem<TValue>?> SelectedItemChanged { get; set; }
+
+    /// <summary>Selected Items objects (Two-way binding) for multiple selection</summary>
+    [Parameter] public List<BwSelectItem<TValue>>? SelectedItems { get; set; }
+    [Parameter] public EventCallback<List<BwSelectItem<TValue>>?> SelectedItemsChanged { get; set; }
+    
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    #endregion
+
+    #region Rendering
+    
+    private RenderFragment RenderSelect(string baseClass, string sizeClass, string stateClass, string disabledClass) => __builder =>
+    {
+        <select class="@baseClass @sizeClass @stateClass @disabledClass"
+                disabled="@IsDisabled"
+                multiple="@IsMultiple"
+                size="@(IsMultiple ? VisibleRows : 1)"
+                @onchange="HandleSelectChange">
+            @if (!string.IsNullOrEmpty(Placeholder) && !IsMultiple)
+            {
+                <option value="" disabled selected="@(Value == null)">@Placeholder</option>
+            }
+            @if (Items != null)
+            {
+                @foreach (var item in Items)
+                {
+                    var isSelected = IsMultiple 
+                        ? (SelectedValues?.Contains(item.Value) ?? false)
+                        : EqualityComparer<TValue>.Default.Equals(Value, item.Value);
+                    <option value="@item.Value" disabled="@item.IsDisabled" selected="@isSelected">@item.Text</option>
+                }
+            }
+            @ChildContent
+        </select>
+    };
+    
+    #endregion
+
+    #region Event Handlers
+    
+    private async Task HandleSelectChange(ChangeEventArgs e)
+    {
+        if (IsMultiple)
+        {
+            if (e.Value is string[] values)
+            {
+                var selectedList = new List<TValue>();
+                var selectedItemsList = new List<BwSelectItem<TValue>>();
+                
+                foreach (var val in values)
+                {
+                    if (TryParseValue(val, out var parsed))
+                    {
+                        selectedList.Add(parsed!);
+                        
+                        // Find item object
+                        if (Items != null)
+                        {
+                            var itemObj = Items.FirstOrDefault(x => EqualityComparer<TValue>.Default.Equals(x.Value, parsed));
+                            if (itemObj != null)
+                            {
+                                selectedItemsList.Add(itemObj);
+                            }
+                        }
+                    }
+                }
+                
+                // Update SelectedValues
+                SelectedValues = selectedList;
+                await SelectedValuesChanged.InvokeAsync(selectedList);
+                
+                // Update SelectedItems
+                SelectedItems = selectedItemsList;
+                await SelectedItemsChanged.InvokeAsync(selectedItemsList);
+            }
+        }
+        else
+        {
+            var value = e.Value?.ToString();
+            if (TryParseValue(value, out var parsed))
+            {
+                // Update Value
+                await HandleValueChanged(parsed);
+                
+                // Update SelectedItem
+                if (Items != null)
+                {
+                    SelectedItem = Items.FirstOrDefault(x => EqualityComparer<TValue>.Default.Equals(x.Value, parsed));
+                    await SelectedItemChanged.InvokeAsync(SelectedItem);
+                }
+            }
+        }
+    }
+    
+    private bool TryParseValue(string? value, out TValue? result)
+    {
+        result = default;
+        
+        if (typeof(TValue) == typeof(string))
+        {
+            result = (TValue?)(object?)value;
+            return true;
+        }
+        if (typeof(TValue) == typeof(int) && int.TryParse(value, out var intValue))
+        {
+            result = (TValue?)(object?)intValue;
+            return true;
+        }
+        if (typeof(TValue) == typeof(int?) && (string.IsNullOrEmpty(value) || int.TryParse(value, out _)))
+        {
+            result = string.IsNullOrEmpty(value) ? default : (TValue?)(object?)int.Parse(value);
+            return true;
+        }
+        if (typeof(TValue).IsEnum && Enum.TryParse(typeof(TValue), value, out var enumValue))
+        {
+            result = (TValue?)enumValue;
+            return true;
+        }
+        
+        // Basic fallback or todo: more robust converter
+        return false;
+    }
+    
+    #endregion
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        
+        // Sync Initial SelectedItem/Items from Value/SelectedValues if needed
+        // Only if Items is available
+        if (Items != null)
+        {
+             if (!IsMultiple && Value != null && SelectedItem == null)
+             {
+                 var item = Items.FirstOrDefault(x => EqualityComparer<TValue>.Default.Equals(x.Value, Value));
+                 if (item != null)
+                 {
+                     SelectedItem = item;
+                     await SelectedItemChanged.InvokeAsync(SelectedItem);
+                 }
+             }
+             
+             if (IsMultiple && SelectedValues != null && (SelectedItems == null || !SelectedItems.Any()))
+             {
+                 var items = Items.Where(x => SelectedValues.Contains(x.Value)).ToList();
+                 if (items.Any())
+                 {
+                     SelectedItems = items;
+                     await SelectedItemsChanged.InvokeAsync(SelectedItems);
+                 }
+             }
+        }
+    }
+}

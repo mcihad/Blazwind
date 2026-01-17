@@ -1,0 +1,20 @@
+@inherits LayoutComponentBase
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Drawer
+
+@* 
+    Full Screen Map Layout
+    This layout is used to display only the map without sidebar and header.
+    Map pages can use this layout with the @layout MapFullscreenLayout directive.
+*@
+
+<div class="h-screen w-screen overflow-hidden">
+    @Body
+</div>
+
+<BwDialogContainer/>
+<BwDrawerContainer/>
+
+<div id="blazor-error-ui" data-nosnippet>
+    Connection error occurred. <a href="javascript:location.reload()">Click to reload</a>
+</div>

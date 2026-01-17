@@ -1,0 +1,98 @@
+@namespace Blazwind.Components.Border
+@using Blazwind.Components.Shared
+@inherits BwBase
+
+<div class="@AllClasses" style="@Style" @attributes="AdditionalAttributes">
+    @if (Label != null || !string.IsNullOrEmpty(Title))
+    {
+        <div class="absolute -top-3 @TitlePositionClass bg-white dark:bg-gray-900 px-2 text-sm font-medium @TitleColorClass @TitleClass">
+            @(Label ?? (RenderFragment)(builder => builder.AddContent(0, Title)))
+        </div>
+    }
+    <div class="@PaddingClass">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? Label { get; set; }
+    
+    [Parameter] public BwColor Color { get; set; } = BwColor.Light;
+    [Parameter] public BwSize Width { get; set; } = BwSize.Small; // Uses BwSize: Small=1px, Medium=2px, Large=4px
+    [Parameter] public BwSize Radius { get; set; } = BwSize.Medium; // Uses BwSize: Small=Rounded-sm, Medium=Rounded, Large=Rounded-lg
+    [Parameter] public BwSize Padding { get; set; } = BwSize.Medium; // Padding inside border
+    [Parameter] public bool IsDashed { get; set; }
+    [Parameter] public bool IsDotted { get; set; }
+    [Parameter] public bool HasShadow { get; set; }
+    [Parameter] public BwDirection TitlePosition { get; set; } = BwDirection.Left;
+    
+    [Parameter] public string? TitleClass { get; set; }
+
+    private string AllClasses => $"relative {BorderClass} {RadiusClass} {StyleClass} {ShadowClass} {GetBorderColorClass(Color)} {Class}".Trim();
+    
+    private string BorderClass => (Width, Color) switch
+    {
+        (BwSize.Small, _) => "border",
+        (BwSize.Medium, _) => "border-2",
+        (BwSize.Large, _) => "border-4",
+        (_, _) => "border"
+    };
+
+    private string RadiusClass => Radius switch
+    {
+        BwSize.Small => "rounded-sm",
+        BwSize.Medium => "rounded",
+        BwSize.Large => "rounded-lg",
+        BwSize.ExtraSmall => "rounded-none", 
+        BwSize.ExtraLarge => "rounded-xl",
+        _ => "rounded"
+    };
+
+    private string PaddingClass => Padding switch
+    {
+        BwSize.ExtraSmall => "p-1",
+        BwSize.Small => "p-2",
+        BwSize.Medium => "p-4",
+        BwSize.Large => "p-6",
+        BwSize.ExtraLarge => "p-8",
+        _ => "p-4"
+    };
+
+    private string StyleClass => IsDashed ? "border-dashed" : (IsDotted ? "border-dotted" : "border-solid");
+    
+    private string ShadowClass => HasShadow ? "shadow-sm" : "";
+
+    private string TitlePositionClass => TitlePosition switch
+    {
+        BwDirection.Left => "left-3",
+        BwDirection.Right => "right-3",
+        _ => "left-3"
+    };
+
+    private string TitleColorClass => Color switch
+    {
+        BwColor.Primary => "text-blue-600 dark:text-blue-400",
+        BwColor.Secondary => "text-gray-600 dark:text-gray-400",
+        BwColor.Success => "text-emerald-600 dark:text-emerald-400",
+        BwColor.Danger => "text-red-600 dark:text-red-400",
+        BwColor.Warning => "text-amber-600 dark:text-amber-400",
+        BwColor.Info => "text-sky-600 dark:text-sky-400",
+        _ => "text-gray-500 dark:text-gray-400"
+    };
+
+    private string GetBorderColorClass(BwColor color) => color switch
+    {
+        BwColor.Primary => "border-blue-500 dark:border-blue-400",
+        BwColor.Secondary => "border-gray-400 dark:border-gray-500",
+        BwColor.Success => "border-emerald-500 dark:border-emerald-400",
+        BwColor.Danger => "border-red-500 dark:border-red-400",
+        BwColor.Warning => "border-amber-500 dark:border-amber-400",
+        BwColor.Info => "border-sky-500 dark:border-sky-400",
+        BwColor.Light => "border-gray-200 dark:border-gray-700",
+        BwColor.Dark => "border-gray-800 dark:border-gray-600",
+        _ => "border-gray-200 dark:border-gray-700"
+    };
+}
+

@@ -1,0 +1,311 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+@{
+    var containerClasses = BuildContainerClasses();
+    var containerStyle = BuildContainerStyle();
+}
+
+<div class="bw-flow-container @(ShowArrows && !Wrap ? "bw-flow-with-arrows" : "") @Class">
+    @if (ShowArrows && !Wrap)
+    {
+        <button type="button" 
+                class="bw-flow-arrow bw-flow-arrow-left @(CanScrollLeft ? "" : "opacity-30 cursor-not-allowed")"
+                @onclick="ScrollLeft"
+                disabled="@(!CanScrollLeft)">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+    }
+    
+    <div @ref="_scrollContainer" 
+         class="@containerClasses" 
+         style="@containerStyle"
+         @onscroll="OnScroll">
+        @ChildContent
+    </div>
+    
+    @if (ShowArrows && !Wrap)
+    {
+        <button type="button" 
+                class="bw-flow-arrow bw-flow-arrow-right @(CanScrollRight ? "" : "opacity-30 cursor-not-allowed")"
+                @onclick="ScrollRight"
+                disabled="@(!CanScrollRight)">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// Flow direction
+    /// </summary>
+    [Parameter] public BwFlexDirection Direction { get; set; } = BwFlexDirection.Row;
+    
+    /// <summary>
+    /// Whether items should wrap to next line
+    /// </summary>
+    [Parameter] public bool Wrap { get; set; } = true;
+    
+    /// <summary>
+    /// Reverse wrap direction
+    /// </summary>
+    [Parameter] public bool WrapReverse { get; set; } = false;
+    
+    /// <summary>
+    /// Overflow behavior when Wrap is false
+    /// </summary>
+    [Parameter] public BwOverflow Overflow { get; set; } = BwOverflow.ScrollX;
+    
+    /// <summary>
+    /// Show arrow buttons for horizontal scroll (only when Wrap=false)
+    /// </summary>
+    [Parameter] public bool ShowArrows { get; set; } = false;
+    
+    /// <summary>
+    /// Number of items per row (base/mobile). Uses flex-basis percentage.
+    /// </summary>
+    [Parameter] public int? ItemsPerRow { get; set; }
+    
+    /// <summary>
+    /// Items per row on sm breakpoint (640px+)
+    /// </summary>
+    [Parameter] public int? ItemsPerRowSm { get; set; }
+    
+    /// <summary>
+    /// Items per row on md breakpoint (768px+)
+    /// </summary>
+    [Parameter] public int? ItemsPerRowMd { get; set; }
+    
+    /// <summary>
+    /// Items per row on lg breakpoint (1024px+)
+    /// </summary>
+    [Parameter] public int? ItemsPerRowLg { get; set; }
+    
+    /// <summary>
+    /// Items per row on xl breakpoint (1280px+)
+    /// </summary>
+    [Parameter] public int? ItemsPerRowXl { get; set; }
+    
+    /// <summary>
+    /// Fixed item width (e.g., "120px", "8rem"). Overrides ItemsPerRow.
+    /// </summary>
+    [Parameter] public string? ItemWidth { get; set; }
+    
+    /// <summary>
+    /// Gap between items
+    /// </summary>
+    [Parameter] public BwSpacing Gap { get; set; } = BwSpacing.Md;
+    
+    /// <summary>
+    /// Main axis alignment
+    /// </summary>
+    [Parameter] public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
+    
+    /// <summary>
+    /// Cross axis alignment
+    /// </summary>
+    [Parameter] public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
+    
+    /// <summary>
+    /// Maximum height for vertical scroll (e.g., "400px")
+    /// </summary>
+    [Parameter] public string? MaxHeight { get; set; }
+    
+    /// <summary>
+    /// Maximum width for horizontal scroll (e.g., "100%")
+    /// </summary>
+    [Parameter] public string? MaxWidth { get; set; }
+    
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    private ElementReference _scrollContainer;
+    private bool CanScrollLeft { get; set; } = false;
+    private bool CanScrollRight { get; set; } = true;
+    
+    private string BuildContainerClasses()
+    {
+        var classes = new List<string> { "flex" };
+        
+        // Direction
+        classes.Add(Direction switch
+        {
+            BwFlexDirection.Row => "flex-row",
+            BwFlexDirection.RowReverse => "flex-row-reverse",
+            BwFlexDirection.Column => "flex-col",
+            BwFlexDirection.ColumnReverse => "flex-col-reverse",
+            _ => "flex-row"
+        });
+        
+        // Wrap
+        if (Wrap)
+        {
+            classes.Add(WrapReverse ? "flex-wrap-reverse" : "flex-wrap");
+        }
+        else
+        {
+            classes.Add("flex-nowrap");
+        }
+        
+        // Overflow
+        if (!Wrap)
+        {
+            classes.Add(Overflow switch
+            {
+                BwOverflow.Hidden => "overflow-hidden",
+                BwOverflow.Scroll => "overflow-auto",
+                BwOverflow.ScrollX => "overflow-x-auto overflow-y-hidden",
+                BwOverflow.ScrollY => "overflow-y-auto overflow-x-hidden",
+                _ => "overflow-visible"
+            });
+            
+            // Smooth scrolling and hide scrollbar for arrow navigation
+            if (ShowArrows)
+            {
+                classes.Add("scroll-smooth scrollbar-hide");
+            }
+        }
+        
+        // Gap
+        classes.Add(Gap switch
+        {
+            BwSpacing.None => "gap-0",
+            BwSpacing.Xs => "gap-1",
+            BwSpacing.Sm => "gap-2",
+            BwSpacing.Md => "gap-4",
+            BwSpacing.Lg => "gap-6",
+            BwSpacing.Xl => "gap-8",
+            BwSpacing.Xxl => "gap-12",
+            _ => "gap-4"
+        });
+        
+        // Main axis alignment
+        classes.Add(MainAxisAlignment switch
+        {
+            BwMainAxisAlignment.Start => "justify-start",
+            BwMainAxisAlignment.Center => "justify-center",
+            BwMainAxisAlignment.End => "justify-end",
+            BwMainAxisAlignment.SpaceBetween => "justify-between",
+            BwMainAxisAlignment.SpaceAround => "justify-around",
+            BwMainAxisAlignment.SpaceEvenly => "justify-evenly",
+            _ => "justify-start"
+        });
+        
+        // Cross axis alignment
+        classes.Add(CrossAxisAlignment switch
+        {
+            BwCrossAxisAlignment.Start => "items-start",
+            BwCrossAxisAlignment.Center => "items-center",
+            BwCrossAxisAlignment.End => "items-end",
+            BwCrossAxisAlignment.Stretch => "items-stretch",
+            BwCrossAxisAlignment.Baseline => "items-baseline",
+            _ => "items-stretch"
+        });
+        
+        return string.Join(" ", classes);
+    }
+    
+    private string BuildContainerStyle()
+    {
+        var styles = new List<string>();
+        
+        if (!string.IsNullOrWhiteSpace(MaxHeight))
+        {
+            styles.Add($"max-height: {MaxHeight}");
+        }
+        
+        if (!string.IsNullOrWhiteSpace(MaxWidth))
+        {
+            styles.Add($"max-width: {MaxWidth}");
+        }
+        
+        // CSS custom properties for child sizing
+        if (!string.IsNullOrWhiteSpace(ItemWidth))
+        {
+            styles.Add($"--bw-flow-item-width: {ItemWidth}");
+        }
+        else if (ItemsPerRow.HasValue)
+        {
+            var gapValue = GetGapPixels();
+            // Calculate: (100% - (n-1)*gap) / n
+            styles.Add($"--bw-flow-item-width: calc((100% - {(ItemsPerRow.Value - 1) * gapValue}px) / {ItemsPerRow.Value})");
+        }
+        
+        if (!string.IsNullOrWhiteSpace(Style))
+        {
+            styles.Add(Style.TrimEnd(';'));
+        }
+        
+        return styles.Count > 0 ? string.Join("; ", styles) + ";" : "";
+    }
+    
+    private int GetGapPixels() => Gap switch
+    {
+        BwSpacing.None => 0,
+        BwSpacing.Xs => 4,
+        BwSpacing.Sm => 8,
+        BwSpacing.Md => 16,
+        BwSpacing.Lg => 24,
+        BwSpacing.Xl => 32,
+        BwSpacing.Xxl => 48,
+        _ => 16
+    };
+    
+    private async Task ScrollLeft()
+    {
+        await JS.InvokeVoidAsync("eval", $"document.querySelector('[_bl_{_scrollContainer.Id}]')?.scrollBy({{ left: -200, behavior: 'smooth' }})");
+        await Task.Delay(300);
+        await UpdateScrollState();
+    }
+    
+    private async Task ScrollRight()
+    {
+        await JS.InvokeVoidAsync("eval", $"document.querySelector('[_bl_{_scrollContainer.Id}]')?.scrollBy({{ left: 200, behavior: 'smooth' }})");
+        await Task.Delay(300);
+        await UpdateScrollState();
+    }
+    
+    private async Task OnScroll()
+    {
+        await UpdateScrollState();
+    }
+    
+    private async Task UpdateScrollState()
+    {
+        try
+        {
+            var scrollInfo = await JS.InvokeAsync<ScrollInfo>("eval", 
+                $"(function(){{ var el = document.querySelector('[_bl_{_scrollContainer.Id}]'); if(!el) return null; return {{ scrollLeft: el.scrollLeft, scrollWidth: el.scrollWidth, clientWidth: el.clientWidth }}; }})()");
+            
+            if (scrollInfo != null)
+            {
+                CanScrollLeft = scrollInfo.ScrollLeft > 0;
+                CanScrollRight = scrollInfo.ScrollLeft < (scrollInfo.ScrollWidth - scrollInfo.ClientWidth - 1);
+                StateHasChanged();
+            }
+        }
+        catch
+        {
+            // Ignore JS errors
+        }
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && ShowArrows && !Wrap)
+        {
+            await UpdateScrollState();
+        }
+    }
+    
+    private class ScrollInfo
+    {
+        public double ScrollLeft { get; set; }
+        public double ScrollWidth { get; set; }
+        public double ClientWidth { get; set; }
+    }
+}

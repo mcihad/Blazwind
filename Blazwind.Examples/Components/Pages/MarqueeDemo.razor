@@ -1,0 +1,126 @@
+@page "/components/marquee"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Marquee
+
+<PageTitle>Marquee Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Marquee Component"
+            Description="Continuous scrolling content component. Ideal for logo slider, ticker, testimonials."
+            Icon="fa-solid fa-right-left" Color="BwColor.Info"/>
+
+    <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Icon="fa-solid fa-info-circle">
+        <strong>New Feature:</strong> PauseOnHover now pauses all content - the entire animation stops when you hover
+        over any element!
+    </BwAlert>
+
+    <BwCard Title="Logo Slider" Subtitle="Brand and partner logos - pauses on hover" Icon="fa-solid fa-building"
+            Color="BwColor.Primary">
+        <BwMarquee Duration="30" PauseOnHover="true">
+            <div class="flex items-center gap-16 px-8">
+                <div
+                    class="w-32 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 font-bold">
+                    Logo 1
+                </div>
+                <div
+                    class="w-32 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 font-bold">
+                    Logo 2
+                </div>
+                <div
+                    class="w-32 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 font-bold">
+                    Logo 3
+                </div>
+                <div
+                    class="w-32 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 font-bold">
+                    Logo 4
+                </div>
+                <div
+                    class="w-32 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 font-bold">
+                    Logo 5
+                </div>
+                <div
+                    class="w-32 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 font-bold">
+                    Logo 6
+                </div>
+            </div>
+        </BwMarquee>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Reverse Direction" Subtitle="Scrolls from right to left" Icon="fa-solid fa-arrow-left"
+                Color="BwColor.Success">
+            <BwMarquee Duration="25" Reverse="true">
+                <div class="flex items-center gap-8">
+                    <BwBadge Color="BwColor.Primary">Blazor</BwBadge>
+                    <BwBadge Color="BwColor.Success">Tailwind</BwBadge>
+                    <BwBadge Color="BwColor.Warning">.NET 8</BwBadge>
+                    <BwBadge Color="BwColor.Danger">C#</BwBadge>
+                    <BwBadge Color="BwColor.Info">TypeScript</BwBadge>
+                    <BwBadge Color="BwColor.Secondary">Vite</BwBadge>
+                </div>
+            </BwMarquee>
+        </BwCard>
+
+        <BwCard Title="Fast Scrolling" Subtitle="10-second cycle" Icon="fa-solid fa-bolt" Color="BwColor.Warning">
+            <BwMarquee Duration="10">
+                <div class="flex items-center gap-6">
+                    <span class="text-lg font-medium text-blue-600 dark:text-blue-400">🚀 Hızlı</span>
+                    <span class="text-lg font-medium text-emerald-600 dark:text-emerald-400">✨ Modern</span>
+                    <span class="text-lg font-medium text-amber-600 dark:text-amber-400">💪 Güçlü</span>
+                    <span class="text-lg font-medium text-red-600 dark:text-red-400">🔥 Sıcak</span>
+                </div>
+            </BwMarquee>
+        </BwCard>
+    </BwRow>
+
+    <BwCard Title="Testimonial Slider" Subtitle="Customer reviews - all pause when hovering over cards"
+            Icon="fa-solid fa-quote-left" Color="BwColor.Info">
+        <BwMarquee Duration="40" PauseOnHover="true">
+            <div class="flex gap-6">
+                @foreach (var i in Enumerable.Range(1, 5))
+                {
+                    <div
+                        class="w-80 flex-shrink-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <BwAvatar Name="@($"User {i}")" Size="BwSize.Medium"/>
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-gray-100">User @i</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Company @i</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            "Blazwind components are really great! We developed our project very quickly.
+                            Tailwind integration is perfect."
+                        </p>
+                        <div class="flex gap-1 mt-3 text-amber-400">
+                            @for (var s = 0; s < 5; s++)
+                            {
+                                <i class="fa-solid fa-star"></i>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </BwMarquee>
+    </BwCard>
+
+    <BwCard Title="News Ticker" Subtitle="Breaking news - scrolls continuously" Icon="fa-solid fa-newspaper"
+            Color="BwColor.Danger">
+        <div class="bg-red-600 text-white py-2 rounded-lg overflow-hidden">
+            <BwMarquee Duration="35" Clone="true" PauseOnHover="false">
+                <div class="flex items-center gap-8 px-4">
+                    <span class="flex items-center gap-2">
+                        <span class="bg-white text-red-600 px-2 py-0.5 rounded text-xs font-bold">BREAKING NEWS</span>
+                        Blazwind 2.0 released!
+                    </span>
+                    <span>•</span>
+                    <span>New components added</span>
+                    <span>•</span>
+                    <span>Performance increased by 40%</span>
+                    <span>•</span>
+                    <span>Tailwind v4 support added</span>
+                </div>
+            </BwMarquee>
+        </div>
+    </BwCard>
+</BwColumn>

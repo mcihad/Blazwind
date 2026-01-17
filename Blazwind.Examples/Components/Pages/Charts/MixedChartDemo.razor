@@ -1,0 +1,58 @@
+@page "/charts/mixed"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Mixed Chart - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Mixed Chart" 
+            Description="Farklı grafik tiplerinin (Line, Bar, Scatter) tek bir eksende kombinasyonu. Pareto analizi ve çoklu metrik karşılaştırması için kullanılır."
+            Icon="fa-solid fa-layer-group"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Pareto Analizi" Subtitle="Hata sayıları ve kümülatif yüzde" Icon="fa-solid fa-chart-column" Color="BwColor.Warning">
+        <BwChart Options="_mixedOptions" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _mixedOptions = new()
+    {
+        Title = new ChartTitle { Text = "Pareto Analysis", Subtext = "Mixed Line & Bar" },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis, AxisPointer = new { type = ChartAxisPointerType.Cross } },Legend = new ChartLegend(),
+        XAxis = new ChartAxis 
+        { 
+            Type = ChartAxisType.Category, 
+            Data = new List<string> { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" } 
+        },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Evaporation",
+                Type = ChartSeriesType.Bar,
+                Data = new List<object> { 2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6 },
+                ItemStyle = new ChartItemStyle { Color = "#3b82f6" }
+            },
+            new()
+            {
+                Name = "Precipitation",
+                Type = ChartSeriesType.Bar,
+                Data = new List<object> { 2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6 },
+                ItemStyle = new ChartItemStyle { Color = "#10b981" }
+            },
+            new()
+            {
+                Name = "Temperature",
+                Type = ChartSeriesType.Line,
+                YAxisIndex = 0,
+                Data = new List<object> { 2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3 },
+                Smooth = true,
+                ItemStyle = new ChartItemStyle { Color = "#ef4444" }
+            }
+        }
+    };
+}

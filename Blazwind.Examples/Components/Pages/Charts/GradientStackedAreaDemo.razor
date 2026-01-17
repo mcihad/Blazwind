@@ -1,0 +1,167 @@
+@page "/charts/gradient-stacked-area"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Gradient Stacked Area - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Gradient Stacked Area Chart" 
+            Description="Gradyan renkli yığılmış alan grafiği ile görsel zenginlik."
+            Icon="fa-solid fa-fill-drip"
+            Color="BwColor.Info" />
+
+    <BwCard Title="Bütçe Harcama Trendi" Subtitle="Kategorilere göre gradyan görünüm." Icon="fa-solid fa-chart-area" Color="BwColor.Primary">
+        <BwChart Options="_gradientStacked" Height="450px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _gradientStacked = new
+    {
+        title = new { text = "Bütçe Harcama Analizi", left = ChartPosition.Center },
+        tooltip = new 
+        { 
+            trigger = ChartTooltipTrigger.Axis,
+            axisPointer = new { type = ChartAxisPointerType.Cross, label = new { backgroundColor = "#6a7985" } }
+        },
+        legend = new { data = new[] { "Personel", "Yatırım", "Hizmet", "Malzeme", "Diğer" } },
+        grid = new { left = "3%", right = "4%", bottom = "3%", containLabel = true },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            boundaryGap = false,
+            data = new[] { "Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem" }
+        },
+        yAxis = new { type = ChartAxisType.Value },
+        series = new object[]
+        {
+            new
+            {
+                name = "Personel",
+                type = ChartSeriesType.Line,
+                stack = "Total",
+                smooth = true,
+                lineStyle = new { width = 0 },
+                showSymbol = false,
+                areaStyle = new
+                {
+                    opacity = 0.8,
+                    color = new
+                    {
+                        type = "linear",
+                        x = 0, y = 0, x2 = 0, y2 = 1,
+                        colorStops = new object[]
+                        {
+                            new { offset = 0, color = "rgb(128, 255, 165)" },
+                            new { offset = 1, color = "rgb(1, 191, 236)" }
+                        }
+                    }
+                },
+                emphasis = new { focus = "series" },
+                data = new[] { 140, 232, 101, 264, 90, 340, 250 }
+            },
+            new
+            {
+                name = "Yatırım",
+                type = ChartSeriesType.Line,
+                stack = "Total",
+                smooth = true,
+                lineStyle = new { width = 0 },
+                showSymbol = false,
+                areaStyle = new
+                {
+                    opacity = 0.8,
+                    color = new
+                    {
+                        type = "linear",
+                        x = 0, y = 0, x2 = 0, y2 = 1,
+                        colorStops = new object[]
+                        {
+                            new { offset = 0, color = "rgb(0, 221, 255)" },
+                            new { offset = 1, color = "rgb(77, 119, 255)" }
+                        }
+                    }
+                },
+                emphasis = new { focus = "series" },
+                data = new[] { 120, 282, 111, 234, 220, 340, 310 }
+            },
+            new
+            {
+                name = "Hizmet",
+                type = ChartSeriesType.Line,
+                stack = "Total",
+                smooth = true,
+                lineStyle = new { width = 0 },
+                showSymbol = false,
+                areaStyle = new
+                {
+                    opacity = 0.8,
+                    color = new
+                    {
+                        type = "linear",
+                        x = 0, y = 0, x2 = 0, y2 = 1,
+                        colorStops = new object[]
+                        {
+                            new { offset = 0, color = "rgb(55, 162, 255)" },
+                            new { offset = 1, color = "rgb(116, 21, 219)" }
+                        }
+                    }
+                },
+                emphasis = new { focus = "series" },
+                data = new[] { 320, 132, 201, 334, 190, 130, 220 }
+            },
+            new
+            {
+                name = "Malzeme",
+                type = ChartSeriesType.Line,
+                stack = "Total",
+                smooth = true,
+                lineStyle = new { width = 0 },
+                showSymbol = false,
+                areaStyle = new
+                {
+                    opacity = 0.8,
+                    color = new
+                    {
+                        type = "linear",
+                        x = 0, y = 0, x2 = 0, y2 = 1,
+                        colorStops = new object[]
+                        {
+                            new { offset = 0, color = "rgb(255, 0, 135)" },
+                            new { offset = 1, color = "rgb(135, 0, 157)" }
+                        }
+                    }
+                },
+                emphasis = new { focus = "series" },
+                data = new[] { 220, 402, 231, 134, 190, 230, 120 }
+            },
+            new
+            {
+                name = "Diğer",
+                type = ChartSeriesType.Line,
+                stack = "Total",
+                smooth = true,
+                lineStyle = new { width = 0 },
+                showSymbol = false,
+                areaStyle = new
+                {
+                    opacity = 0.8,
+                    color = new
+                    {
+                        type = "linear",
+                        x = 0, y = 0, x2 = 0, y2 = 1,
+                        colorStops = new object[]
+                        {
+                            new { offset = 0, color = "rgb(255, 191, 0)" },
+                            new { offset = 1, color = "rgb(224, 62, 76)" }
+                        }
+                    }
+                },
+                emphasis = new { focus = "series" },
+                data = new[] { 220, 302, 181, 234, 210, 290, 150 }
+            }
+        }
+    };
+}

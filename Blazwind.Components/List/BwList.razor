@@ -1,0 +1,180 @@
+@namespace Blazwind.Components.List
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@typeparam TItem
+@implements IBwListParent
+
+<div class="flex flex-col @GapClass @Class" id="@Id">
+    <CascadingValue Value="(IBwListParent)this">
+        @if (Items != null && Items.Any())
+        {
+            var index = 0;
+            @foreach (var item in Items)
+            {
+                var currentIndex = index;
+                var currentItem = item;
+                
+                if (ItemTemplate != null)
+                {
+                    <CascadingValue Value="currentIndex" Name="CurrentItemIndex">
+                        @ItemTemplate(currentItem)
+                    </CascadingValue>
+                }
+                else
+                {
+                    <BwListItem Index="@currentIndex"
+                                Title="@ItemText?.Invoke(currentItem)"
+                                Description="@ItemDescription?.Invoke(currentItem)"
+                                Icon="@ItemIcon?.Invoke(currentItem)" />
+                }
+                index++;
+            }
+        }
+        else if (Items != null && !Items.Any())
+        {
+            @if (EmptyTemplate != null)
+            {
+                @EmptyTemplate
+            }
+            else
+            {
+                <div class="p-8 text-center text-gray-500 dark:text-gray-400">
+                    <i class="fa-solid fa-inbox text-3xl mb-2 opacity-50"></i>
+                    <p class="text-sm">@EmptyText</p>
+                </div>
+            }
+        }
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter] public string Id { get; set; } = $"bw-list-{Guid.NewGuid():N}";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>Data source for the list</summary>
+    [Parameter] public IEnumerable<TItem>? Items { get; set; }
+    
+    /// <summary>Custom template for each item</summary>
+    [Parameter] public RenderFragment<TItem>? ItemTemplate { get; set; }
+    
+    /// <summary>Function to get display text from item</summary>
+    [Parameter] public Func<TItem, string>? ItemText { get; set; }
+    
+    /// <summary>Function to get description from item</summary>
+    [Parameter] public Func<TItem, string?>? ItemDescription { get; set; }
+    
+    /// <summary>Function to get icon class from item</summary>
+    [Parameter] public Func<TItem, string?>? ItemIcon { get; set; }
+    
+    /// <summary>Template for empty state</summary>
+    [Parameter] public RenderFragment? EmptyTemplate { get; set; }
+    
+    /// <summary>Text shown when list is empty</summary>
+    [Parameter] public string EmptyText { get; set; } = "Öğe bulunamadı";
+    
+    [Parameter] public bool EnableSorting { get; set; }
+    [Parameter] public EventCallback<(int oldIndex, int newIndex)> OnOrderChange { get; set; }
+    
+    [Parameter] public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
+    [Parameter] public int? MaxSelectedItems { get; set; }
+    [Parameter] public HashSet<int> SelectedIndices { get; set; } = new(); 
+    [Parameter] public EventCallback<HashSet<int>> SelectedIndicesChanged { get; set; }
+    
+    /// <summary>Selected items (for Items-bound lists)</summary>
+    [Parameter] public List<TItem> SelectedItems { get; set; } = new();
+    [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
+    
+    /// <summary>Fired when item is clicked</summary>
+    [Parameter] public EventCallback<TItem> OnItemClick { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string GapClass { get; set; } = "gap-0";
+    
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+             await JS.InvokeVoidAsync("Blazwind.List.initializeSortable", Id, DotNetObjectReference.Create(this), EnableSorting);
+        }
+        else
+        {
+             await JS.InvokeVoidAsync("Blazwind.List.updateSortable", Id, EnableSorting);
+        }
+    }
+
+    [JSInvokable]
+    public async Task HandleDrop(int oldIndex, int newIndex)
+    {
+        if (oldIndex != newIndex)
+        {
+            await OnOrderChange.InvokeAsync((oldIndex, newIndex));
+        }
+    }
+    
+    private async Task HandleItemClick(int index)
+    {
+        if (Items != null && SelectionMode != BwSelectionMode.None)
+        {
+            await ToggleSelection(index);
+        }
+        
+        if (Items != null && OnItemClick.HasDelegate)
+        {
+            var item = Items.ElementAtOrDefault(index);
+            if (item != null)
+            {
+                await OnItemClick.InvokeAsync(item);
+            }
+        }
+    }
+
+    public async Task ToggleSelection(int index)
+    {
+        if (SelectionMode == BwSelectionMode.None) return;
+
+        if (SelectionMode == BwSelectionMode.Single)
+        {
+            if (SelectedIndices.Contains(index))
+            {
+                 SelectedIndices.Clear();
+            }
+            else
+            {
+                SelectedIndices.Clear();
+                SelectedIndices.Add(index);
+            }
+        }
+        else if (SelectionMode == BwSelectionMode.Multiple)
+        {
+            if (SelectedIndices.Contains(index))
+            {
+                SelectedIndices.Remove(index);
+            }
+            else
+            {
+                if (MaxSelectedItems.HasValue && SelectedIndices.Count >= MaxSelectedItems.Value)
+                {
+                    return;
+                }
+                SelectedIndices.Add(index);
+            }
+        }
+
+        await SelectedIndicesChanged.InvokeAsync(SelectedIndices);
+        
+        // Update SelectedItems if Items is bound
+        if (Items != null)
+        {
+            var dataList = Items.ToList();
+            SelectedItems = SelectedIndices.Where(i => i < dataList.Count).Select(i => dataList[i]).ToList();
+            await SelectedItemsChanged.InvokeAsync(SelectedItems);
+        }
+        
+        StateHasChanged();
+    }
+    
+    public bool IsSelected(int index) => SelectedIndices.Contains(index);
+}

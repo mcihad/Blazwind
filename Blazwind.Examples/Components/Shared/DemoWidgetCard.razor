@@ -1,0 +1,25 @@
+<div class="bg-white p-4 rounded border shadow-sm h-40 flex flex-col justify-between">
+    <div class="flex justify-between items-start">
+        <div>
+            <p class="text-sm text-gray-500">@Label</p>
+            <h4 class="text-2xl font-bold text-gray-900">@Value</h4>
+        </div>
+        <div class="p-2 @IconBgClass rounded @IconColorClass"><i class="fa-solid @Icon"></i></div>
+    </div>
+    
+    @if (ChildContent != null)
+    {
+        <div class="mt-4">
+             @ChildContent
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public string Icon { get; set; } = "";
+    [Parameter] public string IconBgClass { get; set; } = "bg-gray-50";
+    [Parameter] public string IconColorClass { get; set; } = "text-gray-600";
+}

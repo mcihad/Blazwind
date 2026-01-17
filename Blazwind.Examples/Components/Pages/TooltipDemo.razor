@@ -1,0 +1,200 @@
+@page "/components/tooltip"
+@using Blazwind.Components.Tooltip
+
+<PageTitle>Tooltip - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Tooltip" Description="Small popups that show information on hover."
+            Icon="fa-solid fa-comment-dots" Color="BwColor.Primary"/>
+
+    @* Basic Placements *@
+    <BwCard Title="Placements" Subtitle="12 different placement options"
+            Icon="fa-solid fa-arrows-up-down-left-right" Color="BwColor.Primary">
+        <div class="flex flex-col items-center gap-8 py-8">
+            @* Top Row *@
+            <div class="flex gap-4">
+                <BwTooltip Text="Top Start" Placement="BwPlacement.TopStart">
+                    <BwButton Text="Top Start" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                </BwTooltip>
+                <BwTooltip Text="Top" Placement="BwPlacement.Top">
+                    <BwButton Text="Top" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                </BwTooltip>
+                <BwTooltip Text="Top End" Placement="BwPlacement.TopEnd">
+                    <BwButton Text="Top End" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                </BwTooltip>
+            </div>
+
+            @* Middle Row *@
+            <div class="flex justify-between w-full max-w-md">
+                <div class="flex flex-col gap-4">
+                    <BwTooltip Text="Left Start" Placement="BwPlacement.LeftStart">
+                        <BwButton Text="Left Start" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                    </BwTooltip>
+                    <BwTooltip Text="Left" Placement="BwPlacement.Left">
+                        <BwButton Text="Left" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                    </BwTooltip>
+                    <BwTooltip Text="Left End" Placement="BwPlacement.LeftEnd">
+                        <BwButton Text="Left End" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                    </BwTooltip>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <BwTooltip Text="Right Start" Placement="BwPlacement.RightStart">
+                        <BwButton Text="Right Start" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                    </BwTooltip>
+                    <BwTooltip Text="Right" Placement="BwPlacement.Right">
+                        <BwButton Text="Right" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                    </BwTooltip>
+                    <BwTooltip Text="Right End" Placement="BwPlacement.RightEnd">
+                        <BwButton Text="Right End" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                    </BwTooltip>
+                </div>
+            </div>
+
+            @* Bottom Row *@
+            <div class="flex gap-4">
+                <BwTooltip Text="Bottom Start" Placement="BwPlacement.BottomStart">
+                    <BwButton Text="Bottom Start" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                </BwTooltip>
+                <BwTooltip Text="Bottom" Placement="BwPlacement.Bottom">
+                    <BwButton Text="Bottom" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                </BwTooltip>
+                <BwTooltip Text="Bottom End" Placement="BwPlacement.BottomEnd">
+                    <BwButton Text="Bottom End" Color="BwColor.Secondary" Size="BwSize.Small"/>
+                </BwTooltip>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Colors *@
+    <BwCard Title="Colors" Subtitle="Different color theme options" Icon="fa-solid fa-palette"
+            Color="BwColor.Success">
+        <div class="flex flex-wrap gap-4">
+            <BwTooltip Text="Varsayılan koyu tema" Color="BwColor.Dark">
+                <BwButton Text="Dark" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="Açık tema - kenarlıklı" Color="BwColor.Light">
+                <BwButton Text="Light" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="Primary renk" Color="BwColor.Primary">
+                <BwButton Text="Primary" Color="BwColor.Primary"/>
+            </BwTooltip>
+            <BwTooltip Text="Başarılı işlem!" Color="BwColor.Success">
+                <BwButton Text="Success" Color="BwColor.Success"/>
+            </BwTooltip>
+            <BwTooltip Text="Dikkat edilmeli" Color="BwColor.Warning">
+                <BwButton Text="Warning" Color="BwColor.Warning"/>
+            </BwTooltip>
+            <BwTooltip Text="Tehlikeli işlem!" Color="BwColor.Danger">
+                <BwButton Text="Danger" Color="BwColor.Danger"/>
+            </BwTooltip>
+            <BwTooltip Text="Bilgi notu" Color="BwColor.Info">
+                <BwButton Text="Info" Color="BwColor.Info"/>
+            </BwTooltip>
+        </div>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
+        <div class="flex flex-wrap gap-4">
+            <BwTooltip Text="Küçük tooltip" Size="BwSize.Small">
+                <BwButton Text="Small" Size="BwSize.Small"/>
+            </BwTooltip>
+            <BwTooltip Text="Orta boyut tooltip (varsayılan)" Size="BwSize.Medium">
+                <BwButton Text="Medium"/>
+            </BwTooltip>
+            <BwTooltip Text="Büyük tooltip daha fazla içerik için" Size="BwSize.Large">
+                <BwButton Text="Large" Size="BwSize.Large"/>
+            </BwTooltip>
+        </div>
+    </BwCard>
+
+    @* With Icons *@
+    <BwCard Title="Icon Tooltips" Subtitle="Enriched with icons" Icon="fa-solid fa-icons" Color="BwColor.Info">
+        <div class="flex flex-wrap gap-4">
+            <BwTooltip Text="Kaydet" Icon="fa-solid fa-save" Color="BwColor.Primary">
+                <BwButton Icon="fa-solid fa-save" IconPosition="BwIconPosition.Only"/>
+            </BwTooltip>
+            <BwTooltip Text="Sil" Icon="fa-solid fa-trash" Color="BwColor.Danger">
+                <BwButton Icon="fa-solid fa-trash" IconPosition="BwIconPosition.Only" Color="BwColor.Danger"/>
+            </BwTooltip>
+            <BwTooltip Text="Düzenle" Icon="fa-solid fa-pen" Color="BwColor.Warning">
+                <BwButton Icon="fa-solid fa-pen" IconPosition="BwIconPosition.Only" Color="BwColor.Warning"/>
+            </BwTooltip>
+            <BwTooltip Text="Bilgi" Icon="fa-solid fa-info-circle" Color="BwColor.Info">
+                <BwButton Icon="fa-solid fa-info" IconPosition="BwIconPosition.Only" Color="BwColor.Info"/>
+            </BwTooltip>
+        </div>
+    </BwCard>
+
+    @* Delay *@
+    <BwCard Title="Delay" Subtitle="Show and hide delays" Icon="fa-solid fa-clock"
+            Color="BwColor.Danger">
+        <div class="flex flex-wrap gap-4">
+            <BwTooltip Text="Anında göster (0ms)" ShowDelay="0">
+                <BwButton Text="0ms delay" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="100ms gecikme (varsayılan)" ShowDelay="100">
+                <BwButton Text="100ms delay" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="500ms sonra göster" ShowDelay="500">
+                <BwButton Text="500ms delay" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="Yavaş gizle (500ms)" HideDelay="500">
+                <BwButton Text="500ms hide delay" Color="BwColor.Secondary"/>
+            </BwTooltip>
+        </div>
+    </BwCard>
+
+    @* Arrow & Disabled *@
+    <BwCard Title="Arrow & Disabled" Subtitle="ShowArrow and Disabled parameters" Icon="fa-solid fa-cog"
+            Color="BwColor.Secondary">
+        <div class="flex flex-wrap gap-4">
+            <BwTooltip Text="Ok ile (varsayılan)" ShowArrow="true">
+                <BwButton Text="With Arrow" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="Ok olmadan" ShowArrow="false">
+                <BwButton Text="No Arrow" Color="BwColor.Secondary"/>
+            </BwTooltip>
+            <BwTooltip Text="Bu tooltip gösterilmez" Disabled="true">
+                <BwButton Text="Disabled" Color="BwColor.Secondary" Disabled="true"/>
+            </BwTooltip>
+        </div>
+    </BwCard>
+
+    @* Real World Examples *@
+    <BwCard Title="Real-world Examples" Subtitle="Toolbar and icons" Icon="fa-solid fa-wand-magic-sparkles"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div class="flex items-center gap-1">
+                    <BwTooltip Text="Cut (Ctrl+X)">
+                        <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                            <i class="fa-solid fa-scissors text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                    </BwTooltip>
+                    <BwTooltip Text="Copy (Ctrl+C)">
+                        <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                            <i class="fa-solid fa-copy text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                    </BwTooltip>
+                    <BwTooltip Text="Paste (Ctrl+V)">
+                        <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                            <i class="fa-solid fa-paste text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                    </BwTooltip>
+                    <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
+                    <BwTooltip Text="Geri Al (Ctrl+Z)">
+                        <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                            <i class="fa-solid fa-rotate-left text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                    </BwTooltip>
+                    <BwTooltip Text="Yinele (Ctrl+Y)">
+                        <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded">
+                            <i class="fa-solid fa-rotate-right text-gray-600 dark:text-gray-400"></i>
+                        </button>
+                    </BwTooltip>
+                </div>
+            </div>
+        </BwColumn>
+    </BwCard>
+</BwColumn>

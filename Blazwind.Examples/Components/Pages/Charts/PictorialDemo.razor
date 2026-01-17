@@ -1,0 +1,76 @@
+@page "/charts/pictorial"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Pictorial Bar - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Pictorial Bar (Görsel Çubuk)" 
+            Description="İkon destekli çubuk grafikler ile daha anlaşılır görselleştirme."
+            Icon="fa-solid fa-icons"
+            Color="BwColor.Warning" />
+
+    @* Nüfus Grafiği *@
+    <BwCard Title="İlçe Nüfus Dağılımı" Subtitle="Symbol repeat ile nüfus gösterimi." Icon="fa-solid fa-person" Color="BwColor.Primary">
+        <BwChart Options="_populationChart" Height="400px" />
+    </BwCard>
+
+    @* Araç Sayısı *@
+    <BwCard Title="Belediye Araç Filosu" Subtitle="Araç türlerine göre dağılım." Icon="fa-solid fa-truck" Color="BwColor.Info">
+        <BwChart Options="_vehicleChart" Height="350px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _populationChart = new
+    {
+        title = new { text = "İlçe Nüfus Dağılımı (x1000)", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Merkez", "Kuzey", "Güney", "Doğu", "Batı" }
+        },
+        yAxis = new { type = ChartAxisType.Value },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.PictorialBar,
+                symbol = "path://M10,20 L10,10 L15,0 L20,10 L20,20 Q15,25 10,20",
+                symbolSize = new[] { 20, 30 },
+                symbolRepeat = true,
+                symbolMargin = 2,
+                data = new[] { 85, 62, 78, 45, 58 }
+            }
+        },
+        color = new[] { "#3b82f6" }
+    };
+
+    private object _vehicleChart = new
+    {
+        title = new { text = "Belediye Araç Sayıları", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        xAxis = new { type = ChartAxisType.Value },
+        yAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Temizlik Aracı", "İş Makinesi", "Binek Araç", "Ambulans", "İtfaiye" }
+        },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.PictorialBar,
+                symbol = ChartSymbol.RoundRect,
+                symbolRepeat = true,
+                symbolSize = new[] { 12, 20 },
+                symbolMargin = 3,
+                data = new[] { 45, 28, 65, 8, 12 }
+            }
+        },
+        color = new[] { "#10b981" }
+    };
+}

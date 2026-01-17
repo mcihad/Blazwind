@@ -1,0 +1,27 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Avatar
+@inherits BwBase
+
+<div class="flex items-center gap-3 cursor-pointer select-none group @Class" style="@Style" @onclick="OnClick">
+    <BwAvatar Name="@Name" Src="@Src" StatusColor="@StatusColor" Size="@Size" />
+    
+    <div class="flex flex-col min-w-0 hidden sm:block">
+        <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-colors truncate leading-tight">@Name</div>
+        @if (!string.IsNullOrEmpty(Role))
+        {
+            <div class="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors truncate leading-tight mt-0.5">@Role</div>
+        }
+    </div>
+    
+    <i class="fa-solid fa-chevron-down text-xs text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors ml-0.5"></i>
+</div>
+
+@code {
+    [Parameter] public string Name { get; set; } = "User";
+    [Parameter] public string? Role { get; set; }
+    [Parameter] public string? Src { get; set; }
+    [Parameter] public BwColor? StatusColor { get; set; } = BwColor.Success;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

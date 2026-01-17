@@ -1,0 +1,47 @@
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+
+@* BwBase - Base component for Blazwind components *@
+@* Provides common parameters: Class, Style, Id, AdditionalAttributes *@
+
+@code {
+    /// <summary>
+    /// Additional CSS classes to apply to the component.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Inline styles to apply to the component.
+    /// </summary>
+    [Parameter]
+    public string? Style { get; set; }
+
+    /// <summary>
+    /// The HTML id attribute.
+    /// </summary>
+    [Parameter]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// Additional attributes to apply to the root element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Combines the base CSS classes with user-provided classes.
+    /// </summary>
+    protected string CombineClasses(string? baseClasses)
+    {
+        if (string.IsNullOrWhiteSpace(baseClasses) && string.IsNullOrWhiteSpace(Class))
+            return string.Empty;
+        
+        if (string.IsNullOrWhiteSpace(baseClasses))
+            return Class ?? string.Empty;
+        
+        if (string.IsNullOrWhiteSpace(Class))
+            return baseClasses;
+        
+        return $"{baseClasses} {Class}";
+    }
+}

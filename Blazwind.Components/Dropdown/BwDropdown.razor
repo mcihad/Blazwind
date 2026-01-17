@@ -1,0 +1,104 @@
+@namespace Blazwind.Components.Dropdown
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inherits BwBase
+@inject IJSRuntime JS
+
+<div @ref="_triggerRef" class="relative inline-block text-left @Class" style="@Style">
+    <div @onclick="Toggle">
+        @TriggerContent
+    </div>
+
+    @if (IsOpen)
+    {
+        @* Backdrop handles click outside *@
+        <div class="fixed inset-0 z-[1000] w-full h-full cursor-default" @onclick="Close"></div>
+
+        @* Menu *@
+        <div class="absolute @AlignmentClass @ComputedVPositionClass z-[1010] w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 dark:ring-white/10 focus:outline-none animate-in fade-in zoom-in-95 duration-100">
+             <div class="py-1" role="menu" aria-orientation="vertical">
+                 <CascadingValue Value="this">
+                     @ChildContent
+                 </CascadingValue>
+             </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? TriggerContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public BwDirection Alignment { get; set; } = BwDirection.Right;
+    
+    /// <summary>
+    /// Vertical position: Top (opens above trigger), Bottom (opens below trigger), or Auto (automatically flips based on viewport)
+    /// </summary>
+    [Parameter] public BwDirection VPosition { get; set; } = BwDirection.Auto;
+    
+    /// <summary>
+    /// Approximate height of dropdown menu for auto-flip calculation (default: 200px)
+    /// </summary>
+    [Parameter] public int EstimatedMenuHeight { get; set; } = 200;
+    
+    private ElementReference _triggerRef;
+    private bool _shouldOpenUp;
+    
+    public bool IsOpen { get; private set; }
+    
+    // Default is right-0, origin-top-right
+    private string AlignmentClass => Alignment == BwDirection.Left 
+        ? "left-0 origin-top-left" 
+        : "right-0 origin-top-right";
+    
+    // Computed vertical position based on VPosition parameter or auto-detection
+    private string ComputedVPositionClass
+    {
+        get
+        {
+            if (VPosition == BwDirection.Top)
+                return "bottom-full mb-2";
+            if (VPosition == BwDirection.Bottom)
+                return "mt-2";
+            // Auto: use detected position
+            return _shouldOpenUp ? "bottom-full mb-2" : "mt-2";
+        }
+    }
+
+    public async Task Toggle()
+    {
+        if (!IsOpen && VPosition == BwDirection.Auto)
+        {
+            await CheckViewportPosition();
+        }
+        
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
+
+    private async Task CheckViewportPosition()
+    {
+        try
+        {
+            var result = await JS.InvokeAsync<double[]>("Blazwind.Dropdown.getPosition", _triggerRef);
+            if (result != null && result.Length >= 3)
+            {
+                var bottom = result[0];      // element bottom position
+                var viewportHeight = result[1]; // viewport height
+                var top = result[2];         // element top position
+                
+                var bottomSpace = viewportHeight - bottom;
+                _shouldOpenUp = bottomSpace < EstimatedMenuHeight && top > EstimatedMenuHeight;
+            }
+        }
+        catch
+        {
+            _shouldOpenUp = false;
+        }
+    }
+
+    public void Close()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+}

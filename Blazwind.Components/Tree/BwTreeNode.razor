@@ -1,0 +1,163 @@
+@namespace Blazwind.Components.Tree
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Input
+@typeparam TItem
+
+@{
+    var indentPx = Level * 20;
+    var hasChildren = Node.CanExpand;
+    var isSelected = SelectedNodes?.Contains(Node) ?? false;
+    var isClicked = ClickedNode == Node;
+    var highlightClass = !string.IsNullOrEmpty(SearchQuery) && Node.Title.ToLower().Contains(SearchQuery.ToLower()) 
+        ? "bg-yellow-50 dark:bg-yellow-900/30" : "";
+    var selectableClass = Selectable && !Node.IsDisabled ? "cursor-pointer" : "";
+    var clickedClass = isClicked ? "bw-tree-node-clicked" : "";
+    var draggableAttr = Draggable && !Node.IsDisabled;
+}
+
+<div class="bw-tree-node @highlightClass" 
+     style="--indent: @(indentPx)px;"
+     draggable="@draggableAttr">
+    <div class="bw-tree-node-row hover:bg-gray-100 dark:hover:bg-gray-700 @(isSelected ? "bw-tree-node-selected" : "") @clickedClass @selectableClass @(Node.IsDisabled ? "opacity-50 cursor-not-allowed" : "")"
+         @onclick="HandleRowClick"
+         @onclick:stopPropagation="true">
+        <div class="bw-tree-node-main" style="padding-left: @(indentPx)px;">
+            @* Expand/Collapse Toggle *@
+            <button type="button" 
+                    class="bw-tree-toggle @(hasChildren ? "" : "invisible")"
+                    disabled="@Node.IsDisabled"
+                    @onclick="() => OnNodeToggle.InvokeAsync(Node)"
+                    @onclick:stopPropagation="true">
+                @if (Node.IsLoading)
+                {
+                    <i class="fa-solid fa-spinner fa-spin text-gray-400"></i>
+                }
+                else
+                {
+                    <i class="fa-solid @(Node.IsExpanded ? "fa-chevron-down" : "fa-chevron-right") text-gray-400 transition-transform"></i>
+                }
+            </button>
+            
+            @* Selection (Checkbox/Radio) *@
+            @if (SelectionMode == BwSelectionMode.Multiple)
+            {
+                <span class="flex items-center mr-1.5 [&>div]:m-0">
+                    <BwCheckbox IsChecked="@isSelected" 
+                                Size="BwSize.Small"
+                                IsDisabled="@Node.IsDisabled"
+                                IsCheckedChanged="@(_ => OnSelectionChanged.InvokeAsync(Node))" />
+                </span>
+            }
+            else if (SelectionMode == BwSelectionMode.Single)
+            {
+                <BwRadio TValue="string" 
+                         Value="@Node.Id"
+                         IsChecked="@isSelected"
+                         IsDisabled="@Node.IsDisabled"
+                         OnClick="@(() => OnSelectionChanged.InvokeAsync(Node))" />
+            }
+            
+            @* Icon *@
+            @if (!string.IsNullOrEmpty(Node.Icon))
+            {
+                <i class="@Node.Icon text-gray-500 dark:text-gray-400 mr-2"></i>
+            }
+            else if (hasChildren)
+            {
+                <i class="fa-solid @(Node.IsExpanded ? "fa-folder-open" : "fa-folder") text-amber-500 mr-2"></i>
+            }
+            else
+            {
+                <i class="fa-solid fa-file text-gray-400 dark:text-gray-500 mr-2"></i>
+            }
+            
+            @* Title or Custom Template *@
+            @if (NodeTemplate != null)
+            {
+                @NodeTemplate(Node)
+            }
+            else
+            {
+                <span class="bw-tree-node-title @(isClicked ? "font-medium" : "")">
+                    @Node.Title
+                </span>
+                @if (ShowChildCount && Node.CanExpand)
+                {
+                    <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">(@(Node.Children.Count > 0 ? Node.Children.Count.ToString() : "..."))</span>
+                }
+            }
+        </div>
+        
+        @* Table Mode: Additional Columns *@
+        @if (ShowTableMode && ColumnsTemplate != null)
+        {
+            <div class="bw-tree-node-columns">
+                @ColumnsTemplate(Node)
+            </div>
+        }
+    </div>
+    
+    @* Children (Recursive) *@
+    @if (Node.IsExpanded && Node.Children.Any())
+    {
+        <div class="bw-tree-children">
+            @foreach (var child in Node.Children)
+            {
+                <BwTreeNode TItem="TItem" 
+                            Node="child" 
+                            Level="Level + 1"
+                            SelectionMode="SelectionMode"
+                            Selectable="Selectable"
+                            CascadeSelection="CascadeSelection"
+                            Draggable="Draggable"
+                            ShowChildCount="ShowChildCount"
+                            OnNodeClick="OnNodeClick"
+                            OnNodeToggle="OnNodeToggle"
+                            OnSelectionChanged="OnSelectionChanged"
+                            OnRowClick="OnRowClick"
+                            SelectedNodes="SelectedNodes"
+                            ClickedNode="ClickedNode"
+                            SearchQuery="SearchQuery"
+                            NodeTemplate="NodeTemplate"
+                            ColumnsTemplate="ColumnsTemplate"
+                            ShowTableMode="ShowTableMode" />
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public TreeNode<TItem> Node { get; set; } = default!;
+    [Parameter] public int Level { get; set; } = 0;
+    [Parameter] public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
+    [Parameter] public bool Selectable { get; set; } = false;
+    [Parameter] public bool CascadeSelection { get; set; } = false;
+    [Parameter] public bool Draggable { get; set; } = false;
+    [Parameter] public bool ShowChildCount { get; set; } = false;
+    [Parameter] public HashSet<TreeNode<TItem>>? SelectedNodes { get; set; }
+    [Parameter] public TreeNode<TItem>? ClickedNode { get; set; }
+    [Parameter] public string? SearchQuery { get; set; }
+    [Parameter] public bool ShowTableMode { get; set; } = false;
+    
+    [Parameter] public RenderFragment<TreeNode<TItem>>? NodeTemplate { get; set; }
+    [Parameter] public RenderFragment<TreeNode<TItem>>? ColumnsTemplate { get; set; }
+    
+    [Parameter] public EventCallback<TreeNode<TItem>> OnNodeClick { get; set; }
+    [Parameter] public EventCallback<TreeNode<TItem>> OnNodeToggle { get; set; }
+    [Parameter] public EventCallback<TreeNode<TItem>> OnSelectionChanged { get; set; }
+    [Parameter] public EventCallback<TreeNode<TItem>> OnRowClick { get; set; }
+    
+    private async Task HandleRowClick()
+    {
+        if (!Node.IsDisabled)
+        {
+            await OnNodeClick.InvokeAsync(Node);
+            
+            if (Selectable)
+            {
+                await OnRowClick.InvokeAsync(Node);
+            }
+        }
+    }
+}
+

@@ -1,0 +1,66 @@
+@page "/charts/confidence"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Confidence Gauge - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Confidence Score" 
+            Description="AI Model güven skoru (Confidence Score) veya risk seviyesi gösterimi için derecelendirilmiş gösterge."
+            Icon="fa-solid fa-gauge"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Fraud Detection Risk" Subtitle="Risk Skoru" Icon="fa-solid fa-shield-halved" Color="BwColor.Danger">
+        <BwChart Options="_gaugeOptions" Height="400px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _gaugeOptions = new()
+    {
+        Title = new ChartTitle { Text = "Model Confidence", Left = ChartPosition.Center, Top = ChartPosition.Bottom },
+        Tooltip = new ChartTooltip { Formatter = "{a} <br/>{b} : {c}%" },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Risk Level",
+                Type = ChartSeriesType.Gauge,
+                Progress = new { show = true },
+                Detail = new { valueAnimation = true, formatter = "{value}%" },
+                Data = new List<object>
+                {
+                    new { value = 85, name = "Risk" }
+                },
+                AxisLine = new 
+                {
+                    lineStyle = new 
+                    {
+                        width = 18,
+                        color = new List<List<object>>
+                        {
+                            new() { 0.3, "#67e0e3" }, // Low Risk (Safe)
+                            new() { 0.7, "#37a2da" }, // Medium
+                            new() { 1, "#fd666d" }     // High Risk
+                        }
+                    }
+                },
+                AxisTick = new { splitNumber = 2, lineStyle = new { width = 2, color = "#999" } },
+                SplitLine = new { length = 12, lineStyle = new { width = 3, color = "#999" } },
+                AxisLabel = new { distance = 25, color = "#999", fontSize = 14 },
+                Anchor = new { show = true, showAbove = true, size = 25, itemStyle = new { borderWidth = 10 } },
+                Title = new { show = true },
+                Pointer = new 
+                {
+                   icon = "path://M12.8,0.7l12,40.1H0.7L12.8,0.7z",
+                   length = "12%",
+                   width = 20,
+                   offsetCenter = new List<object> { 0, "-60%" },
+                   itemStyle = new { color = "auto" }
+                }
+            }
+        }
+    };
+}

@@ -1,0 +1,58 @@
+@page "/components/tag-input"
+@using Blazwind.Components.Input
+@using Blazwind.Components.Typography
+
+<PageTitle>Tag Input Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Tag Input"
+            Description="Tag/chip input component."
+            Icon="fa-solid fa-tags"
+            Color="BwColor.Primary"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Add tag with Enter or comma" Icon="fa-solid fa-tags" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTagInput Label="Tags"
+                        Placeholder="Type a tag and press Enter..."
+                        HelperText="You can add tags with Enter, Tab or comma"
+                        @bind-Tags="_basicTags"/>
+
+            <BwTypography Size="BwSize.Small" Class="text-gray-500">
+                Tags: @string.Join(", ", _basicTags)
+            </BwTypography>
+        </BwColumn>
+    </BwCard>
+
+    @* Max Tags *@
+    <BwCard Title="Max Tags" Subtitle="MaxTags=5" Icon="fa-solid fa-hashtag" Color="BwColor.Warning">
+        <BwTagInput Label="Skills"
+                    Placeholder="Maximum 5 skills..."
+                    MaxTags="5"
+                    @bind-Tags="_skillTags"/>
+    </BwCard>
+
+    @* Pre-filled *@
+    <BwCard Title="Pre-filled" Subtitle="With default tags" Icon="fa-solid fa-list" Color="BwColor.Success">
+        <BwTagInput Label="Categories" @bind-Tags="_categoryTags"/>
+    </BwCard>
+
+    @* States *@
+    <BwCard Title="States" Subtitle="ReadOnly, Disabled" Icon="fa-solid fa-toggle-on" Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwTagInput Label="Read Only"
+                        Tags="@(new List<string> { "Blazor", "C#", "TypeScript" })"
+                        IsReadOnly="true"/>
+
+            <BwTagInput Label="Disabled"
+                        Tags="@(new List<string> { "Disabled" })"
+                        IsDisabled="true"/>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<string> _basicTags = new();
+    private List<string> _skillTags = new() { "C#", "Blazor" };
+    private List<string> _categoryTags = new() { "Technology", "Software", "Web" };
+}

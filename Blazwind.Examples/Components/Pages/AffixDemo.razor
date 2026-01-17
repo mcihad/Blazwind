@@ -1,0 +1,103 @@
+@page "/components/affix"
+@using Blazwind.Components.Affix
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+
+<PageTitle>Affix Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Affix Component" Description="Component that can be fixed at a specific position during scroll."
+            Icon="fa-solid fa-thumbtack" Color="BwColor.Primary"/>
+
+    <BwCard Title="Usage Example" Subtitle="Fixing with scroll" Icon="fa-solid fa-scroll" Color="BwColor.Primary">
+        <p class="text-gray-600 mb-4">
+            The affix component allows content to be fixed at a specific point when the page is scrolled.
+            It is commonly used for side menus, action bars, and sticky headers.
+        </p>
+
+        <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-sm text-blue-700">
+                <i class="fa-solid fa-info-circle mr-2"></i>
+                You can observe the affix behavior by scrolling down the page.
+                The element becomes fixed after a certain scroll distance.
+            </p>
+        </div>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Top Fixing" Subtitle="OffsetTop parameter" Icon="fa-solid fa-arrow-up"
+                    Color="BwColor.Success">
+                <div class="space-y-4">
+                    <p class="text-gray-600 text-sm">
+                        The <code>OffsetTop</code> parameter determines how many pixels from the top of the page the
+                        element will be fixed.
+                    </p>
+
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 font-mono text-sm dark:text-gray-300">
+                        &lt;BwAffix OffsetTop="100"&gt;<br/>
+                        &nbsp;&nbsp;&lt;div&gt;Content to be fixed&lt;/div&gt;<br/>
+                        &lt;/BwAffix&gt;
+                    </div>
+                </div>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Bottom Fixing" Subtitle="UseBottom parameter" Icon="fa-solid fa-arrow-down"
+                    Color="BwColor.Warning">
+                <div class="space-y-4">
+                    <p class="text-gray-600 text-sm">
+                        With <code>UseBottom</code> and <code>OffsetBottom</code> parameters, the element can be fixed
+                        from the bottom of the page.
+                    </p>
+
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 font-mono text-sm dark:text-gray-300">
+                        &lt;BwAffix UseBottom="true" OffsetBottom="50"&gt;<br/>
+                        &nbsp;&nbsp;&lt;div&gt;Bottom fixing&lt;/div&gt;<br/>
+                        &lt;/BwAffix&gt;
+                    </div>
+                </div>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Scroll için uzun içerik ve gerçek Affix demo *@
+    <BwRow Spacing="BwSpacing.Lg">
+        <BwColumn Class="flex-1 space-y-4">
+            @for (int i = 0; i < 10; i++)
+            {
+                <BwCard Title="@($"Example Content {i + 1}")" Subtitle="Content for scroll test"
+                        Color="BwColor.Secondary">
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                </BwCard>
+            }
+        </BwColumn>
+
+        <BwColumn Class="w-64 hidden lg:block">
+            <BwAffix OffsetTop="80">
+                <div
+                    class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4">
+                    <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3">
+                        <i class="fa-solid fa-thumbtack text-blue-500 mr-2"></i>
+                        Fixed Panel
+                    </h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        This panel remains fixed during scroll. It is fixed with 80px offset below the AppBar.
+                    </p>
+                    <ul class="text-sm text-gray-500 dark:text-gray-400 space-y-1">
+                        <li>• Quick navigation</li>
+                        <li>• Table of contents</li>
+                        <li>• Filter panel</li>
+                    </ul>
+                </div>
+            </BwAffix>
+        </BwColumn>
+    </BwRow>
+</BwColumn>

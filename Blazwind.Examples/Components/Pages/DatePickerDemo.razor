@@ -1,0 +1,66 @@
+@page "/components/datepicker"
+@using Blazwind.Components.Input
+
+<PageTitle>DatePicker Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="DatePicker"
+            Description="Date selection component with constraints (min/max) and validation support."
+            Icon="fa-solid fa-calendar-days"
+            Color="BwColor.Danger"/>
+
+    @* Basic & Min/Max *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Date selection with label and helper text" Icon="fa-solid fa-calendar"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDatePicker Label="Birth Date"
+                              HelperText="In DD/MM/YYYY format"/>
+
+                <BwDatePicker Label="Start Date"
+                              Value="@DateTime.Today"/>
+
+                <BwDatePicker Label="End Date"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Constraints" Subtitle="Min and Max date ranges" Icon="fa-solid fa-calendar-xmark"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDatePicker Label="Appointment Date"
+                              Min="DateTime.Today"
+                              Max="DateTime.Today.AddMonths(3)"
+                              HelperText="Select between today and 3 months later"/>
+
+                <BwDatePicker Label="Past Date"
+                              Max="DateTime.Today.AddDays(-1)"
+                              HelperText="Only past dates"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Sizes & States *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDatePicker Label="Small" Size="BwSize.Small"/>
+                <BwDatePicker Label="Medium" Size="BwSize.Medium"/>
+                <BwDatePicker Label="Large" Size="BwSize.Large"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="States" Subtitle="Error, Disabled, Required" Icon="fa-solid fa-toggle-on" Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDatePicker Label="Error State"
+                              ErrorMessage="Please select a valid date."/>
+
+                <BwDatePicker Label="Disabled"
+                              IsDisabled="true"
+                              Value="@DateTime.Today"/>
+
+                <BwDatePicker Label="Required Field"
+                              IsRequired="true"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>

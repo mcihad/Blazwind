@@ -1,0 +1,157 @@
+@page "/charts/municipal"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Belediye Dashboard - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Belediye Dashboard Grafikleri" 
+            Description="Belediye yönetimi için özel tasarlanmış dashboard grafikleri."
+            Icon="fa-solid fa-city"
+            Color="BwColor.Primary" />
+
+    @* KPI Göstergeleri *@
+    <BwCard Title="Performans Göstergeleri" Subtitle="Anlık KPI değerleri." Icon="fa-solid fa-gauge-high" Color="BwColor.Primary">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <BwChart Options="_kpiGauge1" Height="180px" />
+            <BwChart Options="_kpiGauge2" Height="180px" />
+            <BwChart Options="_kpiGauge3" Height="180px" />
+            <BwChart Options="_kpiGauge4" Height="180px" />
+        </div>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Hizmet Türleri *@
+        <BwCard Title="Hizmet Talep Dağılımı" Subtitle="Bu ay talep türleri." Icon="fa-solid fa-ticket" Color="BwColor.Info">
+            <BwChart Options="_servicePie" Height="280px" />
+        </BwCard>
+
+        @* Mahalle Bazlı *@
+        <BwCard Title="Mahalle Bazlı Şikayet" Subtitle="Son 30 gün." Icon="fa-solid fa-location-dot" Color="BwColor.Warning">
+            <BwChart Options="_neighborhoodBar" Height="280px" />
+        </BwCard>
+    </BwRow>
+
+    @* Zaman Serisi *@
+    <BwCard Title="Aylık Trend Analizi" Subtitle="12 aylık başvuru ve çözüm trendi." Icon="fa-solid fa-chart-line" Color="BwColor.Success">
+        <BwChart Options="_trendChart" Height="320px" />
+    </BwCard>
+
+    @* Bütçe Kullanımı *@
+    <BwCard Title="Bütçe Gerçekleşme Durumu" Subtitle="2025 yılı bütçe kullanımı." Icon="fa-solid fa-coins" Color="BwColor.Danger">
+        <BwChart Options="_budgetChart" Height="300px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object CreateKpiGauge(string title, int value, string color) => new
+    {
+        series = new object[]
+        {
+            new
+            {
+                type = "gauge",
+                radius = "90%",
+                progress = new { show = true, width = 12 },
+                axisLine = new { lineStyle = new { width = 12 } },
+                axisTick = new { show = false },
+                splitLine = new { show = false },
+                axisLabel = new { show = false },
+                pointer = new { show = false },
+                anchor = new { show = false },
+                title = new { show = true, offsetCenter = new[] { "0%", "65%" }, fontSize = 11 },
+                detail = new { valueAnimation = true, fontSize = 24, offsetCenter = new[] { "0%", "0%" } },
+                data = new[] { new { value = value, name = title } }
+            }
+        },
+        color = new[] { color }
+    };
+
+    private object _kpiGauge1 => CreateKpiGauge("Başvuru Çözüm", 87, "#10b981");
+    private object _kpiGauge2 => CreateKpiGauge("Vatandaş Memnuniyet", 78, "#3b82f6");
+    private object _kpiGauge3 => CreateKpiGauge("Bütçe Kullanım", 65, "#f59e0b");
+    private object _kpiGauge4 => CreateKpiGauge("Proje İlerleme", 42, "#8b5cf6");
+
+    private object _servicePie = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        legend = new { bottom = "0", left = "center" },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Pie,
+                radius = new[] { "35%", "65%" },
+                data = new object[]
+                {
+                    new { value = 435, name = "Altyapı" },
+                    new { value = 310, name = "Temizlik" },
+                    new { value = 234, name = "Park/Bahçe" },
+                    new { value = 185, name = "Trafik" },
+                    new { value = 148, name = "Diğer" }
+                },
+                label = new { formatter = "{b}: {d}%" }
+            }
+        },
+        color = new[] { "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6" }
+    };
+
+    private object _neighborhoodBar = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        xAxis = new { type = ChartAxisType.Value },
+        yAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Merkez Mah.", "Yeni Mah.", "Cumhuriyet Mah.", "Atatürk Mah.", "Fatih Mah." }
+        },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Bar,
+                data = new[] { 120, 95, 88, 72, 65 },
+                itemStyle = new { borderRadius = 4 }
+            }
+        },
+        color = new[] { "#ef4444" }
+    };
+
+    private object _trendChart = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        legend = new { data = new[] { "Başvuru", "Çözülen" }, bottom = "0" },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara" }
+        },
+        yAxis = new { type = ChartAxisType.Value },
+        series = new object[]
+        {
+            new { name = "Başvuru", type = ChartSeriesType.Line, smooth = true, data = new[] { 450, 520, 480, 550, 620, 580, 640, 700, 650, 720, 680, 750 } },
+            new { name = "Çözülen", type = ChartSeriesType.Line, smooth = true, data = new[] { 420, 480, 460, 520, 580, 550, 610, 660, 620, 690, 650, 720 } }
+        },
+        color = new[] { "#3b82f6", "#10b981" }
+    };
+
+    private object _budgetChart = new
+    {
+        tooltip = new { trigger = ChartTooltipTrigger.Axis },
+        legend = new { data = new[] { "Planlanan", "Gerçekleşen" }, bottom = "0" },
+        xAxis = new
+        {
+            type = ChartAxisType.Category,
+            data = new[] { "Personel", "Yatırım", "Hizmet", "Cari", "Diğer" }
+        },
+        yAxis = new { type = ChartAxisType.Value, name = "Milyon TL" },
+        series = new object[]
+        {
+            new { name = "Planlanan", type = ChartSeriesType.Bar, data = new[] { 450, 380, 250, 180, 120 } },
+            new { name = "Gerçekleşen", type = ChartSeriesType.Bar, data = new[] { 420, 280, 230, 165, 95 } }
+        },
+        color = new[] { "#94a3b8", "#3b82f6" }
+    };
+}

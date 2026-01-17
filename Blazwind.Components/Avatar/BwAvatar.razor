@@ -1,0 +1,60 @@
+@namespace Blazwind.Components.Avatar
+@using Blazwind.Components.Shared
+@inherits BwBase
+
+<div class="relative inline-block @Class" style="@Style">
+    <div class="@ContainerClass" aria-label="@Name">
+        @if (!string.IsNullOrEmpty(Src))
+        {
+            <img src="@Src" alt="@Name" class="w-full h-full object-cover rounded-full" />
+        }
+        else
+        {
+            <span class="@TextClass">@GetInitials()</span>
+        }
+    </div>
+
+    @if (StatusColor != null)
+    {
+        <span class="@StatusClass"></span>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Src { get; set; }
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public BwColor? StatusColor { get; set; }
+
+    private string ContainerClass => Size switch
+    {
+        BwSize.Small => "w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-900",
+        BwSize.Large => "w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-900",
+        _ => "w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center ring-2 ring-white dark:ring-gray-900"
+    };
+
+    private string TextClass => Size switch
+    {
+        BwSize.Small => "text-xs font-medium text-gray-600 dark:text-gray-300",
+        BwSize.Large => "text-lg font-medium text-gray-600 dark:text-gray-300",
+        _ => "text-sm font-medium text-gray-600 dark:text-gray-300"
+    };
+
+    private string StatusClass => StatusColor switch
+    {
+        BwColor.Success => "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900 bg-green-500",
+        BwColor.Danger => "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900 bg-red-500",
+        BwColor.Warning => "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900 bg-amber-500",
+        BwColor.Secondary => "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-400",
+        _ => "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-400"
+    };
+
+    private string GetInitials()
+    {
+        if (string.IsNullOrEmpty(Name)) return "?";
+        var parts = Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return "?";
+        if (parts.Length == 1) return parts[0][0].ToString().ToUpper();
+        return $"{parts[0][0]}{parts[^1][0]}".ToUpper();
+    }
+}

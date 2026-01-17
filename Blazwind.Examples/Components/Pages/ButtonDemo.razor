@@ -1,0 +1,97 @@
+@page "/components/button"
+
+<PageTitle>Button Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Button Component"
+            Description="Full-featured button component with various variants, types, sizes and icon support."
+            Icon="fa-solid fa-square" Color="BwColor.Primary"/>
+
+    @* Variants Section *@
+    <BwCard Title="Variants (Solid)" Subtitle="Color palettes for different situations." Icon="fa-solid fa-palette">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Color="BwColor.Primary" Text="Primary"/>
+            <BwButton Color="BwColor.Secondary" Text="Secondary"/>
+            <BwButton Color="BwColor.Success" Text="Success"/>
+            <BwButton Color="BwColor.Danger" Text="Danger"/>
+            <BwButton Color="BwColor.Warning" Text="Warning"/>
+            <BwButton Color="BwColor.Info" Text="Info"/>
+        </BwRow>
+    </BwCard>
+
+    @* Outline Type *@
+    <BwCard Title="Outline Type" Subtitle="Outlined button style." Icon="fa-solid fa-border-all"
+            Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Color="BwColor.Primary" Variant="BwVariant.Outline" Text="Primary"/>
+            <BwButton Color="BwColor.Secondary" Variant="BwVariant.Outline" Text="Secondary"/>
+            <BwButton Color="BwColor.Success" Variant="BwVariant.Outline" Text="Success"/>
+            <BwButton Color="BwColor.Danger" Variant="BwVariant.Outline" Text="Danger"/>
+            <BwButton Color="BwColor.Warning" Variant="BwVariant.Outline" Text="Warning"/>
+            <BwButton Color="BwColor.Info" Variant="BwVariant.Outline" Text="Info"/>
+        </BwRow>
+    </BwCard>
+
+    @* Ghost Type *@
+    <BwCard Title="Ghost Type" Subtitle="Minimal button style." Icon="fa-solid fa-ghost" Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Color="BwColor.Primary" Variant="BwVariant.Ghost" Text="Primary"/>
+            <BwButton Color="BwColor.Secondary" Variant="BwVariant.Ghost" Text="Secondary"/>
+            <BwButton Color="BwColor.Success" Variant="BwVariant.Ghost" Text="Success"/>
+            <BwButton Color="BwColor.Danger" Variant="BwVariant.Ghost" Text="Danger"/>
+        </BwRow>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md">
+        @* Sizes *@
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Sizes" Subtitle="Small, Medium, Large." Icon="fa-solid fa-text-height"
+                    Color="BwColor.Success">
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                    <BwButton Size="BwSize.Small" Text="Small"/>
+                    <BwButton Size="BwSize.Medium" Text="Medium"/>
+                    <BwButton Size="BwSize.Large" Text="Large"/>
+                </BwRow>
+            </BwCard>
+        </BwColumn>
+
+        @* Icons *@
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Icon Support" Subtitle="Left, right and icon only." Icon="fa-solid fa-icons"
+                    Color="BwColor.Warning">
+                <BwRow Spacing="BwSpacing.Sm">
+                    <BwButton Icon="fa-solid fa-plus" Text="Left Icon" IconPosition="BwIconPosition.Left"/>
+                    <BwButton Icon="fa-solid fa-arrow-right" Text="Right Icon" IconPosition="BwIconPosition.Right"/>
+                    <BwButton Icon="fa-solid fa-heart" IconPosition="BwIconPosition.Only" Color="BwColor.Danger"/>
+                    <BwButton Icon="fa-solid fa-star" IconPosition="BwIconPosition.Only" Color="BwColor.Warning"
+                              Variant="BwVariant.Outline"/>
+                </BwRow>
+            </BwCard>
+        </BwColumn>
+
+        @* States *@
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="States" Subtitle="Normal, Disabled, Loading." Icon="fa-solid fa-toggle-on"
+                    Color="BwColor.Info">
+                <BwRow Spacing="BwSpacing.Sm">
+                    <BwButton Text="Normal"/>
+                    <BwButton Text="Disabled" Disabled="true"/>
+                    <BwButton Text="Loading..." IsLoading="true"/>
+                </BwRow>
+            </BwCard>
+        </BwColumn>
+
+        @* Mixed Examples *@
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Mixed Examples" Subtitle="Real usage scenarios." Icon="fa-solid fa-code"
+                    Color="BwColor.Danger">
+                <BwRow Spacing="BwSpacing.Sm">
+                    <BwButton Icon="fa-solid fa-download" Text="Download" Color="BwColor.Primary"/>
+                    <BwButton Icon="fa-solid fa-trash" Text="Delete" Color="BwColor.Danger"
+                              Variant="BwVariant.Outline"/>
+                    <BwButton Icon="fa-solid fa-edit" Text="Edit" Color="BwColor.Info" Size="BwSize.Small"/>
+                </BwRow>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+</BwColumn>

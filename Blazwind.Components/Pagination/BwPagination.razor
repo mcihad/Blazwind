@@ -1,0 +1,197 @@
+@namespace Blazwind.Components.Pagination
+@using Blazwind.Components.Shared
+
+@{
+    var totalPages = PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
+    var pages = GetVisiblePages(totalPages);
+    
+    // Modern pill-style buttons
+    var sizeClass = Size switch
+    {
+        BwSize.Small => "h-7 min-w-7 px-2 text-xs",
+        BwSize.Large => "h-11 min-w-11 px-4 text-base",
+        _ => "h-9 min-w-9 px-3 text-sm"
+    };
+    
+    var baseButtonClass = $"inline-flex items-center justify-center font-medium rounded transition-all duration-150 {sizeClass}";
+    var activeClass = "bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-600 dark:text-white";
+    var inactiveClass = "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white";
+    var navButtonClass = "bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200";
+    var disabledClass = "bg-gray-50 text-gray-300 border border-gray-100 cursor-not-allowed dark:bg-gray-900 dark:text-gray-600 dark:border-gray-800";
+}
+
+<nav class="flex items-center gap-4 @Class" aria-label="Pagination">
+    @* Info Display - Left side *@
+    @if (ShowInfo)
+    {
+        <div class="text-sm text-gray-500">
+            @{
+                var start = TotalItems > 0 ? (CurrentPage - 1) * PageSize + 1 : 0;
+                var end = Math.Min(CurrentPage * PageSize, TotalItems);
+            }
+            <span class="font-medium text-gray-700 dark:text-gray-300">@start</span>
+            <span class="mx-1">-</span>
+            <span class="font-medium text-gray-700 dark:text-gray-300">@end</span>
+            <span class="mx-1">/</span>
+            <span class="font-medium text-gray-700 dark:text-gray-300">@TotalItems</span>
+            <span class="ml-1 text-gray-400 dark:text-gray-500">kayıt</span>
+        </div>
+    }
+
+    @* Page Size Selector *@
+    @if (ShowPageSizeSelector)
+    {
+        <div class="flex items-center gap-2">
+            <select class="h-9 px-3 pr-8 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer appearance-none"
+                    @onchange="OnPageSizeChange">
+                @foreach (var size in PageSizeOptions)
+                {
+                    <option value="@size" selected="@(size == PageSize)">@size</option>
+                }
+            </select>
+        </div>
+    }
+
+    @* Navigation Buttons *@
+    <div class="flex items-center gap-1">
+        @* First Button *@
+        @if (ShowFirstLast)
+        {
+            <button type="button"
+                    class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                    disabled="@(CurrentPage <= 1)"
+                    title="İlk sayfa"
+                    @onclick="() => GoToPage(1)">
+                <i class="fa-solid fa-angles-left text-xs"></i>
+            </button>
+        }
+
+        @* Previous Button *@
+        <button type="button"
+                class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                disabled="@(CurrentPage <= 1)"
+                title="Önceki sayfa"
+                @onclick="() => GoToPage(CurrentPage - 1)">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+
+        @* Page Numbers *@
+        <div class="flex items-center gap-1 mx-1">
+            @foreach (var pageNum in pages)
+            {
+                @if (pageNum == -1)
+                {
+                    <span class="@baseButtonClass text-gray-400 cursor-default">…</span>
+                }
+                else
+                {
+                    <button type="button"
+                            class="@baseButtonClass @(pageNum == CurrentPage ? activeClass : inactiveClass)"
+                            @onclick="() => GoToPage(pageNum)">
+                        @pageNum
+                    </button>
+                }
+            }
+        </div>
+
+        @* Next Button *@
+        <button type="button"
+                class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                disabled="@(CurrentPage >= totalPages)"
+                title="Sonraki sayfa"
+                @onclick="() => GoToPage(CurrentPage + 1)">
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+
+        @* Last Button *@
+        @if (ShowFirstLast)
+        {
+            <button type="button"
+                    class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                    disabled="@(CurrentPage >= totalPages)"
+                    title="Son sayfa"
+                    @onclick="() => GoToPage(totalPages)">
+                <i class="fa-solid fa-angles-right text-xs"></i>
+            </button>
+        }
+    </div>
+</nav>
+
+@code {
+    [Parameter] public int TotalItems { get; set; }
+    [Parameter] public int PageSize { get; set; } = 10;
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter] public int MaxVisiblePages { get; set; } = 5;
+    [Parameter] public bool ShowFirstLast { get; set; } = true;
+    [Parameter] public bool ShowPageSizeSelector { get; set; } = false;
+    [Parameter] public bool ShowInfo { get; set; } = true;
+    [Parameter] public int[] PageSizeOptions { get; set; } = new[] { 10, 25, 50, 100 };
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public string? Class { get; set; }
+    
+    [Parameter] public EventCallback<int> CurrentPageChanged { get; set; }
+    [Parameter] public EventCallback<int> PageSizeChanged { get; set; }
+
+    private async Task GoToPage(int page)
+    {
+        var totalPages = PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
+        if (page < 1 || page > totalPages || page == CurrentPage) return;
+        
+        CurrentPage = page;
+        await CurrentPageChanged.InvokeAsync(page);
+    }
+
+    private async Task OnPageSizeChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var newSize) && newSize != PageSize)
+        {
+            PageSize = newSize;
+            CurrentPage = 1; // Reset to first page
+            await PageSizeChanged.InvokeAsync(newSize);
+            await CurrentPageChanged.InvokeAsync(1);
+        }
+    }
+
+    private List<int> GetVisiblePages(int totalPages)
+    {
+        var pages = new List<int>();
+        if (totalPages <= 0) return pages;
+
+        if (totalPages <= MaxVisiblePages)
+        {
+            for (int i = 1; i <= totalPages; i++)
+                pages.Add(i);
+            return pages;
+        }
+
+        var half = MaxVisiblePages / 2;
+        var start = Math.Max(1, CurrentPage - half);
+        var end = Math.Min(totalPages, CurrentPage + half);
+
+        if (CurrentPage <= half)
+        {
+            end = MaxVisiblePages;
+        }
+        else if (CurrentPage > totalPages - half)
+        {
+            start = totalPages - MaxVisiblePages + 1;
+        }
+
+        if (start > 1)
+        {
+            pages.Add(1);
+            if (start > 2) pages.Add(-1); // Ellipsis
+        }
+
+        for (int i = start; i <= end; i++)
+            pages.Add(i);
+
+        if (end < totalPages)
+        {
+            if (end < totalPages - 1) pages.Add(-1); // Ellipsis
+            pages.Add(totalPages);
+        }
+
+        return pages;
+    }
+}

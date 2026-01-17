@@ -1,0 +1,228 @@
+@page "/components/select"
+@using Blazwind.Components.Input
+
+<PageTitle>Select Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Select Component"
+            Description="Placeholder, helper text and validation supported dropdown component."
+            Icon="fa-solid fa-list-check"
+            Color="BwColor.Success"/>
+
+    @* Basic & Sizes *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Select" Subtitle="Standard options list" Icon="fa-solid fa-square-caret-down"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSelect TValue="string"
+                          Label="Country"
+                          Items="@_countryItems"
+                          @bind-Value="_selectedCountry"
+                          Placeholder="Select a country..."/>
+
+                <BwSelect TValue="string"
+                          Label="City"
+                          Items="@_cityItems"
+                          @bind-Value="_selectedCity"
+                          Placeholder="Select a city..."
+                          HelperText="Your city of residence"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Sizes" Subtitle="Small, Medium and Large options" Icon="fa-solid fa-text-height"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSelect TValue="string" Label="Small" Size="BwSize.Small" Items="@_genericOptions"
+                          @bind-Value="_selectedSizeSmall" Placeholder="Small select"/>
+                <BwSelect TValue="string" Label="Medium" Size="BwSize.Medium" Items="@_genericOptions"
+                          @bind-Value="_selectedSizeMedium" Placeholder="Medium select"/>
+                <BwSelect TValue="string" Label="Large" Size="BwSize.Large" Items="@_genericOptions"
+                          @bind-Value="_selectedSizeLarge" Placeholder="Large select"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* States & Number Select *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="States" Subtitle="Error, Disabled and Required" Icon="fa-solid fa-toggle-on"
+                Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSelect TValue="string"
+                          Label="Category"
+                          Items="@_categoryItems"
+                          @bind-Value="_selectedCategory"
+                          ErrorMessage="You need to select a category."
+                          Placeholder="Select..."/>
+
+                <BwSelect TValue="string"
+                          Label="Disabled"
+                          Items="@_genericOptions"
+                          @bind-Value="_selectedDisabled"
+                          IsDisabled="true"
+                          Placeholder="Disabled select"/>
+
+                <BwSelect TValue="string"
+                          Label="Required Field"
+                          Items="@_genericOptions"
+                          @bind-Value="_selectedRequired"
+                          IsRequired="true"
+                          Placeholder="This field is required"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Type and Value (Two Way Binding)" Subtitle="Generic type and two-way binding"
+                Icon="fa-solid fa-arrow-right-arrow-left" Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSelect TValue="int"
+                          Label="Page Size (Int)"
+                          Items="@_pageSizeItems"
+                          @bind-Value="_selectedPageSize"/>
+
+                <div
+                    class="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded text-sm text-yellow-700 dark:text-yellow-300">
+                    Selected Value: <strong>@_selectedPageSize</strong> (Type: @_selectedPageSize.GetType().Name)
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="px-3 py-1 bg-gray-200 rounded text-sm" @onclick="@(() => _selectedPageSize = 10)">10
+                        Yap
+                    </button>
+                    <button class="px-3 py-1 bg-gray-200 rounded text-sm" @onclick="@(() => _selectedPageSize = 100)">
+                        100 Yap
+                    </button>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Programmatic Items & Multiple *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Programmatic Items and SelectedItem" Subtitle="Items parameter and SelectedItem usage"
+                Icon="fa-solid fa-code" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSelect TValue="string"
+                          Label="Country"
+                          Items="@_countryItems"
+                          @bind-SelectedItem="_selectedCountryItem"
+                          @bind-Value="_selectedCountry"
+                          Placeholder="Select a country..."/>
+
+                <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded text-sm text-blue-700 dark:text-blue-300">
+                    <div>Value: <strong>@_selectedCountry</strong></div>
+                    <div>SelectedItem.Text: <strong>@(_selectedCountryItem?.Text ?? "-")</strong></div>
+                </div>
+
+                <BwSelect TValue="string"
+                          Label="Category"
+                          Items="@_programmaticCategoryItems"
+                          @bind-Value="_selectedProgrammaticCategory"
+                          HelperText="Items parameter"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Multiple Selection and SelectedItems" Subtitle="Items and SelectedItems usage"
+                Icon="fa-solid fa-list-check" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwSelect TValue="string"
+                          Label="Skills"
+                          Items="@_skillItems"
+                          IsMultiple="true"
+                          VisibleRows="5"
+                          @bind-SelectedValues="_selectedSkills"
+                          @bind-SelectedItems="_selectedSkillItems"
+                          HelperText="Press Ctrl to select multiple items"/>
+
+                <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded text-sm text-green-700 dark:text-green-300">
+                    <div>Selected Values: <strong>@string.Join(", ", _selectedSkills)</strong></div>
+                    <div class="mt-1">Selected Items Count: <strong>@(_selectedSkillItems?.Count ?? 0)</strong></div>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private string _selectedCountry = "";
+    private string _selectedCity = "";
+    private string _selectedSizeSmall = "";
+    private string _selectedSizeMedium = "";
+    private string _selectedSizeLarge = "";
+
+    private string _selectedCategory = "";
+    private string _selectedDisabled = "";
+    private string _selectedRequired = "";
+
+    private BwSelectItem<string>? _selectedCountryItem;
+
+    private string _selectedProgrammaticCategory = "";
+
+    // Two-way binding example
+    private int _selectedPageSize = 25;
+
+    private List<string> _selectedSkills = new() { "csharp", "blazor" };
+    private List<BwSelectItem<string>> _selectedSkillItems = new();
+
+    #region Data Items
+
+    private readonly List<BwSelectItem<string>> _countryItems = new()
+    {
+        new BwSelectItem<string>("tr", "Türkiye"),
+        new BwSelectItem<string>("us", "Amerika Birleşik Devletleri"),
+        new BwSelectItem<string>("de", "Almanya"),
+        new BwSelectItem<string>("fr", "Fransa"),
+        new BwSelectItem<string>("gb", "İngiltere")
+    };
+
+    private readonly List<BwSelectItem<string>> _cityItems = new()
+    {
+        new BwSelectItem<string>("istanbul", "İstanbul"),
+        new BwSelectItem<string>("ankara", "Ankara"),
+        new BwSelectItem<string>("izmir", "İzmir"),
+        new BwSelectItem<string>("bursa", "Bursa"),
+        new BwSelectItem<string>("antalya", "Antalya")
+    };
+
+    private readonly List<BwSelectItem<string>> _genericOptions = new()
+    {
+        new BwSelectItem<string>("1", "Option 1"),
+        new BwSelectItem<string>("2", "Option 2")
+    };
+
+    private readonly List<BwSelectItem<string>> _categoryItems = new()
+    {
+        new BwSelectItem<string>("1", "Kategori 1"),
+        new BwSelectItem<string>("2", "Kategori 2")
+    };
+
+    private readonly List<BwSelectItem<int>> _pageSizeItems = new()
+    {
+        new BwSelectItem<int>(10, "10 kayıt"),
+        new BwSelectItem<int>(25, "25 kayıt"),
+        new BwSelectItem<int>(50, "50 kayıt"),
+        new BwSelectItem<int>(100, "100 kayıt")
+    };
+
+    // For Programmatic example (differs slightly in content from above)
+    private readonly List<BwSelectItem<string>> _programmaticCategoryItems = new()
+    {
+        new BwSelectItem<string>("tech", "Teknoloji"),
+        new BwSelectItem<string>("health", "Sağlık"),
+        new BwSelectItem<string>("education", "Eğitim"),
+        new BwSelectItem<string>("finance", "Finans", true)
+    };
+
+    private readonly List<BwSelectItem<string>> _skillItems = new()
+    {
+        new BwSelectItem<string>("csharp", "C#"),
+        new BwSelectItem<string>("blazor", "Blazor"),
+        new BwSelectItem<string>("javascript", "JavaScript"),
+        new BwSelectItem<string>("typescript", "TypeScript"),
+        new BwSelectItem<string>("python", "Python"),
+        new BwSelectItem<string>("sql", "SQL"),
+        new BwSelectItem<string>("docker", "Docker"),
+        new BwSelectItem<string>("kubernetes", "Kubernetes")
+    };
+
+    #endregion
+
+}

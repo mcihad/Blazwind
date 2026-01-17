@@ -1,0 +1,90 @@
+@page "/components/deneme-page"
+@using Blazwind.Components.Form
+@using Blazwind.Components.Input
+
+<PageTitle>Test Page</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="My Experiments" Description="This was created for testing purposes." Icon="fa-solid fa-file-pdf"
+            Color="BwColor.Primary"/>
+
+    @* Image Editing Demo *@
+    <BwCard Title="Image Editing (New)" Subtitle="Rotation, Cropping, Black/White and Save."
+            Icon="fa-solid fa-wand-magic-sparkles" Color="BwColor.Secondary">
+        <BwRow Class="grid md:grid-cols-2">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwForm Density="BwFormDensity.Compact" Model="@todoModel" OnSubmit="Callback"
+                        LabelPosition="BwLabelPosition.Left">
+                    <BwFormField Label="Id">
+                        <BwInput Type="number" @bind-Value="@todoModel.Id" Placeholder="Enter Id"/>
+                    </BwFormField>
+                    <BwFormField Label="Title">
+                        <BwInput @bind-Value="@todoModel.Title" Placeholder="Enter Title"/>
+                    </BwFormField>
+                    <BwFormField Label=" ">
+                        <BwCheckbox @bind-Value="todoModel.IsCompleted" Label="Completed?"/>
+                    </BwFormField>
+                    <BwFormField Label="City">
+                        <BwAutocomplete TItem="string" Placeholder="Search city..." Items="_cities"
+                                        SelectedItem="_selectedCity"
+                                        SelectedItemChanged="@(city =>
+                                                             {
+                                                                 _selectedCity = city;
+                                                                 StateHasChanged();
+                                                             })"
+                                        ItemText="@(x => x)"/>
+                    </BwFormField>
+                    <BwFormActions>
+                        <BwButton Text="Save" Color="BwColor.Primary" Icon="fa-solid fa-save" HtmlType="submit"/>
+                    </BwFormActions>
+                </BwForm>
+                <BwAlert Color="BwColor.Primary" Title="Form Data">
+                    @_formData
+                </BwAlert>
+            </BwColumn>
+            <BwColumn>
+                <BwForm Density="BwFormDensity.Compact" LabelPosition="BwLabelPosition.Left">
+                    <BwFormField Label="Date">
+                        <BwDatePicker/>
+                    </BwFormField>
+                    <BwFormField Label="Time">
+                        <BwTimePicker/>
+                    </BwFormField>
+                </BwForm>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* PDF Viewing *@
+    <BwCard Title="PDF Viewing" Subtitle="Sample PDF document." Icon="fa-solid fa-file-pdf" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private readonly TodoItem todoModel = new();
+    private string _formData = string.Empty;
+    private string? _selectedCity;
+
+    private readonly List<string> _cities = new()
+    {
+        "İstanbul", "Ankara", "İzmir", "Bursa", "Antalya", "Adana", "Konya",
+        "Gaziantep", "Mersin", "Diyarbakır", "Kayseri", "Eskişehir", "Samsun",
+        "Denizli", "Şanlıurfa", "Malatya", "Trabzon", "Erzurum", "Van", "Batman"
+    };
+
+    public class TodoItem
+    {
+        public string Id { get; set; } = "";
+        public string Title { get; set; } = "";
+        public bool IsCompleted { get; set; }
+    }
+
+    private void Callback(EditContext obj)
+    {
+        _formData = $"Id: {todoModel.Id}, Title: {todoModel.Title}, IsCompleted: {todoModel.IsCompleted}";
+    }
+
+}

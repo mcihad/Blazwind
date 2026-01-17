@@ -1,0 +1,146 @@
+@namespace Blazwind.Components.MegaMenu
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+
+<div class="relative inline-block @Class" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+    @* Trigger *@
+    <div class="cursor-pointer" @onclick="HandleTriggerClick">
+        @if (TriggerContent != null)
+        {
+            @TriggerContent
+        }
+        else
+        {
+            <BwButton Text="@Text" Icon="@Icon" Color="Color" Variant="Variant" EndIcon="@ChevronIcon"
+                Size="BwSize.Small" />
+        }
+    </div>
+
+    @* Menu Dropdown *@
+    @if (_isOpen)
+    {
+        <div class="@DropdownPositionClass @WidthClass @AlignmentClass">
+            <div class="p-2 @ColumnsClass" style="@ColumnStyle">
+                @ChildContent
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? TriggerContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Ghost;
+    [Parameter] public int Columns { get; set; } = 3;
+    [Parameter] public string? ColumnWidth { get; set; }
+    [Parameter] public MegaMenuWidth Width { get; set; } = MegaMenuWidth.Auto;
+    [Parameter] public MegaMenuAlignment Alignment { get; set; } = MegaMenuAlignment.Start;
+    [Parameter] public MegaMenuTrigger Trigger { get; set; } = MegaMenuTrigger.Hover;
+    [Parameter] public bool OpenUpward { get; set; }
+    [Parameter] public int ShowDelay { get; set; } = 50;
+    [Parameter] public int HideDelay { get; set; } = 150;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback<bool> OnOpenChanged { get; set; }
+
+    private bool _isOpen;
+    private CancellationTokenSource? _showCts;
+    private CancellationTokenSource? _hideCts;
+
+    private string ChevronIcon => OpenUpward ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down";
+
+    private string DropdownPositionClass => OpenUpward
+    ? "absolute z-50 bottom-full mb-1 bg-white dark:bg-gray-800 rounded shadow-lg border border-gray-200 dark:border-gray-700"
+    : "absolute z-50 top-full mt-1 bg-white dark:bg-gray-800 rounded shadow-lg border border-gray-200 dark:border-gray-700";
+
+    private string ColumnsClass => Columns switch
+    {
+        1 => "grid grid-cols-1 gap-1",
+        2 => "grid grid-cols-2 gap-1",
+        4 => "grid grid-cols-4 gap-1",
+        5 => "grid grid-cols-5 gap-1",
+        6 => "grid grid-cols-6 gap-1",
+        _ => "grid grid-cols-3 gap-1"
+    };
+
+    private string? ColumnStyle => !string.IsNullOrEmpty(ColumnWidth)
+    ? $"grid-template-columns: repeat({Columns}, {ColumnWidth});"
+    : null;
+
+    private string WidthClass => Width switch
+    {
+        MegaMenuWidth.Small => "w-80",
+        MegaMenuWidth.Medium => "w-96",
+        MegaMenuWidth.Large => "w-[32rem]",
+        MegaMenuWidth.XLarge => "w-[40rem]",
+        MegaMenuWidth.Full => "w-screen max-w-4xl",
+        _ => "w-auto min-w-80"
+    };
+
+    private string AlignmentClass => Alignment switch
+    {
+        MegaMenuAlignment.Center => "left-1/2 -translate-x-1/2",
+        MegaMenuAlignment.End => "right-0",
+        _ => "left-0"
+    };
+
+    private async Task HandleMouseEnter()
+    {
+        if (Trigger == MegaMenuTrigger.Click) return;
+
+        _hideCts?.Cancel();
+        _showCts = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(ShowDelay, _showCts.Token);
+            await Open();
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    private async Task HandleMouseLeave()
+    {
+        if (Trigger == MegaMenuTrigger.Click) return;
+
+        _showCts?.Cancel();
+        _hideCts = new CancellationTokenSource();
+
+        try
+        {
+            await Task.Delay(HideDelay, _hideCts.Token);
+            await Close();
+        }
+        catch (TaskCanceledException) { }
+    }
+
+    private async Task HandleTriggerClick()
+    {
+        if (Trigger == MegaMenuTrigger.Hover) return;
+        await Toggle();
+    }
+
+    public async Task Open()
+    {
+        _isOpen = true;
+        await OnOpenChanged.InvokeAsync(true);
+        StateHasChanged();
+    }
+
+    public async Task Close()
+    {
+        _isOpen = false;
+        await OnOpenChanged.InvokeAsync(false);
+        StateHasChanged();
+    }
+
+    public async Task Toggle()
+    {
+        if (_isOpen)
+            await Close();
+        else
+            await Open();
+    }
+}

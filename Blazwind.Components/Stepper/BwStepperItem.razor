@@ -1,0 +1,227 @@
+@namespace Blazwind.Components.Stepper
+@using Blazwind.Components.Shared
+@implements IDisposable
+
+@{
+    var parent = ParentStepper;
+    var stepIndex = _stepIndex;
+    var isCompleted = parent?.IsStepCompleted(stepIndex) ?? false;
+    var isActive = parent?.IsStepActive(stepIndex) ?? false;
+    var isVertical = parent?.Orientation == BwOrientation.Vertical;
+    var showConnectors = parent?.ShowConnectors ?? true;
+    var variant = parent?.Variant ?? BwStepperVariant.Default;
+    var isFirst = parent?.IsFirstStep(stepIndex) ?? true;
+    var isLast = parent?.IsLastStep(stepIndex) ?? true;
+    
+    // State class
+    var stateClass = IsError ? "error" : isCompleted ? "completed" : isActive ? "active" : "pending";
+    
+    // Connector state - based on whether the step before this connector is completed
+    var leftConnectorState = stepIndex > 0 && (parent?.IsStepCompleted(stepIndex - 1) ?? false) ? "completed" : "";
+    var rightConnectorState = isCompleted ? "completed" : "";
+}
+
+@if (isVertical)
+{
+    @* Vertical Layout *@
+    <div class="bw-stepper-step">
+        <div class="bw-stepper-indicator-col">
+            @if (showConnectors && !isFirst)
+            {
+                <div class="bw-stepper-connector @leftConnectorState"></div>
+            }
+            else
+            {
+                <div class="flex-1 min-h-[16px]"></div>
+            }
+            
+            <button type="button"
+                    class="bw-stepper-indicator @stateClass"
+                    disabled="@IsDisabled"
+                    @onclick="HandleClick">
+                @if (isCompleted && variant != BwStepperVariant.Icons)
+                {
+                    <i class="fa-solid fa-check"></i>
+                }
+                else if (IsError)
+                {
+                    <i class="fa-solid fa-exclamation"></i>
+                }
+                else if (!string.IsNullOrEmpty(Icon))
+                {
+                    <i class="@Icon"></i>
+                }
+                else if (IconContent != null)
+                {
+                    @IconContent
+                }
+                else if (variant == BwStepperVariant.Dots)
+                {
+                    <span class="w-2 h-2 rounded-full bg-current"></span>
+                }
+                else
+                {
+                    @(stepIndex + 1)
+                }
+            </button>
+            
+            @if (showConnectors && !isLast)
+            {
+                <div class="bw-stepper-connector @rightConnectorState"></div>
+            }
+            else
+            {
+                <div class="flex-1 min-h-[16px]"></div>
+            }
+        </div>
+        
+        <div class="bw-stepper-content-col">
+            <button type="button"
+                    class="text-left bg-transparent border-0 cursor-pointer p-0"
+                    disabled="@IsDisabled"
+                    @onclick="HandleClick">
+                <p class="bw-stepper-label @stateClass">@Title</p>
+                @if (!string.IsNullOrEmpty(Description))
+                {
+                    <p class="bw-stepper-description">@Description</p>
+                }
+                @if (IsOptional)
+                {
+                    <span class="bw-stepper-optional">İsteğe bağlı</span>
+                }
+            </button>
+            
+            @if (isActive && ChildContent != null)
+            {
+                <div class="bw-stepper-content">
+                    @ChildContent
+                </div>
+            }
+        </div>
+    </div>
+}
+else if (variant != BwStepperVariant.Progress)
+{
+    @* Horizontal Layout - Connector aligns only with indicator circle *@
+    <div class="bw-stepper-step">
+        @* Row 1: Connectors + Indicator *@
+        <div class="bw-stepper-indicator-row">
+            @if (showConnectors && !isFirst)
+            {
+                <div class="bw-stepper-connector @leftConnectorState"></div>
+            }
+            else
+            {
+                <div class="bw-stepper-connector-placeholder"></div>
+            }
+            
+            <button type="button"
+                    class="bw-stepper-indicator @stateClass"
+                    disabled="@IsDisabled"
+                    @onclick="HandleClick">
+                @if (isCompleted && variant != BwStepperVariant.Icons)
+                {
+                    <i class="fa-solid fa-check"></i>
+                }
+                else if (IsError)
+                {
+                    <i class="fa-solid fa-exclamation"></i>
+                }
+                else if (!string.IsNullOrEmpty(Icon))
+                {
+                    <i class="@Icon"></i>
+                }
+                else if (IconContent != null)
+                {
+                    @IconContent
+                }
+                else if (variant == BwStepperVariant.Dots)
+                {
+                    <span class="w-2 h-2 rounded-full bg-current"></span>
+                }
+                else
+                {
+                    @(stepIndex + 1)
+                }
+            </button>
+            
+            @if (showConnectors && !isLast)
+            {
+                <div class="bw-stepper-connector @rightConnectorState"></div>
+            }
+            else
+            {
+                <div class="bw-stepper-connector-placeholder"></div>
+            }
+        </div>
+        
+        @* Row 2: Label (below indicator) *@
+        @if (parent?.AlternativeLabel ?? true)
+        {
+            <div class="bw-stepper-label-row">
+                <span class="bw-stepper-label @stateClass">@Title</span>
+                @if (IsOptional)
+                {
+                    <span class="bw-stepper-optional">İsteğe bağlı</span>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [CascadingParameter] public BwStepper? ParentStepper { get; set; }
+    
+    /// <summary>Step title</summary>
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    
+    /// <summary>Optional description</summary>
+    [Parameter] public string? Description { get; set; }
+    
+    /// <summary>Custom icon (overrides number)</summary>
+    [Parameter] public string? Icon { get; set; }
+    
+    /// <summary>Custom step indicator content</summary>
+    [Parameter] public RenderFragment? IconContent { get; set; }
+    
+    /// <summary>Mark as optional step</summary>
+    [Parameter] public bool IsOptional { get; set; }
+    
+    /// <summary>Error state</summary>
+    [Parameter] public bool IsError { get; set; }
+    
+    /// <summary>Cannot navigate to this step</summary>
+    [Parameter] public bool IsDisabled { get; set; }
+    
+    /// <summary>Color override</summary>
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    
+    /// <summary>Step content (for wizard mode)</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    private int _stepIndex;
+    
+    protected override void OnInitialized()
+    {
+        ParentStepper?.RegisterStep(this);
+        _stepIndex = ParentStepper?.GetStepIndex(this) ?? 0;
+    }
+    
+    protected override void OnParametersSet()
+    {
+        _stepIndex = ParentStepper?.GetStepIndex(this) ?? 0;
+    }
+    
+    private async Task HandleClick()
+    {
+        if (ParentStepper != null && !IsDisabled)
+        {
+            await ParentStepper.GoToStep(_stepIndex);
+        }
+    }
+    
+    public void Dispose()
+    {
+        ParentStepper?.UnregisterStep(this);
+    }
+}

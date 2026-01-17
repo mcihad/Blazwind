@@ -1,0 +1,189 @@
+@page "/components/input"
+@using Blazwind.Components.Form
+@using Blazwind.Components.Input
+
+<PageTitle>Input Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Input Component"
+            Description="Text input component with labels, helper text, icons and validation states."
+            Icon="fa-solid fa-keyboard" Color="BwColor.Primary"/>
+
+    @* Basic & Sizes *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Basic Input" Subtitle="Label, placeholder and helper text" Icon="fa-solid fa-i-cursor"
+                    Color="BwColor.Primary">
+                <BwColumn Spacing="BwSpacing.Md">
+                    <BwInput Label="Username" Placeholder="Enter your username"/>
+
+                    <BwInput Label="Email" Type="email" Placeholder="example@email.com"
+                             HelperText="We will never share your email."/>
+
+                    <BwInput Label="Password" Type="password" Placeholder="••••••••" IsRequired="true"/>
+                </BwColumn>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Sizes" Subtitle="Small, Medium and Large inputs" Icon="fa-solid fa-text-height"
+                    Color="BwColor.Success">
+                <BwColumn Spacing="BwSpacing.Md">
+                    <BwInput Label="Small" Size="BwSize.Small" Placeholder="Small input"/>
+                    <BwInput Label="Medium" Size="BwSize.Medium" Placeholder="Medium input (default)"/>
+                    <BwInput Label="Large" Size="BwSize.Large" Placeholder="Large input"/>
+                </BwColumn>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Input Types *@
+    <BwCard Title="Input Types" Subtitle="Different input types with Type parameter" Icon="fa-solid fa-keyboard"
+            Color="BwColor.Info">
+        <BwForm Density="BwFormDensity.Compact">
+            <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Text (Default)" Type="text" Placeholder="Enter text"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Email" Type="email" Placeholder="email@example.com"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Password" Type="password" Placeholder="••••••••"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Number" Type="number" Placeholder="0"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Tel" Type="tel" Placeholder="+90 555 123 45 67"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="URL" Type="url" Placeholder="https://example.com"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Date" Type="date"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Time" Type="time"/>
+                </BwColumn>
+                <BwColumn Span="12" Md="4">
+                    <BwInput Label="Search" Type="search" Placeholder="Search..." IconLeft="fa-solid fa-search"/>
+                </BwColumn>
+            </BwRow>
+        </BwForm>
+    </BwCard>
+
+    @* Icons & States *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Icon Support" Subtitle="Left or right positioned icons" Icon="fa-solid fa-icons"
+                    Color="BwColor.Primary">
+                <BwColumn Spacing="BwSpacing.Md">
+                    <BwInput Label="Search" Placeholder="Search..." IconLeft="fa-solid fa-magnifying-glass"/>
+
+                    <BwInput Label="Website" Placeholder="https://example.com" IconLeft="fa-solid fa-globe"/>
+
+                    <BwInput Label="Amount" Placeholder="0.00" IconRight="fa-solid fa-turkish-lira-sign"/>
+
+                    <BwInput Label="User & Status" Placeholder="Search user..." IconLeft="fa-solid fa-user"
+                             IconRight="fa-solid fa-check"/>
+                </BwColumn>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="States" Subtitle="Error, Disabled and Read-Only" Icon="fa-solid fa-toggle-on"
+                    Color="BwColor.Danger">
+                <BwColumn Spacing="BwSpacing.Md">
+                    <BwInput Label="Hata Durumu" Value="geçersiz.email"
+                             ErrorMessage="Geçerli bir email adresi girin."/>
+
+                    <BwInput Label="Devre Dışı" Value="Devre dışı input" IsDisabled="true"/>
+
+                    <BwInput Label="Read-Only Field" Value="Read-only value" IsReadOnly="true"/>
+
+                    <BwInput Label="Required Field" Placeholder="This field is required" IsRequired="true"/>
+                </BwColumn>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Label Positions *@
+    <BwCard Title="Label Positions" Subtitle="Different label positions with LabelPosition parameter"
+            Icon="fa-solid fa-arrow-right" Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <div>
+                <p class="text-sm text-gray-600 mb-2 font-medium">Top (Default)</p>
+                <BwInput Label="Full Name" LabelPosition="BwLabelPosition.Top" Placeholder="Enter your name"/>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-600 mb-2 font-medium">Left (Side by Side)</p>
+                <BwInput Label="Email" LabelPosition="BwLabelPosition.Left" Placeholder="email@example.com"
+                         LabelWidth="100px"/>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-600 mb-2 font-medium">Floating (Floating Label)</p>
+                <BwInput Label="Floating Label" LabelPosition="BwLabelPosition.Floating" @bind-Value="_floatingValue"/>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-600 mb-2 font-medium">Hidden (Hidden - only placeholder)</p>
+                <BwInput Label="Hidden Label" LabelPosition="BwLabelPosition.Hidden"
+                         Placeholder="Label hidden, only placeholder"/>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Density *@
+    <BwCard Title="Form Density" Subtitle="Compact, Normal and Relaxed spacing" Icon="fa-solid fa-arrows-up-down"
+            Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true">
+            <BwColumn Span="12" Md="4">
+                <p class="text-sm text-gray-600 mb-2 font-medium">Compact</p>
+                <BwInput Label="First Name" Density="BwFormDensity.Compact" Placeholder="First Name"/>
+                <BwInput Label="Last Name" Density="BwFormDensity.Compact" Placeholder="Last Name"/>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <p class="text-sm text-gray-600 mb-2 font-medium">Normal (Default)</p>
+                <BwInput Label="First Name" Density="BwFormDensity.Normal" Placeholder="First Name"/>
+                <BwInput Label="Last Name" Density="BwFormDensity.Normal" Placeholder="Last Name"/>
+            </BwColumn>
+            <BwColumn Span="12" Md="4">
+                <p class="text-sm text-gray-600 mb-2 font-medium">Relaxed</p>
+                <BwInput Label="First Name" Density="BwFormDensity.Relaxed" Placeholder="First Name"/>
+                <BwInput Label="Last Name" Density="BwFormDensity.Relaxed" Placeholder="Last Name"/>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Helper Text & Error Variations *@
+    <BwCard Title="Helper Text and Error Examples" Subtitle="HelperText and Error usage" Icon="fa-solid fa-circle-info"
+            Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInput Label="Password" Type="password" Placeholder="At least 8 characters"
+                     HelperText="Your password must be at least 8 characters, contain 1 uppercase letter and 1 number."/>
+
+            <BwInput Label="Username" @bind-Value="_username" Placeholder="username"
+                     HelperText="You can only use letters, numbers and underscores." ErrorMessage="@_usernameError"/>
+
+            <BwRow Spacing="BwSpacing.Sm" Class="mt-2">
+                <BwButton Size="BwSize.Small" Color="BwColor.Danger" Variant="BwVariant.Soft"
+                          OnClick="@(() => _usernameError = "This username is already taken.")">
+                    Show Error
+                </BwButton>
+                <BwButton Size="BwSize.Small" Color="BwColor.Success" Variant="BwVariant.Soft"
+                          OnClick="@(() => _usernameError = null)">
+                    Clear Error
+                </BwButton>
+            </BwRow>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _floatingValue = "";
+    private string _username = "";
+    private string? _usernameError;
+}

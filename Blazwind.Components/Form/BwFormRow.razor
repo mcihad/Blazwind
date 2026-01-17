@@ -1,0 +1,30 @@
+@namespace Blazwind.Components.Form
+@using Blazwind.Components.Shared
+
+@{
+    var gapClass = Density switch
+    {
+        BwFormDensity.Compact => "gap-2",
+        BwFormDensity.Relaxed => "gap-6",
+        _ => "gap-4"
+    };
+}
+
+<div class="flex flex-wrap @gapClass @Class">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
+    
+    /// <summary>Density override</summary>
+    [Parameter] public BwFormDensity? DensityOverride { get; set; }
+    
+    /// <summary>Additional CSS class</summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Child content</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    private BwFormDensity Density => DensityOverride ?? CascadedDensity ?? BwFormDensity.Normal;
+}

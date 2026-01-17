@@ -1,0 +1,69 @@
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Services
+@using Blazwind.Components.Dialog
+
+@namespace Blazwind.Components.Dialog
+
+<div class="flex flex-col h-full rounded overflow-hidden border @ContainerClass shadow-sm">
+    <div class="p-5 flex flex-col gap-4">
+        <div class="flex items-start gap-4">
+            <div class="mt-0.5 text-3xl shrink-0">
+                @((MarkupString)GetIconHtml())
+            </div>
+            <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">@Title</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">@Message</p>
+            </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 mt-2">
+            @if (!string.IsNullOrEmpty(CancelText))
+            {
+                <BwButton Text="@CancelText" Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Medium" OnClick="Cancel" Class="!px-4 !py-2" />
+            }
+            <BwButton Text="@ConfirmText" Color="@Color" Variant="BwVariant.Filled" Size="BwSize.Medium" OnClick="Confirm" Class="!px-4 !py-2 shadow-sm" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] Blazwind.Components.Services.DialogInstance DialogInstance { get; set; } = default!;
+    [Inject] DialogService DialogService { get; set; } = default!;
+
+    [Parameter] public string Title { get; set; } = "Bildirim";
+    [Parameter] public string Message { get; set; } = "";
+    [Parameter] public BwColor Color { get; set; } = BwColor.Info;
+    [Parameter] public string ConfirmText { get; set; } = "Tamam";
+    [Parameter] public string? CancelText { get; set; }
+
+    private string ContainerClass => Color switch
+    {
+        BwColor.Success => "bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800",
+        BwColor.Warning => "bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800",
+        BwColor.Danger => "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800",
+        BwColor.Info => "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800",
+        _ => "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700"
+    };
+
+    private string GetIconHtml()
+    {
+        return Color switch
+        {
+            BwColor.Success => "<i class=\"fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400\"></i>",
+            BwColor.Warning => "<i class=\"fa-solid fa-triangle-exclamation text-amber-600 dark:text-amber-400\"></i>",
+            BwColor.Danger => "<i class=\"fa-solid fa-circle-xmark text-red-600 dark:text-red-400\"></i>",
+            _ => "<i class=\"fa-solid fa-circle-info text-blue-600 dark:text-blue-400\"></i>"
+        };
+    }
+
+    private void Confirm()
+    {
+        DialogService.Close(DialogInstance, DialogResult.Ok((object)true));
+    }
+
+    private void Cancel()
+    {
+        DialogService.Close(DialogInstance, DialogResult.Cancel());
+    }
+}

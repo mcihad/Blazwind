@@ -1,0 +1,101 @@
+@page "/components/radio"
+@using Blazwind.Components.Input
+
+<PageTitle>Radio & Group Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Radio Selection"
+            Description="Single selection lists and option groups."
+            Icon="fa-regular fa-circle-dot"
+            Color="BwColor.Info"/>
+
+    <BwRow Class="grid md:grid-cols-2 gap-6">
+        @* Basic String Usage *@
+        <BwCard Title="Basic Usage" Subtitle="Binding with string value" Icon="fa-solid fa-font"
+                Color="BwColor.Primary">
+            <BwRadioGroup TValue="string" @bind-Value="_selectedPlan" Label="Select Plan" Name="plan-group">
+                <BwRadio Value="@("Free")" Label="Free Plan"/>
+                <BwRadio Value="@("Pro")" Label="Pro Plan"/>
+                <BwRadio Value="@("Enterprise")" Label="Enterprise"/>
+            </BwRadioGroup>
+
+            <div class="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600">
+                Selected: <strong>@_selectedPlan</strong>
+            </div>
+        </BwCard>
+
+        @* Enum Usage & Orientation *@
+        <BwCard Title="Enum & Horizontal Position" Subtitle="Enum binding and horizontal layout"
+                Icon="fa-solid fa-layer-group" Color="BwColor.Primary">
+            <BwRadioGroup TValue="RoleType" @bind-Value="_selectedRole" Label="Role Assignment"
+                          Orientation="BwOrientation.Horizontal">
+                <BwRadio Value="@RoleType.Admin" Label="Administrator"/>
+                <BwRadio Value="@RoleType.Editor" Label="Editor"/>
+                <BwRadio Value="@RoleType.Viewer" Label="Viewer"/>
+            </BwRadioGroup>
+
+            <div class="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600">
+                Selected Role: <strong>@_selectedRole</strong>
+            </div>
+        </BwCard>
+    </BwRow>
+
+    @* Rich Content *@
+    <BwCard Title="Rich Content" Subtitle="Descriptive and detailed selections" Icon="fa-solid fa-list-check"
+            Color="BwColor.Success">
+        <BwRadioGroup TValue="string" @bind-Value="_notificationMethod" Label="Notification Preference">
+            <BwRadio Value="@("Email")" Label="Email Notifications"
+                     SubLabel="Daily summaries and important alerts are sent to your email address."/>
+            <div class="my-2 border-t border-gray-100"></div>
+            <BwRadio Value="@("Push")" Label="Instant Notifications (Push)"
+                     SubLabel="You receive instant notifications through the browser."/>
+            <div class="my-2 border-t border-gray-100"></div>
+            <BwRadio Value="@("SMS")" Label="SMS Notifications" SubLabel="SMS is sent to your phone for emergencies."
+                     IsDisabled="true"/>
+        </BwRadioGroup>
+
+        <div class="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600">
+            Method: <strong>@_notificationMethod</strong>
+        </div>
+    </BwCard>
+    @* Programmatic Items *@
+    <BwCard Title="Programmatic Items" Subtitle="Radio buttons created from code" Icon="fa-solid fa-code"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRadioGroup TValue="string"
+                          @bind-Value="_selectedCity"
+                          Items="@_cityItems"
+                          Label="Select City"
+                          HelperText="List of most popular cities"/>
+
+            <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded text-sm text-amber-700 dark:text-amber-300">
+                Selected City: <strong>@_selectedCity</strong>
+            </div>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _selectedPlan = "Pro";
+    private RoleType _selectedRole = RoleType.Editor;
+    private string _notificationMethod = "Email";
+    private string _selectedCity = "istanbul";
+
+    // Programmatic items
+    private readonly List<BwSelectItem<string>> _cityItems = new()
+    {
+        new BwSelectItem<string>("istanbul", "İstanbul"),
+        new BwSelectItem<string>("ankara", "Ankara"),
+        new BwSelectItem<string>("izmir", "İzmir"),
+        new BwSelectItem<string>("bursa", "Bursa"),
+        new BwSelectItem<string>("antalya", "Antalya", true)
+    };
+
+    public enum RoleType
+    {
+        Admin,
+        Editor,
+        Viewer
+    }
+
+}

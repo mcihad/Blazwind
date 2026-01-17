@@ -1,0 +1,235 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Web
+@inherits BwBaseInput<string>
+@inject IJSRuntime JS
+
+@{
+    var marginClass = GetDensityMarginClass();
+    var labelSpacingClass = GetLabelSpacingClass();
+    var showCounter = ShowCounter && MaxLength.HasValue;
+    var currentLength = Value?.Length ?? 0;
+    
+    var baseClass = "w-full border rounded transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-0 resize-none";
+    var stateClass = HasError
+        ? "border-red-300 dark:border-red-700 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder-red-300 dark:placeholder-red-500" 
+        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500";
+    var disabledClass = IsDisabled ? "bg-gray-50 dark:bg-gray-900 text-gray-400 border-gray-200 dark:border-gray-700 cursor-not-allowed" : "";
+    var paddingClass = "p-3 text-sm";
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @switch (EffectiveLabelPosition)
+    {
+        case BwLabelPosition.Top:
+            @if (HasLabel)
+            {
+                <div class="flex items-center gap-1 @labelSpacingClass">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                    @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                    {
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    }
+                </div>
+            }
+            <div class="relative">
+                <textarea @ref="_textareaRef"
+                          class="@baseClass @stateClass @disabledClass @paddingClass"
+                          placeholder="@Placeholder"
+                          disabled="@IsDisabled"
+                          readonly="@IsReadOnly"
+                          rows="@Rows"
+                          maxlength="@MaxLength"
+                          style="@GetStyleString()"
+                          @oninput="HandleInputEvent"
+                          @onfocus="HandleFocusEvent"
+                          @onblur="HandleBlurEvent"
+                          @onkeydown="HandleKeyDownEvent"
+                          @onkeyup="HandleKeyUpEvent">@Value</textarea>
+            </div>
+            break;
+            
+        case BwLabelPosition.Left:
+            <div class="flex items-start gap-3">
+                @if (HasLabel)
+                {
+                    <div class="flex items-center gap-1 pt-3 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                            @Label
+                            @if (IsRequired)
+                            {
+                                <span class="text-red-500 ml-0.5">*</span>
+                            }
+                        </label>
+                        @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                        {
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        }
+                    </div>
+                }
+                <div class="flex-1 relative">
+                    <textarea @ref="_textareaRef"
+                              class="@baseClass @stateClass @disabledClass @paddingClass"
+                              placeholder="@Placeholder"
+                              disabled="@IsDisabled"
+                              readonly="@IsReadOnly"
+                              rows="@Rows"
+                              maxlength="@MaxLength"
+                              style="@GetStyleString()"
+                              @oninput="HandleInputEvent"
+                              @onfocus="HandleFocusEvent"
+                              @onblur="HandleBlurEvent"
+                              @onkeydown="HandleKeyDownEvent"
+                              @onkeyup="HandleKeyUpEvent">@Value</textarea>
+                </div>
+            </div>
+            break;
+            
+        case BwLabelPosition.Hidden:
+        default:
+            <div class="relative">
+                <textarea @ref="_textareaRef"
+                          class="@baseClass @stateClass @disabledClass @paddingClass"
+                          placeholder="@Placeholder"
+                          disabled="@IsDisabled"
+                          readonly="@IsReadOnly"
+                          rows="@Rows"
+                          maxlength="@MaxLength"
+                          style="@GetStyleString()"
+                          @oninput="HandleInputEvent"
+                          @onfocus="HandleFocusEvent"
+                          @onblur="HandleBlurEvent"
+                          @onkeydown="HandleKeyDownEvent"
+                          @onkeyup="HandleKeyUpEvent">@Value</textarea>
+            </div>
+            break;
+    }
+    
+    <div class="flex justify-between items-center mt-1">
+        @if (HasError)
+        {
+            <p class="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                @DisplayError
+            </p>
+        }
+        else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+        {
+            <p class="text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        }
+        else
+        {
+            <span></span>
+        }
+        
+        @if (showCounter)
+        {
+            <span class="text-xs @(currentLength >= MaxLength ? "text-red-500 font-medium" : "text-gray-400")">
+                @currentLength / @MaxLength
+            </span>
+        }
+    </div>
+</div>
+
+@code {
+    /// <summary>Number of visible rows</summary>
+    [Parameter] public int Rows { get; set; } = 3;
+    
+    /// <summary>Minimum rows when auto-resizing</summary>
+    [Parameter] public int MinRows { get; set; } = 2;
+    
+    /// <summary>Maximum rows when auto-resizing</summary>
+    [Parameter] public int MaxRows { get; set; } = 10;
+    
+    /// <summary>Maximum character count</summary>
+    [Parameter] public int? MaxLength { get; set; }
+    
+    /// <summary>Show character counter</summary>
+    [Parameter] public bool ShowCounter { get; set; } = true;
+    
+    /// <summary>Auto-resize based on content</summary>
+    [Parameter] public bool AutoResize { get; set; }
+    
+    /// <summary>Input event for real-time updates</summary>
+    [Parameter] public EventCallback<ChangeEventArgs> OnInput { get; set; }
+
+    private ElementReference _textareaRef;
+    private int _lineHeight = 24;
+
+    private string GetStyleString()
+    {
+        if (!AutoResize) return "";
+        
+        var minHeight = MinRows * _lineHeight + 24;
+        var maxHeight = MaxRows * _lineHeight + 24;
+        return $"min-height: {minHeight}px; max-height: {maxHeight}px; overflow-y: auto;";
+    }
+
+    private async Task HandleInputEvent(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await ValueChanged.InvokeAsync(Value);
+        await OnInput.InvokeAsync(e);
+        await OnChange.InvokeAsync(Value);
+        
+        if (CascadedEditContext != null && For != null)
+        {
+            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+        }
+        
+        if (AutoResize)
+        {
+            await AdjustHeight();
+        }
+    }
+
+    private async Task HandleFocusEvent(FocusEventArgs e)
+    {
+        IsFocused = true;
+        await HandleFocus(e);
+    }
+
+    private async Task HandleBlurEvent(FocusEventArgs e)
+    {
+        IsFocused = false;
+        await HandleBlur(e);
+    }
+
+    private async Task HandleKeyDownEvent(KeyboardEventArgs e)
+    {
+        await HandleKeyDown(e);
+    }
+    
+    private async Task HandleKeyUpEvent(KeyboardEventArgs e)
+    {
+        await HandleKeyUp(e);
+    }
+
+    private async Task AdjustHeight()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("eval", $@"
+                (function() {{
+                    var el = document.querySelector('[_bl_{_textareaRef.Id}]') || document.activeElement;
+                    if (el && el.tagName === 'TEXTAREA') {{
+                        el.style.height = 'auto';
+                        el.style.height = Math.min(el.scrollHeight, {MaxRows * _lineHeight + 24}) + 'px';
+                    }}
+                }})()
+            ");
+        }
+        catch
+        {
+            // JS not available
+        }
+    }
+}

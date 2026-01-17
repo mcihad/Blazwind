@@ -1,0 +1,253 @@
+@page "/components/workflow"
+@using Blazwind.Components.Workflow
+
+<PageTitle>Workflow Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Workflow Component"
+            Description="BPMN-style process visualization and tracking component."
+            Icon="fa-solid fa-diagram-project"
+            Color="BwColor.Primary"/>
+
+    @* Application Approval Workflow *@
+    <BwCard Title="Application Approval Workflow" Subtitle="Citizen application approval process example."
+            Icon="fa-solid fa-file-signature" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwWorkflow Nodes="_applicationWorkflowNodes"
+                        Edges="_applicationWorkflowEdges"
+                        Height="300px"
+                        OnNodeClick="HandleNodeClick"/>
+
+            @if (_selectedWorkflowNode != null)
+            {
+                <div class="p-4 bg-gray-50 rounded border border-gray-200">
+                    <h4 class="font-semibold mb-2">@_selectedWorkflowNode.Label</h4>
+                    <p class="text-sm text-gray-600">@_selectedWorkflowNode.Description</p>
+                    <p class="text-xs text-gray-400 mt-2">
+                        Status: <span
+                            class="font-medium @GetStatusColor(_selectedWorkflowNode.Status)">@GetStatusText(_selectedWorkflowNode.Status)</span>
+                    </p>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
+
+    @* Leave Request Workflow *@
+    <BwCard Title="Leave Request Workflow" Subtitle="Personnel leave request process." Icon="fa-solid fa-calendar-check"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Sm">
+                <BwButton Text="Approve Request" Icon="fa-solid fa-check" Size="BwSize.Small" Color="BwColor.Success"
+                          OnClick="ApproveLeaveRequest"/>
+                <BwButton Text="Reject Request" Icon="fa-solid fa-times" Size="BwSize.Small" Color="BwColor.Danger"
+                          Variant="BwVariant.Outline" OnClick="RejectLeaveRequest"/>
+                <BwButton Text="Reset" Icon="fa-solid fa-rotate-left" Size="BwSize.Small" Variant="BwVariant.Ghost"
+                          OnClick="ResetLeaveRequest"/>
+            </BwRow>
+
+            <BwWorkflow @ref="_leaveWorkflow"
+                        Nodes="_leaveWorkflowNodes"
+                        Edges="_leaveWorkflowEdges"
+                        Height="250px"/>
+        </BwColumn>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Approval/Reject Decision Flow *@
+        <BwCard Title="Approval/Reject Decision Flow" Subtitle="Workflow with decision points."
+                Icon="fa-solid fa-code-branch" Color="BwColor.Warning">
+            <BwWorkflow Nodes="_decisionWorkflowNodes"
+                        Edges="_decisionWorkflow_edges"
+                        Height="300px"
+                        Direction="WorkflowDirection.Vertical"/>
+        </BwCard>
+
+        @* Parallel Process *@
+        <BwCard Title="Parallel Process" Subtitle="Concurrent steps." Icon="fa-solid fa-arrows-split"
+                Color="BwColor.Info">
+            <BwWorkflow Nodes="_parallelWorkflowNodes"
+                        Edges="_parallelWorkflowEdges"
+                        Height="300px"
+                        Direction="WorkflowDirection.Vertical"/>
+        </BwCard>
+    </BwRow>
+
+    @* Tender Process - Comprehensive *@
+    <BwCard Title="Tender Process" Subtitle="Comprehensive municipal tender workflow." Icon="fa-solid fa-gavel"
+            Color="BwColor.Danger">
+        <BwWorkflow Nodes="_tenderWorkflowNodes"
+                    Edges="_tenderWorkflowEdges"
+                    Height="350px"
+                    NodeWidth="140"
+                    NodeHeight="50"
+                    HorizontalSpacing="60"/>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwWorkflow? _leaveWorkflow;
+    private WorkflowNode? _selectedWorkflowNode;
+
+    // Application Approval Workflow
+    private readonly List<WorkflowNode> _applicationWorkflowNodes = new()
+    {
+        WorkflowNode.CreateStart("start", "Application Received"),
+        WorkflowNode.CreateTask("check", "Document Check", WorkflowNodeStatus.Completed),
+        WorkflowNode.CreateTask("review", "Review", WorkflowNodeStatus.Active),
+        WorkflowNode.CreateTask("approve", "Approval"),
+        WorkflowNode.CreateEnd("end", "Completed")
+    };
+
+    private readonly List<WorkflowEdge> _applicationWorkflowEdges = new()
+    {
+        WorkflowEdge.Create("start", "check"),
+        WorkflowEdge.Create("check", "review"),
+        WorkflowEdge.Create("review", "approve"),
+        WorkflowEdge.Create("approve", "end")
+    };
+
+    // Leave Request Workflow
+    private List<WorkflowNode> _leaveWorkflowNodes = new()
+    {
+        WorkflowNode.CreateStart("start", "Request"),
+        WorkflowNode.CreateTask("manager", "Manager Approval", WorkflowNodeStatus.Active),
+        WorkflowNode.CreateTask("hr", "HR Approval"),
+        WorkflowNode.CreateEnd("end", "Completed")
+    };
+
+    private readonly List<WorkflowEdge> _leaveWorkflowEdges = new()
+    {
+        WorkflowEdge.Create("start", "manager"),
+        WorkflowEdge.Create("manager", "hr"),
+        WorkflowEdge.Create("hr", "end")
+    };
+
+    // Decision Flow
+    private readonly List<WorkflowNode> _decisionWorkflowNodes = new()
+    {
+        WorkflowNode.CreateStart("start", "Request"),
+        WorkflowNode.CreateDecision("decision", "Approve?"),
+        WorkflowNode.CreateTask("approved", "Approved", WorkflowNodeStatus.Completed),
+        WorkflowNode.CreateTask("rejected", "Rejected", WorkflowNodeStatus.Error),
+        WorkflowNode.CreateEnd("end", "Result")
+    };
+
+    private readonly List<WorkflowEdge> _decisionWorkflow_edges = new()
+    {
+        WorkflowEdge.Create("start", "decision"),
+        WorkflowEdge.Create("decision", "approved", "Yes"),
+        WorkflowEdge.Create("decision", "rejected", "No"),
+        WorkflowEdge.Create("approved", "end"),
+        WorkflowEdge.Create("rejected", "end")
+    };
+
+    // Parallel Process
+    private readonly List<WorkflowNode> _parallelWorkflowNodes = new()
+    {
+        WorkflowNode.CreateStart("start", "Start"),
+        new WorkflowNode { Id = "parallel", Type = "parallel", Label = "Parallel" },
+        WorkflowNode.CreateTask("task1", "Prepare Document", WorkflowNodeStatus.Active),
+        WorkflowNode.CreateTask("task2", "Receive Payment", WorkflowNodeStatus.Active),
+        WorkflowNode.CreateEnd("end", "Finish")
+    };
+
+    private readonly List<WorkflowEdge> _parallelWorkflowEdges = new()
+    {
+        WorkflowEdge.Create("start", "parallel"),
+        WorkflowEdge.Create("parallel", "task1"),
+        WorkflowEdge.Create("parallel", "task2"),
+        WorkflowEdge.Create("task1", "end"),
+        WorkflowEdge.Create("task2", "end")
+    };
+
+    // Tender Process
+    private readonly List<WorkflowNode> _tenderWorkflowNodes = new()
+    {
+        WorkflowNode.CreateStart("start", "Tender Announcement"),
+        WorkflowNode.CreateTask("docs", "Prepare Specifications", WorkflowNodeStatus.Completed),
+        WorkflowNode.CreateTask("announce", "Announcement Publication", WorkflowNodeStatus.Completed),
+        WorkflowNode.CreateTask("collect", "Collect Bids", WorkflowNodeStatus.Completed),
+        WorkflowNode.CreateTask("evaluate", "Evaluation", WorkflowNodeStatus.Active),
+        WorkflowNode.CreateDecision("decision", "Suitable Bid?"),
+        WorkflowNode.CreateTask("award", "Award Decision"),
+        WorkflowNode.CreateTask("cancel", "Cancel", WorkflowNodeStatus.Skipped),
+        WorkflowNode.CreateTask("contract", "Contract"),
+        WorkflowNode.CreateEnd("end", "Completed")
+    };
+
+    private readonly List<WorkflowEdge> _tenderWorkflowEdges = new()
+    {
+        WorkflowEdge.Create("start", "docs"),
+        WorkflowEdge.Create("docs", "announce"),
+        WorkflowEdge.Create("announce", "collect"),
+        WorkflowEdge.Create("collect", "evaluate"),
+        WorkflowEdge.Create("evaluate", "decision"),
+        WorkflowEdge.Create("decision", "award", "Yes"),
+        WorkflowEdge.Create("decision", "cancel", "No"),
+        WorkflowEdge.Create("award", "contract"),
+        WorkflowEdge.Create("contract", "end"),
+        WorkflowEdge.Create("cancel", "end")
+    };
+
+    private void HandleNodeClick(WorkflowNode node)
+    {
+        _selectedWorkflowNode = node;
+        StateHasChanged();
+    }
+
+    private async Task ApproveLeaveRequest()
+    {
+        if (_leaveWorkflow != null)
+        {
+            await _leaveWorkflow.UpdateNodeStatusAsync("manager", WorkflowNodeStatus.Completed);
+            await _leaveWorkflow.UpdateNodeStatusAsync("hr", WorkflowNodeStatus.Active);
+        }
+    }
+
+    private async Task RejectLeaveRequest()
+    {
+        if (_leaveWorkflow != null)
+        {
+            await _leaveWorkflow.UpdateNodeStatusAsync("manager", WorkflowNodeStatus.Error);
+            await _leaveWorkflow.UpdateNodeStatusAsync("hr", WorkflowNodeStatus.Skipped);
+        }
+    }
+
+    private void ResetLeaveRequest()
+    {
+        _leaveWorkflowNodes = new List<WorkflowNode>
+        {
+            WorkflowNode.CreateStart("start", "Request"),
+            WorkflowNode.CreateTask("manager", "Manager Approval", WorkflowNodeStatus.Active),
+            WorkflowNode.CreateTask("hr", "HR Approval"),
+            WorkflowNode.CreateEnd("end", "Completed")
+        };
+        StateHasChanged();
+    }
+
+    private string GetStatusColor(string? status)
+    {
+        return status switch
+        {
+            "completed" => "text-green-600",
+            "active" => "text-blue-600",
+            "error" => "text-red-600",
+            "skipped" => "text-gray-400",
+            _ => "text-gray-600"
+        };
+    }
+
+    private string GetStatusText(string? status)
+    {
+        return status switch
+        {
+            "completed" => "Completed",
+            "active" => "In Progress",
+            "error" => "Error",
+            "skipped" => "Skipped",
+            "pending" => "Pending",
+            _ => "Unknown"
+        };
+    }
+
+}

@@ -1,0 +1,385 @@
+@page "/components/flex"
+
+<PageTitle>Flex - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwFlex"
+            Description="Layout component that fully encapsulates the CSS Flexbox system. Create professional flex layouts without knowing Tailwind."
+            Icon="fa-solid fa-arrows-left-right-to-line"
+            Color="BwColor.Primary"/>
+
+    @* 1. Temel Kullanım *@
+    <BwCard Title="Basic Usage" Subtitle="Simple flex container example" Color="BwColor.Primary">
+        <BwFlex Gap="BwSpacing.Md">
+            <div class="bg-blue-500 text-white px-4 py-2 rounded">Item 1</div>
+            <div class="bg-blue-500 text-white px-4 py-2 rounded">Item 2</div>
+            <div class="bg-blue-500 text-white px-4 py-2 rounded">Item 3</div>
+        </BwFlex>
+    </BwCard>
+
+    @* 2. Direction *@
+    <BwCard Title="Flex Direction" Subtitle="Direction control: row, column and reverse variants" Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Lg">
+            <BwColumn Span="12" Md="6">
+                <p class="text-sm font-medium text-gray-600 mb-2">Row (Default)</p>
+                <BwFlex Direction="BwFlexDirection.Row" Gap="BwSpacing.Sm" Class="bg-gray-100 p-4 rounded">
+                    <div class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">1</div>
+                    <div class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">2</div>
+                    <div class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">3</div>
+                </BwFlex>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <p class="text-sm font-medium text-gray-600 mb-2">Row Reverse</p>
+                <BwFlex Direction="BwFlexDirection.RowReverse" Gap="BwSpacing.Sm" Class="bg-gray-100 p-4 rounded">
+                    <div class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">1</div>
+                    <div class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">2</div>
+                    <div class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">3</div>
+                </BwFlex>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <p class="text-sm font-medium text-gray-600 mb-2">Column</p>
+                <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Sm" Class="bg-gray-100 p-4 rounded">
+                    <div class="bg-violet-500 text-white px-3 py-1 rounded text-sm">1</div>
+                    <div class="bg-violet-500 text-white px-3 py-1 rounded text-sm">2</div>
+                    <div class="bg-violet-500 text-white px-3 py-1 rounded text-sm">3</div>
+                </BwFlex>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <p class="text-sm font-medium text-gray-600 mb-2">Column Reverse</p>
+                <BwFlex Direction="BwFlexDirection.ColumnReverse" Gap="BwSpacing.Sm" Class="bg-gray-100 p-4 rounded">
+                    <div class="bg-violet-500 text-white px-3 py-1 rounded text-sm">1</div>
+                    <div class="bg-violet-500 text-white px-3 py-1 rounded text-sm">2</div>
+                    <div class="bg-violet-500 text-white px-3 py-1 rounded text-sm">3</div>
+                </BwFlex>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* 3. Justify Content *@
+    <BwCard Title="Justify Content (Main Axis Alignment)" Subtitle="Distribution of items on the main axis"
+            Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            @foreach (var justify in Enum.GetValues<BwMainAxisAlignment>())
+            {
+                <div>
+                    <p class="text-xs font-medium text-gray-500 mb-1">@justify</p>
+                    <BwFlex JustifyContent="@justify" Gap="BwSpacing.Sm"
+                            Class="bg-emerald-50 p-3 rounded border border-emerald-200">
+                        <div class="bg-emerald-500 text-white px-3 py-1 rounded text-sm">A</div>
+                        <div class="bg-emerald-500 text-white px-3 py-1 rounded text-sm">B</div>
+                        <div class="bg-emerald-500 text-white px-3 py-1 rounded text-sm">C</div>
+                    </BwFlex>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
+
+    @* 4. Align Items *@
+    <BwCard Title="Align Items (Cross Axis Alignment)" Subtitle="Alignment of items on the cross axis"
+            Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Md">
+            @foreach (var align in Enum.GetValues<BwCrossAxisAlignment>())
+            {
+                <BwColumn Span="12" Md="4">
+                    <p class="text-xs font-medium text-gray-500 mb-1">@align</p>
+                    <BwFlex AlignItems="@align" Gap="BwSpacing.Sm"
+                            Class="bg-amber-50 p-3 rounded border border-amber-200 h-24">
+                        <div class="bg-amber-500 text-white px-3 py-1 rounded text-sm">Short</div>
+                        <div class="bg-amber-500 text-white px-3 py-4 rounded text-sm">Long</div>
+                        <div class="bg-amber-500 text-white px-3 py-2 rounded text-sm">Medium</div>
+                    </BwFlex>
+                </BwColumn>
+            }
+        </BwRow>
+    </BwCard>
+
+    @* 5. Wrap & Gap *@
+    <BwCard Title="Wrap and Gap" Subtitle="Row wrapping and spacing control" Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Lg">
+            <BwColumn Span="12" Md="6">
+                <p class="text-sm font-medium text-gray-600 mb-2">Wrap + Gap Medium</p>
+                <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Md" Class="bg-gray-100 p-4 rounded">
+                    @for (var i = 1; i <= 12; i++)
+                    {
+                        <div class="bg-slate-600 text-white px-4 py-2 rounded text-sm">Item @i</div>
+                    }
+                </BwFlex>
+            </BwColumn>
+            <BwColumn Span="12" Md="6">
+                <p class="text-sm font-medium text-gray-600 mb-2">Wrap + Gap Large</p>
+                <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Lg" Class="bg-gray-100 p-4 rounded">
+                    @for (var i = 1; i <= 8; i++)
+                    {
+                        <div class="bg-slate-700 text-white px-4 py-2 rounded text-sm">Item @i</div>
+                    }
+                </BwFlex>
+            </BwColumn>
+            <BwColumn Span="12">
+                <p class="text-sm font-medium text-gray-600 mb-2">Separate X and Y Gap (GapX=8, GapY=2)</p>
+                <BwFlex Wrap="BwFlexWrap.Wrap" GapX="8" GapY="2" Class="bg-gray-100 p-4 rounded">
+                    @for (var i = 1; i <= 10; i++)
+                    {
+                        <div class="bg-gray-800 text-white px-4 py-2 rounded text-sm">Item @i</div>
+                    }
+                </BwFlex>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* 6. Flex Item - Grow & Shrink *@
+    <BwCard Title="Flex Item: Grow and Shrink" Subtitle="Growth and shrinking behavior of items" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Grow=0 (Default - Does not grow)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-red-50 p-4 rounded border border-red-200">
+                    <BwFlexItem Grow="0" Class="bg-red-500 text-white px-4 py-2 rounded">Grow 0</BwFlexItem>
+                    <BwFlexItem Grow="0" Class="bg-red-500 text-white px-4 py-2 rounded">Grow 0</BwFlexItem>
+                    <BwFlexItem Grow="0" Class="bg-red-500 text-white px-4 py-2 rounded">Grow 0</BwFlexItem>
+                </BwFlex>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Grow=1 (Equal Growth)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-red-50 p-4 rounded border border-red-200">
+                    <BwFlexItem Grow="1" Class="bg-red-600 text-white px-4 py-2 rounded">Grow 1</BwFlexItem>
+                    <BwFlexItem Grow="1" Class="bg-red-600 text-white px-4 py-2 rounded">Grow 1</BwFlexItem>
+                    <BwFlexItem Grow="1" Class="bg-red-600 text-white px-4 py-2 rounded">Grow 1</BwFlexItem>
+                </BwFlex>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Different Grow Values (1, 2, 1)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-red-50 p-4 rounded border border-red-200">
+                    <BwFlexItem Grow="1" Class="bg-rose-500 text-white px-4 py-2 rounded text-center">1</BwFlexItem>
+                    <BwFlexItem Grow="2" Class="bg-rose-600 text-white px-4 py-2 rounded text-center">2</BwFlexItem>
+                    <BwFlexItem Grow="1" Class="bg-rose-500 text-white px-4 py-2 rounded text-center">1</BwFlexItem>
+                </BwFlex>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Shrink=0 (No shrinking - Overflow)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-red-50 p-4 rounded border border-red-200 overflow-x-auto">
+                    <BwFlexItem Shrink="0" Class="bg-pink-500 text-white px-8 py-2 rounded whitespace-nowrap">Shrink 0 -
+                        Long content
+                    </BwFlexItem>
+                    <BwFlexItem Shrink="0" Class="bg-pink-500 text-white px-8 py-2 rounded whitespace-nowrap">Shrink 0 -
+                        Long content
+                    </BwFlexItem>
+                    <BwFlexItem Shrink="0" Class="bg-pink-500 text-white px-8 py-2 rounded whitespace-nowrap">Shrink 0 -
+                        Long content
+                    </BwFlexItem>
+                </BwFlex>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* 7. Flex Item - Basis *@
+    <BwCard Title="Flex Item: Basis" Subtitle="Initial size control" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Ratio with Basis (1/4, 1/2, 1/4)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-sky-50 p-4 rounded border border-sky-200">
+                    <BwFlexItem Basis="1/4" Class="bg-sky-500 text-white px-4 py-2 rounded text-center">1/4</BwFlexItem>
+                    <BwFlexItem Basis="1/2" Class="bg-sky-600 text-white px-4 py-2 rounded text-center">1/2</BwFlexItem>
+                    <BwFlexItem Basis="1/4" Class="bg-sky-500 text-white px-4 py-2 rounded text-center">1/4</BwFlexItem>
+                </BwFlex>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Basis=0 + Grow (Equal distribution)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-sky-50 p-4 rounded border border-sky-200">
+                    <BwFlexItem Basis="0" Grow="1" Class="bg-cyan-500 text-white px-4 py-2 rounded text-center">Equal
+                    </BwFlexItem>
+                    <BwFlexItem Basis="0" Grow="1" Class="bg-cyan-500 text-white px-4 py-2 rounded text-center">Equal
+                        Distribution
+                    </BwFlexItem>
+                    <BwFlexItem Basis="0" Grow="1" Class="bg-cyan-500 text-white px-4 py-2 rounded text-center">Equal
+                    </BwFlexItem>
+                </BwFlex>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Px based Basis (200px)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-sky-50 p-4 rounded border border-sky-200">
+                    <BwFlexItem Basis="200px" Class="bg-teal-500 text-white px-4 py-2 rounded text-center">200px
+                    </BwFlexItem>
+                    <BwFlexItem Grow="1" Class="bg-teal-600 text-white px-4 py-2 rounded text-center">Grow 1 (Remaining
+                        space)
+                    </BwFlexItem>
+                </BwFlex>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* 8. Flex Item - Order *@
+    <BwCard Title="Flex Item: Order" Subtitle="Visual ordering control" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">DOM order: A, B, C - Visual order: C, A, B</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-green-50 p-4 rounded border border-green-200">
+                    <BwFlexItem Order="2" Class="bg-green-500 text-white px-4 py-2 rounded">A (Order 2)</BwFlexItem>
+                    <BwFlexItem Order="3" Class="bg-green-600 text-white px-4 py-2 rounded">B (Order 3)</BwFlexItem>
+                    <BwFlexItem Order="1" Class="bg-green-700 text-white px-4 py-2 rounded">C (Order 1)</BwFlexItem>
+                </BwFlex>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Order -9999 (first) and 9999 (last)</p>
+                <BwFlex Gap="BwSpacing.Sm" Class="bg-green-50 p-4 rounded border border-green-200">
+                    <BwFlexItem Class="bg-emerald-400 text-white px-4 py-2 rounded">Normal 1</BwFlexItem>
+                    <BwFlexItem Order="9999" Class="bg-emerald-600 text-white px-4 py-2 rounded">Last</BwFlexItem>
+                    <BwFlexItem Class="bg-emerald-400 text-white px-4 py-2 rounded">Normal 2</BwFlexItem>
+                    <BwFlexItem Order="-9999" Class="bg-emerald-700 text-white px-4 py-2 rounded">First</BwFlexItem>
+                </BwFlex>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* 9. Flex Item - Align Self *@
+    <BwCard Title="Flex Item: Align Self" Subtitle="Individual item alignment override" Color="BwColor.Warning">
+        <BwFlex AlignItems="BwCrossAxisAlignment.Start" Gap="BwSpacing.Sm"
+                Class="bg-orange-50 p-4 rounded border border-orange-200 h-32">
+            <BwFlexItem Class="bg-orange-400 text-white px-3 py-1 rounded">Start (default)</BwFlexItem>
+            <BwFlexItem AlignSelf="BwAlignSelf.Center" Class="bg-orange-500 text-white px-3 py-1 rounded">Center
+            </BwFlexItem>
+            <BwFlexItem AlignSelf="BwAlignSelf.End" Class="bg-orange-600 text-white px-3 py-1 rounded">End</BwFlexItem>
+            <BwFlexItem AlignSelf="BwAlignSelf.Stretch" Class="bg-orange-700 text-white px-3 py-1 rounded">Stretch
+            </BwFlexItem>
+        </BwFlex>
+    </BwCard>
+
+    @* 10. Inline Flex *@
+    <BwCard Title="Inline Flex" Subtitle="Inline flex usage" Color="BwColor.Secondary">
+        <p class="text-gray-700">
+            This is a paragraph. It contains an
+            <BwFlex Inline="true" Gap="BwSpacing.Xs" AlignItems="BwCrossAxisAlignment.Center"
+                    Class="bg-purple-100 px-2 py-0.5 rounded">
+                <span class="text-purple-600 font-medium">inline</span>
+                <i class="fa-solid fa-check text-purple-500 text-xs"></i>
+            </BwFlex>
+            flex element. It does not break the text flow.
+        </p>
+    </BwCard>
+
+    @* 11. Real-world Örnekleri *@
+    <BwCard Title="Real-world Examples" Subtitle="Practical usage scenarios" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Lg">
+            @* Media Card *@
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Media Card</p>
+                <BwFlex Gap="BwSpacing.Md" Class="bg-white border border-gray-200 p-4 rounded shadow-sm">
+                    <div
+                        class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded flex items-center justify-center text-white text-2xl shrink-0">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
+                    <BwFlexItem Grow="1">
+                        <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Xs">
+                            <span class="font-semibold text-gray-900">Title</span>
+                            <span class="text-sm text-gray-500">Subtitle or description text goes here.</span>
+                            <BwFlex Gap="BwSpacing.Sm" Class="mt-2">
+                                <BwButton Size="BwSize.Small" Variant="BwVariant.Filled">Edit</BwButton>
+                                <BwButton Size="BwSize.Small" Variant="BwVariant.Outline">Delete</BwButton>
+                            </BwFlex>
+                        </BwFlex>
+                    </BwFlexItem>
+                </BwFlex>
+            </div>
+
+            @* Navigation Bar *@
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Navigation Bar</p>
+                <BwFlex JustifyContent="BwMainAxisAlignment.SpaceBetween" AlignItems="BwCrossAxisAlignment.Center"
+                        Class="bg-gray-900 text-white px-6 py-3 rounded">
+                    <BwFlex Gap="BwSpacing.Sm" AlignItems="BwCrossAxisAlignment.Center">
+                        <i class="fa-solid fa-wind text-xl text-blue-400"></i>
+                        <span class="font-bold">Blazwind</span>
+                    </BwFlex>
+                    <BwFlex Gap="BwSpacing.Md">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Home</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Components</a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors">Documentation</a>
+                    </BwFlex>
+                    <BwButton Size="BwSize.Small" Variant="BwVariant.Filled">Login</BwButton>
+                </BwFlex>
+            </div>
+
+            @* Centering *@
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Absolute Centering (Hem yatay hem dikey)</p>
+                <BwFlex JustifyContent="BwMainAxisAlignment.Center" AlignItems="BwCrossAxisAlignment.Center"
+                        Class="bg-gradient-to-br from-purple-500 to-pink-500 h-40 rounded">
+                    <BwFlex Direction="BwFlexDirection.Column" AlignItems="BwCrossAxisAlignment.Center"
+                            Gap="BwSpacing.Sm">
+                        <i class="fa-solid fa-rocket text-4xl text-white"></i>
+                        <span class="text-white text-lg font-semibold">Perfect Centering</span>
+                    </BwFlex>
+                </BwFlex>
+            </div>
+
+            @* Footer *@
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Footer Layout</p>
+                <BwFlex Wrap="BwFlexWrap.Wrap" JustifyContent="BwMainAxisAlignment.SpaceBetween" Gap="BwSpacing.Lg"
+                        Class="bg-gray-100 p-6 rounded">
+                    <BwFlexItem Basis="200px" Grow="1">
+                        <h4 class="font-bold text-gray-800 mb-2">About Us</h4>
+                        <p class="text-sm text-gray-600">Blazwind is a component library designed for modern Blazor
+                            applications.</p>
+                    </BwFlexItem>
+                    <BwFlexItem Basis="200px" Grow="1">
+                        <h4 class="font-bold text-gray-800 mb-2">Links</h4>
+                        <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Xs">
+                            <a href="#" class="text-sm text-blue-600 hover:underline">Documentation</a>
+                            <a href="#" class="text-sm text-blue-600 hover:underline">GitHub</a>
+                            <a href="#" class="text-sm text-blue-600 hover:underline">Support</a>
+                        </BwFlex>
+                    </BwFlexItem>
+                    <BwFlexItem Basis="200px" Grow="1">
+                        <h4 class="font-bold text-gray-800 mb-2">Contact</h4>
+                        <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Xs">
+                            <span class="text-sm text-gray-600"><i class="fa-solid fa-envelope mr-2"></i>info@blazwind.com</span>
+                            <span class="text-sm text-gray-600"><i
+                                    class="fa-solid fa-phone mr-2"></i>+90 555 123 4567</span>
+                        </BwFlex>
+                    </BwFlexItem>
+                </BwFlex>
+            </div>
+
+            @* Holy Grail Layout *@
+            <div>
+                <p class="text-sm font-medium text-gray-600 mb-2">Holy Grail Layout</p>
+                <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.None"
+                        Class="border border-gray-300 rounded overflow-hidden">
+                    @* Header *@
+                    <div class="bg-blue-600 text-white px-4 py-3 text-center font-semibold">Header</div>
+                    @* Main *@
+                    <BwFlex Gap="BwSpacing.None" Class="min-h-[200px]">
+                        <div class="bg-gray-200 px-4 py-3 w-32 shrink-0">Sidebar</div>
+                        <BwFlexItem Grow="1" Class="bg-white px-4 py-3">
+                            <h3 class="font-bold mb-2">Main Content</h3>
+                            <p class="text-gray-600 text-sm">This area is reserved for your content. Thanks to flex
+                                grow, it occupies all remaining space.</p>
+                        </BwFlexItem>
+                        <div class="bg-gray-200 px-4 py-3 w-32 shrink-0">Aside</div>
+                    </BwFlex>
+                    @* Footer *@
+                    <div class="bg-gray-800 text-white px-4 py-3 text-center text-sm">Footer</div>
+                </BwFlex>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* 12. Align Content (Çok satırlı) *@
+    <BwCard Title="Align Content (Multi-line Alignment)"
+            Subtitle="Distribution of rows on the cross axis when wrap is active" Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Md">
+            @foreach (var alignContent in new[] { BwAlignContent.Start, BwAlignContent.Center, BwAlignContent.End, BwAlignContent.SpaceBetween, BwAlignContent.SpaceAround, BwAlignContent.Stretch })
+            {
+                <BwColumn Span="12" Md="4">
+                    <p class="text-xs font-medium text-gray-500 mb-1">@alignContent</p>
+                    <BwFlex Wrap="BwFlexWrap.Wrap" AlignContent="@alignContent" Gap="BwSpacing.Sm"
+                            Class="bg-blue-50 p-3 rounded border border-blue-200 h-40">
+                        @for (var i = 1; i <= 6; i++)
+                        {
+                            <div class="bg-blue-500 text-white px-4 py-1 rounded text-sm">@i</div>
+                        }
+                    </BwFlex>
+                </BwColumn>
+            }
+        </BwRow>
+    </BwCard>
+</BwColumn>

@@ -1,0 +1,117 @@
+@page "/components/mentions"
+@using Blazwind.Components.Mentions
+@inject ToastService ToastService
+
+<PageTitle>Mentions Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Mentions Component" Description="Textarea with at symbol for user tagging." Icon="fa-solid fa-at"
+            Color="BwColor.Primary"/>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Tag users with at" Icon="fa-solid fa-user-tag" Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwMentions @bind-Value="_text1" Mentions="_users" Placeholder="Tag a user by typing at..."
+                            OnMention="HandleMention"/>
+
+                <BwAlert Color="BwColor.Secondary" Variant="BwVariant.Soft">
+                    <strong>Text:</strong> @_text1
+                </BwAlert>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Suggestions with Avatars" Subtitle="With profile pictures" Icon="fa-solid fa-image"
+                Color="BwColor.Success">
+            <BwMentions @bind-Value="_text2" Mentions="_usersWithAvatars" Placeholder="Tag team members..." Rows="4"/>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwColumn>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Small</p>
+                    <BwMentions Mentions="_users" Size="BwSize.Small" Rows="2" Placeholder="Small mentions..."/>
+                </BwColumn>
+                <BwColumn>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Medium</p>
+                    <BwMentions Mentions="_users" Size="BwSize.Medium" Rows="2" Placeholder="Medium mentions..."/>
+                </BwColumn>
+                <BwColumn>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Large</p>
+                    <BwMentions Mentions="_users" Size="BwSize.Large" Rows="2" Placeholder="Large mentions..."/>
+                </BwColumn>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Variants" Subtitle="Outline, Filled, Ghost" Icon="fa-solid fa-palette" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwColumn>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Outline (Default)</p>
+                    <BwMentions Mentions="_users" Variant="BwVariant.Outline" Rows="2"/>
+                </BwColumn>
+                <BwColumn>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Filled</p>
+                    <BwMentions Mentions="_users" Variant="BwVariant.Filled" Rows="2"/>
+                </BwColumn>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    <BwCard Title="Real Usage Scenario" Subtitle="Comment form" Icon="fa-solid fa-comment" Color="BwColor.Secondary">
+        <BwPadding All="BwSpacing.Md"
+                   Class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Start">
+                <BwAvatar Name="A" Size="BwSize.Medium"/>
+                <BwColumn Class="flex-1" Spacing="BwSpacing.Sm">
+                    <BwMentions @bind-Value="_comment" Mentions="_teamMembers"
+                                Placeholder="Write a comment... You can tag team members with at." Rows="3"
+                                Variant="BwVariant.Outline"/>
+                    <BwRow MainAxisAlignment="BwMainAxisAlignment.End">
+                        <BwButton Color="BwColor.Primary">
+                            Send
+                        </BwButton>
+                    </BwRow>
+                </BwColumn>
+            </BwRow>
+        </BwPadding>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _text1 = "";
+    private string _text2 = "";
+    private string _comment = "";
+
+    private readonly List<BwMentionItem> _users = new()
+    {
+        new BwMentionItem { Label = "Ahmet Yılmaz", Value = "ahmet" },
+        new BwMentionItem { Label = "Ayşe Demir", Value = "ayse" },
+        new BwMentionItem { Label = "Mehmet Kaya", Value = "mehmet" },
+        new BwMentionItem { Label = "Fatma Şahin", Value = "fatma" },
+        new BwMentionItem { Label = "Ali Öztürk", Value = "ali" }
+    };
+
+    private readonly List<BwMentionItem> _usersWithAvatars = new()
+    {
+        new BwMentionItem { Label = "Ahmet Yılmaz", Value = "ahmet", Avatar = "https://i.pravatar.cc/150?img=1", Description = "Frontend Developer" },
+        new BwMentionItem { Label = "Ayşe Demir", Value = "ayse", Avatar = "https://i.pravatar.cc/150?img=5", Description = "UI Designer" },
+        new BwMentionItem { Label = "Mehmet Kaya", Value = "mehmet", Avatar = "https://i.pravatar.cc/150?img=3", Description = "Backend Developer" },
+        new BwMentionItem { Label = "Fatma Şahin", Value = "fatma", Avatar = "https://i.pravatar.cc/150?img=9", Description = "Project Manager" }
+    };
+
+    private readonly List<BwMentionItem> _teamMembers = new()
+    {
+        new BwMentionItem { Label = "Project Manager", Value = "pm", Description = "All team" },
+        new BwMentionItem { Label = "Frontend Team", Value = "frontend", Description = "3 members" },
+        new BwMentionItem { Label = "Backend Team", Value = "backend", Description = "2 members" },
+        new BwMentionItem { Label = "Ahmet Yılmaz", Value = "ahmet", Description = "Tech Lead" },
+        new BwMentionItem { Label = "Ayşe Demir", Value = "ayse", Description = "Senior Developer" }
+    };
+
+    private async Task HandleMention(BwMentionItem item)
+    {
+        await ToastService.ShowAsync(new ToastOptions { Message = $"{item.Label} tagged!", Color = BwColor.Info });
+    }
+
+}

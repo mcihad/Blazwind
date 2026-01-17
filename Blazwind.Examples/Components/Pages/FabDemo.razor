@@ -1,0 +1,76 @@
+@page "/components/fab"
+
+<PageTitle>FAB Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Floating Action Button (FAB)"
+            Description="Mobile style floating action button. Highlights the main action."
+            Icon="fa-solid fa-circle-plus"
+            Color="BwColor.Primary"/>
+
+    <BwCard Title="Basic Usage" Subtitle="Different sizes and colors" Icon="fa-solid fa-shapes">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+            <BwFloatingActionButton Icon="fa-solid fa-plus" Size="BwSize.Small" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-plus" Position="BwPosition.TopLeft" Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-plus" Size="BwSize.Large" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Colors" Subtitle="Color palettes for different states" Icon="fa-solid fa-palette"
+            Color="BwColor.Success">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true">
+            <BwFloatingActionButton Icon="fa-solid fa-heart" Color="BwColor.Primary" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-check" Color="BwColor.Success" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-bell" Color="BwColor.Warning" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-trash" Color="BwColor.Danger" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-info" Color="BwColor.Info" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Extended FAB" Subtitle="Icon and text together" Icon="fa-solid fa-expand" Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true">
+            <BwFloatingActionButton Icon="fa-solid fa-edit" Label="Edit" Extended="true" Position="BwPosition.TopLeft"
+                                    Class="!static !relative"/>
+            <BwFloatingActionButton Icon="fa-solid fa-plus" Label="Add New" Extended="true" Color="BwColor.Success"
+                                    Position="BwPosition.TopLeft" Class="!static !relative"/>
+        </BwRow>
+    </BwCard>
+
+    <BwCard Title="Speed Dial" Subtitle="Opens submenu when clicked" Icon="fa-solid fa-layer-group"
+            Color="BwColor.Info">
+        <BwColumn Class="h-64 relative">
+            <BwFloatingActionButton Icon="fa-solid fa-plus" Position="BwPosition.BottomRight">
+                <SpeedDialItems>
+                    <BwFabItem Icon="fa-solid fa-file" Label="File" Color="BwColor.Info"/>
+                    <BwFabItem Icon="fa-solid fa-image" Label="Image" Color="BwColor.Success"/>
+                    <BwFabItem Icon="fa-solid fa-video" Label="Video" Color="BwColor.Warning"/>
+                </SpeedDialItems>
+            </BwFloatingActionButton>
+        </BwColumn>
+    </BwCard>
+
+    <BwCard Title="Fixed Position Demo" Subtitle="Look at the bottom right corner of the page"
+            Icon="fa-solid fa-map-pin" Color="BwColor.Danger">
+        <BwRow>
+            <BwButton Text="Real FAB is in the bottom right corner!" Disabled="true"/>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+<BwFloatingActionButton Icon="fa-solid fa-comment" Color="BwColor.Primary" OnClick="HandleFabClick"/>
+
+@code {
+
+    private void HandleFabClick()
+    {
+        Console.WriteLine("FAB clicked!");
+    }
+
+}

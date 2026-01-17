@@ -1,0 +1,240 @@
+@namespace Blazwind.Components.ApprovalChain
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Avatar
+
+<div class="bw-approval-chain-wrapper @Class" style="@Style">
+    @* Progress Header *@
+    @if (ShowProgress && Steps.Count > 0)
+    {
+        <div class="mb-3 flex items-center gap-3">
+            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-emerald-500 to-green-400 rounded-full transition-all duration-500" 
+                     style="width: @ProgressPercent%"></div>
+            </div>
+            <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
+                @CompletedCount / @TotalCount tamamlandı
+            </span>
+        </div>
+    }
+    
+    <div class="@DirectionClass">
+    @for (int i = 0; i < Steps.Count; i++)
+    {
+        var step = Steps[i];
+        var isLast = i == Steps.Count - 1;
+        var isActive = step.Status == ApprovalStatus.Pending && (i == 0 || Steps[i - 1].Status == ApprovalStatus.Approved);
+        var stepIndex = i;
+        
+        @* Step Card *@
+        <div class="@GetStepCardClass(step.Status, isActive)" @onclick="() => HandleStepClick(step)">
+            @* Status Icon *@
+            <div class="@GetStatusBadgeClass(step.Status, isActive)">
+                @if (step.Status == ApprovalStatus.Approved)
+                {
+                    <i class="fa-solid fa-check text-xs"></i>
+                }
+                else if (step.Status == ApprovalStatus.Rejected)
+                {
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                }
+                else if (step.Status == ApprovalStatus.Skipped)
+                {
+                    <i class="fa-solid fa-forward text-xs"></i>
+                }
+                else if (isActive)
+                {
+                    <i class="fa-solid fa-hourglass-half text-xs"></i>
+                }
+                else
+                {
+                    <span class="text-xs font-bold">@(stepIndex + 1)</span>
+                }
+            </div>
+
+            @* Step Info *@
+            <div class="flex-1 min-w-0">
+                <div class="@GetTitleClass(step.Status, isActive)">@step.Title</div>
+                @if (!string.IsNullOrEmpty(step.ApproverName))
+                {
+                    <div class="flex items-center gap-2 mt-1.5">
+                        @if (!string.IsNullOrEmpty(step.ApproverAvatar))
+                        {
+                            <BwAvatar Name="@step.ApproverName" Src="@step.ApproverAvatar" Size="BwSize.ExtraSmall" />
+                        }
+                        <div class="text-xs text-gray-600 truncate">
+                            <span class="font-medium">@step.ApproverName</span>
+                            @if (!string.IsNullOrEmpty(step.ApproverRole))
+                            {
+                                <span class="text-gray-400 ml-1">• @step.ApproverRole</span>
+                            }
+                        </div>
+                    </div>
+                }
+                @if (step.Date.HasValue)
+                {
+                    <div class="text-[11px] text-gray-400 mt-1 flex items-center gap-1">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>@step.Date.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(step.Comment))
+                {
+                    <div class="text-xs text-gray-500 mt-1.5 italic bg-gray-50 rounded px-2 py-1 border-l-2 @GetCommentBorderClass(step.Status)">
+                        "@step.Comment"
+                    </div>
+                }
+            </div>
+        </div>
+
+        @* Connector Arrow *@
+        @if (!isLast && ShowConnectors)
+        {
+            <div class="@GetConnectorClass(step.Status, isActive)">
+                @if (Direction == ApprovalDirection.Horizontal)
+                {
+                    @if (step.Status == ApprovalStatus.Approved)
+                    {
+                        <div class="w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
+                        <i class="fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
+                    }
+                    else
+                    {
+                        <div class="w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                        <i class="fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
+                    }
+                }
+                else
+                {
+                    @if (step.Status == ApprovalStatus.Approved)
+                    {
+                        <div class="h-8 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
+                        <i class="fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
+                    }
+                    else
+                    {
+                        <div class="h-8 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                        <i class="fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
+                    }
+                }
+            </div>
+        }
+    }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<ApprovalStep> Steps { get; set; } = new();
+    [Parameter] public ApprovalDirection Direction { get; set; } = ApprovalDirection.Horizontal;
+    [Parameter] public bool ShowConnectors { get; set; } = true;
+    [Parameter] public bool Interactive { get; set; } = true;
+    [Parameter] public bool ShowActions { get; set; } = false;
+    [Parameter] public bool ShowProgress { get; set; } = true;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<ApprovalStep> OnStepClick { get; set; }
+    [Parameter] public EventCallback<ApprovalStep> OnApprove { get; set; }
+    [Parameter] public EventCallback<ApprovalStep> OnReject { get; set; }
+
+    // Calculated completion percentage
+    private int CompletedCount => Steps.Count(s => s.Status == ApprovalStatus.Approved);
+    private int TotalCount => Steps.Count;
+    private double ProgressPercent => TotalCount > 0 ? (double)CompletedCount / TotalCount * 100 : 0;
+
+    private string DirectionClass => Direction == ApprovalDirection.Horizontal 
+        ? "flex flex-row flex-wrap items-center gap-2" 
+        : "flex flex-col items-stretch gap-2";
+
+    private string GetStepCardClass(ApprovalStatus status, bool isActive)
+    {
+        var sizeClass = Size switch
+        {
+            BwSize.Small => "p-2.5 min-w-[140px]",
+            BwSize.Large => "p-4 min-w-[220px]",
+            _ => "p-3 min-w-[180px]"
+        };
+        
+        var baseClass = $"flex items-start gap-3 rounded-lg border transition-all duration-300 {sizeClass}";
+        var cursorClass = Interactive ? "cursor-pointer" : "";
+        
+        var statusClass = status switch
+        {
+            ApprovalStatus.Approved => "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-sm shadow-emerald-100 hover:shadow-md hover:shadow-emerald-100",
+            ApprovalStatus.Rejected => "bg-gradient-to-br from-red-50 to-rose-50 border-red-200 shadow-sm shadow-red-100 hover:shadow-md hover:shadow-red-100",
+            ApprovalStatus.Skipped => "bg-gray-50 border-gray-200 opacity-60",
+            _ when isActive => "bg-gradient-to-br from-blue-50 to-sky-50 border-blue-300 shadow-md shadow-blue-100 ring-2 ring-blue-200/50",
+            _ => "bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm"
+        };
+
+        return $"{baseClass} {statusClass} {cursorClass}";
+    }
+
+    private string GetStatusBadgeClass(ApprovalStatus status, bool isActive)
+    {
+        var sizeClass = Size switch
+        {
+            BwSize.Small => "w-6 h-6",
+            BwSize.Large => "w-9 h-9",
+            _ => "w-8 h-8"
+        };
+        
+        var baseClass = $"flex-shrink-0 {sizeClass} rounded-full flex items-center justify-center shadow-sm transition-all";
+        
+        return status switch
+        {
+            ApprovalStatus.Approved => $"{baseClass} bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-emerald-200",
+            ApprovalStatus.Rejected => $"{baseClass} bg-gradient-to-br from-red-500 to-rose-500 text-white shadow-red-200",
+            ApprovalStatus.Skipped => $"{baseClass} bg-gray-400 text-white",
+            _ when isActive => $"{baseClass} bg-gradient-to-br from-blue-500 to-sky-500 text-white shadow-blue-200 animate-pulse",
+            _ => $"{baseClass} bg-gray-100 text-gray-500 border border-gray-200"
+        };
+    }
+
+    private string GetTitleClass(ApprovalStatus status, bool isActive)
+    {
+        var sizeClass = Size switch
+        {
+            BwSize.Small => "text-xs",
+            BwSize.Large => "text-base",
+            _ => "text-sm"
+        };
+        
+        var colorClass = status switch
+        {
+            ApprovalStatus.Approved => "text-emerald-800",
+            ApprovalStatus.Rejected => "text-red-800",
+            ApprovalStatus.Skipped => "text-gray-500 line-through",
+            _ when isActive => "text-blue-800",
+            _ => "text-gray-800"
+        };
+        
+        return $"font-semibold {sizeClass} {colorClass} truncate";
+    }
+
+    private string GetCommentBorderClass(ApprovalStatus status)
+    {
+        return status switch
+        {
+            ApprovalStatus.Approved => "border-emerald-400",
+            ApprovalStatus.Rejected => "border-red-400",
+            _ => "border-gray-300"
+        };
+    }
+
+    private string GetConnectorClass(ApprovalStatus status, bool isActive)
+    {
+        var flexClass = Direction == ApprovalDirection.Horizontal 
+            ? "flex items-center" 
+            : "flex flex-col items-center";
+        
+        return flexClass;
+    }
+
+    private async Task HandleStepClick(ApprovalStep step)
+    {
+        if (Interactive)
+        {
+            await OnStepClick.InvokeAsync(step);
+        }
+    }
+}

@@ -1,0 +1,41 @@
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Button
+@inject DialogService DialogService
+
+<div class="flex flex-col gap-4">
+    <p>
+        This dialog layer: <strong>@Depth</strong>
+    </p>
+
+    <div class="p-4 bg-gray-50 rounded border border-gray-200">
+        <p class="text-sm mb-2">Press the button below for nested dialog test:</p>
+        <BwButton Text="Open New Dialog (Nested)" Color="BwColor.Warning" OnClick="OpenNext" />
+    </div>
+
+    <div class="flex justify-end pt-4 border-t border-gray-100">
+        <BwButton Text="Close" Color="BwColor.Secondary" Variant="BwVariant.Ghost" OnClick="Close" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Depth { get; set; } = 1;
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+
+    private async Task OpenNext()
+    {
+        var options = new DialogOptions
+        {
+            Width = "400px",
+            Draggable = true
+        };
+
+        // We need to pass title to ShowAsync separately
+        await DialogService.ShowAsync<NestedTestDialog>($"Nested Dialog - Layer {Depth + 1}", new Dictionary<string, object> { {
+"Depth", Depth + 1 } }, options);
+    }
+
+    private void Close()
+    {
+        if (DialogInstance != null) DialogService.Close(DialogInstance);
+    }
+}

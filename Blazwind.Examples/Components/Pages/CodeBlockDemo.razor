@@ -1,0 +1,138 @@
+@page "/components/code-block"
+@using Blazwind.Components.CodeBlock
+
+<PageTitle>Code Block Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Code Block Component" Description="Component for code display and syntax highlighting."
+            Icon="fa-solid fa-code" Color="BwColor.Dark"/>
+
+    <BwCard Title="Basic Usage" Subtitle="C# code example" Icon="fa-brands fa-microsoft" Color="BwColor.Primary">
+        <BwCodeBlock Code="@_csharpCode" Language="C#" FileName="Program.cs"/>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Light Theme" Subtitle="Light background" Icon="fa-solid fa-sun" Color="BwColor.Warning">
+            <BwCodeBlock Code="@_jsCode" Language="JavaScript" FileName="app.js" Theme="light"/>
+        </BwCard>
+
+        <BwCard Title="Dark Theme" Subtitle="Dark background (default)" Icon="fa-solid fa-moon"
+                Color="BwColor.Secondary">
+            <BwCodeBlock Code="@_jsCode" Language="JavaScript" FileName="app.js" Theme="dark"/>
+        </BwCard>
+    </BwRow>
+
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="No Line Numbers" Subtitle="Simple code display" Icon="fa-solid fa-align-left"
+                Color="BwColor.Success">
+            <BwCodeBlock Code="@_simpleCode" Language="bash" ShowLineNumbers="false"/>
+        </BwCard>
+
+        <BwCard Title="Line Highlighting" Subtitle="Highlight specific lines" Icon="fa-solid fa-highlighter"
+                Color="BwColor.Info">
+            <BwCodeBlock Code="@_highlightCode" Language="C#" FileName="Example.cs"
+                         HighlightLines="@(new[] { 2, 3 })"/>
+        </BwCard>
+    </BwRow>
+
+    <BwCard Title="Customizations" Subtitle="Header options" Icon="fa-solid fa-cog" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Without dots</p>
+                <BwCodeBlock Code="console.log('Hello');" Language="JavaScript" ShowDots="false"/>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Without header</p>
+                <BwCodeBlock Code="echo 'Hello World'" ShowHeader="false" ShowLineNumbers="false"/>
+            </div>
+
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Without copy button</p>
+                <BwCodeBlock Code="npm install blazwind" Language="bash" ShowCopyButton="false"
+                             ShowLineNumbers="false"/>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    <BwCard Title="Different Languages" Subtitle="Various programming languages" Icon="fa-solid fa-language"
+            Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwCodeBlock Code="@_htmlCode" Language="HTML" FileName="index.html"/>
+            <BwCodeBlock Code="@_cssCode" Language="CSS" FileName="style.css"/>
+            <BwCodeBlock Code="@_razorCode" Language="Razor" FileName="Component.razor"/>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private readonly string _csharpCode = @"using System;
+
+public class Program
+{
+public static void Main(string[] args)
+{
+Console.WriteLine(""Hello Blazwind!"");
+
+var numbers = new[] { 1, 2, 3, 4, 5 };
+foreach (var num in numbers)
+{
+Console.WriteLine(num);
+}
+}";
+
+    private readonly string _jsCode = @"function greet(name) {
+console.log(`Hello, ${name}!`);
+}
+
+greet('World');";
+
+    private readonly string _simpleCode = @"npm install blazwind
+dotnet add package Blazwind.Components";
+
+    private readonly string _highlightCode = @"public class Example
+{
+// This line is highlighted
+public string Name { get; set; }
+
+public void DoSomething()
+{
+Console.WriteLine(Name);
+}
+}";
+
+    private readonly string _htmlCode = @"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+<title>Blazwind</title>
+</head>
+<body>
+<h1>Hello!</h1>
+</body>
+</html>";
+
+    private readonly string _cssCode = @".container {
+display: flex;
+gap: 1rem;
+padding: 2rem;
+}
+
+.button {
+background: #3b82f6;
+color: white;
+border-radius: 0.5rem;
+}";
+
+    private readonly string _razorCode = @"@page ""/hello""
+
+<h1>@Title</h1>
+<BwButton OnClick=""HandleClick"">
+Click!
+</BwButton>
+
+@code {
+private string Title = ""Hello"";
+}";
+
+}

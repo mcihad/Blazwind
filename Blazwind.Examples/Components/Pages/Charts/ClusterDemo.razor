@@ -1,0 +1,84 @@
+@page "/charts/clustering"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Clustering - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="K-Means Clustering" 
+            Description="Veri kümeleme (Clustering) sonuçlarını görselleştirmek için renk kodlu scatter grafiği."
+            Icon="fa-solid fa-braille"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Customer Segmentation" Subtitle="Müşteri Segmentleri (K=3)" Icon="fa-solid fa-users-viewfinder" Color="BwColor.Info">
+        <BwChart Options="_clusterOptions" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _clusterOptions = new()
+    {
+        Title = new ChartTitle { Text = "Customer Segmentation", Subtext = "K-Means Clustering Result" },
+        Tooltip = new ChartTooltip(),
+        Legend = new ChartLegend { Data = new List<string> { "VIP", "Standard", "Potential" } },
+        XAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Spending Score", NameLocation = ChartPosition.Middle, NameGap = 30 },
+        YAxis = new ChartAxis { Type = ChartAxisType.Value, Name = "Income (k$)", NameLocation = ChartPosition.Middle, NameGap = 30 },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "VIP",
+                Type = ChartSeriesType.Scatter,
+                SymbolSize = 15,
+                Data = new List<object>
+                {
+                    new List<double> { 80, 85 }, new List<double> { 85, 90 }, new List<double> { 90, 88 }, 
+                    new List<double> { 75, 80 }, new List<double> { 88, 92 }, new List<double> { 95, 95 }
+                },
+                ItemStyle = new ChartItemStyle { Color = "#10b981", ShadowBlur = 10, ShadowColor = "rgba(16, 185, 129, 0.5)" }
+            },
+            new()
+            {
+                Name = "Standard",
+                Type = ChartSeriesType.Scatter,
+                SymbolSize = 10,
+                Data = new List<object>
+                {
+                    new List<double> { 50, 50 }, new List<double> { 55, 60 }, new List<double> { 45, 55 }, 
+                    new List<double> { 60, 45 }, new List<double> { 40, 50 }, new List<double> { 58, 52 }
+                },
+                ItemStyle = new ChartItemStyle { Color = "#3b82f6" }
+            },
+            new()
+            {
+                Name = "Potential",
+                Type = ChartSeriesType.Scatter,
+                SymbolSize = 8,
+                Data = new List<object>
+                {
+                    new List<double> { 20, 30 }, new List<double> { 25, 25 }, new List<double> { 30, 35 }, 
+                    new List<double> { 15, 20 }, new List<double> { 35, 30 }, new List<double> { 22, 28 }
+                },
+                ItemStyle = new ChartItemStyle { Color = "#f59e0b" }
+            },
+            // Centroids
+            new()
+            {
+                Name = "Centroids",
+                Type = ChartSeriesType.Scatter,
+                Symbol = ChartSymbol.Pin,
+                SymbolSize = 40,
+                Data = new List<object>
+                {
+                   new List<double> { 85.5, 88.3 },
+                   new List<double> { 51.3, 52.0 },
+                   new List<double> { 24.5, 28.0 }
+                },
+                ItemStyle = new ChartItemStyle { Color = "#ef4444" },
+                Label = new ChartLabel { Show = true, Formatter = "C", Color = "#fff", FontSize = 10 }
+            }
+        }
+    };
+}

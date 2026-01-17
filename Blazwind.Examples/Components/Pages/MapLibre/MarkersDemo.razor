@@ -1,0 +1,145 @@
+@page "/maps/markers"
+@using Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Dialog
+@using Blazwind.Examples.Components.Samples
+@inject DialogService DialogService
+
+<PageTitle>Markers - MapLibre</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Markers" 
+            Description="Add markers to the map, show popups and use fly-to animations."
+            Icon="fa-solid fa-location-dot"
+            Color="BwColor.Danger" />
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        @* Harita *@
+        <div class="lg:col-span-3 h-[500px] relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+            <BwMapLibre @ref="_map" StyleUrl="osm_style.json" Center="@SivasCenter" Zoom="@((double)14)"
+                NavigationControl="true" ScaleControl="true" OnClick="OnMapClick">
+
+                @foreach (var marker in _markers)
+                {
+                    <BwMapLibreMarker Id="@marker.Id" Longitude="@marker.Lng" Latitude="@marker.Lat"
+                        Color="@marker.Color" PopupContent="@marker.Popup" />
+                }
+            </BwMapLibre>
+        </div>
+
+        @* Kontrol Paneli *@
+        <div class="space-y-4">
+            <BwCard Title="Points of Interest" Icon="fa-solid fa-location-dot" Color="BwColor.Danger">
+                <div class="space-y-2">
+                    @foreach (var marker in _markers)
+                    {
+                        <div class="flex items-center gap-2 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                            @onclick="() => FlyToMarker(marker)">
+                            <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: @marker.Color"></span>
+                            <span class="text-sm truncate">@marker.Name</span>
+                        </div>
+                    }
+                </div>
+            </BwCard>
+
+            <BwCard Title="Add Marker" Icon="fa-solid fa-plus" Color="BwColor.Success">
+                <div class="space-y-3">
+                    <BwButton Text="Random Marker" Icon="fa-solid fa-random" Color="BwColor.Success"
+                        Size="BwSize.Small" Class="w-full" OnClick="AddRandomMarker" />
+                    <BwButton Text="Clear All" Icon="fa-solid fa-trash" Color="BwColor.Danger"
+                        Variant="BwVariant.Outline" Size="BwSize.Small" Class="w-full" OnClick="ClearCustomMarkers" />
+                    <div class="text-xs text-gray-500 text-center">
+                        Total: @_markers.Count markers
+                    </div>
+                </div>
+            </BwCard>
+        </div>
+    </div>
+</BwColumn>
+
+@code {
+    private BwMapLibre? _map;
+    private double[] SivasCenter => [37.0150, 39.7505];
+
+    private List<MarkerInfo> _markers =
+    [
+        new("m1", "Sivas Square", 37.0150, 39.7505, "#ef4444", "<strong>Sivas Square</strong><br/>Historic city center"),
+        new("m2", "Congress Hall", 37.0180, 39.7480, "#3b82f6", "<strong>Congress Hall</strong><br/>Site of the Sivas Congress"),
+        new("m3", "Great Mosque", 37.0165, 39.7510, "#10b981", "<strong>Great Mosque</strong><br/>Historic mosque"),
+        new("m4", "Buruciye Madrasa", 37.0145, 39.7490, "#f59e0b", "<strong>Buruciye Madrasa</strong><br/>Seljuk era building")
+    ];
+
+    private static readonly string[] MarkerColors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4"];
+    private int _markerCounter = 5;
+
+    private record MarkerInfo(string Id, string Name, double Lng, double Lat, string Color, string Popup);
+
+    private async Task OnMapClick(MapMouseEventArgs e)
+    {
+        if (_map == null || e.LngLat == null) return;
+
+        var clickedMarker = _markers.FirstOrDefault(m =>
+            Math.Abs(m.Lng - e.LngLat.Lng) < 0.0005 &&
+            Math.Abs(m.Lat - e.LngLat.Lat) < 0.0005);
+
+        if (clickedMarker != null)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "Feature", new MapFeature
+                {
+                    Id = clickedMarker.Id,
+                    Type = "Marker",
+                    Properties = new Dictionary<string, object>
+                    {
+                        ["Name"] = clickedMarker.Name,
+                        ["Longitude"] = clickedMarker.Lng,
+                        ["Latitude"] = clickedMarker.Lat,
+                        ["Color"] = clickedMarker.Color
+                    }
+                }}
+            };
+
+            await DialogService.ShowAsync<MapFeatureDialog>("Marker Information", parameters, new DialogOptions
+            {
+                Width = "400px",
+                Draggable = true
+            });
+        }
+    }
+
+    private async Task FlyToMarker(MarkerInfo marker)
+    {
+        if (_map == null) return;
+        await _map.FlyToAsync(new FlyToOptions
+        {
+            Center = new LngLat(marker.Lng, marker.Lat),
+            Zoom = 17,
+            Duration = 1500
+        });
+    }
+
+    private void AddRandomMarker()
+    {
+        var random = new Random();
+        var lng = 37.0150 + (random.NextDouble() - 0.5) * 0.02;
+        var lat = 39.7505 + (random.NextDouble() - 0.5) * 0.015;
+        var color = MarkerColors[_markerCounter % MarkerColors.Length];
+        var id = $"custom-{_markerCounter}";
+
+        _markers.Add(new MarkerInfo(id, $"Marker {_markerCounter}", lng, lat, color,
+            $"<strong>Marker {_markerCounter}</strong><br/>Dynamically added"));
+        _markerCounter++;
+        StateHasChanged();
+    }
+
+    private void ClearCustomMarkers()
+    {
+        _markers.RemoveAll(m => m.Id.StartsWith("custom-"));
+        StateHasChanged();
+    }
+}

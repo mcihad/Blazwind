@@ -1,0 +1,70 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+@{
+    var marginClass = SidebarPosition == BwDirection.Right ? "mr-64" : "ml-64";
+}
+
+@* Sidebar (Fixed) *@
+<BwSidebar Position="@SidebarPosition">
+    @Sidebar
+</BwSidebar>
+
+@* Main Content - offset for fixed sidebar *@
+<div class="min-h-screen flex flex-col hidden lg:flex @marginClass @Class">
+    @* Header *@
+    @if (Header != null)
+    {
+        <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-4 sticky top-0 z-40">
+            <BwSidebarToggle />
+            @Header
+        </header>
+    }
+
+    @* Content *@
+    <main class="flex-1 p-6 bg-gray-50 dark:bg-black">
+        @ChildContent
+    </main>
+
+    @* Footer *@
+    @if (Footer != null)
+    {
+        <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+            @Footer
+        </footer>
+    }
+</div>
+
+@* Mobile Layout (no offset) *@
+<div class="min-h-screen flex flex-col lg:hidden @Class">
+    @* Header *@
+    @if (Header != null)
+    {
+        <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-4 sticky top-0 z-40">
+            <BwSidebarToggle />
+            @Header
+        </header>
+    }
+
+    @* Content *@
+    <main class="flex-1 p-6 bg-gray-50 dark:bg-black">
+        @ChildContent
+    </main>
+
+    @* Footer *@
+    @if (Footer != null)
+    {
+        <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+            @Footer
+        </footer>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? Sidebar { get; set; }
+    [Parameter] public RenderFragment? Header { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public BwDirection SidebarPosition { get; set; } = BwDirection.Left;
+}

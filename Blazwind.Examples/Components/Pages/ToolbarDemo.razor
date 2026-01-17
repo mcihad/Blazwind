@@ -1,0 +1,483 @@
+@page "/components/toolbar"
+@using Blazwind.Components.Input
+@using Blazwind.Components.Toolbar
+
+<PageTitle>Toolbar - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Toolbar"
+            Description="Modern and flexible toolbar component — glass effect, polished design and smart dropdown positioning."
+            Icon="fa-solid fa-toolbox" Color="BwColor.Primary"/>
+
+    @* Text Editor Toolbar *@
+    <BwCard Title="Text Editor" Subtitle="Professional text formatting toolbar" Icon="fa-solid fa-pen-fancy"
+            Color="BwColor.Primary">
+        <div class="space-y-4">
+            <BwToolbar>
+                <BwToolButton Icon="fa-solid fa-bold" Tooltip="Bold (Ctrl+B)" IsActive="_isBold"
+                              OnClick="@(() => _isBold = !_isBold)" Color="BwColor.Primary"/>
+                <BwToolButton Icon="fa-solid fa-italic" Tooltip="Italic (Ctrl+I)" IsActive="_isItalic"
+                              OnClick="@(() => _isItalic = !_isItalic)" Color="BwColor.Primary"/>
+                <BwToolButton Icon="fa-solid fa-underline" Tooltip="Underline (Ctrl+U)" IsActive="_isUnderline"
+                              OnClick="@(() => _isUnderline = !_isUnderline)" Color="BwColor.Primary"/>
+                <BwToolButton Icon="fa-solid fa-strikethrough" Tooltip="Strikethrough"/>
+                <BwToolSeparator/>
+                <BwToolDropdown Icon="fa-solid fa-heading" Text="Heading">
+                    <BwToolDropdownItem Label="Heading 1" Icon="fa-solid fa-h" IsActive="_heading == 1"
+                                        OnClick="@(() => _heading = 1)"/>
+                    <BwToolDropdownItem Label="Heading 2" Icon="fa-solid fa-heading" IsActive="_heading == 2"
+                                        OnClick="@(() => _heading = 2)"/>
+                    <BwToolDropdownItem Label="Heading 3" Icon="fa-solid fa-heading" IsActive="_heading == 3"
+                                        OnClick="@(() => _heading = 3)"/>
+                    <BwToolDropdownItem Label="Normal Text" Icon="fa-solid fa-paragraph" IsActive="_heading == 0"
+                                        OnClick="@(() => _heading = 0)"/>
+                </BwToolDropdown>
+                <BwToolDropdown Icon="fa-solid fa-font" Text="Font">
+                    <BwToolDropdownItem Label="Inter" Icon="fa-solid fa-font" IsActive="_font == 0"
+                                        OnClick="@(() => _font = 0)"/>
+                    <BwToolDropdownItem Label="Arial" Icon="fa-solid fa-a" IsActive="_font == 1"
+                                        OnClick="@(() => _font = 1)"/>
+                    <BwToolDropdownItem Label="Georgia" Icon="fa-solid fa-g" IsActive="_font == 2"
+                                        OnClick="@(() => _font = 2)"/>
+                    <BwToolDropdownItem Label="Monospace" Icon="fa-solid fa-code" IsActive="_font == 3"
+                                        OnClick="@(() => _font = 3)"/>
+                </BwToolDropdown>
+                <BwToolSeparator/>
+                <BwToolButton Icon="fa-solid fa-align-left" Tooltip="Align Left" IsActive="_align == 1"
+                              OnClick="@(() => _align = 1)"/>
+                <BwToolButton Icon="fa-solid fa-align-center" Tooltip="Center" IsActive="_align == 2"
+                              OnClick="@(() => _align = 2)"/>
+                <BwToolButton Icon="fa-solid fa-align-right" Tooltip="Align Right" IsActive="_align == 3"
+                              OnClick="@(() => _align = 3)"/>
+                <BwToolButton Icon="fa-solid fa-align-justify" Tooltip="Justify" IsActive="_align == 4"
+                              OnClick="@(() => _align = 4)"/>
+                <BwToolSeparator/>
+                <BwToolButton Icon="fa-solid fa-list-ul" Tooltip="Bullet List"/>
+                <BwToolButton Icon="fa-solid fa-list-ol" Tooltip="Numbered List"/>
+                <BwToolButton Icon="fa-solid fa-indent" Tooltip="Increase Indent"/>
+                <BwToolButton Icon="fa-solid fa-outdent" Tooltip="Decrease Indent"/>
+                <BwToolSeparator/>
+                <BwToolButton Icon="fa-solid fa-link" Tooltip="Add Link"/>
+                <BwToolButton Icon="fa-solid fa-image" Tooltip="Add Image"/>
+                <BwToolButton Icon="fa-solid fa-table" Tooltip="Add Table"/>
+                <BwToolButton Icon="fa-solid fa-code" Tooltip="Code Block"/>
+            </BwToolbar>
+
+            <div
+                class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700 min-h-32">
+                <p class="text-gray-600 dark:text-gray-400">
+                    Text editor preview... Use the toolbar above to try formatting.
+                </p>
+            </div>
+        </div>
+    </BwCard>
+
+    @* IDE Sidebar *@
+    <BwCard Title="IDE Sidebar" Subtitle="Vertical toolbar for application navigation" Icon="fa-solid fa-code"
+            Color="BwColor.Success">
+        <div class="flex gap-6">
+            <BwToolbar Orientation="ToolbarOrientation.Vertical">
+                <BwToolButton Icon="fa-solid fa-folder-tree" Tooltip="File Explorer" IsActive="_sidePanel == 0"
+                              OnClick="@(() => _sidePanel = 0)" Color="BwColor.Primary"/>
+                <BwToolButton Icon="fa-solid fa-magnifying-glass" Tooltip="Search" IsActive="_sidePanel == 1"
+                              OnClick="@(() => _sidePanel = 1)"/>
+                <BwToolButton Icon="fa-solid fa-code-branch" Tooltip="Source Control" IsActive="_sidePanel == 2"
+                              OnClick="@(() => _sidePanel = 2)"/>
+                <BwToolButton Icon="fa-solid fa-bug" Tooltip="Debugger" IsActive="_sidePanel == 3"
+                              OnClick="@(() => _sidePanel = 3)"/>
+                <BwToolButton Icon="fa-solid fa-puzzle-piece" Tooltip="Extensions" IsActive="_sidePanel == 4"
+                              OnClick="@(() => _sidePanel = 4)"/>
+                <BwToolSeparator/>
+                <BwToolDropdown Icon="fa-solid fa-plus" Tooltip="New">
+                    <BwToolDropdownItem Label="New File" Icon="fa-solid fa-file"/>
+                    <BwToolDropdownItem Label="New Folder" Icon="fa-solid fa-folder"/>
+                    <BwToolDropdownItem Label="New Project" Icon="fa-solid fa-cube"/>
+                </BwToolDropdown>
+                <BwToolSeparator/>
+                <BwToolButton Icon="fa-solid fa-gear" Tooltip="Settings"/>
+                <BwToolButton Icon="fa-solid fa-user" Tooltip="Account"/>
+            </BwToolbar>
+
+            <div
+                class="flex-1 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Active Panel:</p>
+                <p class="font-medium text-gray-800 dark:text-gray-200">
+                    @(new[] { "File Explorer", "Search", "Source Control", "Debugger", "Extensions" }[_sidePanel])
+                </p>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Size Comparison *@
+    <BwCard Title="Size Comparison" Subtitle="Small, Medium and Large sizes" Icon="fa-solid fa-ruler"
+            Color="BwColor.Warning">
+        <div class="space-y-6">
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Small</p>
+                <BwToolbar Size="BwSize.Small">
+                    <BwToolButton Icon="fa-solid fa-home" Tooltip="Home"/>
+                    <BwToolButton Icon="fa-solid fa-star" Tooltip="Favorites" IsActive="true" Color="BwColor.Warning"/>
+                    <BwToolButton Icon="fa-solid fa-bell" Tooltip="Notifications"/>
+                    <BwToolSeparator/>
+                    <BwToolDropdown Icon="fa-solid fa-ellipsis" Tooltip="More">
+                        <BwToolDropdownItem Label="Settings" Icon="fa-solid fa-gear"/>
+                        <BwToolDropdownItem Label="Help" Icon="fa-solid fa-circle-question"/>
+                    </BwToolDropdown>
+                </BwToolbar>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Medium
+                    (Default)</p>
+                <BwToolbar Size="BwSize.Medium">
+                    <BwToolButton Icon="fa-solid fa-home" Tooltip="Home"/>
+                    <BwToolButton Icon="fa-solid fa-star" Tooltip="Favorites" IsActive="true" Color="BwColor.Warning"/>
+                    <BwToolButton Icon="fa-solid fa-bell" Tooltip="Notifications"/>
+                    <BwToolSeparator/>
+                    <BwToolDropdown Icon="fa-solid fa-ellipsis" Tooltip="More">
+                        <BwToolDropdownItem Label="Settings" Icon="fa-solid fa-gear"/>
+                        <BwToolDropdownItem Label="Help" Icon="fa-solid fa-circle-question"/>
+                    </BwToolDropdown>
+                </BwToolbar>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Large</p>
+                <BwToolbar Size="BwSize.Large">
+                    <BwToolButton Icon="fa-solid fa-home" Tooltip="Home"/>
+                    <BwToolButton Icon="fa-solid fa-star" Tooltip="Favorites" IsActive="true" Color="BwColor.Warning"/>
+                    <BwToolButton Icon="fa-solid fa-bell" Tooltip="Notifications"/>
+                    <BwToolSeparator/>
+                    <BwToolDropdown Icon="fa-solid fa-ellipsis" Tooltip="More">
+                        <BwToolDropdownItem Label="Settings" Icon="fa-solid fa-gear"/>
+                        <BwToolDropdownItem Label="Help" Icon="fa-solid fa-circle-question"/>
+                    </BwToolDropdown>
+                </BwToolbar>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Design Tools *@
+    <BwCard Title="Design Tools" Subtitle="Figma/Sketch-like design toolbar" Icon="fa-solid fa-pen-ruler"
+            Color="BwColor.Info">
+        <BwToolbar>
+            <BwToolButton Icon="fa-solid fa-arrow-pointer" Tooltip="Select (V)" IsActive="_tool == 0"
+                          OnClick="@(() => _tool = 0)"/>
+            <BwToolButton Icon="fa-solid fa-hand" Tooltip="Move (H)" IsActive="_tool == 1"
+                          OnClick="@(() => _tool = 1)"/>
+            <BwToolSeparator/>
+            <BwToolButton Icon="fa-regular fa-square" Tooltip="Rectangle (R)" IsActive="_tool == 2"
+                          OnClick="@(() => _tool = 2)" Color="BwColor.Info"/>
+            <BwToolButton Icon="fa-regular fa-circle" Tooltip="Ellipse (O)" IsActive="_tool == 3"
+                          OnClick="@(() => _tool = 3)" Color="BwColor.Info"/>
+            <BwToolDropdown Icon="fa-solid fa-shapes" Tooltip="Shapes">
+                <BwToolDropdownItem Label="Star" Icon="fa-regular fa-star" OnClick="@(() => _tool = 4)"/>
+                <BwToolDropdownItem Label="Polygon" Icon="fa-solid fa-draw-polygon" OnClick="@(() => _tool = 5)"/>
+                <BwToolDropdownItem Label="Arrow" Icon="fa-solid fa-arrow-right" OnClick="@(() => _tool = 6)"/>
+                <BwToolDropdownItem Label="Line" Icon="fa-solid fa-minus" OnClick="@(() => _tool = 7)"/>
+            </BwToolDropdown>
+            <BwToolSeparator/>
+            <BwToolButton Icon="fa-solid fa-pencil" Tooltip="Pen (P)" IsActive="_tool == 8"
+                          OnClick="@(() => _tool = 8)" Color="BwColor.Success"/>
+            <BwToolButton Icon="fa-solid fa-font" Tooltip="Text (T)" IsActive="_tool == 9"
+                          OnClick="@(() => _tool = 9)"/>
+            <BwToolSeparator/>
+            <BwToolDropdown Icon="fa-solid fa-fill-drip" Tooltip="Fill Color">
+                <BwToolDropdownItem Label="Red" Icon="fa-solid fa-circle"/>
+                <BwToolDropdownItem Label="Blue" Icon="fa-solid fa-circle"/>
+                <BwToolDropdownItem Label="Green" Icon="fa-solid fa-circle"/>
+                <BwToolDropdownItem Label="Color Picker..." Icon="fa-solid fa-eye-dropper"/>
+            </BwToolDropdown>
+            <BwToolDropdown Icon="fa-solid fa-border-all" Tooltip="Border">
+                <BwToolDropdownItem Label="1px"/>
+                <BwToolDropdownItem Label="2px"/>
+                <BwToolDropdownItem Label="4px"/>
+                <BwToolDropdownItem Label="None"/>
+            </BwToolDropdown>
+            <BwToolSeparator/>
+            <BwToolButton Icon="fa-solid fa-layer-group" Tooltip="Layers"/>
+            <BwToolButton Icon="fa-solid fa-object-group" Tooltip="Group (Ctrl+G)"/>
+            <BwToolButton Icon="fa-solid fa-object-ungroup" Tooltip="Ungroup"/>
+        </BwToolbar>
+    </BwCard>
+
+    @* Media Player *@
+    <BwCard Title="Media Player" Subtitle="Music and video controls" Icon="fa-solid fa-play" Color="BwColor.Danger">
+        <div class="space-y-4">
+            <BwToolbar>
+                <BwToolButton Icon="fa-solid fa-shuffle" Tooltip="Shuffle" IsActive="_shuffle"
+                              OnClick="@(() => _shuffle = !_shuffle)"/>
+                <BwToolButton Icon="fa-solid fa-backward-step" Tooltip="Previous"/>
+                <BwToolButton Icon="@(_isPlaying ? "fa-solid fa-pause" : "fa-solid fa-play")"
+                              Tooltip="@(_isPlaying ? "Pause" : "Play")" IsActive="_isPlaying"
+                              OnClick="@(() => _isPlaying = !_isPlaying)" Color="BwColor.Success"/>
+                <BwToolButton Icon="fa-solid fa-forward-step" Tooltip="Next"/>
+                <BwToolButton Icon="@RepeatIcon" Tooltip="Repeat" IsActive="_repeat > 0" OnClick="CycleRepeat"/>
+                <BwToolSeparator/>
+                <BwToolDropdown Icon="@VolumeIcon" Tooltip="Volume">
+                    <BwToolDropdownItem Label="Mute" Icon="fa-solid fa-volume-xmark" OnClick="@(() => _volume = 0)"
+                                        IsActive="_volume == 0"/>
+                    <BwToolDropdownItem Label="Low" Icon="fa-solid fa-volume-low" OnClick="@(() => _volume = 30)"
+                                        IsActive="_volume > 0 && _volume <= 30"/>
+                    <BwToolDropdownItem Label="Medium" Icon="fa-solid fa-volume-low" OnClick="@(() => _volume = 60)"
+                                        IsActive="_volume > 30 && _volume <= 60"/>
+                    <BwToolDropdownItem Label="High" Icon="fa-solid fa-volume-high" OnClick="@(() => _volume = 100)"
+                                        IsActive="_volume > 60"/>
+                </BwToolDropdown>
+                <BwToolButton Icon="fa-solid fa-heart" Tooltip="Like" IsActive="_liked"
+                              OnClick="@(() => _liked = !_liked)" Color="BwColor.Danger"/>
+                <BwToolSeparator/>
+                <BwToolButton Icon="fa-solid fa-list" Tooltip="Queue"/>
+                <BwToolButton Icon="fa-solid fa-music" Tooltip="Lyrics"/>
+            </BwToolbar>
+
+            <div class="flex items-center gap-4 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <i class="fa-solid fa-music text-white"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-medium text-gray-800 dark:text-gray-200">Song Title</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Artist</p>
+                </div>
+                <div class="text-sm text-gray-500">2:34 / 4:12</div>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Fixed Position Demo *@
+    <BwCard Title="Fixed Positions" Subtitle="Can be pinned to screen edges and corners" Icon="fa-solid fa-thumbtack"
+            Color="BwColor.Secondary">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+            Aşağıdaki butonlarla ekranın farklı yerlerine sabit toolbar ekleyebilirsiniz.
+            Alt pozisyonlarda dropdown menüler otomatik olarak yukarı açılır.
+        </p>
+        <div class="grid grid-cols-3 gap-3">
+            <BwButton Text="Top Left" Size="BwSize.Small" Icon="fa-solid fa-arrow-up-left"
+                      Color="@(_showPosition == ToolbarPosition.TopLeft ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.TopLeft))"/>
+            <BwButton Text="Top Center" Size="BwSize.Small" Icon="fa-solid fa-arrow-up"
+                      Color="@(_showPosition == ToolbarPosition.Top ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.Top))"/>
+            <BwButton Text="Top Right" Size="BwSize.Small" Icon="fa-solid fa-arrow-up-right"
+                      Color="@(_showPosition == ToolbarPosition.TopRight ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.TopRight))"/>
+            <BwButton Text="Left (Vertical)" Size="BwSize.Small" Icon="fa-solid fa-arrow-left"
+                      Color="@(_showPosition == ToolbarPosition.Left ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.Left))"/>
+            <div></div>
+            <BwButton Text="Right (Vertical)" Size="BwSize.Small" Icon="fa-solid fa-arrow-right"
+                      Color="@(_showPosition == ToolbarPosition.Right ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.Right))"/>
+            <BwButton Text="Bottom Left" Size="BwSize.Small" Icon="fa-solid fa-arrow-down-left"
+                      Color="@(_showPosition == ToolbarPosition.BottomLeft ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.BottomLeft))"/>
+            <BwButton Text="Bottom Center" Size="BwSize.Small" Icon="fa-solid fa-arrow-down"
+                      Color="@(_showPosition == ToolbarPosition.Bottom ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.Bottom))"/>
+            <BwButton Text="Bottom Right" Size="BwSize.Small" Icon="fa-solid fa-arrow-down-right"
+                      Color="@(_showPosition == ToolbarPosition.BottomRight ? BwColor.Primary : BwColor.Secondary)"
+                      OnClick="@(() => TogglePosition(ToolbarPosition.BottomRight))"/>
+        </div>
+    </BwCard>
+
+    @* Glass Effect Toggle *@
+    <BwCard Title="Glass Effect" Subtitle="Backdrop blur for a modern look" Icon="fa-solid fa-droplet"
+            Color="BwColor.Info">
+        <div class="space-y-4">
+            <div class="flex items-center gap-4">
+                <BwSwitch IsChecked="_glassEnabled" IsCheckedChanged="@(v => _glassEnabled = v)"/>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Glass effect enabled</span>
+            </div>
+            <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                <BwToolbar Glass="_glassEnabled">
+                    <BwToolButton Icon="fa-solid fa-wand-magic-sparkles" Tooltip="Magic"/>
+                    <BwToolButton Icon="fa-solid fa-palette" Tooltip="Color"/>
+                    <BwToolButton Icon="fa-solid fa-brush" Tooltip="Brush"/>
+                    <BwToolSeparator/>
+                    <BwToolDropdown Icon="fa-solid fa-filter" Tooltip="Filters">
+                        <BwToolDropdownItem Label="Blur" Icon="fa-solid fa-circle-half-stroke"/>
+                        <BwToolDropdownItem Label="Sharpen" Icon="fa-solid fa-diamond"/>
+                        <BwToolDropdownItem Label="Grayscale" Icon="fa-solid fa-moon"/>
+                    </BwToolDropdown>
+                </BwToolbar>
+            </div>
+        </div>
+    </BwCard>
+</BwColumn>
+
+@* Fixed Toolbars *@
+@if (_showPosition == ToolbarPosition.TopLeft)
+{
+    <BwToolbar Position="ToolbarPosition.TopLeft">
+        <BwToolButton Icon="fa-solid fa-compass" Tooltip="Explore"/>
+        <BwToolDropdown Icon="fa-solid fa-bookmark" Tooltip="Bookmarks">
+            <BwToolDropdownItem Label="View All" Icon="fa-solid fa-list"/>
+            <BwToolDropdownItem Label="Add New" Icon="fa-solid fa-plus"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.Top)
+{
+    <BwToolbar Position="ToolbarPosition.Top">
+        <BwToolButton Icon="fa-solid fa-arrow-left" Tooltip="Back"/>
+        <BwToolButton Icon="fa-solid fa-arrow-right" Tooltip="Forward"/>
+        <BwToolButton Icon="fa-solid fa-rotate-right" Tooltip="Refresh"/>
+        <BwToolSeparator/>
+        <BwToolDropdown Icon="fa-solid fa-share-nodes" Tooltip="Share">
+            <BwToolDropdownItem Label="Copy Link" Icon="fa-solid fa-link"/>
+            <BwToolDropdownItem Label="Twitter" Icon="fa-brands fa-twitter"/>
+            <BwToolDropdownItem Label="LinkedIn" Icon="fa-brands fa-linkedin"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.TopRight)
+{
+    <BwToolbar Position="ToolbarPosition.TopRight">
+        <BwToolButton Icon="fa-solid fa-bell" Tooltip="Notifications"/>
+        <BwToolButton Icon="fa-solid fa-envelope" Tooltip="Messages"/>
+        <BwToolDropdown Icon="fa-solid fa-user" Tooltip="Profile">
+            <BwToolDropdownItem Label="My Account" Icon="fa-solid fa-user-circle"/>
+            <BwToolDropdownItem Label="Settings" Icon="fa-solid fa-gear"/>
+            <BwToolDropdownItem Label="Logout" Icon="fa-solid fa-sign-out-alt"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.Left)
+{
+    <BwToolbar Position="ToolbarPosition.Left" Orientation="ToolbarOrientation.Vertical">
+        <BwToolButton Icon="fa-solid fa-house" Tooltip="Home"/>
+        <BwToolButton Icon="fa-solid fa-folder" Tooltip="Files" IsActive="true" Color="BwColor.Primary"/>
+        <BwToolButton Icon="fa-solid fa-magnifying-glass" Tooltip="Search"/>
+        <BwToolSeparator/>
+        <BwToolDropdown Icon="fa-solid fa-plus" Tooltip="Add">
+            <BwToolDropdownItem Label="File" Icon="fa-solid fa-file"/>
+            <BwToolDropdownItem Label="Folder" Icon="fa-solid fa-folder"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-gear" Tooltip="Settings"/>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.Right)
+{
+    <BwToolbar Position="ToolbarPosition.Right" Orientation="ToolbarOrientation.Vertical">
+        <BwToolButton Icon="fa-solid fa-comments" Tooltip="Comments"/>
+        <BwToolButton Icon="fa-solid fa-clock-rotate-left" Tooltip="History"/>
+        <BwToolButton Icon="fa-solid fa-layer-group" Tooltip="Layers" IsActive="true" Color="BwColor.Info"/>
+        <BwToolSeparator/>
+        <BwToolDropdown Icon="fa-solid fa-sliders" Tooltip="Settings">
+            <BwToolDropdownItem Label="View" Icon="fa-solid fa-eye"/>
+            <BwToolDropdownItem Label="Preferences" Icon="fa-solid fa-cog"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.BottomLeft)
+{
+    <BwToolbar Position="ToolbarPosition.BottomLeft">
+        <BwToolButton Icon="fa-solid fa-terminal" Tooltip="Terminal"/>
+        <BwToolDropdown Icon="fa-solid fa-bug" Tooltip="Debug">
+            <BwToolDropdownItem Label="Start" Icon="fa-solid fa-play"/>
+            <BwToolDropdownItem Label="Step Over" Icon="fa-solid fa-arrow-right"/>
+            <BwToolDropdownItem Label="Stop" Icon="fa-solid fa-stop"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.Bottom)
+{
+    <BwToolbar Position="ToolbarPosition.Bottom">
+        <BwToolButton Icon="fa-solid fa-backward" Tooltip="Rewind"/>
+        <BwToolButton Icon="fa-solid fa-play" Tooltip="Play" IsActive="true" Color="BwColor.Success"/>
+        <BwToolButton Icon="fa-solid fa-forward" Tooltip="Fast Forward"/>
+        <BwToolSeparator/>
+        <BwToolDropdown Icon="fa-solid fa-volume-high" Tooltip="Volume">
+            <BwToolDropdownItem Label="Mute" Icon="fa-solid fa-volume-xmark"/>
+            <BwToolDropdownItem Label="Low" Icon="fa-solid fa-volume-low"/>
+            <BwToolDropdownItem Label="High" Icon="fa-solid fa-volume-high"/>
+        </BwToolDropdown>
+        <BwToolDropdown Icon="fa-solid fa-cog" Tooltip="Settings">
+            <BwToolDropdownItem Label="Quality" Icon="fa-solid fa-film"/>
+            <BwToolDropdownItem Label="Speed" Icon="fa-solid fa-gauge"/>
+            <BwToolDropdownItem Label="Subtitles" Icon="fa-solid fa-closed-captioning"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-expand" Tooltip="Fullscreen"/>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@if (_showPosition == ToolbarPosition.BottomRight)
+{
+    <BwToolbar Position="ToolbarPosition.BottomRight">
+        <BwToolButton Icon="fa-solid fa-comment" Tooltip="Chat"/>
+        <BwToolDropdown Icon="fa-solid fa-share" Tooltip="Share">
+            <BwToolDropdownItem Label="Screen" Icon="fa-solid fa-desktop"/>
+            <BwToolDropdownItem Label="File" Icon="fa-solid fa-file"/>
+        </BwToolDropdown>
+        <BwToolButton Icon="fa-solid fa-xmark" Tooltip="Close" OnClick="@(() => _showPosition = ToolbarPosition.None)"/>
+    </BwToolbar>
+}
+
+@code {
+
+    // Text Editor
+    private bool _isBold;
+    private bool _isItalic;
+    private bool _isUnderline;
+    private int _align = 1;
+    private int _heading;
+    private int _font;
+
+    // IDE
+    private int _sidePanel;
+
+    // Design Tools
+    private int _tool;
+
+    // Media Player
+    private bool _isPlaying;
+    private bool _shuffle;
+    private int _repeat;
+    private int _volume = 60;
+    private bool _liked;
+
+    private string VolumeIcon => _volume switch
+    {
+        0 => "fa-solid fa-volume-xmark",
+        <= 30 => "fa-solid fa-volume-off",
+        <= 60 => "fa-solid fa-volume-low",
+        _ => "fa-solid fa-volume-high"
+    };
+
+    private string RepeatIcon => _repeat switch
+    {
+        1 => "fa-solid fa-repeat",
+        2 => "fa-solid fa-1",
+        _ => "fa-solid fa-repeat"
+    };
+
+    private void CycleRepeat()
+    {
+        _repeat = (_repeat + 1) % 3;
+    }
+
+    // Fixed Position
+    private ToolbarPosition _showPosition = ToolbarPosition.None;
+
+    private void TogglePosition(ToolbarPosition position)
+    {
+        _showPosition = _showPosition == position ? ToolbarPosition.None : position;
+    }
+
+    // Glass Effect
+    private bool _glassEnabled = true;
+}

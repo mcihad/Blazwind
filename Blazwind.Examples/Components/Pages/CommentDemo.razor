@@ -1,0 +1,136 @@
+@page "/components/comment"
+@using Blazwind.Components.Comment
+
+<PageTitle>Yorumlar - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="BwComment"
+            Description="Comment/note adding system for documents and records. Thread support, like and edit features."
+            Icon="fa-regular fa-comments" Color="BwColor.Info"/>
+
+    @* Temel Kullanım *@
+    <BwCard Title="Comment System" Subtitle="Document comment example." Icon="fa-solid fa-comments"
+            Color="BwColor.Primary">
+        <BwComment Comments="_comments" Title="Başvuru Yorumları" CurrentUserName="Kullanıcı" AllowAdd="true"
+                   AllowReply="true" AllowLike="true" Mentions="_mentions" OnAdd="HandleAddComment"
+                   OnReply="HandleReply"
+                   OnLike="HandleLike" OnDelete="HandleDelete"/>
+    </BwCard>
+
+    @* Salt Okunur *@
+    <BwCard Title="Read-Only View" Subtitle="Comment adding disabled." Icon="fa-solid fa-eye" Color="BwColor.Secondary">
+        <BwComment Comments="_readOnlyComments" Title="Arşiv Yorumları" AllowAdd="false" AllowReply="false"
+                   AllowLike="false"/>
+    </BwCard>
+
+    @* Boş Durum *@
+    <BwCard Title="Empty State" Subtitle="No comments yet." Icon="fa-regular fa-comment" Color="BwColor.Warning">
+        <BwComment Comments="@(new List<CommentItem>())" Title="Yeni Belge" CurrentUserName="Kullanıcı"/>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    private readonly List<CommentItem> _comments = new()
+    {
+        new CommentItem
+        {
+            Id = "1",
+            AuthorName = "Ahmet Yılmaz",
+            AuthorRole = "Unit Chief",
+            Content = "Additional documents are required for this application. The title deed copy seems to be missing.",
+            CreatedAt = DateTime.Now.AddHours(-5),
+            LikeCount = 3,
+            CanEdit = false,
+            CanDelete = false,
+            Replies = new List<CommentItem>
+            {
+                new()
+                {
+                    Id = "1-1",
+                    AuthorName = "Zeynep Kaya",
+                    AuthorRole = "Clerk",
+                    Content = "The citizen has been informed, he said he will bring it tomorrow.",
+                    CreatedAt = DateTime.Now.AddHours(-3),
+                    ParentId = "1"
+                },
+                new()
+                {
+                    Id = "1-2",
+                    AuthorName = "Ahmet Yılmaz",
+                    AuthorRole = "Unit Chief",
+                    Content = "Okay, let's follow up.",
+                    CreatedAt = DateTime.Now.AddHours(-2),
+                    ParentId = "1"
+                }
+            }
+        },
+        new CommentItem
+        {
+            Id = "2",
+            AuthorName = "Fatma Demir",
+            AuthorRole = "Manager",
+            Content = "Checked, the process can continue.",
+            CreatedAt = DateTime.Now.AddMinutes(-30),
+            LikeCount = 1,
+            IsLiked = true
+        }
+    };
+
+    private readonly List<CommentItem> _readOnlyComments = new()
+    {
+        new CommentItem
+        {
+            Id = "1",
+            AuthorName = "Old User",
+            Content = "This document was archived in 2020.",
+            CreatedAt = new DateTime(2020, 5, 15),
+            EditedAt = new DateTime(2020, 5, 16)
+        }
+    };
+
+    private readonly List<BwMentionItem> _mentions = new()
+    {
+        new BwMentionItem { Value = "Ahmet Yılmaz", Label = "Ahmet Yılmaz", Avatar = "https://i.pravatar.cc/150?u=1", Description = "Unit Chief" },
+        new BwMentionItem { Value = "Zeynep Kaya", Label = "Zeynep Kaya", Avatar = "https://i.pravatar.cc/150?u=2", Description = "Clerk" },
+        new BwMentionItem { Value = "Fatma Demir", Label = "Fatma Demir", Avatar = "https://i.pravatar.cc/150?u=3", Description = "Manager" },
+        new BwMentionItem { Value = "Mehmet Öz", Label = "Mehmet Öz", Avatar = "https://i.pravatar.cc/150?u=4", Description = "Expert" }
+    };
+
+    private void HandleAddComment(string text)
+    {
+        _comments.Add(new CommentItem
+        {
+            AuthorName = "Kullanıcı",
+            Content = text,
+            CanEdit = true,
+            CanDelete = true
+        });
+    }
+
+    private void HandleReply((string CommentId, string Text) args)
+    {
+        var parent = _comments.FirstOrDefault(c => c.Id == args.CommentId);
+        if (parent != null)
+        {
+            parent.Replies.Add(new CommentItem
+            {
+                AuthorName = "Kullanıcı",
+                Content = args.Text,
+                ParentId = args.CommentId
+            });
+        }
+    }
+
+    private void HandleLike(CommentItem comment)
+    {
+        comment.IsLiked = !comment.IsLiked;
+        comment.LikeCount += comment.IsLiked ? 1 : -1;
+    }
+
+    private void HandleDelete(CommentItem comment)
+    {
+        _comments.RemoveAll(c => c.Id == comment.Id);
+    }
+
+}

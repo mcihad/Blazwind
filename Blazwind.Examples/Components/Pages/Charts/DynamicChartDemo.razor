@@ -1,0 +1,122 @@
+@page "/charts/dynamic"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Button
+@using System.Timers
+@implements IDisposable
+
+<PageTitle>Dynamic Chart - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Dynamic Data" 
+            Description="Gerçek zamanlı veri akışı görselleştirmesi. AI eğitim süreci (Training Loss) takibi için idealdir."
+            Icon="fa-solid fa-chart-line"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Training Loss Monitor" Subtitle="Gerçek zamanlı update" Icon="fa-solid fa-heart-pulse" Color="BwColor.Warning">
+        <BwChart @ref="_chart" Options="_dynamicOptions" Height="400px" />
+        
+        <BwFlex Class="mt-4" Gap="BwSpacing.Sm">
+            <BwButton Text="Başlat" Color="BwColor.Primary" OnClick="StartTimer" Disabled="@_isRunning" />
+            <BwButton Text="Durdur" Color="BwColor.Danger" OnClick="StopTimer" Disabled="@(!_isRunning)" />
+        </BwFlex>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private BwChart? _chart;
+    private Timer? _timer;
+    private bool _isRunning = false;
+    private Random _random = new();
+    private List<string> _categories = new();
+    private List<double> _data = new();
+    private int _tickCount = 0;
+
+    private ChartOptions _dynamicOptions = new();
+
+    protected override void OnInitialized()
+    {
+        // Initial data
+        for (int i = 0; i < 10; i++)
+        {
+            _categories.Add(DateTime.Now.AddSeconds(-10 + i).ToString("HH:mm:ss"));
+            _data.Add(_random.NextDouble() * 100);
+        }
+
+        _dynamicOptions = new ChartOptions
+        {
+            Title = new ChartTitle { Text = "Training Loss", Left = ChartPosition.Center },
+            Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Axis },
+            XAxis = new ChartAxis { Type = ChartAxisType.Category, Data = _categories, BoundaryGap = false },
+            YAxis = new ChartAxis { Type = ChartAxisType.Value, Min = 0, Max = 100 },
+            Series = new List<ChartSeries>
+            {
+                new()
+                {
+                    Name = "Loss",
+                    Type = ChartSeriesType.Line,
+                    Data = _data.Cast<object>().ToList(),
+                    Smooth = true,
+                    AreaStyle = new { opacity = 0.2 },
+                    ItemStyle = new ChartItemStyle { Color = "#f59e0b" }
+                }
+            },
+            Animation = false // Smoother updates for real-time
+        };
+    }
+
+    private void StartTimer()
+    {
+        if (_isRunning) return;
+        
+        _timer = new Timer(1000);
+        _timer.Elapsed += async (sender, e) => await UpdateData();
+        _timer.AutoReset = true;
+        _timer.Start();
+        _isRunning = true;
+    }
+
+    private void StopTimer()
+    {
+        if (!_isRunning) return;
+        
+        _timer?.Stop();
+        _timer?.Dispose();
+        _timer = null;
+        _isRunning = false;
+    }
+
+    private async Task UpdateData()
+    {
+        _tickCount++;
+        
+        if (_categories.Count > 0) _categories.RemoveAt(0);
+        if (_data.Count > 0) _data.RemoveAt(0);
+        
+        // Add new
+        _categories.Add(DateTime.Now.ToString("HH:mm:ss"));
+        var lastVal = _data.LastOrDefault();
+        var change = (_random.NextDouble() - 0.5) * 20;
+        var newVal = Math.Clamp(lastVal + change, 5, 95);
+        _data.Add(newVal);
+
+        // Update Chart Options directly
+        if (_dynamicOptions.XAxis is ChartAxis xAxis)
+            xAxis.Data = _categories;
+            
+        if (_dynamicOptions.Series?.FirstOrDefault() is { } series)
+        {
+             series.Data = _data.Cast<object>().ToList();
+        }
+        
+        // Force refresh
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        StopTimer();
+    }
+}

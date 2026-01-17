@@ -1,0 +1,57 @@
+@namespace Blazwind.Components.Card
+@using Blazwind.Components.Shared
+
+@{
+    var gradientClasses = Color switch
+    {
+        BwColor.Primary => "bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 text-white",
+        BwColor.Secondary => "bg-gradient-to-r from-gray-600 to-gray-700 dark:from-gray-800 dark:to-gray-900 text-white",
+        BwColor.Success => "bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-800 dark:to-emerald-900 text-white",
+        BwColor.Danger => "bg-gradient-to-r from-red-600 to-red-700 dark:from-red-800 dark:to-red-900 text-white",
+        BwColor.Warning => "bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-700 dark:to-amber-800 text-white",
+        BwColor.Info => "bg-gradient-to-r from-sky-500 to-sky-600 dark:from-sky-700 dark:to-sky-800 text-white",
+        BwColor.Dark => "bg-gradient-to-r from-gray-800 to-gray-900 dark:from-black dark:to-gray-900 text-white",
+        _ => "bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 text-white"
+    };
+    
+    var textMutedClass = Color switch
+    {
+        BwColor.Primary => "text-blue-100",
+        BwColor.Secondary => "text-gray-200",
+        BwColor.Success => "text-emerald-100",
+        BwColor.Danger => "text-red-100",
+        BwColor.Warning => "text-amber-100",
+        BwColor.Info => "text-sky-100",
+        BwColor.Dark => "text-gray-400",
+        _ => "text-blue-100"
+    };
+}
+
+<div class="rounded p-6 @gradientClasses @Class">
+    <div class="flex items-center gap-3 mb-2">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <div class="w-10 h-10 bg-white/20 rounded flex items-center justify-center">
+                <i class="@Icon text-xl"></i>
+            </div>
+        }
+        <h1 class="text-2xl font-bold">@Title</h1>
+    </div>
+    @if (!string.IsNullOrEmpty(Description))
+    {
+        <p class="@textMutedClass max-w-xl">@Description</p>
+    }
+    @if (ChildContent != null)
+    {
+        @ChildContent
+    }
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

@@ -1,0 +1,140 @@
+@page "/charts/treemap"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Treemap - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Treemap" 
+            Description="Hiyerarşik verileri görselleştirmek için ideal grafik tipi."
+            Icon="fa-solid fa-table-cells"
+            Color="BwColor.Info" />
+
+    @* Bütçe Dağılımı *@
+    <BwCard Title="Bütçe Dağılımı" Subtitle="Budget treemap." Icon="fa-solid fa-money-bill" Color="BwColor.Primary">
+        <BwChart Options="_budgetTreemap" Height="450px" />
+    </BwCard>
+
+    @* Departman Yapısı *@
+    <BwCard Title="Departman Yapısı" Subtitle="Department structure treemap." Icon="fa-solid fa-building" Color="BwColor.Success">
+        <BwChart Options="_deptTreemap" Height="450px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _budgetTreemap = new
+    {
+        title = new { text = "2025 Bütçe Dağılımı (Milyon TL)", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item, formatter = "{b}: {c} Milyon TL" },
+        series = new object[]
+        {
+            new
+            {
+                name = "Bütçe",
+                type = ChartSeriesType.Treemap,
+                data = new object[]
+                {
+                    new
+                    {
+                        name = "Personel Giderleri",
+                        value = 450,
+                        children = new object[]
+                        {
+                            new { name = "Maaş", value = 350 },
+                            new { name = "Sigorta", value = 60 },
+                            new { name = "Eğitim", value = 40 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Yatırımlar",
+                        value = 380,
+                        children = new object[]
+                        {
+                            new { name = "Altyapı", value = 200 },
+                            new { name = "BT", value = 100 },
+                            new { name = "Araç", value = 80 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Hizmetler",
+                        value = 250,
+                        children = new object[]
+                        {
+                            new { name = "Temizlik", value = 80 },
+                            new { name = "Güvenlik", value = 70 },
+                            new { name = "Bakım", value = 60 },
+                            new { name = "Diğer", value = 40 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Cari Giderler",
+                        value = 180,
+                        children = new object[]
+                        {
+                            new { name = "Enerji", value = 90 },
+                            new { name = "Su", value = 45 },
+                            new { name = "İletişim", value = 45 }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    private object _deptTreemap = new
+    {
+        title = new { text = "Departman Personel Dağılımı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item, formatter = "{b}: {c} Kişi" },
+        series = new object[]
+        {
+            new
+            {
+                name = "Personel",
+                type = ChartSeriesType.Treemap,
+                data = new object[]
+                {
+                    new
+                    {
+                        name = "Teknik İşler",
+                        value = 280,
+                        children = new object[]
+                        {
+                            new { name = "Fen İşleri", value = 120 },
+                            new { name = "İmar", value = 80 },
+                            new { name = "Park Bahçe", value = 80 }
+                        }
+                    },
+                    new
+                    {
+                        name = "İdari İşler",
+                        value = 150,
+                        children = new object[]
+                        {
+                            new { name = "Yazı İşleri", value = 60 },
+                            new { name = "İnsan Kaynakları", value = 50 },
+                            new { name = "Hukuk", value = 40 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Mali İşler",
+                        value = 100,
+                        children = new object[]
+                        {
+                            new { name = "Muhasebe", value = 50 },
+                            new { name = "Gelir", value = 30 },
+                            new { name = "Bütçe", value = 20 }
+                        }
+                    },
+                    new { name = "Bilgi İşlem", value = 45 },
+                    new { name = "Basın", value = 25 }
+                }
+            }
+        }
+    };
+}

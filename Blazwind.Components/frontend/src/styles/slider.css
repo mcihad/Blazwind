@@ -1,0 +1,95 @@
+/* BwSlider Custom Styles */
+.bw-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: var(--slider-track-height, 8px);
+    border-radius: 9999px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* WebKit (Chrome, Safari, Edge) */
+.bw-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--slider-thumb-size, 16px);
+    height: var(--slider-thumb-size, 16px);
+    background: var(--slider-thumb-color, #2563EB);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--slider-thumb-color, #2563EB);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease;
+}
+
+.bw-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.bw-slider::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+}
+
+/* Firefox */
+.bw-slider::-moz-range-thumb {
+    width: var(--slider-thumb-size, 16px);
+    height: var(--slider-thumb-size, 16px);
+    background: var(--slider-thumb-color, #2563EB);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--slider-thumb-color, #2563EB);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease;
+}
+
+.bw-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+}
+
+.bw-slider::-moz-range-track {
+    height: var(--slider-track-height, 8px);
+    border-radius: 9999px;
+    background: #E5E7EB;
+}
+
+/* Dark Mode */
+.dark .bw-slider::-webkit-slider-thumb {
+    border-color: var(--color-primary-light, #0077CC);
+    background: var(--color-primary-light, #0077CC);
+}
+
+.dark .bw-slider::-moz-range-thumb {
+    border-color: var(--color-primary-light, #0077CC);
+    background: var(--color-primary-light, #0077CC);
+}
+
+.dark .bw-slider::-moz-range-track {
+    background: #374151;
+    /* gray-700 */
+}
+
+/* Disabled state */
+.bw-slider:disabled {
+    cursor: not-allowed;
+}
+
+.bw-slider:disabled::-webkit-slider-thumb {
+    background: #9CA3AF;
+    border-color: #9CA3AF;
+}
+
+.bw-slider:disabled::-moz-range-thumb {
+    background: #9CA3AF;
+    border-color: #9CA3AF;
+}
+
+.dark .bw-slider:disabled::-webkit-slider-thumb {
+    background: #4B5563;
+    /* gray-600 */
+    border-color: #4B5563;
+}
+
+.dark .bw-slider:disabled::-moz-range-thumb {
+    background: #4B5563;
+    border-color: #4B5563;
+}

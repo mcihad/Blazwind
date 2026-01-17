@@ -1,0 +1,239 @@
+@page "/components/table"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Table
+
+<PageTitle>Table & Pagination Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Table & Pagination"
+            Description="Advanced data table with sorting, pagination, and selection features."
+            Icon="fa-solid fa-table"
+            Color="BwColor.Info"/>
+
+    @* Basic Table *@
+    <BwCard Title="Basic Table" Subtitle="Client-side pagination and sorting" Icon="fa-solid fa-table-cells"
+            Color="BwColor.Primary">
+        <BwTable TItem="Product"
+                 Items="@_products"
+                 EnablePagination="true"
+                 PageSize="5"
+                 ShowColumnSelector="true">
+
+            <BwTableColumn TItem="Product" Title="ID" Field="@(p => p.Id)" Width="80px"/>
+            <BwTableColumn TItem="Product" Title="Product Name" Field="@(p => p.Name)"/>
+            <BwTableColumn TItem="Product" Title="Category" Field="@(p => p.Category)"/>
+            <BwTableColumn TItem="Product" Title="Price" Field="@(p => p.Price)">
+                <Template>
+                    <span class="font-medium">$@context.Price.ToString("N2")</span>
+                </Template>
+            </BwTableColumn>
+            <BwTableColumn TItem="Product" Title="Stock" Field="@(p => p.Stock)">
+                <Template>
+                    @if (context.Stock < 10)
+                    {
+                        <BwBadge Color="BwColor.Danger">@context.Stock</BwBadge>
+                    }
+                    else if (context.Stock < 50)
+                    {
+                        <BwBadge Color="BwColor.Warning">@context.Stock</BwBadge>
+                    }
+                    else
+                    {
+                        <BwBadge Color="BwColor.Success">@context.Stock</BwBadge>
+                    }
+                </Template>
+            </BwTableColumn>
+
+        </BwTable>
+    </BwCard>
+
+    @* Selection Demo *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Single Selection" Subtitle="Selection mode with radio button" Icon="fa-solid fa-circle-check"
+                Color="BwColor.Success">
+            <BwTable TItem="Product"
+                     Items="@_products.Take(5)"
+                     SelectionMode="BwSelectionMode.Single"
+                     SelectedItems="@_singleSelectedItems"
+                     SelectedItemsChanged="OnSingleSelectionChanged"
+                     Compact="true">
+
+                <BwTableColumn TItem="Product" Title="Product" Field="@(p => p.Name)"/>
+                <BwTableColumn TItem="Product" Title="Price" Field="@(p => p.Price)">
+                    <Template>$@context.Price.ToString("N2")</Template>
+                </BwTableColumn>
+
+            </BwTable>
+
+            <div class="mt-4 p-3 bg-blue-50 rounded text-sm">
+                <strong>Selected:</strong> @(_singleSelectedItems.FirstOrDefault()?.Name ?? "None")
+            </div>
+        </BwCard>
+
+        <BwCard Title="Multiple Selection" Subtitle="Selection mode with checkbox" Icon="fa-solid fa-square-check"
+                Color="BwColor.Warning">
+            <BwTable TItem="Product"
+                     Items="@_products.Take(5)"
+                     SelectionMode="BwSelectionMode.Multiple"
+                     SelectedItems="@_multiSelectedItems"
+                     SelectedItemsChanged="OnMultiSelectionChanged"
+                     Compact="true">
+
+                <BwTableColumn TItem="Product" Title="Product" Field="@(p => p.Name)"/>
+                <BwTableColumn TItem="Product" Title="Price" Field="@(p => p.Price)">
+                    <Template>$@context.Price.ToString("N2")</Template>
+                </BwTableColumn>
+
+            </BwTable>
+
+            <div class="mt-4 p-3 bg-blue-50 rounded text-sm">
+                <strong>Selected:</strong> @_multiSelectedItems.Count() items
+                @if (_multiSelectedItems.Any())
+                {
+                    <span class="ml-2">(@string.Join(", ", _multiSelectedItems.Select(p => p.Name)))</span>
+                }
+            </div>
+        </BwCard>
+    </BwRow>
+
+    @* Conditional Row Styling *@
+    <BwCard Title="Conditional Row Style" Subtitle="Coloring rows based on data state" Icon="fa-solid fa-paintbrush"
+            Color="BwColor.Primary">
+        <BwTable TItem="Product"
+                 Items="@_products.Take(8)"
+                 RowClass="@GetRowClass"
+                 Bordered="true">
+
+            <BwTableColumn TItem="Product" Title="ID" Field="@(p => p.Id)" Width="80px"/>
+            <BwTableColumn TItem="Product" Title="Product Name" Field="@(p => p.Name)"/>
+            <BwTableColumn TItem="Product" Title="Stock" Field="@(p => p.Stock)"/>
+            <BwTableColumn TItem="Product" Title="Status" Sortable="false">
+                <Template>
+                    @if (context.Stock == 0)
+                    {
+                        <span class="text-red-600 font-medium">Out of Stock</span>
+                    }
+                    else if (context.Stock < 10)
+                    {
+                        <span class="text-orange-600 font-medium">Critical</span>
+                    }
+                    else
+                    {
+                        <span class="text-green-600">In Stock</span>
+                    }
+                </Template>
+            </BwTableColumn>
+
+        </BwTable>
+
+        <div class="mt-4 flex gap-4 text-sm">
+            <span class="flex items-center gap-2">
+                <span class="w-4 h-4 bg-red-100 border border-red-200 rounded"></span>
+                Out of Stock (Stock = 0)
+            </span>
+            <span class="flex items-center gap-2">
+                <span class="w-4 h-4 bg-orange-100 border border-orange-200 rounded"></span>
+                Critical (Stock &lt; 10)
+            </span>
+        </div>
+    </BwCard>
+
+    @* Ellipsis (Long Text Truncation) *@
+    <BwCard Title="Ellipsis (Long Text)" Subtitle="Truncate long texts with ... and tooltip" Icon="fa-solid fa-ellipsis"
+            Color="BwColor.Info">
+        <BwTable TItem="Product"
+                 Items="@_ellipsisProducts"
+                 Bordered="true"
+                 Compact="true">
+
+            <BwTableColumn TItem="Product" Title="ID" Field="@(p => p.Id)" Width="60px"/>
+            <BwTableColumn TItem="Product" Title="Product Name" Field="@(p => p.Name)" Ellipsis="true"
+                           EllipsisMaxWidth="150px"/>
+            <BwTableColumn TItem="Product" Title="Description" Field="@(p => p.Description)" Ellipsis="true"
+                           EllipsisMaxWidth="200px"/>
+            <BwTableColumn TItem="Product" Title="Price" Field="@(p => p.Price)">
+                <Template>$@context.Price.ToString("N2")</Template>
+            </BwTableColumn>
+
+        </BwTable>
+
+        <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+            <i class="fa-solid fa-info-circle mr-2"></i>
+            Long texts are truncated with <code>...</code> using the <strong>Ellipsis="true"</strong> parameter.
+            Full text is shown in a tooltip on hover.
+        </div>
+    </BwCard>
+
+</BwColumn>
+
+@code {
+    private List<Product> _products = new();
+    private List<Product> _ellipsisProducts = new();
+    private IEnumerable<Product> _singleSelectedItems = Enumerable.Empty<Product>();
+    private IEnumerable<Product> _multiSelectedItems = Enumerable.Empty<Product>();
+
+
+    protected override void OnInitialized()
+    {
+        // Generate mock data
+        var categories = new[] { "Electronics", "Clothing", "Home & Living", "Sports", "Books" };
+        var random = new Random(42);
+
+        _products = Enumerable.Range(1, 50).Select(i => new Product
+        {
+            Id = i,
+            Name = $"Product {i}",
+            Category = categories[random.Next(categories.Length)],
+            Price = Math.Round(random.NextDouble() * 1000 + 10, 2),
+            Stock = random.Next(0, 100)
+        }).ToList();
+
+        // Products with long descriptions for ellipsis demo
+        var descriptions = new[]
+        {
+            "This product is made of high quality materials and guarantees long lasting use.",
+            "Premium brand, suitable for European standards, covered by 2 years warranty, delivered with fast shipping.",
+            "Produced with new generation technology, it has energy saving and environmentally friendly features.",
+            "Ergonomic design, lightweight and portable structure, ideal solution for daily use.",
+            "Industrial quality product designed specifically for professional use."
+        };
+
+        _ellipsisProducts = Enumerable.Range(1, 5).Select(i => new Product
+        {
+            Id = i,
+            Name = $"Professional Product Model {i} - Extended Version",
+            Category = categories[random.Next(categories.Length)],
+            Price = Math.Round(random.NextDouble() * 1000 + 100, 2),
+            Stock = random.Next(10, 100),
+            Description = descriptions[i - 1]
+        }).ToList();
+    }
+
+    private void OnSingleSelectionChanged(IEnumerable<Product> items)
+    {
+        _singleSelectedItems = items;
+    }
+
+    private void OnMultiSelectionChanged(IEnumerable<Product> items)
+    {
+        _multiSelectedItems = items;
+    }
+
+    private string GetRowClass(Product product)
+    {
+        if (product.Stock == 0) return "!bg-red-50";
+        if (product.Stock < 10) return "!bg-orange-50";
+        return "";
+    }
+
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Category { get; set; } = "";
+        public string Description { get; set; } = "";
+        public double Price { get; set; }
+        public int Stock { get; set; }
+    }
+
+}

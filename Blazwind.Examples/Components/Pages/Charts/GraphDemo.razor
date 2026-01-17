@@ -1,0 +1,113 @@
+@page "/charts/graph"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Graph - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Graph (İlişki Grafiği)" 
+            Description="Ağ yapıları ve ilişkileri görselleştirmek için ideal grafik tipi."
+            Icon="fa-solid fa-diagram-project"
+            Color="BwColor.Info" />
+
+    @* Basit Graph *@
+    <BwCard Title="Sistem Mimarisi" Subtitle="System architecture graph." Icon="fa-solid fa-network-wired" Color="BwColor.Primary">
+        <BwChart Options="_systemGraph" Height="500px" />
+    </BwCard>
+
+    @* Force Graph *@
+    <BwCard Title="Departman İlişkileri" Subtitle="Department relationships." Icon="fa-solid fa-users" Color="BwColor.Success">
+        <BwChart Options="_forceGraph" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _systemGraph = new
+    {
+        title = new { text = "Sistem Mimarisi", left = ChartPosition.Center },
+        tooltip = new { },
+        animationDurationUpdate = 1500,
+        animationEasingUpdate = "quinticInOut",
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Graph,
+                layout = "none",
+                symbolSize = 50,
+                roam = true,
+                label = new { show = true },
+                edgeSymbol = new[] { ChartSymbol.Circle, ChartSymbol.Arrow },
+                edgeSymbolSize = new[] { 4, 10 },
+                data = new object[]
+                {
+                    new { name = "Web App", x = 300, y = 100, itemStyle = new { color = "#3b82f6" } },
+                    new { name = "API Gateway", x = 300, y = 200, itemStyle = new { color = "#10b981" } },
+                    new { name = "Auth Service", x = 150, y = 300, itemStyle = new { color = "#f59e0b" } },
+                    new { name = "User Service", x = 300, y = 300, itemStyle = new { color = "#8b5cf6" } },
+                    new { name = "Data Service", x = 450, y = 300, itemStyle = new { color = "#ec4899" } },
+                    new { name = "Database", x = 300, y = 400, itemStyle = new { color = "#ef4444" } },
+                    new { name = "Cache", x = 450, y = 400, itemStyle = new { color = "#06b6d4" } }
+                },
+                links = new object[]
+                {
+                    new { source = "Web App", target = "API Gateway" },
+                    new { source = "API Gateway", target = "Auth Service" },
+                    new { source = "API Gateway", target = "User Service" },
+                    new { source = "API Gateway", target = "Data Service" },
+                    new { source = "User Service", target = "Database" },
+                    new { source = "Data Service", target = "Database" },
+                    new { source = "Data Service", target = "Cache" }
+                },
+                lineStyle = new { opacity = 0.9, width = 2, curveness = 0 }
+            }
+        }
+    };
+
+    private object _forceGraph = new
+    {
+        title = new { text = "Departman İlişki Ağı", left = ChartPosition.Center },
+        tooltip = new { },
+        series = new object[]
+        {
+            new
+            {
+                type = ChartSeriesType.Graph,
+                layout = "force",
+                symbolSize = 45,
+                roam = true,
+                label = new { show = true, fontSize = 10 },
+                force = new { repulsion = 200, edgeLength = 100 },
+                data = new object[]
+                {
+                    new { name = "Başkanlık", itemStyle = new { color = "#3b82f6" }, symbolSize = 60 },
+                    new { name = "Yazı İşleri", itemStyle = new { color = "#10b981" }, symbolSize = 45 },
+                    new { name = "İmar", itemStyle = new { color = "#f59e0b" }, symbolSize = 45 },
+                    new { name = "Fen İşleri", itemStyle = new { color = "#8b5cf6" }, symbolSize = 45 },
+                    new { name = "Mali Hizmetler", itemStyle = new { color = "#ec4899" }, symbolSize = 45 },
+                    new { name = "Bilgi İşlem", itemStyle = new { color = "#06b6d4" }, symbolSize = 45 },
+                    new { name = "İnsan Kaynakları", itemStyle = new { color = "#22c55e" }, symbolSize = 45 },
+                    new { name = "Hukuk", itemStyle = new { color = "#eab308" }, symbolSize = 45 },
+                    new { name = "Park Bahçe", itemStyle = new { color = "#a855f7" }, symbolSize = 45 }
+                },
+                links = new object[]
+                {
+                    new { source = "Başkanlık", target = "Yazı İşleri" },
+                    new { source = "Başkanlık", target = "İmar" },
+                    new { source = "Başkanlık", target = "Fen İşleri" },
+                    new { source = "Başkanlık", target = "Mali Hizmetler" },
+                    new { source = "Başkanlık", target = "Bilgi İşlem" },
+                    new { source = "Yazı İşleri", target = "İnsan Kaynakları" },
+                    new { source = "Yazı İşleri", target = "Hukuk" },
+                    new { source = "İmar", target = "Fen İşleri" },
+                    new { source = "Fen İşleri", target = "Park Bahçe" },
+                    new { source = "Mali Hizmetler", target = "Bilgi İşlem" },
+                    new { source = "İnsan Kaynakları", target = "Hukuk" }
+                },
+                lineStyle = new { opacity = 0.9, width = 2, curveness = 0.1 }
+            }
+        }
+    };
+}

@@ -1,0 +1,71 @@
+@page "/charts/correlation"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Correlation Matrix - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Korelasyon Matrisi" 
+            Description="Değişkenler arasındaki ilişki katsayılarını göstermek için Heatmap kullanımı."
+            Icon="fa-solid fa-table-cells"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Feature Correlation" Subtitle="Model eğitim verisi analizi" Icon="fa-solid fa-magnifying-glass-chart" Color="BwColor.Danger">
+        <BwChart Options="_corrOptions" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _corrOptions = new()
+    {
+        Title = new ChartTitle { Text = "Correlation Matrix", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Position = ChartPosition.Top },
+        Grid = new ChartGrid { Height = "70%", Top = "10%" },
+        XAxis = new ChartAxis 
+        { 
+            Type = ChartAxisType.Category, 
+            Data = new List<string> { "Age", "Income", "Score", "Tenure", "Balance", "Products" },
+            SplitArea = new { show = true }
+        },
+        YAxis = new ChartAxis 
+        { 
+            Type = ChartAxisType.Category, 
+            Data = new List<string> { "Age", "Income", "Score", "Tenure", "Balance", "Products" },
+            SplitArea = new { show = true }
+        },
+        VisualMap = new 
+        {
+            min = -1,
+            max = 1,
+            calculable = true,
+            orient = ChartLegendOrient.Horizontal,
+            left = ChartPosition.Center,
+            bottom = "5%",
+            inRange = new { color = new List<string> { "#ef4444", "#fef2f2", "#3b82f6" } } // Red to Blue via White
+        },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Correlation",
+                Type = ChartSeriesType.Heatmap,
+                Data = new List<object>
+                {
+                    new List<object> { 0, 0, 1.0 }, new List<object> { 0, 1, 0.2 }, new List<object> { 0, 2, 0.1 }, new List<object> { 0, 3, 0.4 }, new List<object> { 0, 4, -0.1 }, new List<object> { 0, 5, 0.3 },
+                    new List<object> { 1, 0, 0.2 }, new List<object> { 1, 1, 1.0 }, new List<object> { 1, 2, 0.6 }, new List<object> { 1, 3, 0.1 }, new List<object> { 1, 4, 0.8 }, new List<object> { 1, 5, -0.2 },
+                    new List<object> { 2, 0, 0.1 }, new List<object> { 2, 1, 0.6 }, new List<object> { 2, 2, 1.0 }, new List<object> { 2, 3, 0.0 }, new List<object> { 2, 4, 0.5 }, new List<object> { 2, 5, 0.1 },
+                    new List<object> { 3, 0, 0.4 }, new List<object> { 3, 1, 0.1 }, new List<object> { 3, 2, 0.0 }, new List<object> { 3, 3, 1.0 }, new List<object> { 3, 4, 0.2 }, new List<object> { 3, 5, 0.4 },
+                    new List<object> { 4, 0, -0.1 }, new List<object> { 4, 1, 0.8 }, new List<object> { 4, 2, 0.5 }, new List<object> { 4, 3, 0.2 }, new List<object> { 4, 4, 1.0 }, new List<object> { 4, 5, -0.3 },
+                    new List<object> { 5, 0, 0.3 }, new List<object> { 5, 1, -0.2 }, new List<object> { 5, 2, 0.1 }, new List<object> { 5, 3, 0.4 }, new List<object> { 5, 4, -0.3 }, new List<object> { 5, 5, 1.0 }
+                },
+                Label = new ChartLabel { Show = true },
+                Emphasis = new ChartEmphasis
+                {
+                    ItemStyle = new ChartItemStyle { ShadowBlur = 10, ShadowColor = "rgba(0, 0, 0, 0.5)" }
+                }
+            }
+        }
+    };
+}

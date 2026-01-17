@@ -1,0 +1,110 @@
+@page "/components/accordion"
+@using Blazwind.Components.Accordion
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Card
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+
+<PageTitle>Accordion Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Accordion Component"
+            Description="Collapsible panels to organize content. Supports single or multiple open modes."
+            Icon="fa-solid fa-layer-group"
+            Color="BwColor.Warning"/>
+
+    @* Basic & Multi-Open *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Accordion" Subtitle="Only one item open at a time" Icon="fa-solid fa-list"
+                Color="BwColor.Primary">
+            <BwAccordion DefaultOpenIndex="0">
+                <BwAccordionItem Title="What is Blazwind?">
+                    Blazwind is a modern Blazor component library built with Tailwind CSS.
+                    It provides comprehensive UI components for developing beautiful web applications.
+                </BwAccordionItem>
+                <BwAccordionItem Title="How to install?">
+                    You can install it with NuGet Package Manager. Run
+                    <code>dotnet add package Blazwind.Components</code> in the terminal.
+                </BwAccordionItem>
+                <BwAccordionItem Title="Is it open source?">
+                    Yes! Blazwind is completely open source and available on GitHub.
+                    Contributions are welcome.
+                </BwAccordionItem>
+            </BwAccordion>
+        </BwCard>
+
+        <BwCard Title="Multiple Open Mode" Subtitle="Multiple items can be open at the same time"
+                Icon="fa-solid fa-layer-group" Color="BwColor.Success">
+            <BwAccordion AllowMultiple="true">
+                <BwAccordionItem Title="Features" Icon="fa-solid fa-star">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Modern design with Tailwind CSS</li>
+                        <li>Full Blazor integration</li>
+                        <li>Customizable components</li>
+                    </ul>
+                </BwAccordionItem>
+                <BwAccordionItem Title="Advantages" Icon="fa-solid fa-check">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Fast development</li>
+                        <li>Consistent UI</li>
+                        <li>Responsive by default</li>
+                    </ul>
+                </BwAccordionItem>
+                <BwAccordionItem Title="Requirements" Icon="fa-solid fa-gear">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>.NET 8 or higher</li>
+                        <li>Blazor Server or WebAssembly</li>
+                    </ul>
+                </BwAccordionItem>
+            </BwAccordion>
+        </BwCard>
+    </BwRow>
+
+    @* Badges & Flush *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="With Badges" Subtitle="Status indicators in titles" Icon="fa-solid fa-tag"
+                Color="BwColor.Primary">
+            <BwAccordion>
+                <BwAccordionItem Title="Orders">
+                    <Badge>
+                        <BwBadge Color="BwColor.Primary" IsPill="true">24</BwBadge>
+                    </Badge>
+                    <ChildContent>
+                        There are 24 pending orders that need your attention.
+                    </ChildContent>
+                </BwAccordionItem>
+                <BwAccordionItem Title="Messages">
+                    <Badge>
+                        <BwBadge Color="BwColor.Danger" IsPill="true">5</BwBadge>
+                    </Badge>
+                    <ChildContent>
+                        You have 5 unread messages in your inbox.
+                    </ChildContent>
+                </BwAccordionItem>
+                <BwAccordionItem Title="Notifications">
+                    <Badge>
+                        <BwBadge Color="BwColor.Success" IsPill="true">New</BwBadge>
+                    </Badge>
+                    <ChildContent>
+                        Check out the latest updates and announcements.
+                    </ChildContent>
+                </BwAccordionItem>
+            </BwAccordion>
+        </BwCard>
+
+        <BwCard Title="Flush Style" Subtitle="No outer border, for integration into cards"
+                Icon="fa-solid fa-border-none" Color="BwColor.Secondary">
+            <BwAccordion Variant="BwVariant.Ghost">
+                <BwAccordionItem Title="Section One">
+                    Content of the first section. This accordion has no outer border.
+                </BwAccordionItem>
+                <BwAccordionItem Title="Section Two">
+                    Content of the second section. Great for embedding in cards.
+                </BwAccordionItem>
+                <BwAccordionItem Title="Disabled Section" IsDisabled="true">
+                    This section is disabled and cannot be opened.
+                </BwAccordionItem>
+            </BwAccordion>
+        </BwCard>
+    </BwRow>
+</BwColumn>

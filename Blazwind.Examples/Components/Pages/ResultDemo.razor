@@ -1,0 +1,140 @@
+@page "/components/result"
+@using Blazwind.Components.Result
+
+<PageTitle>Result Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Result"
+            Description="Used to notify the user of operation results and system statuses."
+            Icon="fa-solid fa-circle-check"
+            Color="BwColor.Success"/>
+
+    @* Success & Warning *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Color="BwColor.Success" Class="overflow-hidden">
+            <BwResult Status="BwResult.BwResultStatus.Success"
+                      Title="Record Completed"
+                      Subtitle="Personnel record created successfully and welcome email sent.">
+                <Extra>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Success" Icon="fa-solid fa-arrow-right">
+                        Continue
+                    </BwButton>
+                </Extra>
+            </BwResult>
+        </BwCard>
+
+        <BwCard Color="BwColor.Warning" Class="overflow-hidden">
+            <BwResult Status="BwResult.BwResultStatus.Warning"
+                      Title="Approval Required"
+                      Subtitle="This operation requires administrator approval. Please check back later.">
+                <Extra>
+                    <BwButton Variant="BwVariant.Outline" Color="BwColor.Warning" Icon="fa-solid fa-clock">Pending
+                    </BwButton>
+                </Extra>
+            </BwResult>
+        </BwCard>
+    </BwRow>
+
+    @* Error & Info *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Color="BwColor.Danger" Class="overflow-hidden">
+            <BwResult Status="BwResult.BwResultStatus.Error"
+                      Title="Operation Failed"
+                      Subtitle="Could not connect to the server. Please try again later.">
+                <Extra>
+                    <BwButton Variant="BwVariant.Ghost" Color="BwColor.Secondary">Report Error</BwButton>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Danger" Icon="fa-solid fa-rotate-right">Try
+                        Again
+                    </BwButton>
+                </Extra>
+            </BwResult>
+        </BwCard>
+
+        <BwCard Color="BwColor.Info" Class="overflow-hidden">
+            <BwResult Status="BwResult.BwResultStatus.Info"
+                      Title="Information"
+                      Subtitle="Your system is being updated. This process will take approximately 5 minutes.">
+                <Extra>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Info" Icon="fa-solid fa-info-circle">Details
+                    </BwButton>
+                </Extra>
+            </BwResult>
+        </BwCard>
+    </BwRow>
+
+    @* HTTP Status Pages *@
+    <BwCard Title="HTTP Status Pages" Subtitle="Custom pages for status codes like 404 and 403"
+            Icon="fa-solid fa-server" Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+            <div class="border rounded bg-gray-50 overflow-hidden">
+                <BwResult Status="BwResult.BwResultStatus.NotFound404"
+                          Title="Page Not Found"
+                          Subtitle="The page you are looking for may have been deleted, renamed, or temporarily unavailable.">
+                    <Extra>
+                        <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Icon="fa-solid fa-house">Back to
+                            Home
+                        </BwButton>
+                    </Extra>
+                </BwResult>
+            </div>
+
+            <div class="border rounded bg-gray-50 overflow-hidden">
+                <BwResult Status="BwResult.BwResultStatus.Forbidden403"
+                          Title="Access Denied"
+                          Subtitle="You do not have permission to view this page.">
+                    <Extra>
+                        <BwButton Variant="BwVariant.Outline" Color="BwColor.Secondary" Icon="fa-solid fa-arrow-left">Go
+                            Back
+                        </BwButton>
+                        <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Icon="fa-solid fa-key">Login
+                        </BwButton>
+                    </Extra>
+                </BwResult>
+            </div>
+        </BwRow>
+    </BwCard>
+
+    @* With Extra Content *@
+    <BwCard Title="Detailed Error Information" Subtitle="Displaying additional information with ChildContent"
+            Icon="fa-solid fa-code" Color="BwColor.Danger">
+        <div class="border rounded bg-white overflow-hidden">
+            <BwResult Status="BwResult.BwResultStatus.Error"
+                      Title="Database Error"
+                      Subtitle="A problem occurred while connecting to the database.">
+                <Extra>
+                    <BwButton Variant="BwVariant.Ghost" Color="BwColor.Secondary">Contact Support</BwButton>
+                    <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary" Icon="fa-solid fa-rotate-right">Try
+                        Again
+                    </BwButton>
+                </Extra>
+                <ChildContent>
+                    <div class="bg-red-50 border border-red-200 rounded p-3 text-xs font-mono text-red-700">
+                        <div class="font-semibold mb-1">Error Details:</div>
+                        <div>Error Code: DB_CONNECTION_REFUSED</div>
+                        <div>Timestamp: @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</div>
+                        <div>Server: db-01.internal.local:5432</div>
+                    </div>
+                </ChildContent>
+            </BwResult>
+        </div>
+    </BwCard>
+
+    @* Minimal Examples *@
+    <BwCard Title="Minimal Usage" Subtitle="Just title and status" Icon="fa-solid fa-minimize"
+            Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true" Class="grid md:grid-cols-4">
+            <div class="border rounded p-4 bg-white text-center">
+                <BwResult Status="BwResult.BwResultStatus.Success" Title="Success"/>
+            </div>
+            <div class="border rounded p-4 bg-white text-center">
+                <BwResult Status="BwResult.BwResultStatus.Warning" Title="Warning"/>
+            </div>
+            <div class="border rounded p-4 bg-white text-center">
+                <BwResult Status="BwResult.BwResultStatus.Error" Title="Error"/>
+            </div>
+            <div class="border rounded p-4 bg-white text-center">
+                <BwResult Status="BwResult.BwResultStatus.Info" Title="Information"/>
+            </div>
+        </BwRow>
+    </BwCard>
+</BwColumn>

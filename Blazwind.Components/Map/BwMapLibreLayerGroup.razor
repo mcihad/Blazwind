@@ -1,0 +1,145 @@
+@using Blazwind.Components.Map.Models
+@implements IAsyncDisposable
+
+@* BwMapLibreLayerGroup - Groups related layers (e.g., fill + border + label) together *@
+
+@if (ParentMap != null)
+{
+    <CascadingValue Value="this" Name="LayerGroup">
+        @ChildContent
+    </CascadingValue>
+}
+
+@code {
+    /// <summary>
+    /// Parent map component
+    /// </summary>
+    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+
+    /// <summary>
+    /// Unique group identifier
+    /// </summary>
+    [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Display name for the group
+    /// </summary>
+    [Parameter] public string? Name { get; set; }
+
+    /// <summary>
+    /// Group visibility - controls all child layers
+    /// </summary>
+    [Parameter] public bool Visible { get; set; } = true;
+
+    /// <summary>
+    /// Base click order for the group - child layers inherit this unless they override
+    /// </summary>
+    [Parameter] public int ClickOrder { get; set; }
+
+    /// <summary>
+    /// Fired when any layer in the group is clicked
+    /// </summary>
+    [Parameter] public EventCallback<MapLayerClickEventArgs> OnClick { get; set; }
+
+    /// <summary>
+    /// Fired when mouse enters any layer in the group
+    /// </summary>
+    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseEnter { get; set; }
+
+    /// <summary>
+    /// Fired when mouse leaves any layer in the group
+    /// </summary>
+    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseLeave { get; set; }
+
+    /// <summary>
+    /// Child content (BwMapLibreLayer components)
+    /// </summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private readonly List<string> _childLayerIds = new();
+    private bool _visible = true;
+
+    protected override void OnInitialized()
+    {
+        _visible = Visible;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Handle visibility changes
+        if (_visible != Visible)
+        {
+            _visible = Visible;
+            await SetGroupVisibilityAsync(Visible);
+        }
+    }
+
+    /// <summary>
+    /// Register a child layer ID with this group
+    /// </summary>
+    internal void RegisterChildLayer(string layerId)
+    {
+        if (!_childLayerIds.Contains(layerId))
+        {
+            _childLayerIds.Add(layerId);
+        }
+    }
+
+    /// <summary>
+    /// Unregister a child layer ID from this group
+    /// </summary>
+    internal void UnregisterChildLayer(string layerId)
+    {
+        _childLayerIds.Remove(layerId);
+    }
+
+    /// <summary>
+    /// Get the group's base click order for child layers
+    /// </summary>
+    public int GetBaseClickOrder() => ClickOrder;
+
+    /// <summary>
+    /// Set visibility for all layers in the group
+    /// </summary>
+    public async Task SetGroupVisibilityAsync(bool visible)
+    {
+        Visible = visible;
+        _visible = visible;
+
+        if (ParentMap == null) return;
+
+        foreach (var layerId in _childLayerIds)
+        {
+            await ParentMap.SetLayerVisibilityAsync(layerId, visible);
+        }
+    }
+
+    /// <summary>
+    /// Handle click from any child layer (routes to group's OnClick)
+    /// </summary>
+    internal async Task HandleChildClick(MapLayerClickEventArgs e)
+    {
+        await OnClick.InvokeAsync(e);
+    }
+
+    /// <summary>
+    /// Handle mouse enter from any child layer
+    /// </summary>
+    internal async Task HandleChildMouseEnter(MapLayerEventArgs e)
+    {
+        await OnMouseEnter.InvokeAsync(e);
+    }
+
+    /// <summary>
+    /// Handle mouse leave from any child layer
+    /// </summary>
+    internal async Task HandleChildMouseLeave(MapLayerEventArgs e)
+    {
+        await OnMouseLeave.InvokeAsync(e);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _childLayerIds.Clear();
+    }
+}

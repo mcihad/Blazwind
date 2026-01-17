@@ -1,0 +1,185 @@
+@namespace Blazwind.Components.Workflow
+@using Blazwind.Components.Shared
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using System.Text.Json
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<div class="bw-workflow @Class" style="@_containerStyle">
+    <div @ref="_container" class="w-full h-full overflow-auto bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700"></div>
+</div>
+
+@code {
+    private ElementReference _container;
+    private string? _instanceId;
+    private DotNetObjectReference<BwWorkflow>? _netRef;
+    private bool _isInitialized;
+    
+    private string _containerStyle => $"height: {Height}; {Style}";
+    
+    #region Parameters
+    
+    /// <summary>
+    /// CSS class
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>
+    /// CSS style
+    /// </summary>
+    [Parameter] public string? Style { get; set; }
+    
+    /// <summary>
+    /// Container height
+    /// </summary>
+    [Parameter] public string Height { get; set; } = "400px";
+    
+    /// <summary>
+    /// Workflow nodes
+    /// </summary>
+    [Parameter] public List<WorkflowNode> Nodes { get; set; } = new();
+    
+    /// <summary>
+    /// Workflow edges (connections)
+    /// </summary>
+    [Parameter] public List<WorkflowEdge> Edges { get; set; } = new();
+    
+    /// <summary>
+    /// Node width
+    /// </summary>
+    [Parameter] public int NodeWidth { get; set; } = 160;
+    
+    /// <summary>
+    /// Node height
+    /// </summary>
+    [Parameter] public int NodeHeight { get; set; } = 60;
+    
+    /// <summary>
+    /// Horizontal spacing
+    /// </summary>
+    [Parameter] public int HorizontalSpacing { get; set; } = 80;
+    
+    /// <summary>
+    /// Vertical spacing
+    /// </summary>
+    [Parameter] public int VerticalSpacing { get; set; } = 60;
+    
+    /// <summary>
+    /// Workflow direction
+    /// </summary>
+    [Parameter] public WorkflowDirection Direction { get; set; } = WorkflowDirection.Horizontal;
+    
+    /// <summary>
+    /// Show node labels
+    /// </summary>
+    [Parameter] public bool ShowLabels { get; set; } = true;
+    
+    /// <summary>
+    /// Interactive (clickable nodes)
+    /// </summary>
+    [Parameter] public bool Interactive { get; set; } = true;
+    
+    /// <summary>
+    /// Callback when node is clicked
+    /// </summary>
+    [Parameter] public EventCallback<WorkflowNode> OnNodeClick { get; set; }
+    
+    #endregion
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && Nodes.Count > 0)
+        {
+            await InitializeAsync();
+        }
+    }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_isInitialized && Nodes.Count > 0)
+        {
+            await UpdateAsync();
+        }
+    }
+    
+    private async Task InitializeAsync()
+    {
+        _netRef = DotNetObjectReference.Create(this);
+        
+        var data = new
+        {
+            nodes = Nodes,
+            edges = Edges
+        };
+        
+        var options = new
+        {
+            nodeWidth = NodeWidth,
+            nodeHeight = NodeHeight,
+            horizontalSpacing = HorizontalSpacing,
+            verticalSpacing = VerticalSpacing,
+            direction = Direction.ToString().ToLower(),
+            showLabels = ShowLabels,
+            interactive = Interactive
+        };
+        
+        _instanceId = await JS.InvokeAsync<string>("Blazwind.Workflow.init", _container, data, options, _netRef);
+        _isInitialized = true;
+    }
+    
+    private async Task UpdateAsync()
+    {
+        if (_instanceId != null)
+        {
+            var data = new
+            {
+                nodes = Nodes,
+                edges = Edges
+            };
+            
+            await JS.InvokeVoidAsync("Blazwind.Workflow.update", _instanceId, data);
+        }
+    }
+    
+    [JSInvokable]
+    public async Task HandleNodeClick(string nodeId, string nodeJson)
+    {
+        try
+        {
+            var node = JsonSerializer.Deserialize<WorkflowNode>(nodeJson, new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true 
+            });
+            if (node != null)
+            {
+                await OnNodeClick.InvokeAsync(node);
+            }
+        }
+        catch { }
+    }
+    
+    /// <summary>
+    /// Update node status
+    /// </summary>
+    public async Task UpdateNodeStatusAsync(string nodeId, WorkflowNodeStatus status)
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Workflow.updateNodeStatus", _instanceId, nodeId, status.ToString().ToLower());
+        }
+    }
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_instanceId != null)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.Workflow.dispose", _instanceId);
+            }
+            catch { }
+        }
+        _netRef?.Dispose();
+    }
+}

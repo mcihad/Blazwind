@@ -1,0 +1,472 @@
+@page "/components/mega-menu"
+@using Blazwind.Components.MegaMenu
+
+<PageTitle>Mega Menu - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Mega Menu"
+            Description="Multi-column dropdown navigation menu. Ideal for e-commerce, corporate sites and complex navigations."
+            Icon="fa-solid fa-grip" Color="BwColor.Info"/>
+
+    @* E-Commerce Navigation *@
+    <BwCard Title="E-Commerce Navigation" Subtitle="Full-featured store menu" Icon="fa-solid fa-store"
+            Color="BwColor.Primary">
+        <nav class="flex items-center gap-1 p-3 bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg">
+            <BwMegaMenu Text="Electronics" Icon="fa-solid fa-laptop" Columns="4" Width="MegaMenuWidth.Large"
+                        Color="BwColor.Primary" Variant="BwVariant.Ghost" ColumnWidth="160px">
+                <BwMegaMenuColumn Title="Computer" Icon="fa-solid fa-computer">
+                    <BwMegaMenuItem Label="Laptop" Description="MacBook, ThinkPad, Dell" Icon="fa-solid fa-laptop"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Desktop" Description="Gaming, Workstation" Icon="fa-solid fa-desktop"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="All-in-One" Description="iMac, Surface Studio" Icon="fa-solid fa-display"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Gaming PC" Description="RTX series" Icon="fa-solid fa-gamepad" IsNew="true"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Phone & Tablet" Icon="fa-solid fa-mobile">
+                    <BwMegaMenuItem Label="iPhone" Description="iPhone 15 Pro" Icon="fa-brands fa-apple" IsNew="true"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Samsung" Description="Galaxy S24 Ultra" Icon="fa-solid fa-mobile-screen"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="iPad" Description="Pro, Air, Mini" Icon="fa-solid fa-tablet" Href="#"/>
+                    <BwMegaMenuItem Label="Android Tablet" Description="Galaxy Tab" Icon="fa-brands fa-android"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Accessories" Icon="fa-solid fa-headphones">
+                    <BwMegaMenuItem Label="Headphones" Description="AirPods, Sony" Icon="fa-solid fa-headphones"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Chargers" Description="Fast charging" Icon="fa-solid fa-plug" Href="#"/>
+                    <BwMegaMenuItem Label="Cases" Description="iPhone, Galaxy" Icon="fa-solid fa-shield" Href="#"/>
+                    <BwMegaMenuItem Label="Cables" Description="USB-C, Lightning" Icon="fa-solid fa-cable-car"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Featured" Icon="fa-solid fa-star">
+                    <BwMegaMenuItem Label="New Arrivals" Icon="fa-solid fa-sparkles" IsNew="true" Href="#"/>
+                    <BwMegaMenuItem Label="Bestsellers" Icon="fa-solid fa-fire" Badge="Hot" BadgeColor="BwColor.Danger"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Discounts" Icon="fa-solid fa-tag" Badge="-30%" BadgeColor="BwColor.Warning"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Outlet" Icon="fa-solid fa-percent" Badge="50% Off"
+                                    BadgeColor="BwColor.Success" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Clothing" Icon="fa-solid fa-shirt" Columns="3" Color="BwColor.Success"
+                        Variant="BwVariant.Ghost" ColumnWidth="140px">
+                <BwMegaMenuColumn Title="Men" Icon="fa-solid fa-person">
+                    <BwMegaMenuItem Label="T-Shirt" Description="Premium cotton" Icon="fa-solid fa-shirt" Href="#"/>
+                    <BwMegaMenuItem Label="Pants" Description="Slim, Regular" Icon="fa-solid fa-socks" Href="#"/>
+                    <BwMegaMenuItem Label="Jacket" Description="Winter, Summer" Icon="fa-solid fa-vest" Href="#"/>
+                    <BwMegaMenuItem Label="Shoes" Description="Sports, Classic" Icon="fa-solid fa-shoe-prints"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Women" Icon="fa-solid fa-person-dress">
+                    <BwMegaMenuItem Label="Dress" Description="Casual, Evening" Icon="fa-solid fa-person-dress"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Blouse" Description="Silk, Cotton" Icon="fa-solid fa-shirt" Href="#"/>
+                    <BwMegaMenuItem Label="Skirt" Description="Mini, Midi" Icon="fa-solid fa-person-dress" Href="#"/>
+                    <BwMegaMenuItem Label="Accessories" Description="Bag, Jewelry" Icon="fa-solid fa-gem" IsNew="true"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Kids" Icon="fa-solid fa-child">
+                    <BwMegaMenuItem Label="Boys" Description="2-14 years" Icon="fa-solid fa-child" Href="#"/>
+                    <BwMegaMenuItem Label="Girls" Description="2-14 years" Icon="fa-solid fa-child-dress" Href="#"/>
+                    <BwMegaMenuItem Label="Baby" Description="0-2 years" Icon="fa-solid fa-baby" Href="#"/>
+                    <BwMegaMenuItem Label="School" Description="Clothing, Bag" Icon="fa-solid fa-school" Badge="Season"
+                                    BadgeColor="BwColor.Info" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Home & Living" Icon="fa-solid fa-house" Columns="2" Color="BwColor.Warning"
+                        Variant="BwVariant.Ghost" ColumnWidth="180px">
+                <BwMegaMenuColumn Title="Furniture" Icon="fa-solid fa-couch">
+                    <BwMegaMenuItem Label="Living Room" Description="Sofa, Couch" Icon="fa-solid fa-couch"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Bedroom" Description="Bed, Wardrobe" Icon="fa-solid fa-bed" Href="#"/>
+                    <BwMegaMenuItem Label="Dining Room" Description="Table, Chairs" Icon="fa-solid fa-utensils"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Office" Description="Desk, Bookshelf" Icon="fa-solid fa-chair"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Decoration" Icon="fa-solid fa-paint-roller">
+                    <BwMegaMenuItem Label="Lighting" Description="Chandelier, Lamp" Icon="fa-solid fa-lightbulb"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Rugs & Carpets" Description="Handwoven" Icon="fa-solid fa-rug" Href="#"/>
+                    <BwMegaMenuItem Label="Paintings" Description="Modern, Classic" Icon="fa-solid fa-image" Href="#"/>
+                    <BwMegaMenuItem Label="Pots & Plants" Description="Indoor" Icon="fa-solid fa-leaf" IsNew="true"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Sports" Icon="fa-solid fa-dumbbell" Columns="2" Color="BwColor.Danger"
+                        Variant="BwVariant.Ghost">
+                <BwMegaMenuColumn Title="Fitness" Icon="fa-solid fa-dumbbell">
+                    <BwMegaMenuItem Label="Weights" Icon="fa-solid fa-dumbbell" Href="#"/>
+                    <BwMegaMenuItem Label="Cardio" Icon="fa-solid fa-heart-pulse" Href="#"/>
+                    <BwMegaMenuItem Label="Yoga" Icon="fa-solid fa-om" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Outdoor" Icon="fa-solid fa-mountain">
+                    <BwMegaMenuItem Label="Camping" Icon="fa-solid fa-campground" Href="#"/>
+                    <BwMegaMenuItem Label="Bicycle" Icon="fa-solid fa-bicycle" Href="#"/>
+                    <BwMegaMenuItem Label="Running" Icon="fa-solid fa-person-running" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+        </nav>
+    </BwCard>
+
+    @* Software Company Navigation *@
+    <BwCard Title="Software Company Navigation" Subtitle="For SaaS and technology companies" Icon="fa-solid fa-code"
+            Color="BwColor.Success">
+        <nav
+            class="flex items-center gap-2 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+            <BwMegaMenu Text="Products" Icon="fa-solid fa-cube" Columns="3" Width="MegaMenuWidth.Large"
+                        ColumnWidth="180px">
+                <BwMegaMenuColumn Title="Development" Icon="fa-solid fa-code">
+                    <BwMegaMenuItem Label="IDE" Description="Smart code editor" Icon="fa-solid fa-laptop-code"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="CI/CD" Description="Continuous integration" Icon="fa-solid fa-rotate"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Version Control" Description="Git management" Icon="fa-solid fa-code-branch"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Code Review" Description="Team collaboration"
+                                    Icon="fa-solid fa-magnifying-glass-chart" IsNew="true" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Infrastructure" Icon="fa-solid fa-server">
+                    <BwMegaMenuItem Label="Cloud Hosting" Description="Scalable" Icon="fa-solid fa-cloud"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Kubernetes" Description="Container orchestration"
+                                    Icon="fa-solid fa-dharmachakra" Href="#"/>
+                    <BwMegaMenuItem Label="Database" Description="Managed DB" Icon="fa-solid fa-database" Href="#"/>
+                    <BwMegaMenuItem Label="CDN" Description="Global distribution" Icon="fa-solid fa-globe" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Security" Icon="fa-solid fa-shield-halved">
+                    <BwMegaMenuItem Label="Authentication" Description="SSO, OAuth" Icon="fa-solid fa-key" Href="#"/>
+                    <BwMegaMenuItem Label="Secrets Manager" Description="Secure storage" Icon="fa-solid fa-lock"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Security Scan" Description="Vulnerability scan" Icon="fa-solid fa-bug"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Compliance" Description="SOC2, GDPR" Icon="fa-solid fa-check-double"
+                                    Badge="Pro" BadgeColor="BwColor.Primary" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Solutions" Icon="fa-solid fa-puzzle-piece" Columns="2" Color="BwColor.Info">
+                <BwMegaMenuColumn Title="By Industry">
+                    <BwMegaMenuItem Label="Fintech" Description="Banking solutions"
+                                    Icon="fa-solid fa-building-columns" Href="#"/>
+                    <BwMegaMenuItem Label="E-Commerce" Description="Online store" Icon="fa-solid fa-cart-shopping"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Healthcare" Description="Healthtech" Icon="fa-solid fa-hospital" Href="#"/>
+                    <BwMegaMenuItem Label="Education" Description="EdTech" Icon="fa-solid fa-graduation-cap" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="By Scale">
+                    <BwMegaMenuItem Label="Startup" Description="Quick start" Icon="fa-solid fa-rocket" Href="#"/>
+                    <BwMegaMenuItem Label="Enterprise" Description="Enterprise" Icon="fa-solid fa-building" Href="#"/>
+                    <BwMegaMenuItem Label="Agency" Description="Multi-tenant" Icon="fa-solid fa-users" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Resources" Icon="fa-solid fa-book" Columns="2" Color="BwColor.Success">
+                <BwMegaMenuColumn Title="Documentation">
+                    <BwMegaMenuItem Label="Getting Started" Description="Quick setup" Icon="fa-solid fa-play" Href="#"/>
+                    <BwMegaMenuItem Label="API Reference" Description="REST & GraphQL" Icon="fa-solid fa-code"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="SDKs" Description="Client libraries" Icon="fa-solid fa-cube"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Examples" Description="Sample projects" Icon="fa-solid fa-flask" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Community">
+                    <BwMegaMenuItem Label="Blog" Description="Technical articles" Icon="fa-solid fa-newspaper"
+                                    Href="#"/>
+                    <BwMegaMenuItem Label="Forum" Description="Discussions" Icon="fa-solid fa-comments" Href="#"/>
+                    <BwMegaMenuItem Label="GitHub" Description="Open source" Icon="fa-brands fa-github" Href="#"/>
+                    <BwMegaMenuItem Label="Discord" Description="Live support" Icon="fa-brands fa-discord" IsNew="true"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Pricing" Icon="fa-solid fa-tags" Columns="1" Width="MegaMenuWidth.Small"
+                        Color="BwColor.Warning">
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Free" Description="Individual use" Icon="fa-solid fa-gift" Href="#"/>
+                    <BwMegaMenuItem Label="Pro" Description="$19/month" Icon="fa-solid fa-crown" Badge="Popular"
+                                    BadgeColor="BwColor.Primary" Href="#"/>
+                    <BwMegaMenuItem Label="Team" Description="$49/month" Icon="fa-solid fa-users" Href="#"/>
+                    <BwMegaMenuItem Label="Enterprise" Description="Custom pricing" Icon="fa-solid fa-building"
+                                    Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+        </nav>
+    </BwCard>
+
+    @* Trigger Modes *@
+    <BwCard Title="Trigger Modes" Subtitle="Hover and Click triggering" Icon="fa-solid fa-hand-pointer"
+            Color="BwColor.Warning">
+        <div class="flex flex-wrap gap-6">
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Hover
+                    (Default)</p>
+                <BwMegaMenu Text="Menu (Hover)" Icon="fa-solid fa-mouse" Columns="2">
+                    <BwMegaMenuColumn Title="Section A">
+                        <BwMegaMenuItem Label="Item 1" Icon="fa-solid fa-circle" Href="#"/>
+                        <BwMegaMenuItem Label="Item 2" Icon="fa-solid fa-circle" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="Section B">
+                        <BwMegaMenuItem Label="Item 3" Icon="fa-solid fa-circle" Href="#"/>
+                        <BwMegaMenuItem Label="Item 4" Icon="fa-solid fa-circle" Href="#"/>
+                    </BwMegaMenuColumn>
+                </BwMegaMenu>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Click</p>
+                <BwMegaMenu Text="Menu (Click)" Icon="fa-solid fa-hand-pointer" Trigger="MegaMenuTrigger.Click"
+                            Columns="2" Color="BwColor.Success">
+                    <BwMegaMenuColumn Title="Section A">
+                        <BwMegaMenuItem Label="Item 1" Icon="fa-solid fa-square" Href="#"/>
+                        <BwMegaMenuItem Label="Item 2" Icon="fa-solid fa-square" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="Section B">
+                        <BwMegaMenuItem Label="Item 3" Icon="fa-solid fa-square" Href="#"/>
+                        <BwMegaMenuItem Label="Item 4" Icon="fa-solid fa-square" Href="#"/>
+                    </BwMegaMenuColumn>
+                </BwMegaMenu>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Column Width Control *@
+    <BwCard Title="Column Width" Subtitle="Customization with ColumnWidth parameter"
+            Icon="fa-solid fa-arrows-left-right" Color="BwColor.Info">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">120px</p>
+                <BwMegaMenu Text="Narrow Columns" Columns="3" ColumnWidth="120px" Color="BwColor.Info">
+                    <BwMegaMenuColumn Title="A">
+                        <BwMegaMenuItem Label="Short" Href="#"/>
+                        <BwMegaMenuItem Label="Text" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="B">
+                        <BwMegaMenuItem Label="Short" Href="#"/>
+                        <BwMegaMenuItem Label="Text" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="C">
+                        <BwMegaMenuItem Label="Short" Href="#"/>
+                        <BwMegaMenuItem Label="Text" Href="#"/>
+                    </BwMegaMenuColumn>
+                </BwMegaMenu>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">200px</p>
+                <BwMegaMenu Text="Wide Columns" Columns="2" ColumnWidth="200px" Color="BwColor.Success">
+                    <BwMegaMenuColumn Title="Wide Section A">
+                        <BwMegaMenuItem Label="Long description text" Description="This is a longer description"
+                                        Href="#"/>
+                        <BwMegaMenuItem Label="Another item" Description="Detailed info" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="Wide Section B">
+                        <BwMegaMenuItem Label="Long description text" Description="This is a longer description"
+                                        Href="#"/>
+                        <BwMegaMenuItem Label="Another item" Description="Detailed info" Href="#"/>
+                    </BwMegaMenuColumn>
+                </BwMegaMenu>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Column Counts *@
+    <BwCard Title="Column Counts" Subtitle="1-6 column support" Icon="fa-solid fa-table-columns" Color="BwColor.Danger">
+        <div class="flex flex-wrap gap-4">
+            <BwMegaMenu Text="1 Column" Columns="1" Width="MegaMenuWidth.Small">
+                <BwMegaMenuColumn Title="Menu">
+                    <BwMegaMenuItem Label="Profile" Icon="fa-solid fa-user" Href="#"/>
+                    <BwMegaMenuItem Label="Settings" Icon="fa-solid fa-gear" Href="#"/>
+                    <BwMegaMenuItem Label="Logout" Icon="fa-solid fa-right-from-bracket" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="2 Columns" Columns="2" Color="BwColor.Warning">
+                <BwMegaMenuColumn Title="Left">
+                    <BwMegaMenuItem Label="Item A" Icon="fa-solid fa-a" Href="#"/>
+                    <BwMegaMenuItem Label="Item B" Icon="fa-solid fa-b" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Right">
+                    <BwMegaMenuItem Label="Item C" Icon="fa-solid fa-c" Href="#"/>
+                    <BwMegaMenuItem Label="Item D" Icon="fa-solid fa-d" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="4 Columns" Columns="4" Width="MegaMenuWidth.Large" Color="BwColor.Info">
+                <BwMegaMenuColumn Title="Column 1">
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Column 2">
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Column 3">
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="Column 4">
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="6 Columns" Columns="6" Width="MegaMenuWidth.Full" Color="BwColor.Danger">
+                <BwMegaMenuColumn Title="1">
+                    <BwMegaMenuItem Label="A" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="2">
+                    <BwMegaMenuItem Label="B" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="3">
+                    <BwMegaMenuItem Label="C" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="4">
+                    <BwMegaMenuItem Label="D" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="5">
+                    <BwMegaMenuItem Label="E" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn Title="6">
+                    <BwMegaMenuItem Label="F" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+        </div>
+    </BwCard>
+
+    @* Alignment Options *@
+    <BwCard Title="Alignment Options" Subtitle="Start, Center, End" Icon="fa-solid fa-align-left"
+            Color="BwColor.Secondary">
+        <div class="flex justify-between">
+            <BwMegaMenu Text="Left (Start)" Alignment="MegaMenuAlignment.Start" Columns="2" Color="BwColor.Secondary">
+                <BwMegaMenuColumn Title="Menu">
+                    <BwMegaMenuItem Label="Left aligned" Icon="fa-solid fa-arrow-left" Href="#"/>
+                    <BwMegaMenuItem Label="Menu item" Icon="fa-solid fa-circle" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Another item" Icon="fa-solid fa-circle" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Center (Center)" Alignment="MegaMenuAlignment.Center" Columns="2" Color="BwColor.Primary">
+                <BwMegaMenuColumn Title="Menu">
+                    <BwMegaMenuItem Label="Center aligned" Icon="fa-solid fa-arrows-left-right" Href="#"/>
+                    <BwMegaMenuItem Label="Menu item" Icon="fa-solid fa-circle" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Another item" Icon="fa-solid fa-circle" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Right (End)" Alignment="MegaMenuAlignment.End" Columns="2" Color="BwColor.Success">
+                <BwMegaMenuColumn Title="Menu">
+                    <BwMegaMenuItem Label="Right aligned" Icon="fa-solid fa-arrow-right" Href="#"/>
+                    <BwMegaMenuItem Label="Menu item" Icon="fa-solid fa-circle" Href="#"/>
+                </BwMegaMenuColumn>
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Another item" Icon="fa-solid fa-circle" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+        </div>
+    </BwCard>
+
+    @* Upward Opening *@
+    <BwCard Title="Upward Opening" Subtitle="OpenUpward parameter" Icon="fa-solid fa-arrow-up" Color="BwColor.Info">
+        <div class="pt-48">
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                You can make menus open upward for bottom navigation bars.
+            </p>
+            <div class="flex gap-4">
+                <BwMegaMenu Text="Opens Upward" Icon="fa-solid fa-chevron-up" OpenUpward="true" Columns="2"
+                            Color="BwColor.Info">
+                    <BwMegaMenuColumn Title="Section A">
+                        <BwMegaMenuItem Label="Opened upward!" Icon="fa-solid fa-arrow-up" Href="#"/>
+                        <BwMegaMenuItem Label="Item 2" Icon="fa-solid fa-circle" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="Section B">
+                        <BwMegaMenuItem Label="Item 3" Icon="fa-solid fa-circle" Href="#"/>
+                        <BwMegaMenuItem Label="Item 4" Icon="fa-solid fa-circle" Href="#"/>
+                    </BwMegaMenuColumn>
+                </BwMegaMenu>
+
+                <BwMegaMenu Text="Opens Downward (Normal)" Icon="fa-solid fa-chevron-down" Columns="2">
+                    <BwMegaMenuColumn Title="Section A">
+                        <BwMegaMenuItem Label="Normal opening" Icon="fa-solid fa-arrow-down" Href="#"/>
+                        <BwMegaMenuItem Label="Item 2" Icon="fa-solid fa-circle" Href="#"/>
+                    </BwMegaMenuColumn>
+                    <BwMegaMenuColumn Title="Section B">
+                        <BwMegaMenuItem Label="Item 3" Icon="fa-solid fa-circle" Href="#"/>
+                        <BwMegaMenuItem Label="Item 4" Icon="fa-solid fa-circle" Href="#"/>
+                    </BwMegaMenuColumn>
+                </BwMegaMenu>
+            </div>
+        </div>
+    </BwCard>
+
+    @* Badges and New Items *@
+    <BwCard Title="Badges and Featured Items" Subtitle="Badge and IsNew properties" Icon="fa-solid fa-certificate"
+            Color="BwColor.Primary">
+        <BwMegaMenu Text="Features" Icon="fa-solid fa-star" Columns="2" Width="MegaMenuWidth.Medium">
+            <BwMegaMenuColumn Title="New Features">
+                <BwMegaMenuItem Label="AI Assistant" Description="AI support" Icon="fa-solid fa-robot"
+                                IsNew="true" Href="#"/>
+                <BwMegaMenuItem Label="Dark Mode" Description="Dark theme" Icon="fa-solid fa-moon" IsNew="true"
+                                Href="#"/>
+                <BwMegaMenuItem Label="Multi-Language" Description="15+ language support" Icon="fa-solid fa-language"
+                                Href="#"/>
+            </BwMegaMenuColumn>
+            <BwMegaMenuColumn Title="Badged Items">
+                <BwMegaMenuItem Label="Premium Plan" Icon="fa-solid fa-crown" Badge="Pro" BadgeColor="BwColor.Primary"
+                                Href="#"/>
+                <BwMegaMenuItem Label="Discount" Icon="fa-solid fa-percent" Badge="-50%" BadgeColor="BwColor.Danger"
+                                Href="#"/>
+                <BwMegaMenuItem Label="Popular" Icon="fa-solid fa-fire" Badge="Hot" BadgeColor="BwColor.Warning"
+                                Href="#"/>
+                <BwMegaMenuItem Label="Beta" Icon="fa-solid fa-flask" Badge="Beta" BadgeColor="BwColor.Info" Href="#"/>
+            </BwMegaMenuColumn>
+        </BwMegaMenu>
+    </BwCard>
+
+    @* Button Variants and Colors *@
+    <BwCard Title="Button Variants" Subtitle="Different Color and Variant combinations" Icon="fa-solid fa-palette"
+            Color="BwColor.Success">
+        <div class="flex flex-wrap gap-3">
+            <BwMegaMenu Text="Primary Filled" Color="BwColor.Primary" Variant="BwVariant.Filled" Columns="1"
+                        Width="MegaMenuWidth.Small">
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Success Outline" Color="BwColor.Success" Variant="BwVariant.Outline" Columns="1"
+                        Width="MegaMenuWidth.Small">
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Warning Soft" Color="BwColor.Warning" Variant="BwVariant.Soft" Columns="1"
+                        Width="MegaMenuWidth.Small">
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Danger Ghost" Color="BwColor.Danger" Variant="BwVariant.Ghost" Columns="1"
+                        Width="MegaMenuWidth.Small">
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+
+            <BwMegaMenu Text="Info Glass" Color="BwColor.Info" Variant="BwVariant.Glass" Columns="1"
+                        Width="MegaMenuWidth.Small">
+                <BwMegaMenuColumn>
+                    <BwMegaMenuItem Label="Item" Href="#"/>
+                </BwMegaMenuColumn>
+            </BwMegaMenu>
+        </div>
+    </BwCard>
+</BwColumn>

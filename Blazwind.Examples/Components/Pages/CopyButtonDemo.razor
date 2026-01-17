@@ -1,0 +1,88 @@
+@page "/components/copy-button"
+@using Blazwind.Components.Input
+
+@inject ToastService ToastService
+
+<PageTitle>Copy Button - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Copy Button" Description="Button component for copying text or code blocks to clipboard."
+            Icon="fa-regular fa-copy" Color="BwColor.Info"/>
+
+    @* Basic Usage *@
+    <BwCard Title="Basic Usage" Subtitle="Simple copy button" Icon="fa-solid fa-cube" Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+            <BwCopyButton Content="This text will be copied!" OnCopied="@HandleCopied"/>
+            <BwCopyButton Content="npm install blazwind" Text="Copy Command" Icon="fa-solid fa-terminal"/>
+        </BwRow>
+    </BwCard>
+
+    @* Icon Only *@
+    <BwCard Title="Icon Only" Subtitle="Textless button for compact view" Icon="fa-solid fa-minimize"
+            Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Md" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+            <BwCopyButton Content="Copied!" ShowText="false"/>
+            <BwCopyButton Content="API_KEY=abc123" ShowText="false" Icon="fa-solid fa-key"/>
+        </BwRow>
+    </BwCard>
+
+    @* Code Block Example *@
+    <BwCard Title="Code Block Example" Subtitle="Usage in code snippets" Icon="fa-solid fa-code"
+            Color="BwColor.Warning">
+        <div class="relative bg-gray-900 rounded p-4 font-mono text-sm text-gray-100">
+            <div class="absolute top-2 right-2">
+                <BwCopyButton Content="@codeExample" ShowText="false"
+                              Class="!bg-gray-800 !border-gray-700 !text-gray-300 hover:!bg-gray-700"/>
+            </div>
+            <pre class="overflow-x-auto">@codeExample</pre>
+        </div>
+    </BwCard>
+
+    @* With Input *@
+    <BwCard Title="With Input" Subtitle="Copying user input" Icon="fa-solid fa-keyboard" Color="BwColor.Success">
+        <BwInputButton @bind-Value="@userText" Label="Enter text" Placeholder="Type text to copy..." ShowCopy="true"/>
+    </BwCard>
+
+    @* Features *@
+    <BwCard Title="Features" Subtitle="Features supported by BwCopyButton component" Icon="fa-solid fa-list-check"
+            Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid sm:grid-cols-2 lg:grid-cols-4">
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-clipboard text-2xl text-blue-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Clipboard API</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Modern browser support</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-check text-2xl text-green-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Visual Feedback</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Animated confirmation</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-palette text-2xl text-purple-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Customization</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Icon, text, style</p>
+            </div>
+            <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded text-center">
+                <i class="fa-solid fa-bolt text-2xl text-orange-500 mb-2"></i>
+                <h5 class="font-medium text-gray-900 dark:text-white">Callback</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">OnCopied event</p>
+            </div>
+        </BwRow>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string userText = "Sample text";
+
+    private readonly string codeExample = @"// BwCopyButton Usage
+<BwCopyButton
+Content=""Text to copy""
+Text=""Copy""
+OnCopied=""@HandleCopied"" />";
+
+    private async Task HandleCopied()
+    {
+        await ToastService.SuccessAsync("Copied to clipboard!");
+    }
+
+}

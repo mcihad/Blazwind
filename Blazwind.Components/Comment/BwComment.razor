@@ -1,0 +1,258 @@
+@namespace Blazwind.Components.Comment
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Avatar
+@using Blazwind.Components.Button
+@using Blazwind.Components.Input
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Mentions
+
+<div class="bw-comments @Class" style="@Style">
+    @* Header *@
+    <div class="flex items-center justify-between mb-4">
+        <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
+            <i class="fa-regular fa-comment mr-2"></i>
+            @Title
+            @if (Comments.Count > 0)
+            {
+                <span class="ml-1 text-gray-500 dark:text-gray-400">(@TotalCount)</span>
+            }
+        </h4>
+    </div>
+
+    @* Comment List *@
+    <div class="space-y-4">
+        @foreach (var comment in Comments.Where(c => string.IsNullOrEmpty(c.ParentId)))
+        {
+            <div class="bw-comment-item">
+                @RenderComment(comment, 0)
+                
+                @* Replies *@
+                @if (comment.Replies.Count > 0)
+                {
+                    <div class="ml-10 mt-3 space-y-3 border-l-2 border-gray-100 dark:border-gray-700 pl-4">
+                        @foreach (var reply in comment.Replies)
+                        {
+                            @RenderComment(reply, 1)
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    @* Empty State *@
+    @if (Comments.Count == 0)
+    {
+        <div class="text-center py-8 text-gray-400 dark:text-gray-500">
+            <i class="fa-regular fa-comments text-3xl mb-2"></i>
+            <p class="text-sm">Henüz yorum yok</p>
+        </div>
+    }
+
+    @* Add Comment *@
+    @if (AllowAdd)
+    {
+        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+            <BwRow Spacing="BwSpacing.Sm">
+                @if (!string.IsNullOrEmpty(CurrentUserAvatar))
+                {
+                    <BwAvatar Name="@CurrentUserName" Src="@CurrentUserAvatar" Size="BwSize.Small" />
+                }
+                <BwColumn Class="flex-1" Spacing="BwSpacing.Sm">
+                    <BwMentions Value="@_newCommentText"
+                                ValueChanged="@(v => _newCommentText = v)"
+                                Mentions="Mentions"
+                                Placeholder="@Placeholder" 
+                                Rows="2" 
+                                Class="text-sm" />
+                    <BwRow MainAxisAlignment="BwMainAxisAlignment.End">
+                        <BwButton Size="BwSize.Small" 
+                                  Color="BwColor.Primary" 
+                                  OnClick="HandleAddComment"
+                                  Disabled="@string.IsNullOrWhiteSpace(_newCommentText)">
+                            <i class="fa-solid fa-paper-plane mr-1"></i>
+                            Gönder
+                        </BwButton>
+                    </BwRow>
+                </BwColumn>
+            </BwRow>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public List<CommentItem> Comments { get; set; } = new();
+    [Parameter] public string Title { get; set; } = "Yorumlar";
+    [Parameter] public string Placeholder { get; set; } = "Yorum yazın...";
+    [Parameter] public bool AllowAdd { get; set; } = true;
+    [Parameter] public bool AllowReply { get; set; } = true;
+    [Parameter] public bool AllowLike { get; set; } = true;
+    [Parameter] public string? CurrentUserName { get; set; }
+    [Parameter] public string? CurrentUserAvatar { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    [Parameter] public EventCallback<string> OnAdd { get; set; }
+    [Parameter] public EventCallback<(string CommentId, string Text)> OnReply { get; set; }
+    [Parameter] public EventCallback<CommentItem> OnEdit { get; set; }
+    [Parameter] public EventCallback<CommentItem> OnDelete { get; set; }
+    [Parameter] public EventCallback<CommentItem> OnLike { get; set; }
+
+    [Parameter] public List<BwMentionItem> Mentions { get; set; } = new();
+
+    private string _newCommentText = "";
+    private string? _replyingTo;
+    private string _replyText = "";
+
+    private int TotalCount => Comments.Sum(c => 1 + c.Replies.Count);
+
+    private RenderFragment RenderComment(CommentItem comment, int depth) => __builder =>
+    {
+        <div class="flex gap-3">
+            <BwAvatar Name="@comment.AuthorName" Src="@comment.AuthorAvatar" Size="BwSize.Small" />
+            <div class="flex-1 min-w-0">
+                @* Header *@
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-medium text-sm text-gray-900 dark:text-gray-100">@comment.AuthorName</span>
+                    @if (!string.IsNullOrEmpty(comment.AuthorRole))
+                    {
+                        <span class="text-xs text-gray-400 dark:text-gray-500">@comment.AuthorRole</span>
+                    }
+                    <span class="text-xs text-gray-400 dark:text-gray-500">•</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">@FormatDate(comment.CreatedAt)</span>
+                    @if (comment.EditedAt.HasValue)
+                    {
+                        <span class="text-xs text-gray-400 italic">(düzenlendi)</span>
+                    }
+                </div>
+
+                @* Content *@
+                <p class="text-sm text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap">@comment.Content</p>
+
+                @* Actions *@
+                <div class="flex items-center gap-2 mt-2">
+                    @if (AllowLike)
+                    {
+                        <BwButton Variant="BwVariant.Link" 
+                                  Size="BwSize.Small"
+                                  Color="@(comment.IsLiked ? BwColor.Primary : BwColor.Secondary)"
+                                  OnClick="() => HandleLike(comment)">
+                            <i class="@(comment.IsLiked ? "fa-solid" : "fa-regular") fa-thumbs-up mr-1"></i>
+                            @if (comment.LikeCount > 0)
+                            {
+                                <span>@comment.LikeCount</span>
+                            }
+                        </BwButton>
+                    }
+                    @if (AllowReply && depth == 0)
+                    {
+                        <BwButton Variant="BwVariant.Link" 
+                                  Size="BwSize.Small"
+                                  Color="BwColor.Secondary"
+                                  Icon="fa-solid fa-reply"
+                                  Text="Yanıtla"
+                                  OnClick="() => ToggleReply(comment.Id)" />
+                    }
+                    @if (comment.CanEdit)
+                    {
+                        <BwButton Variant="BwVariant.Link" 
+                                  Size="BwSize.Small"
+                                  Color="BwColor.Secondary"
+                                  Icon="fa-solid fa-pen"
+                                  Text="Düzenle"
+                                  OnClick="() => HandleEdit(comment)" />
+                    }
+                    @if (comment.CanDelete)
+                    {
+                        <BwButton Variant="BwVariant.Link" 
+                                  Size="BwSize.Small"
+                                  Color="BwColor.Danger"
+                                  Icon="fa-solid fa-trash"
+                                  Text="Sil"
+                                  OnClick="() => HandleDelete(comment)" />
+                    }
+                </div>
+
+                @* Reply Form *@
+                @if (_replyingTo == comment.Id)
+                {
+                    <div class="mt-3 flex gap-2">
+                        <BwMentions Value="@_replyText"
+                                    ValueChanged="@(v => _replyText = v)" 
+                                    Mentions="Mentions"
+                                    Placeholder="Yanıt yazın..." 
+                                    Rows="1" 
+                                    Class="flex-1" />
+                        <div class="flex flex-col gap-1">
+                            <BwButton Size="BwSize.ExtraSmall" Color="BwColor.Primary" OnClick="() => HandleReply(comment.Id)">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </BwButton>
+                            <BwButton Size="BwSize.ExtraSmall" Variant="BwVariant.Ghost" OnClick="CancelReply">
+                                <i class="fa-solid fa-xmark"></i>
+                            </BwButton>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    };
+    
+    // ... rest of code
+
+
+    private string FormatDate(DateTime date)
+    {
+        var diff = DateTime.Now - date;
+        if (diff.TotalMinutes < 1) return "şimdi";
+        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes} dk önce";
+        if (diff.TotalHours < 24) return $"{(int)diff.TotalHours} saat önce";
+        if (diff.TotalDays < 7) return $"{(int)diff.TotalDays} gün önce";
+        return date.ToString("dd.MM.yyyy");
+    }
+
+    private async Task HandleAddComment()
+    {
+        if (!string.IsNullOrWhiteSpace(_newCommentText))
+        {
+            await OnAdd.InvokeAsync(_newCommentText);
+            _newCommentText = "";
+        }
+    }
+
+    private void ToggleReply(string commentId)
+    {
+        _replyingTo = _replyingTo == commentId ? null : commentId;
+        _replyText = "";
+    }
+
+    private void CancelReply()
+    {
+        _replyingTo = null;
+        _replyText = "";
+    }
+
+    private async Task HandleReply(string commentId)
+    {
+        if (!string.IsNullOrWhiteSpace(_replyText))
+        {
+            await OnReply.InvokeAsync((commentId, _replyText));
+            _replyingTo = null;
+            _replyText = "";
+        }
+    }
+
+    private async Task HandleLike(CommentItem comment)
+    {
+        await OnLike.InvokeAsync(comment);
+    }
+
+    private async Task HandleEdit(CommentItem comment)
+    {
+        await OnEdit.InvokeAsync(comment);
+    }
+
+    private async Task HandleDelete(CommentItem comment)
+    {
+        await OnDelete.InvokeAsync(comment);
+    }
+}

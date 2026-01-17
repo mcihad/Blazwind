@@ -1,0 +1,171 @@
+@namespace Blazwind.Components.Stepper
+@using Blazwind.Components.Shared
+
+@{
+    var orientationClass = Orientation == BwOrientation.Vertical ? "vertical" : "";
+    
+    var sizeClass = Size switch
+    {
+        BwSize.Small => "small",
+        BwSize.Large => "large",
+        _ => ""
+    };
+    
+    var variantClass = Variant switch
+    {
+        BwStepperVariant.Dots => "dots",
+        BwStepperVariant.Pills => "pills",
+        BwStepperVariant.Progress => "progress",
+        BwStepperVariant.Icons => "icons",
+        _ => ""
+    };
+    
+    var labelClass = AlternativeLabel ? "alternative-label" : "";
+    
+    var progressPercent = _steps.Count > 1 
+        ? (int)((double)ActiveStep / (_steps.Count - 1) * 100) 
+        : 0;
+}
+
+<CascadingValue Value="this">
+    <div class="bw-stepper @orientationClass @sizeClass @variantClass @labelClass @Class">
+        @if (Orientation == BwOrientation.Horizontal && Variant == BwStepperVariant.Progress)
+        {
+            @* Progress Bar Header *@
+            <div class="w-full mb-6">
+                <div class="flex justify-between mb-2">
+                    @foreach (var step in _steps)
+                    {
+                        var stepIndex = _steps.IndexOf(step);
+                        var isCompleted = stepIndex < ActiveStep;
+                        var isCurrent = stepIndex == ActiveStep;
+                        var stateClass = isCompleted ? "completed" : isCurrent ? "active" : "pending";
+                        
+                        <button type="button"
+                                class="bw-stepper-step flex flex-col items-center flex-1 bg-transparent border-0"
+                                disabled="@(step.IsDisabled || (Linear && stepIndex > ActiveStep))"
+                                @onclick="() => GoToStep(stepIndex)">
+                            <div class="bw-stepper-indicator @stateClass">
+                                @if (isCompleted)
+                                {
+                                    <i class="fa-solid fa-check"></i>
+                                }
+                                else if (step.IsError)
+                                {
+                                    <i class="fa-solid fa-exclamation"></i>
+                                }
+                                else if (!string.IsNullOrEmpty(step.Icon))
+                                {
+                                    <i class="@step.Icon"></i>
+                                }
+                                else
+                                {
+                                    @(stepIndex + 1)
+                                }
+                            </div>
+                            @if (AlternativeLabel)
+                            {
+                                <span class="bw-stepper-label @stateClass">@step.Title</span>
+                            }
+                        </button>
+                    }
+                </div>
+                <div class="bw-stepper-progress-bar">
+                    <div class="bw-stepper-progress-fill" style="width: @(progressPercent)%"></div>
+                </div>
+            </div>
+        }
+        
+        @ChildContent
+        
+        @* Step Content for non-vertical *@
+        @if (Orientation != BwOrientation.Vertical && _steps.Any() && ActiveStep >= 0 && ActiveStep < _steps.Count && _steps[ActiveStep].ChildContent != null)
+        {
+            <div class="bw-stepper-content">
+                @_steps[ActiveStep].ChildContent
+            </div>
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    /// <summary>Currently active step (0-indexed)</summary>
+    [Parameter] public int ActiveStep { get; set; }
+    
+    /// <summary>Two-way binding for active step</summary>
+    [Parameter] public EventCallback<int> ActiveStepChanged { get; set; }
+    
+    /// <summary>Visual style variant</summary>
+    [Parameter] public BwStepperVariant Variant { get; set; } = BwStepperVariant.Default;
+    
+    /// <summary>Layout orientation</summary>
+    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
+    
+    /// <summary>Must complete steps in order</summary>
+    [Parameter] public bool Linear { get; set; } = true;
+    
+    /// <summary>Show connector lines between steps</summary>
+    [Parameter] public bool ShowConnectors { get; set; } = true;
+    
+    /// <summary>Labels below icons (horizontal only)</summary>
+    [Parameter] public bool AlternativeLabel { get; set; }
+    
+    /// <summary>Size of step indicators</summary>
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+    
+    /// <summary>Custom CSS classes</summary>
+    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Step items</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    internal List<BwStepperItem> _steps = new();
+    
+    internal void RegisterStep(BwStepperItem step)
+    {
+        if (!_steps.Contains(step))
+        {
+            _steps.Add(step);
+            StateHasChanged();
+        }
+    }
+    
+    internal void UnregisterStep(BwStepperItem step)
+    {
+        _steps.Remove(step);
+        StateHasChanged();
+    }
+    
+    internal int GetStepIndex(BwStepperItem step) => _steps.IndexOf(step);
+    internal bool IsStepCompleted(int index) => index < ActiveStep;
+    internal bool IsStepActive(int index) => index == ActiveStep;
+    internal bool IsStepPending(int index) => index > ActiveStep;
+    internal bool IsFirstStep(int index) => index == 0;
+    internal bool IsLastStep(int index) => index == _steps.Count - 1;
+    
+    public async Task GoToStep(int index)
+    {
+        if (index < 0 || index >= _steps.Count) return;
+        if (_steps[index].IsDisabled) return;
+        if (Linear && index > ActiveStep) return;
+        
+        ActiveStep = index;
+        await ActiveStepChanged.InvokeAsync(ActiveStep);
+    }
+    
+    public async Task NextStep()
+    {
+        if (ActiveStep < _steps.Count - 1)
+        {
+            await GoToStep(ActiveStep + 1);
+        }
+    }
+    
+    public async Task PreviousStep()
+    {
+        if (ActiveStep > 0)
+        {
+            await GoToStep(ActiveStep - 1);
+        }
+    }
+}

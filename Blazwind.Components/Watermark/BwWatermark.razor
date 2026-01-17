@@ -1,0 +1,80 @@
+@namespace Blazwind.Components.Watermark
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+
+@{
+    var baseClasses = "relative overflow-hidden";
+}
+
+<div class="@CombineClasses(baseClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    @ChildContent
+
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-10" style="@GetWatermarkStyle()">
+        <div class="absolute inset-0" style="@GetPatternStyle()">
+            @for (int row = 0; row < RowCount; row++)
+            {
+                for (int col = 0; col < ColCount; col++)
+                {
+                    var offset = row % 2 == 1 ? Gap / 2 : 0;
+                    <div class="absolute whitespace-nowrap select-none"
+                        style="left: @(col * (Width + Gap) + offset)px; top: @(row * (Height + Gap))px; transform: rotate(@(Rotate)deg);">
+                        @if (ImageUrl != null)
+                        {
+                            <img src="@ImageUrl" alt="watermark" class="opacity-@((int)(Opacity * 100))"
+                                style="width: @(Width)px; height: @(Height)px;" />
+                        }
+                        else
+                        {
+                            <span class="@GetTextClasses()">@Text</span>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Text { get; set; } = "Watermark";
+    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter] public int Width { get; set; } = 120;
+    [Parameter] public int Height { get; set; } = 64;
+    [Parameter] public int Gap { get; set; } = 100;
+    [Parameter] public int Rotate { get; set; } = -22;
+    [Parameter] public double Opacity { get; set; } = 0.15;
+    [Parameter] public int ZIndex { get; set; } = 10;
+    [Parameter] public string FontSize { get; set; } = "14px";
+    [Parameter] public string FontColor { get; set; } = "rgba(0, 0, 0, 0.15)";
+    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
+
+    private int RowCount => 20;
+    private int ColCount => 20;
+
+    private string GetWatermarkStyle()
+    {
+        return $"z-index: {ZIndex};";
+    }
+
+    private string GetPatternStyle()
+    {
+        return $"width: {ColCount * (Width + Gap)}px; height: {RowCount * (Height + Gap)}px;";
+    }
+
+    private string GetTextClasses()
+    {
+        var colorClass = Color switch
+        {
+            BwColor.Primary => "text-blue-500 dark:text-blue-400",
+            BwColor.Success => "text-emerald-500 dark:text-emerald-400",
+            BwColor.Danger => "text-red-500 dark:text-red-400",
+            BwColor.Warning => "text-amber-500 dark:text-amber-400",
+            BwColor.Info => "text-sky-500 dark:text-sky-400",
+            BwColor.Dark => "text-gray-900 dark:text-white",
+            _ => "text-gray-500 dark:text-gray-400"
+        };
+
+        return $"{colorClass} font-medium select-none";
+    }
+}

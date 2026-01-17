@@ -1,0 +1,313 @@
+@namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@using Blazwind.Components.HelpTooltip
+@inherits BwBaseInput<string>
+
+@{
+    var sizeClass = Size switch
+    {
+        BwSize.Small => "h-8 px-2.5 text-xs tracking-wider",
+        BwSize.Large => "h-12 px-4 text-lg tracking-widest",
+        _ => "h-10 px-3 text-sm tracking-wide"
+    };
+    
+    var baseClass = "w-full border rounded transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-0 font-mono";
+    var stateClass = GetStateClass();
+    var disabledClass = GetDisabledClass();
+    var marginClass = GetDensityMarginClass();
+    var labelSpacingClass = GetLabelSpacingClass();
+}
+
+<div class="@marginClass @Class" style="@Style">
+    @switch (EffectiveLabelPosition)
+    {
+        case BwLabelPosition.Top:
+            @if (HasLabel)
+            {
+                <div class="flex items-center gap-1 @labelSpacingClass">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        @Label
+                        @if (IsRequired)
+                        {
+                            <span class="text-red-500 ml-0.5">*</span>
+                        }
+                    </label>
+                    @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                    {
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                    }
+                </div>
+            }
+            <div class="relative">
+                <input type="text"
+                       class="@baseClass @sizeClass @stateClass @disabledClass"
+                       placeholder="@GetPlaceholder()"
+                       value="@_displayValue"
+                       maxlength="@_activeMask.Length"
+                       disabled="@IsDisabled"
+                       readonly="@IsReadOnly"
+                       @oninput="HandleInput"
+                       @onkeydown="HandleKeyDownEvent"
+                       @onfocus="HandleFocusEvent"
+                       @onblur="HandleBlurEvent" />
+            </div>
+            break;
+            
+        case BwLabelPosition.Left:
+            <div class="flex items-start gap-3">
+                @if (HasLabel)
+                {
+                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                            @Label
+                            @if (IsRequired)
+                            {
+                                <span class="text-red-500 ml-0.5">*</span>
+                            }
+                        </label>
+                        @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
+                        {
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        }
+                    </div>
+                }
+                <div class="flex-1 relative">
+                    <input type="text"
+                           class="@baseClass @sizeClass @stateClass @disabledClass"
+                           placeholder="@GetPlaceholder()"
+                           value="@_displayValue"
+                           maxlength="@_activeMask.Length"
+                           disabled="@IsDisabled"
+                           readonly="@IsReadOnly"
+                           @oninput="HandleInput"
+                           @onkeydown="HandleKeyDownEvent"
+                           @onfocus="HandleFocusEvent"
+                           @onblur="HandleBlurEvent" />
+                </div>
+            </div>
+            break;
+            
+        default:
+            <div class="relative">
+                <input type="text"
+                       class="@baseClass @sizeClass @stateClass @disabledClass"
+                       placeholder="@GetPlaceholder()"
+                       value="@_displayValue"
+                       maxlength="@_activeMask.Length"
+                       disabled="@IsDisabled"
+                       readonly="@IsReadOnly"
+                       @oninput="HandleInput"
+                       @onkeydown="HandleKeyDownEvent"
+                       @onfocus="HandleFocusEvent"
+                       @onblur="HandleBlurEvent" />
+            </div>
+            break;
+    }
+    
+    @* Error/Helper Messages *@
+    @if (HasError)
+    {
+        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @DisplayError
+        </p>
+    }
+    else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
+    {
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+    }
+</div>
+
+@code {
+    /// <summary>Mask pattern. Use # for digits, A for letters, * for any character.</summary>
+    [Parameter] public string Mask { get; set; } = "";
+    
+    /// <summary>Character shown for unfilled positions</summary>
+    [Parameter] public char MaskChar { get; set; } = '_';
+    
+    /// <summary>Preset mask type</summary>
+    [Parameter] public BwMaskPreset? Preset { get; set; }
+    
+    /// <summary>If true (default), Value returns raw characters only. If false, Value includes mask literals.</summary>
+    [Parameter] public bool UnmaskValue { get; set; } = true;
+    
+    /// <summary>Triggered when Enter key is pressed</summary>
+    [Parameter] public EventCallback OnEnter { get; set; }
+
+    private string _displayValue = "";
+    private string _activeMask = "";
+    private int _maxRawLength;
+
+    protected override void OnParametersSet()
+    {
+        _activeMask = Preset.HasValue ? GetPresetMask(Preset.Value) : Mask;
+        _maxRawLength = _activeMask.Count(c => c == '#' || c == 'A' || c == '*');
+        UpdateDisplayValue();
+    }
+
+    private string GetPresetMask(BwMaskPreset preset) => preset switch
+    {
+        BwMaskPreset.Phone => "(###) ### ## ##",
+        BwMaskPreset.CreditCard => "#### #### #### ####",
+        BwMaskPreset.Date => "##/##/####",
+        BwMaskPreset.Time => "##:##",
+        BwMaskPreset.Iban => "TR## #### #### #### #### #### ##",
+        _ => Mask
+    };
+
+    private void UpdateDisplayValue()
+    {
+        if (string.IsNullOrEmpty(_activeMask))
+        {
+            _displayValue = Value ?? "";
+            return;
+        }
+        
+        var rawValue = Value ?? "";
+        var result = "";
+        var rawIndex = 0;
+        
+        foreach (var maskChar in _activeMask)
+        {
+            if (maskChar == '#' || maskChar == 'A' || maskChar == '*')
+            {
+                if (rawIndex < rawValue.Length)
+                {
+                    result += rawValue[rawIndex];
+                    rawIndex++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                if (rawIndex < rawValue.Length || (rawIndex > 0 && rawIndex <= rawValue.Length))
+                {
+                    result += maskChar;
+                }
+            }
+        }
+        
+        _displayValue = result;
+    }
+
+    private string GetPlaceholder()
+    {
+        if (!string.IsNullOrEmpty(Placeholder)) return Placeholder;
+        if (string.IsNullOrEmpty(_activeMask)) return "";
+        return _activeMask.Replace('#', MaskChar).Replace('A', MaskChar).Replace('*', MaskChar);
+    }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        var input = e.Value?.ToString() ?? "";
+        var rawValue = "";
+        
+        foreach (var ch in input)
+        {
+            if (rawValue.Length >= _maxRawLength) break;
+            
+            var maskIndex = GetMaskIndexForRawPosition(rawValue.Length);
+            if (maskIndex < 0 || maskIndex >= _activeMask.Length) break;
+            
+            var expectedMask = _activeMask[maskIndex];
+            
+            if (expectedMask == '#' && char.IsDigit(ch))
+            {
+                rawValue += ch;
+            }
+            else if (expectedMask == 'A' && char.IsLetter(ch))
+            {
+                rawValue += char.ToUpper(ch);
+            }
+            else if (expectedMask == '*' && char.IsLetterOrDigit(ch))
+            {
+                rawValue += ch;
+            }
+        }
+        
+        // Set Value based on UnmaskValue parameter
+        if (UnmaskValue)
+        {
+            Value = rawValue;
+        }
+        else
+        {
+            // Build formatted value with mask literals
+            Value = BuildFormattedValue(rawValue);
+        }
+        
+        await ValueChanged.InvokeAsync(Value);
+        await OnChange.InvokeAsync(Value);
+        UpdateDisplayValue();
+        
+        if (CascadedEditContext != null && For != null)
+        {
+            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
+        }
+    }
+    
+    private string BuildFormattedValue(string rawValue)
+    {
+        if (string.IsNullOrEmpty(_activeMask) || string.IsNullOrEmpty(rawValue))
+            return rawValue;
+            
+        var result = "";
+        var rawIndex = 0;
+        
+        foreach (var maskChar in _activeMask)
+        {
+            if (rawIndex >= rawValue.Length) break;
+            
+            if (maskChar == '#' || maskChar == 'A' || maskChar == '*')
+            {
+                result += rawValue[rawIndex];
+                rawIndex++;
+            }
+            else
+            {
+                result += maskChar;
+            }
+        }
+        
+        return result;
+    }
+
+    private int GetMaskIndexForRawPosition(int rawPosition)
+    {
+        var rawCount = 0;
+        for (var i = 0; i < _activeMask.Length; i++)
+        {
+            var c = _activeMask[i];
+            if (c == '#' || c == 'A' || c == '*')
+            {
+                if (rawCount == rawPosition) return i;
+                rawCount++;
+            }
+        }
+        return -1;
+    }
+
+    private async Task HandleKeyDownEvent(KeyboardEventArgs e)
+    {
+        await HandleKeyDown(e);
+        if (e.Key == "Enter" && OnEnter.HasDelegate)
+        {
+            await OnEnter.InvokeAsync();
+        }
+    }
+    
+    private async Task HandleFocusEvent(FocusEventArgs e)
+    {
+        IsFocused = true;
+        await HandleFocus(e);
+    }
+
+    private async Task HandleBlurEvent(FocusEventArgs e)
+    {
+        IsFocused = false;
+        await HandleBlur(e);
+    }
+}

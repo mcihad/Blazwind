@@ -1,0 +1,109 @@
+@namespace Blazwind.Components.Calendar
+@using Blazwind.Components.Shared
+
+@{
+    var wrapperClasses = "bw-calendar-wrapper";
+    var containerClasses = "bw-calendar flex flex-col h-full bg-white dark:bg-gray-900 rounded overflow-hidden border border-gray-200 dark:border-gray-700";
+}
+
+<style>
+    .bw-calendar-fullscreen {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 1020 !important;
+        border-radius: 0 !important;
+    }
+    .bw-calendar-fullscreen .bw-calendar {
+        border-radius: 0 !important;
+        border: none !important;
+    }
+</style>
+
+<div class="@wrapperClasses h-full">
+    @* ChildContent for slot registration - hidden *@
+    <CascadingValue Value="this" Name="ParentCalendar">
+        <div style="display: none;">@ChildContent</div>
+    </CascadingValue>
+    
+    <div id="@Id" class="@containerClasses @Class" style="@Style">
+        @* Header - Navigation and View Switcher *@
+        <BwCalendarHeader 
+            SelectedDate="@SelectedDate"
+            View="@View"
+            Calendars="@EffectiveCalendars"
+            ShowFullscreenButton="@AllowFullscreen"
+            OnDateChanged="@HandleDateChanged"
+            OnViewChanged="@HandleViewChanged"
+            OnToday="@HandleToday"
+            OnFullscreenToggle="@HandleFullscreenToggle" />
+        
+        @* Main Content *@
+        <div class="flex-1 overflow-auto relative">
+            @switch (View)
+            {
+                case BwCalendarView.Agenda:
+                    <BwCalendarAgendaView 
+                        SelectedDate="@SelectedDate"
+                        Events="@ExpandedEvents"
+                        Calendars="@EffectiveCalendars"
+                        EventTemplate="@GetEventTemplateForView(BwCalendarView.Agenda)"
+                        OnEventClicked="@OnEventClicked" />
+                    break;
+                    
+                case BwCalendarView.Daily:
+                    <BwCalendarDayView 
+                        SelectedDate="@SelectedDate"
+                        Events="@ExpandedEvents"
+                        Calendars="@EffectiveCalendars"
+                        SlotMinutes="@SlotMinutes"
+                        StartHour="@StartHour"
+                        EndHour="@EndHour"
+                        HideEmptySlots="@HideEmptySlots"
+                        AllowDrag="@AllowDrag"
+                        AllowResize="@AllowResize"
+                        TodayHeaderClass="@GetTodayHeaderClass()"
+                        TodayBackgroundClass="@GetTodayBackgroundClass()"
+                        TodayTextClass="@GetTodayTextClass()"
+                        EventTemplate="@GetEventTemplateForView(BwCalendarView.Daily)"
+                        OnEventClicked="@OnEventClicked"
+                        OnSlotSelected="@OnSlotSelected"
+                        OnEventChanged="@OnEventChanged" />
+                    break;
+                    
+                case BwCalendarView.Weekly:
+                    <BwCalendarWeekView 
+                        SelectedDate="@SelectedDate"
+                        Events="@ExpandedEvents"
+                        Calendars="@EffectiveCalendars"
+                        SlotMinutes="@SlotMinutes"
+                        StartHour="@StartHour"
+                        EndHour="@EndHour"
+                        HideEmptySlots="@HideEmptySlots"
+                        AllowDrag="@AllowDrag"
+                        AllowResize="@AllowResize"
+                        TodayHeaderClass="@GetTodayHeaderClass()"
+                        TodayBackgroundClass="@GetTodayBackgroundClass()"
+                        TodayTextClass="@GetTodayTextClass()"
+                        EventTemplate="@GetEventTemplateForView(BwCalendarView.Weekly)"
+                        OnEventClicked="@OnEventClicked"
+                        OnSlotSelected="@OnSlotSelected"
+                        OnEventChanged="@OnEventChanged" />
+                    break;
+                    
+                case BwCalendarView.Monthly:
+                    <BwCalendarMonthView 
+                        SelectedDate="@SelectedDate"
+                        Events="@ExpandedEvents"
+                        Calendars="@EffectiveCalendars"
+                        TodayHeaderClass="@GetTodayHeaderClass()"
+                        EventTemplate="@GetEventTemplateForView(BwCalendarView.Monthly)"
+                        OnDateSelected="@HandleDateSelected"
+                        OnEventClicked="@OnEventClicked" />
+                    break;
+            }
+        </div>
+    </div>
+</div>

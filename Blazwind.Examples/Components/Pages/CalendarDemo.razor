@@ -1,0 +1,449 @@
+@page "/components/calendar"
+@using System.Globalization
+@using Blazwind.Components.Calendar
+@using Blazwind.Components.Input
+@using Blazwind.Examples.Components.Samples
+
+@inject DialogService DialogService
+@inject ToastService ToastService
+@inject CalendarStateService CalendarState
+
+@rendermode @(new InteractiveServerRenderMode(false))
+
+<PageTitle>Calendar Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Calendar Component"
+            Description="Fully mobile-compatible, drag-and-drop enabled, multi-calendar management modern calendar/scheduler component."
+            Icon="fa-solid fa-calendar-days" Color="BwColor.Primary"/>
+
+    @* Main Calendar *@
+    <BwCard Title="Calendar View" Subtitle="Switch between Agenda, Day, Week and Month views."
+            Icon="fa-solid fa-calendar" Color="BwColor.Info">
+        <div style="height: 600px;">
+            <BwCalendar View="@view" SelectedDate="@selectedDate" SlotMinutes="30" StartHour="7" EndHour="24"
+                        OnEventClicked="@HandleEventClicked" OnSlotSelected="@HandleSlotSelected"
+                        OnEventChanged="@HandleEventChanged" OnDateChanged="@HandleDateChanged"
+                        OnViewChanged="@HandleViewChanged" OnVisibleRangeChanged="@HandleVisibleRangeChanged">
+
+                @* Aesthetic custom template for day view *@
+                <BwDayViewSlot>
+                    <EventTemplate Context="evt">
+                        @{
+                            var eventColor = evt.Color ?? "#3B82F6";
+                        }
+                        <div class="h-full flex flex-col gap-0.5 overflow-hidden">
+                            @* Header with icon and title *@
+                            <div class="flex items-center gap-1.5">
+                                @if (evt.IsRecurring)
+                                {
+                                    <span
+                                        class="shrink-0 w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
+                                        <i class="fa-solid fa-repeat text-[8px]"></i>
+                                    </span>
+                                }
+                                <span class="font-semibold truncate">@evt.Title</span>
+                            </div>
+
+                            @* Time badge *@
+                            <div class="flex items-center gap-1 text-[10px] opacity-80">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>@evt.StartTime.ToString("HH:mm") - @evt.EndTime.ToString("HH:mm")</span>
+                            </div>
+
+                            @* Location if exists *@
+                            @if (!string.IsNullOrEmpty(evt.Location))
+                            {
+                                <div class="flex items-center gap-1 text-[10px] opacity-70 mt-auto">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span class="truncate">@evt.Location</span>
+                                </div>
+                            }
+                        </div>
+                    </EventTemplate>
+                </BwDayViewSlot>
+
+                @* Compact template for month view *@
+                <BwMonthViewSlot>
+                    <EventTemplate Context="evt">
+                        <span class="flex items-center gap-1">
+                            @if (evt.IsRecurring)
+                            {
+                                <i class="fa-solid fa-repeat text-[8px] opacity-50"></i>
+                            }
+                            @evt.Title
+                        </span>
+                    </EventTemplate>
+                </BwMonthViewSlot>
+
+            </BwCalendar>
+        </div>
+    </BwCard>
+
+    @* Controls *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Calendar Filter *@
+        <BwCard Title="Calendars" Subtitle="Select visible calendars" Icon="fa-solid fa-layer-group"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Sm">
+                @foreach (var calendar in calendars)
+                {
+                    <div
+                        class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <BwCheckbox @bind-IsChecked="@calendar.IsVisible"/>
+                        <div class="w-3 h-3 rounded-full" style="background-color: @calendar.Color"></div>
+                        <span class="flex-1 text-sm font-medium text-gray-700 dark:text-gray-300">@calendar.Name</span>
+                        <span
+                            class="text-xs text-gray-500">@CalendarState.Events.Count(e => e.CalendarId == calendar.Id)
+                            events</span>
+                    </div>
+                }
+            </BwColumn>
+        </BwCard>
+
+        @* Selected Event Detail *@
+        <BwCard Title="Selected Event" Subtitle="Click on an event to see its details" Icon="fa-solid fa-info-circle"
+                Color="BwColor.Warning">
+            @if (selectedEvent != null)
+            {
+                <BwColumn Spacing="BwSpacing.Sm">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded">
+                        <div class="flex items-start gap-3">
+                            <div class="w-1 self-stretch rounded-full"
+                                 style="background-color: @(selectedEvent.Color ?? "#3B82F6")"></div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-900 dark:text-white">@selectedEvent.Title</h4>
+                                @if (!string.IsNullOrEmpty(selectedEvent.Description))
+                                {
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">@selectedEvent.Description</p>
+                                }
+                                <div class="flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
+                                    <span><i
+                                            class="fa-regular fa-clock mr-1"></i> @selectedEvent.StartTime.ToString("dd MMM                                    HH:mm") - @selectedEvent.EndTime.ToString("HH:mm")</span>
+                                    @if (!string.IsNullOrEmpty(selectedEvent.Location))
+                                    {
+                                        <span><i
+                                                class="fa-solid fa-location-dot mr-1"></i> @selectedEvent.Location</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <BwRow Spacing="BwSpacing.Sm">
+                        <BwButton Text="Edit" Icon="fa-solid fa-edit" Color="BwColor.Primary" Size="BwSize.Small"/>
+                        <BwButton Text="Delete" Icon="fa-solid fa-trash" Color="BwColor.Danger" Size="BwSize.Small"
+                                  Variant="BwVariant.Outline" OnClick="@HandleDelete"/>
+                    </BwRow>
+                </BwColumn>
+            }
+            else
+            {
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <i class="fa-regular fa-hand-pointer text-3xl mb-2"></i>
+                    <p class="text-sm">No event selected yet</p>
+                </div>
+            }
+        </BwCard>
+    </BwRow>
+
+
+    @* New Features Demo *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        @* Custom Template Info *@
+        <BwCard Title="View Slot Structure" Subtitle="Define separate templates for each view"
+                Icon="fa-solid fa-paint-brush" Color="BwColor.Info">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded text-xs font-mono text-gray-600 dark:text-gray-400">
+                    <div>&lt;BwCalendar&gt;</div>
+                    <div class="pl-3">&lt;BwWeekViewSlot&gt;</div>
+                    <div class="pl-6 text-blue-600 dark:text-blue-400">&lt;EventTemplate&gt;...&lt;/EventTemplate&gt;
+                    </div>
+                    <div class="pl-3">&lt;/BwWeekViewSlot&gt;</div>
+                    <div class="pl-3">&lt;BwMonthViewSlot&gt;</div>
+                    <div class="pl-6 text-purple-600 dark:text-purple-400">
+                        &lt;EventTemplate&gt;...&lt;/EventTemplate&gt;
+                    </div>
+                    <div class="pl-3">&lt;/BwMonthViewSlot&gt;</div>
+                    <div>&lt;/BwCalendar&gt;</div>
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">
+                    <i class="fa-solid fa-info-circle mr-1"></i>Separate template for each view, default is used if not
+                    provided
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        @* Visible Range Info *@
+        <BwCard Title="Lazy Loading" Subtitle="Track date range with OnVisibleRangeChanged" Icon="fa-solid fa-bolt"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Sm">
+                @if (lastVisibleRange != null)
+                {
+                    <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded font-mono text-sm">
+                        <div class="text-gray-500 dark:text-gray-400 mb-2">Last triggered range:</div>
+                        <div class="text-gray-700 dark:text-gray-300">
+                            <i class="fa-regular fa-calendar mr-1"></i>
+                            @lastVisibleRange.Start.ToString("dd MMM") - @lastVisibleRange.End.ToString("dd MMM yyyy")
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">View: @lastVisibleRange.View</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-sm text-gray-500 dark:text-gray-400 p-3">You can see range changes by navigating in
+                        the
+                        calendar
+                    </div>
+                }
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private CalendarEvent? selectedEvent;
+    private DateTime selectedDate = DateTime.Today;
+    private BwCalendarView view = BwCalendarView.Weekly;
+    private CalendarVisibleRange? lastVisibleRange;
+
+    // Convenience accessor for UI binding
+    private IReadOnlyList<CalendarInfo> calendars => CalendarState.Calendars;
+
+    protected override void OnInitialized()
+    {
+        var today = DateTime.Today;
+
+        var calendarList = new List<CalendarInfo>
+        {
+            new() { Id = "1", Name = "Personal", Color = "#3B82F6" },
+            new() { Id = "2", Name = "Work", Color = "#10B981" },
+            new() { Id = "3", Name = "Meetings", Color = "#F59E0B" }
+        };
+
+        var eventList = new List<CalendarEvent>
+        {
+// Events with ExtraData for extensibility demonstration
+            new()
+            {
+                Title = "Morning Meeting",
+                StartTime = today.AddHours(9),
+                EndTime = today.AddHours(10),
+                CalendarId = "3",
+                Location = "Meeting Room A",
+                ExtraData = new Dictionary<string, object> { ["Organizer"] = "Ahmet Yılmaz", ["Priority"] = "High" }
+            },
+            new()
+            {
+                Title = "Project Review",
+                StartTime = today.AddHours(11),
+                EndTime = today.AddHours(12).AddMinutes(30),
+                CalendarId = "2",
+                Description = "Q4 project evaluation",
+                ExtraData = new Dictionary<string, object> { ["ProjectCode"] = "PRJ-2026-001", ["Participants"] = "Ahmet Yılmaz, Mehmet Veli" }
+            },
+            new()
+            {
+                Title = "Lunch", StartTime = today.AddHours(12).AddMinutes(30), EndTime = today.AddHours(13).AddMinutes(30),
+                CalendarId = "1"
+            },
+            new()
+            {
+                Title = "Client Meeting",
+                StartTime = today.AddHours(14),
+                EndTime = today.AddHours(15),
+                CalendarId = "2",
+                Location = "Online - Zoom",
+                ExtraData = new Dictionary<string, object> { ["CustomerName"] = "ABC Company", ["MeetingLink"] = "https://zoom.us/j/123456" }
+            },
+            new()
+            {
+                Title = "Sprint Planning", StartTime = today.AddHours(16), EndTime = today.AddHours(17).AddMinutes(30),
+                CalendarId = "3"
+            },
+            new()
+            {
+                Title = "Doctor Appointment", StartTime = today.AddDays(1).AddHours(10), EndTime =
+                    today.AddDays(1).AddHours(11),
+                CalendarId = "1", Location = "Hospital"
+            },
+            new()
+            {
+                Title = "Team Meeting", StartTime = today.AddDays(1).AddHours(14), EndTime = today.AddDays(1).AddHours(15),
+                CalendarId = "3"
+            },
+            new()
+            {
+                Title = "Webinar", StartTime = today.AddDays(2).AddHours(11), EndTime = today.AddDays(2).AddHours(12),
+                CalendarId = "2", Description = "New technologies webinar"
+            },
+            new()
+            {
+                Title = "Annual Leave", StartTime = today.AddDays(3), EndTime = today.AddDays(3).AddHours(23).AddMinutes(59),
+                CalendarId = "1", IsAllDay = true
+            },
+            new()
+            {
+                Title = "Weekly Review", StartTime = today.AddDays(-1).AddHours(15), EndTime = today.AddDays(-1).AddHours(16),
+                CalendarId = "3"
+            },
+            new()
+            {
+                Title = "Code Review", StartTime = today.AddDays(-2).AddHours(10), EndTime =
+                    today.AddDays(-2).AddHours(11).AddMinutes(30),
+                CalendarId = "2"
+            },
+
+// Recurring Events - RRule Examples (start from past for proper expansion)
+            new()
+            {
+                Title = "Daily Standup",
+                StartTime = new DateTime(2025, 1, 6, 9, 30, 0), // Start from a past Monday
+                EndTime = new DateTime(2025, 1, 6, 10, 0, 0),
+                CalendarId = "3",
+                IsRecurring = true,
+                RecurrenceRule = "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR",
+                Description = "Daily morning standup meeting on weekdays"
+            },
+            new()
+            {
+                Title = "Weekly 1:1",
+                StartTime = new DateTime(2025, 1, 7, 15, 0, 0), // Start from a past Tuesday
+                EndTime = new DateTime(2025, 1, 7, 16, 0, 0),
+                CalendarId = "2",
+                IsRecurring = true,
+                RecurrenceRule = "FREQ=WEEKLY;BYDAY=TU",
+                Description = "Weekly meeting with manager"
+            },
+
+// Municipality Meetings (start from past)
+            new()
+            {
+                Title = "Executive Board Meeting",
+                StartTime = new DateTime(2025, 1, 7, 10, 0, 0), // Past Tuesday
+                EndTime = new DateTime(2025, 1, 7, 12, 0, 0),
+                CalendarId = "3",
+                IsRecurring = true,
+                RecurrenceRule = "FREQ=WEEKLY;BYDAY=TU",
+                Location = "Executive Board Room",
+                Description = "Weekly executive board meeting - Municipal decisions"
+            },
+            new()
+            {
+                Title = "Council Meeting",
+                StartTime = new DateTime(2025, 1, 2, 14, 0, 0), // First Thursday of Jan 2025
+                EndTime = new DateTime(2025, 1, 2, 17, 0, 0),
+                CalendarId = "3",
+                IsRecurring = true,
+                RecurrenceRule = "FREQ=MONTHLY;BYDAY=1TH",
+                Location = "Council Chamber",
+                Description = "Monthly council meeting - First Thursday of each month"
+            }
+        };
+
+        // Initialize the StateService (one-time load, simulating DB fetch)
+        CalendarState.Initialize(eventList, calendarList);
+    }
+
+    private async Task HandleEventClicked(CalendarEvent calendarEvent)
+    {
+        selectedEvent = calendarEvent;
+
+        // Find the calendar for color and name
+        var calendar = calendars.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
+
+        var parameters = new Dictionary<string, object>
+        {
+            { "Event", calendarEvent },
+            { "CalendarColor", calendar?.Color ?? "#3B82F6" },
+            { "CalendarName", calendar?.Name ?? "" }
+        };
+
+        var options = new DialogOptions
+        {
+            Width = "450px",
+            TitleColor = BwColor.Info
+        };
+
+        await DialogService.ShowAsync<EventDialog>(
+            calendarEvent.Title,
+            parameters,
+            options);
+    }
+
+    private async Task HandleSlotSelected((DateTime Start, DateTime End) slot)
+    {
+        var newEvent = new CalendarEvent
+        {
+            Title = "Yeni Etkinlik",
+            StartTime = slot.Start,
+            EndTime = slot.End,
+            CalendarId = "1"
+        };
+        CalendarState.AddEvent(newEvent); // Use StateService instead of local list
+        selectedEvent = newEvent;
+        await ToastService.SuccessAsync($"Yeni etkinlik oluşturuldu: {slot.Start:HH:mm} - {slot.End:HH:mm}");
+    }
+
+    private async Task HandleEventChanged(CalendarEvent calendarEvent)
+    {
+        CalendarState.UpdateEvent(calendarEvent);
+
+        var culture = new CultureInfo("tr-TR");
+        var dateStr = calendarEvent.StartTime.ToString("dd MMMM dddd", culture);
+        var timeStr = $"{calendarEvent.StartTime:HH:mm} - {calendarEvent.EndTime:HH:mm}";
+
+        await ToastService.SuccessAsync(
+            "Etkinlik Güncellendi",
+            $"'{calendarEvent.Title}' yeni zamanı: {dateStr}, {timeStr}");
+
+        StateHasChanged();
+    }
+
+    private void HandleDateChanged(DateTime newDate)
+    {
+        selectedDate = newDate;
+    }
+
+    private void HandleViewChanged(BwCalendarView newView)
+    {
+        view = newView;
+    }
+
+    private void HandleVisibleRangeChanged(CalendarVisibleRange range)
+    {
+        lastVisibleRange = range;
+        // In production, you would fetch events here:
+        // _events = await EventService.GetEventsAsync(range.Start, range.End);
+        StateHasChanged();
+    }
+
+    private async Task HandleDelete()
+    {
+        if (selectedEvent != null)
+        {
+            var confirmed = await DialogService.ShowConfirmAsync("Etkinliği Sil", $"'{selectedEvent.Title}' etkinliğini silmek istediğinize emin misiniz?", BwColor.Danger);
+            if (confirmed)
+            {
+                CalendarState.DeleteEvent(selectedEvent.Id);
+                await ToastService.SuccessAsync("Etkinlik silindi");
+                selectedEvent = null;
+            }
+        }
+    }
+
+    // Helper: Get next Tuesday from given date
+    private static DateTime GetNextTuesday(DateTime from)
+    {
+        var daysUntilTuesday = ((int)DayOfWeek.Tuesday - (int)from.DayOfWeek + 7) % 7;
+        return from.AddDays(daysUntilTuesday == 0 ? 7 : daysUntilTuesday).Date;
+    }
+
+    // Helper: Get first Thursday of the month containing given date
+    private static DateTime GetFirstThursday(DateTime from)
+    {
+        var firstOfMonth = new DateTime(from.Year, from.Month, 1);
+        var daysUntilThursday = ((int)DayOfWeek.Thursday - (int)firstOfMonth.DayOfWeek + 7) % 7;
+        return firstOfMonth.AddDays(daysUntilThursday).Date;
+    }
+
+}

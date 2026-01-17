@@ -1,0 +1,213 @@
+@page "/components/toast"
+@rendermode InteractiveServer
+@inject ToastService ToastService
+
+<PageTitle>Toast Notifications - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Toast Notifications"
+            Description="Modern, animated notifications for info, warnings, errors and success messages."
+            Icon="fa-solid fa-bell"
+            Color="BwColor.Primary"/>
+
+    @* Playground & Settings *@
+    <BwRow Spacing="BwSpacing.Lg" Class="grid lg:grid-cols-3">
+        @* Interactive Controls *@
+        <BwColumn Class="lg:col-span-2" Spacing="BwSpacing.Md">
+            <BwCard Title="Notification Variants" Subtitle="Color-coded notifications for different states."
+                    Icon="fa-solid fa-palette" Color="BwColor.Primary">
+                <BwRow Spacing="BwSpacing.Md" Wrap="true">
+                    <BwButton Icon="fa-solid fa-check" Text="Success" Color="BwColor.Success" Variant="BwVariant.Filled"
+                              OnClick="ShowSuccess"/>
+                    <BwButton Icon="fa-solid fa-triangle-exclamation" Text="Warning" Color="BwColor.Warning"
+                              Variant="BwVariant.Filled" OnClick="ShowWarning"/>
+                    <BwButton Icon="fa-solid fa-xmark" Text="Error" Color="BwColor.Danger" Variant="BwVariant.Filled"
+                              OnClick="ShowError"/>
+                    <BwButton Icon="fa-solid fa-info" Text="Info" Color="BwColor.Info" Variant="BwVariant.Filled"
+                              OnClick="ShowInfo"/>
+                    <BwButton Icon="fa-solid fa-bell" Text="Primary" Color="BwColor.Primary" Variant="BwVariant.Filled"
+                              OnClick="ShowPrimary"/>
+                    <BwButton Icon="fa-solid fa-moon" Text="Dark" Color="BwColor.Dark" Variant="BwVariant.Filled"
+                              OnClick="ShowDark"/>
+                </BwRow>
+            </BwCard>
+
+            <BwCard Title="Advanced Features" Subtitle="Titles, durations, and stacking." Icon="fa-solid fa-layer-group"
+                    Color="BwColor.Info">
+                <BwRow Spacing="BwSpacing.Md" Wrap="true">
+                    <BwButton Icon="fa-solid fa-heading" Text="Title & Content" Color="BwColor.Secondary"
+                              Variant="BwVariant.Outline" OnClick="ShowWithTitle"/>
+                    <BwButton Icon="fa-solid fa-hourglass-half" Text="Long Duration (10s)" Color="BwColor.Secondary"
+                              Variant="BwVariant.Outline" OnClick="() => ShowDuration(10000)"/>
+                    <BwButton Icon="fa-solid fa-thumbtack" Text="Persistent" Color="BwColor.Secondary"
+                              Variant="BwVariant.Outline" OnClick="ShowPersistent"/>
+                    <BwButton Icon="fa-solid fa-layer-group" Text="Stack View" Color="BwColor.Primary"
+                              Variant="BwVariant.Outline" OnClick="ShowStack"/>
+                    <BwButton Icon="fa-solid fa-align-left" Text="Long Text" Color="BwColor.Secondary"
+                              Variant="BwVariant.Outline" OnClick="ShowLongText"/>
+                    <BwButton Icon="fa-regular fa-hand-pointer" Text="Show with Actions" Color="BwColor.Primary"
+                              Variant="BwVariant.Filled" OnClick="ShowWithActions"/>
+                    <div class="flex-grow"></div>
+                </BwRow>
+            </BwCard>
+        </BwColumn>
+
+        @* Configuration Sidebar *@
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwCard Title="Position Settings" Subtitle="Location of notifications."
+                    Icon="fa-solid fa-arrows-up-down-left-right" Color="BwColor.Secondary">
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach (var pos in Enum.GetValues<BwToastPosition>())
+                    {
+                        <button @onclick="() => SetPosition(pos)"
+                                class="@GetPositionBtnClass(pos)">
+                            @FormatPositionName(pos)
+                        </button>
+                    }
+                </div>
+            </BwCard>
+
+            <div class="bg-blue-50 border border-blue-100 rounded p-4 text-sm text-blue-800">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info mt-1 text-blue-500"></i>
+                    <div>
+                        <h4 class="font-bold mb-1">Tip</h4>
+                        <p>Timer pauses on hover and resumes when the mouse leaves.</p>
+                    </div>
+                </div>
+            </div>
+
+            <BwCard Title="Clear" Subtitle="Removes all toasts from the screen." Icon="fa-solid fa-trash"
+                    Color="BwColor.Secondary">
+                <BwButton Icon="fa-solid fa-trash" Text="Clear All" Color="BwColor.Secondary"
+                          Variant="BwVariant.Outline" OnClick="ClearAll"/>
+            </BwCard>
+
+        </BwColumn>
+    </BwRow>
+</BwColumn>
+
+@code {
+    private BwToastPosition _currentPosition = BwToastPosition.TopRight;
+
+    private string GetPositionBtnClass(BwToastPosition pos)
+    {
+        var baseClass = "px-3 py-2 text-xs font-semibold rounded border transition-all text-center ";
+        return baseClass + (_currentPosition == pos
+            ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+            : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600");
+    }
+
+    private string FormatPositionName(BwToastPosition pos)
+    {
+        // Convert enum names like TopRight -> "Top Right"
+        return pos.ToString()
+            .Replace("Top", "Top ")
+            .Replace("Bottom", "Bottom ")
+            .Replace("Right", "Right")
+            .Replace("Left", "Left")
+            .Replace("Center", "Center")
+            .Trim();
+    }
+
+    private void SetPosition(BwToastPosition pos)
+    {
+        _currentPosition = pos;
+    }
+
+    private async Task ShowSuccess()    {
+        await ToastService.ShowAsync(new ToastOptions { Title = "Success", Message = "Record saved successfully.", Color = BwColor.Success, Position = _currentPosition });
+    }
+     private async Task ShowError()     {
+        await ToastService.ShowAsync(new ToastOptions { Title = "Error", Message = "Failed to connect to the server.", Color = BwColor.Danger, Position = _currentPosition });
+    }
+     private async Task ShowWarning()     {
+        await ToastService.ShowAsync(new ToastOptions { Title = "Warning", Message = "Your license will expire in 3 days.", Color = BwColor.Warning, Position = _currentPosition });
+    }
+     private async Task ShowInfo()     {
+        await ToastService.ShowAsync(new ToastOptions { Title = "Info", Message = "New version (v2.1.0) is ready to download.", Color = BwColor.Info, Position = _currentPosition });
+    }
+
+    private async Task ShowPrimary()     {
+        await ToastService.ShowAsync(new ToastOptions { Title = "Notification", Message = "You have 3 unread messages.", Color = BwColor.Primary, Position = _currentPosition });
+    }
+     private async Task ShowDark()     {
+        await ToastService.ShowAsync(new ToastOptions { Title = "System Mode", Message = "Dark mode enabled.", Color = BwColor.Dark, Position = _currentPosition });
+    }
+
+    private async Task ShowStack()
+    {
+        await ShowSuccess();
+        await Task.Delay(200);
+        await ShowInfo();
+        await Task.Delay(200);
+        await ShowWarning();
+    }
+
+    private async Task ShowWithTitle()     {
+        await ToastService.ShowAsync(new ToastOptions         {             Title = "Account Created",             Message = "Welcome! An activation link has been sent to your email.",             Color = BwColor.Success,             Position = _currentPosition         });
+    }
+
+    private async Task ShowLongText()     {
+        await ToastService.ShowAsync(new ToastOptions         {             Title = "Privacy Policy Update",             Message = "We have made important updates to our privacy policy and terms of use. Please review and accept the new text.",             Color = BwColor.Info,             Position = _currentPosition,
+            Duration = 8000
+        });
+    }
+
+    private async Task ShowDuration(int ms)
+    {
+        await ToastService.ShowAsync(new ToastOptions
+        {
+            Title = "Timer",
+            Message = $"This notification will stay on screen for {ms/1000} seconds.",
+            Color = BwColor.Warning,
+            Duration = ms,
+            ShowProgress = true,
+            Position = _currentPosition
+        });
+    }
+
+    private async Task ShowPersistent()
+    {
+        await ToastService.ShowAsync(new ToastOptions
+        {
+            Title = "Persistent Notification",
+            Message = "This message will remain until you close it.",
+            Color = BwColor.Danger,
+            Duration = 0,
+            ShowProgress = false,
+            Position = _currentPosition
+        });
+    }
+
+    private async Task ShowWithActions()
+    {
+        await ToastService.ShowAsync(new ToastOptions
+        {
+            Title = "File Deleted",
+            Message = "'report.pdf' was deleted.",
+            Duration = 6000,
+            Position = _currentPosition,
+            Color = BwColor.Success,
+            Actions = new List<ToastAction>
+            {
+                new ToastAction
+                { 
+                    Text = "Undo", 
+                    Color = BwColor.Primary,
+                    OnClick = async () => 
+                    {
+                        await ToastService.SuccessAsync("Action undone.", "Undone");
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    private async Task ClearAll()     {
+        await ToastService.ClearAsync();
+    }
+
+}

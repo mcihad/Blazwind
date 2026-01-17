@@ -1,0 +1,103 @@
+@namespace Blazwind.Components.ContextMenu
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@inherits BwBase
+
+<div @oncontextmenu="HandleContextMenu" @oncontextmenu:preventDefault="true" class="@Class" style="@Style">
+    @ChildContent
+</div>
+
+@if (IsOpen)
+{
+    @* Backdrop *@
+    <div class="fixed inset-0 z-40 bg-transparent" @onclick="Close" @oncontextmenu="Close" @oncontextmenu:preventDefault="true"></div>
+
+    @* Menu *@
+    <div class="fixed z-50 min-w-[160px] bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 dark:ring-white/10 py-1 focus:outline-none animate-in fade-in zoom-in-95 duration-75"
+         style="top: @(Y)px; left: @(X)px; opacity: @(Opacity);"
+         role="menu"
+         @ref="_menuElement">
+         <CascadingValue Value="this">
+             @MenuContent
+         </CascadingValue>
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? MenuContent { get; set; }
+    
+    public bool IsOpen { get; private set; }
+    public double X { get; private set; }
+    public double Y { get; private set; }
+    public double Opacity { get; private set; } = 0;
+    
+    private ElementReference _menuElement;
+    private bool _shouldAdjustPosition;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_shouldAdjustPosition && IsOpen)
+        {
+            _shouldAdjustPosition = false;
+            try
+            {
+                 // Call JS to measure and calculate position
+                 var position = await JSRuntime.InvokeAsync<Position>("Blazwind.ContextMenu.calculateMenuPosition", _menuElement, X, Y);
+                 X = position.X;
+                 Y = position.Y;
+                 Opacity = 1;
+                 StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error calculating menu position: {ex.Message}");
+                // Fallback: make visible even if JS fails
+                Opacity = 1;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void HandleContextMenu(MouseEventArgs e)
+    {
+        X = e.ClientX;
+        Y = e.ClientY;
+        Opacity = 0;
+        
+        IsOpen = true;
+        _shouldAdjustPosition = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+    
+    public async Task ShowAsync(double x, double y)
+    {
+        X = x;
+        Y = y;
+        Opacity = 0;
+
+        IsOpen = true;
+        _shouldAdjustPosition = true;
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private class Position
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+
+    public void Hide()
+    {
+        IsOpen = false;
+        StateHasChanged();
+    }
+}

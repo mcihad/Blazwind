@@ -1,0 +1,80 @@
+@page "/charts/knowledge-graph"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Knowledge Graph - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Knowledge Graph" 
+            Description="AI ve NLP projelerinde varlıklar arasındaki ilişkileri göstermek için kullanılan kuvvet tabanlı (force-directed) ağ grafiği."
+            Icon="fa-solid fa-circle-nodes"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Semantic Network" Subtitle="Kavramsal ilişkiler" Icon="fa-solid fa-share-nodes" Color="BwColor.Primary">
+        <BwChart Options="_graphOptions" Height="600px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _graphOptions = new()
+    {
+        Title = new ChartTitle { Text = "Knowledge Graph", Subtext = "AI Relationships" },
+        Tooltip = new ChartTooltip(),
+        Legend = new ChartLegend(),
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Type = ChartSeriesType.Graph,
+                Layout = "force",
+                Animation = false,
+                Label = new ChartLabel { Show = true, Position = ChartPosition.Right },
+                Draggable = true,
+                Data = new List<object>
+                {
+                    new { id = "0", name = "AI", symbolSize = 40, category = 0 },
+                    new { id = "1", name = "ML", symbolSize = 30, category = 1 },
+                    new { id = "2", name = "Deep Learning", symbolSize = 25, category = 1 },
+                    new { id = "3", name = "NLP", symbolSize = 25, category = 1 },
+                    new { id = "4", name = "Computer Vision", symbolSize = 25, category = 1 },
+                    new { id = "5", name = "Neural Networks", symbolSize = 20, category = 2 },
+                    new { id = "6", name = "CNN", symbolSize = 15, category = 2 },
+                    new { id = "7", name = "RNN", symbolSize = 15, category = 2 },
+                    new { id = "8", name = "Transformers", symbolSize = 20, category = 2 },
+                    new { id = "9", name = "BERT", symbolSize = 10, category = 3 },
+                    new { id = "10", name = "GPT", symbolSize = 10, category = 3 }
+                },
+                Categories = new List<object>
+                {
+                    new { name = "Root" },
+                    new { name = "Field" },
+                    new { name = "Method" },
+                    new { name = "Model" }
+                },
+                Links = new List<object>
+                {
+                    new { source = "0", target = "1" },
+                    new { source = "1", target = "2" },
+                    new { source = "0", target = "3" },
+                    new { source = "0", target = "4" },
+                    new { source = "2", target = "5" },
+                    new { source = "4", target = "6" },
+                    new { source = "3", target = "7" },
+                    new { source = "3", target = "8" },
+                    new { source = "8", target = "9" },
+                    new { source = "8", target = "10" },
+                    new { source = "5", target = "6" },
+                    new { source = "5", target = "7" }
+                },
+                Force = new 
+                {
+                    repulsion = 200,
+                    edgeLength = 80
+                },
+                Roam = true
+            }
+        }
+    };
+}

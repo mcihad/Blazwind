@@ -1,0 +1,139 @@
+@page "/charts/sunburst"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Sunburst - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Sunburst" 
+            Description="Katmanlı hiyerarşik verileri görselleştirmek için ideal grafik tipi."
+            Icon="fa-solid fa-sun"
+            Color="BwColor.Warning" />
+
+    @* Organizasyon *@
+    <BwCard Title="Organizasyon Yapısı" Subtitle="Organization sunburst." Icon="fa-solid fa-sitemap" Color="BwColor.Primary">
+        <BwChart Options="_orgSunburst" Height="500px" />
+    </BwCard>
+
+    @* Kategori Dağılımı *@
+    <BwCard Title="Başvuru Kategorileri" Subtitle="Application categories sunburst." Icon="fa-solid fa-folder-tree" Color="BwColor.Info">
+        <BwChart Options="_categorySunburst" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _orgSunburst = new
+    {
+        title = new { text = "Belediye Organizasyon Yapısı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        series = new[]
+        {
+            new
+            {
+                type = ChartSeriesType.Sunburst,
+                radius = new[] { "0%", "90%" },
+                label = new { rotate = "radial" },
+                data = new[]
+                {
+                    new
+                    {
+                        name = "Başkanlık",
+                        children = new[]
+                        {
+                            new
+                            {
+                                name = "Genel Sekreterlik",
+                                children = new[]
+                                {
+                                    new { name = "Yazı İşleri", value = 20 },
+                                    new { name = "İnsan Kaynakları", value = 15 },
+                                    new { name = "Hukuk", value = 10 }
+                                }
+                            },
+                            new
+                            {
+                                name = "Teknik Başkan Yrd.",
+                                children = new[]
+                                {
+                                    new { name = "Fen İşleri", value = 50 },
+                                    new { name = "İmar", value = 35 },
+                                    new { name = "Park Bahçe", value = 40 }
+                                }
+                            },
+                            new
+                            {
+                                name = "Mali Başkan Yrd.",
+                                children = new[]
+                                {
+                                    new { name = "Mali Hizmetler", value = 25 },
+                                    new { name = "Bilgi İşlem", value = 20 },
+                                    new { name = "Destek Hizmetleri", value = 30 }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    private object _categorySunburst = new
+    {
+        title = new { text = "Başvuru Kategori Dağılımı", left = ChartPosition.Center },
+        tooltip = new { trigger = ChartTooltipTrigger.Item },
+        series = new[]
+        {
+            new
+            {
+                type = ChartSeriesType.Sunburst,
+                radius = new[] { "15%", "90%" },
+                data = new[]
+                {
+                    new
+                    {
+                        name = "İmar İşlemleri",
+                        children = new[]
+                        {
+                            new { name = "Ruhsat", value = 300 },
+                            new { name = "İmar Durumu", value = 250 },
+                            new { name = "Yapı Kullanma", value = 150 },
+                            new { name = "Proje Onay", value = 100 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Mali İşlemler",
+                        children = new[]
+                        {
+                            new { name = "Emlak Vergisi", value = 400 },
+                            new { name = "ÇTV", value = 200 },
+                            new { name = "Su Abone", value = 150 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Şikayetler",
+                        children = new[]
+                        {
+                            new { name = "Altyapı", value = 180 },
+                            new { name = "Temizlik", value = 120 },
+                            new { name = "Gürültü", value = 80 },
+                            new { name = "Diğer", value = 100 }
+                        }
+                    },
+                    new
+                    {
+                        name = "Bilgi Edinme",
+                        children = new[]
+                        {
+                            new { name = "Genel Bilgi", value = 200 },
+                            new { name = "Proje Bilgisi", value = 100 }
+                        }
+                    }
+                }
+            }
+        }
+    };
+}

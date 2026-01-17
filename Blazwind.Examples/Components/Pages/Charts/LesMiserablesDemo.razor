@@ -1,0 +1,138 @@
+@page "/charts/les-miserables"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Les Misérables - Blazwind Charts</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Les Misérables Network" 
+            Description="Victor Hugo'nun ünlü romanındaki karakter ilişkilerini gösteren force-directed graph."
+            Icon="fa-solid fa-circle-nodes"
+            Color="BwColor.Warning" />
+
+    <BwCard Title="Karakter İlişki Ağı" Subtitle="Force-directed layout ile karakter bağlantıları." Icon="fa-solid fa-share-nodes" Color="BwColor.Primary">
+        <BwChart Options="_lesMiserables" Height="700px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private object _lesMiserables = new
+    {
+        title = new { text = "Les Misérables Character Network", left = ChartPosition.Center },
+        tooltip = new { },
+        legend = new object[]
+        {
+            new { data = new[] { "Valjean", "Fantine", "Cosette", "Marius", "Javert", "Éponine", "Thénardier", "Bishop", "Other" } }
+        },
+        animationDuration = 1500,
+        animationEasingUpdate = "quinticInOut",
+        series = new object[]
+        {
+            new
+            {
+                name = "Les Misérables",
+                type = ChartSeriesType.Graph,
+                layout = "force",
+                data = new object[]
+                {
+                    // Main characters
+                    new { id = "0", name = "Valjean", symbolSize = 60, category = 0 },
+                    new { id = "1", name = "Javert", symbolSize = 45, category = 4 },
+                    new { id = "2", name = "Fantine", symbolSize = 40, category = 1 },
+                    new { id = "3", name = "Cosette", symbolSize = 45, category = 2 },
+                    new { id = "4", name = "Marius", symbolSize = 40, category = 3 },
+                    new { id = "5", name = "Éponine", symbolSize = 35, category = 5 },
+                    new { id = "6", name = "Thénardier", symbolSize = 40, category = 6 },
+                    new { id = "7", name = "Mme.Thénardier", symbolSize = 30, category = 6 },
+                    new { id = "8", name = "Bishop Myriel", symbolSize = 35, category = 7 },
+                    new { id = "9", name = "Enjolras", symbolSize = 35, category = 3 },
+                    new { id = "10", name = "Gavroche", symbolSize = 30, category = 5 },
+                    new { id = "11", name = "Gillenormand", symbolSize = 25, category = 3 },
+                    new { id = "12", name = "Combeferre", symbolSize = 20, category = 3 },
+                    new { id = "13", name = "Courfeyrac", symbolSize = 20, category = 3 },
+                    new { id = "14", name = "Grantaire", symbolSize = 20, category = 3 },
+                    new { id = "15", name = "Bamatabois", symbolSize = 15, category = 8 },
+                    new { id = "16", name = "Fauchelevent", symbolSize = 20, category = 8 },
+                    new { id = "17", name = "Champmathieu", symbolSize = 15, category = 8 },
+                    new { id = "18", name = "Brujon", symbolSize = 15, category = 6 },
+                    new { id = "19", name = "Babet", symbolSize = 15, category = 6 }
+                },
+                links = new object[]
+                {
+                    // Valjean connections
+                    new { source = "0", target = "1", value = 5 },
+                    new { source = "0", target = "2", value = 3 },
+                    new { source = "0", target = "3", value = 5 },
+                    new { source = "0", target = "4", value = 2 },
+                    new { source = "0", target = "6", value = 3 },
+                    new { source = "0", target = "8", value = 4 },
+                    new { source = "0", target = "16", value = 2 },
+                    new { source = "0", target = "17", value = 2 },
+                    // Fantine connections
+                    new { source = "2", target = "3", value = 4 },
+                    new { source = "2", target = "6", value = 3 },
+                    new { source = "2", target = "7", value = 2 },
+                    new { source = "2", target = "15", value = 1 },
+                    // Cosette connections
+                    new { source = "3", target = "4", value = 5 },
+                    new { source = "3", target = "6", value = 2 },
+                    new { source = "3", target = "7", value = 2 },
+                    // Marius connections
+                    new { source = "4", target = "5", value = 3 },
+                    new { source = "4", target = "9", value = 4 },
+                    new { source = "4", target = "10", value = 2 },
+                    new { source = "4", target = "11", value = 3 },
+                    new { source = "4", target = "12", value = 2 },
+                    new { source = "4", target = "13", value = 2 },
+                    new { source = "4", target = "14", value = 1 },
+                    // Éponine connections
+                    new { source = "5", target = "6", value = 4 },
+                    new { source = "5", target = "7", value = 3 },
+                    new { source = "5", target = "10", value = 3 },
+                    // Thénardier connections
+                    new { source = "6", target = "7", value = 5 },
+                    new { source = "6", target = "10", value = 2 },
+                    new { source = "6", target = "18", value = 2 },
+                    new { source = "6", target = "19", value = 2 },
+                    // Students connections
+                    new { source = "9", target = "12", value = 3 },
+                    new { source = "9", target = "13", value = 3 },
+                    new { source = "9", target = "14", value = 2 },
+                    new { source = "9", target = "10", value = 2 },
+                    new { source = "12", target = "13", value = 2 }
+                },
+                categories = new object[]
+                {
+                    new { name = "Valjean" },
+                    new { name = "Fantine" },
+                    new { name = "Cosette" },
+                    new { name = "Marius" },
+                    new { name = "Javert" },
+                    new { name = "Éponine" },
+                    new { name = "Thénardier" },
+                    new { name = "Bishop" },
+                    new { name = "Other" }
+                },
+                roam = true,
+                label = new { show = true, position = ChartPosition.Right, formatter = "{b}" },
+                labelLayout = new { hideOverlap = true },
+                scaleLimit = new { min = 0.4, max = 2 },
+                lineStyle = new { color = "source", curveness = 0.3 },
+                emphasis = new
+                {
+                    focus = "adjacency",
+                    lineStyle = new { width = 10 }
+                },
+                force = new
+                {
+                    repulsion = 200,
+                    edgeLength = new[] { 50, 150 },
+                    gravity = 0.1
+                }
+            }
+        },
+        color = new[] { "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#999999" }
+    };
+}

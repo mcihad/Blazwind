@@ -1,0 +1,180 @@
+@namespace Blazwind.Components.Range
+@using Blazwind.Components.Shared
+
+<div class="bw-date-range @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
+    }
+
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        @* Start Date *@
+        <div class="flex-1">
+            <div class="relative">
+                <i
+                    class="fa-regular fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+                <input type="date" min="@Min?.ToString("yyyy-MM-dd")" max="@End?.ToString("yyyy-MM-dd")"
+                    value="@Start?.ToString("yyyy-MM-dd")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
+                              bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
+                              text-gray-900 dark:text-white @GetFocusRingClass()" @onchange="HandleStartChange" />
+            </div>
+        </div>
+
+        @* Separator *@
+        <div class="hidden sm:flex items-center justify-center px-2">
+            <i class="fa-solid fa-arrow-right text-gray-400"></i>
+        </div>
+
+        @* End Date *@
+        <div class="flex-1">
+            <div class="relative">
+                <i
+                    class="fa-regular fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
+                <input type="date" min="@Start?.ToString("yyyy-MM-dd")" max="@Max?.ToString("yyyy-MM-dd")"
+                    value="@End?.ToString("yyyy-MM-dd")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
+                              bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
+                              text-gray-900 dark:text-white @GetFocusRingClass()" @onchange="HandleEndChange" />
+            </div>
+        </div>
+    </div>
+
+    @* Duration Display *@
+    @if (ShowDuration && Start.HasValue && End.HasValue)
+    {
+        <div class="mt-2 text-center">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-full @GetDurationBgClass()">
+                <i class="fa-regular fa-clock text-xs"></i>
+                <span>@GetDurationText()</span>
+            </span>
+        </div>
+    }
+
+    @* Quick Presets *@
+    @if (ShowPresets)
+    {
+        <div class="mt-3 flex flex-wrap gap-2">
+            <button type="button" class="@GetPresetClass("today")" @onclick='() => ApplyPreset("today")'>Bugün</button>
+            <button type="button" class="@GetPresetClass("yesterday")"
+                @onclick='() => ApplyPreset("yesterday")'>Dün</button>
+            <button type="button" class="@GetPresetClass("week")" @onclick='() => ApplyPreset("week")'>Bu Hafta</button>
+            <button type="button" class="@GetPresetClass("month")" @onclick='() => ApplyPreset("month")'>Bu Ay</button>
+            <button type="button" class="@GetPresetClass("quarter")" @onclick='() => ApplyPreset("quarter")'>Bu
+                Çeyrek</button>
+            <button type="button" class="@GetPresetClass("year")" @onclick='() => ApplyPreset("year")'>Bu Yıl</button>
+            <button type="button" class="@GetPresetClass("last7")" @onclick='() => ApplyPreset("last7")'>Son 7 Gün</button>
+            <button type="button" class="@GetPresetClass("last30")" @onclick='() => ApplyPreset("last30")'>Son 30
+                Gün</button>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public DateTime? Min { get; set; }
+    [Parameter] public DateTime? Max { get; set; }
+    [Parameter] public DateTime? Start { get; set; }
+    [Parameter] public DateTime? End { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public bool ShowDuration { get; set; } = true;
+    [Parameter] public bool ShowPresets { get; set; } = true;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public EventCallback<RangeChangedEventArgs<DateTime?>> OnRangeChanged { get; set; }
+
+    private string _activePreset = "";
+
+    private async Task HandleStartChange(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var value))
+        {
+            Start = value;
+            _activePreset = "";
+            await NotifyChange();
+        }
+    }
+
+    private async Task HandleEndChange(ChangeEventArgs e)
+    {
+        if (DateTime.TryParse(e.Value?.ToString(), out var value))
+        {
+            End = value;
+            _activePreset = "";
+            await NotifyChange();
+        }
+    }
+
+    private async Task ApplyPreset(string preset)
+    {
+        var today = DateTime.Today;
+        _activePreset = preset;
+
+        (Start, End) = preset switch
+        {
+            "today" => (today, today),
+            "yesterday" => (today.AddDays(-1), today.AddDays(-1)),
+            "week" => (today.AddDays(-(int)today.DayOfWeek + 1), today),
+            "month" => (new DateTime(today.Year, today.Month, 1), today),
+            "quarter" => (new DateTime(today.Year, ((today.Month - 1) / 3) * 3 + 1, 1), today),
+            "year" => (new DateTime(today.Year, 1, 1), today),
+            "last7" => (today.AddDays(-6), today),
+            "last30" => (today.AddDays(-29), today),
+            _ => (Start, End)
+        };
+
+        await NotifyChange();
+    }
+
+    private async Task NotifyChange()
+    {
+        await OnRangeChanged.InvokeAsync(new RangeChangedEventArgs<DateTime?>
+        {
+            Start = Start,
+            End = End,
+            Min = Min,
+            Max = Max
+        });
+    }
+
+    private string GetDurationText()
+    {
+        if (!Start.HasValue || !End.HasValue) return "";
+        var days = (End.Value - Start.Value).Days + 1;
+        return days == 1 ? "1 gün" : $"{days} gün";
+    }
+
+    private string GetFocusRingClass() => Color switch
+    {
+        BwColor.Primary => "focus:ring-blue-500/30 focus:border-blue-500",
+        BwColor.Success => "focus:ring-green-500/30 focus:border-green-500",
+        BwColor.Danger => "focus:ring-red-500/30 focus:border-red-500",
+        BwColor.Warning => "focus:ring-yellow-500/30 focus:border-yellow-500",
+        BwColor.Info => "focus:ring-cyan-500/30 focus:border-cyan-500",
+        _ => "focus:ring-blue-500/30 focus:border-blue-500"
+    };
+
+    private string GetDurationBgClass() => Color switch
+    {
+        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+        BwColor.Warning => "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
+        _ => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+    };
+
+    private string GetPresetClass(string preset)
+    {
+        var baseClass = "px-2.5 py-1 text-xs rounded-md transition-colors ";
+        if (_activePreset == preset)
+        {
+            return baseClass + (Color switch
+            {
+                BwColor.Primary => "bg-blue-500 text-white",
+                BwColor.Success => "bg-green-500 text-white",
+                BwColor.Danger => "bg-red-500 text-white",
+                _ => "bg-blue-500 text-white"
+            });
+        }
+        return baseClass + "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600";
+    }
+}

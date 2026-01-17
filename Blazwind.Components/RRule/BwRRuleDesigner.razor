@@ -1,0 +1,392 @@
+@namespace Blazwind.Components.RRule
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Input
+@using Blazwind.Components.Button
+@using Blazwind.Components.Form
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Border
+@inherits BwBase
+
+<BwColumn Spacing="BwSpacing.Md" Class="@CombineClasses("")">
+    @* Frequency & Interval Section *@
+    <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Tekrarlama">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Lg" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.End">
+                <BwColumn Spacing="BwSpacing.Xs" Class="min-w-32">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Sıklık</BwTypography>
+                    <BwSelect @bind-Value="_frequencyValue" Items="@_frequencyItems" />
+                </BwColumn>
+                
+                <BwColumn Spacing="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Aralık</BwTypography>
+                    <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                        <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Her</BwTypography>
+                        <BwInput Type="number" @bind-Value="@_intervalValue" Class="w-16" />
+                        <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">@IntervalLabel</BwTypography>
+                    </BwRow>
+                </BwColumn>
+            </BwRow>
+        </BwColumn>
+    </BwBorder>
+
+    @* Weekly: Day Selection *@
+    @if (Options.Frequency == RRuleFrequency.Weekly)
+    {
+        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Günler">
+            <BwRow Spacing="BwSpacing.Xs" Wrap="true">
+                @foreach (var day in _weekDays)
+                {
+                    var isSelected = Options.ByDays.Contains(day.Day);
+                    <BwButton Text="@day.ShortName" 
+                              Size="BwSize.Small"
+                              Color="@(isSelected ? BwColor.Primary : BwColor.Light)"
+                              Variant="@(isSelected ? BwVariant.Filled : BwVariant.Outline)"
+                              OnClick="@(() => ToggleDay(day.Day))" />
+                }
+            </BwRow>
+        </BwBorder>
+    }
+
+    @* Monthly: Type Selection *@
+    @if (Options.Frequency == RRuleFrequency.Monthly)
+    {
+        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Aylık Seçenekler">
+            <BwColumn Spacing="BwSpacing.Sm">
+                @* Day of Month *@
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                    <div class="w-4 h-4 rounded-full border cursor-pointer flex items-center justify-center shrink-0
+                                @(Options.MonthlyType == RRuleMonthlyType.DayOfMonth ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 hover:border-blue-400")
+                                bg-white dark:bg-gray-800"
+                         @onclick="@(() => { Options.MonthlyType = RRuleMonthlyType.DayOfMonth; NotifyChange(); })">
+                        @if (Options.MonthlyType == RRuleMonthlyType.DayOfMonth) { <div class="w-2 h-2 rounded-full bg-blue-600"></div> }
+                    </div>
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Ayın</BwTypography>
+                    <BwInput Type="number" @bind-Value="@_monthDayValue" Class="w-16" 
+                             IsDisabled="@(Options.MonthlyType != RRuleMonthlyType.DayOfMonth)" />
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">. günü</BwTypography>
+                </BwRow>
+                
+                @* Weekday of Month *@
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center" Wrap="true">
+                    <div class="w-4 h-4 rounded-full border cursor-pointer flex items-center justify-center shrink-0
+                                @(Options.MonthlyType == RRuleMonthlyType.WeekdayOfMonth ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 hover:border-blue-400")
+                                bg-white dark:bg-gray-800"
+                         @onclick="@(() => { Options.MonthlyType = RRuleMonthlyType.WeekdayOfMonth; NotifyChange(); })">
+                        @if (Options.MonthlyType == RRuleMonthlyType.WeekdayOfMonth) { <div class="w-2 h-2 rounded-full bg-blue-600"></div> }
+                    </div>
+                    <BwSelect @bind-Value="_setPosValue" Class="w-20" Items="@_setPosItems"
+                              IsDisabled="@(Options.MonthlyType != RRuleMonthlyType.WeekdayOfMonth)" />
+                    <BwSelect @bind-Value="_weekDayValue" Class="w-28" Items="@_weekDayItems"
+                              IsDisabled="@(Options.MonthlyType != RRuleMonthlyType.WeekdayOfMonth)" />
+                </BwRow>
+            </BwColumn>
+        </BwBorder>
+    }
+
+    @* Yearly: Month and Day *@
+    @if (Options.Frequency == RRuleFrequency.Yearly)
+    {
+        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Yıllık Tarih">
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <BwInput Type="number" @bind-Value="@_monthDayValue" Class="w-16" />
+                <BwSelect @bind-Value="_monthValue" Class="w-28" Items="@_monthItems" />
+            </BwRow>
+        </BwBorder>
+    }
+
+    @* End Type *@
+    <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Bitiş">
+        <BwColumn Spacing="BwSpacing.Sm">
+            @* Never *@
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <div class="w-4 h-4 rounded-full border cursor-pointer flex items-center justify-center shrink-0
+                            @(Options.EndType == RRuleEndType.Never ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 hover:border-blue-400")
+                            bg-white dark:bg-gray-800"
+                     @onclick="@(() => { Options.EndType = RRuleEndType.Never; NotifyChange(); })">
+                    @if (Options.EndType == RRuleEndType.Never) { <div class="w-2 h-2 rounded-full bg-blue-600"></div> }
+                </div>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">Süresiz devam et</BwTypography>
+            </BwRow>
+            
+            @* After Count *@
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <div class="w-4 h-4 rounded-full border cursor-pointer flex items-center justify-center shrink-0
+                            @(Options.EndType == RRuleEndType.AfterCount ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 hover:border-blue-400")
+                            bg-white dark:bg-gray-800"
+                     @onclick="@(() => { Options.EndType = RRuleEndType.AfterCount; NotifyChange(); })">
+                    @if (Options.EndType == RRuleEndType.AfterCount) { <div class="w-2 h-2 rounded-full bg-blue-600"></div> }
+                </div>
+                <BwInput Type="number" @bind-Value="@_countValue" Class="w-16"
+                         IsDisabled="@(Options.EndType != RRuleEndType.AfterCount)" />
+                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">tekrar sonra</BwTypography>
+            </BwRow>
+            
+            @* Until Date *@
+            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <div class="w-4 h-4 rounded-full border cursor-pointer flex items-center justify-center shrink-0
+                            @(Options.EndType == RRuleEndType.UntilDate ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 hover:border-blue-400")
+                            bg-white dark:bg-gray-800"
+                     @onclick="@(() => { Options.EndType = RRuleEndType.UntilDate; NotifyChange(); })">
+                    @if (Options.EndType == RRuleEndType.UntilDate) { <div class="w-2 h-2 rounded-full bg-blue-600"></div> }
+                </div>
+                <BwInput Type="date" @bind-Value="@_untilValue" Class="w-36"
+                         IsDisabled="@(Options.EndType != RRuleEndType.UntilDate)" />
+                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">tarihine kadar</BwTypography>
+            </BwRow>
+        </BwColumn>
+    </BwBorder>
+
+    @* Preview *@
+    @if (ShowPreview)
+    {
+        <BwBorder Color="BwColor.Info" Padding="BwSize.Medium" Title="Önizleme" HasShadow="true">
+            <BwColumn Spacing="BwSpacing.Sm">
+                <BwTypography Color="BwColor.Dark">@HumanReadableText</BwTypography>
+                <code class="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-1 rounded font-mono block">
+                    @RRuleString
+                </code>
+            </BwColumn>
+        </BwBorder>
+    }
+</BwColumn>
+
+@code {
+    /// <summary>Başlangıç tarihi</summary>
+    [Parameter] public DateTime StartDate { get; set; } = DateTime.Today;
+    
+    /// <summary>RRULE string değeri (two-way binding)</summary>
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    
+    /// <summary>Önizleme gösterilsin mi?</summary>
+    [Parameter] public bool ShowPreview { get; set; } = true;
+    
+    /// <summary>Değişiklik callback</summary>
+    [Parameter] public EventCallback<RRuleOptions> OnOptionsChanged { get; set; }
+    
+    // Internal state
+    private RRuleOptions Options { get; set; } = new();
+    private List<WeekDayInfo> _weekDays = new();
+    private bool _initialized;
+    
+    // Select Items
+    private static readonly List<BwSelectItem<string>> _frequencyItems = new()
+    {
+        new("Daily", "Günlük"),
+        new("Weekly", "Haftalık"),
+        new("Monthly", "Aylık"),
+        new("Yearly", "Yıllık")
+    };
+    
+    private static readonly List<BwSelectItem<string>> _setPosItems = new()
+    {
+        new("1", "1."),
+        new("2", "2."),
+        new("3", "3."),
+        new("4", "4."),
+        new("-1", "Son")
+    };
+    
+    private static readonly List<BwSelectItem<string>> _weekDayItems = new()
+    {
+        new("1", "Pazartesi"),
+        new("2", "Salı"),
+        new("3", "Çarşamba"),
+        new("4", "Perşembe"),
+        new("5", "Cuma"),
+        new("6", "Cumartesi"),
+        new("0", "Pazar")
+    };
+    
+    private static readonly List<BwSelectItem<string>> _monthItems = new()
+    {
+        new("1", "Ocak"), new("2", "Şubat"), new("3", "Mart"),
+        new("4", "Nisan"), new("5", "Mayıs"), new("6", "Haziran"),
+        new("7", "Temmuz"), new("8", "Ağustos"), new("9", "Eylül"),
+        new("10", "Ekim"), new("11", "Kasım"), new("12", "Aralık")
+    };
+    
+    // Computed properties
+    private string RRuleString => RRuleBuilder.Build(Options);
+    private string HumanReadableText => RRuleBuilder.GetHumanReadable(Options);
+    
+    private string IntervalLabel => Options.Frequency switch
+    {
+        RRuleFrequency.Daily => "gün",
+        RRuleFrequency.Weekly => "hafta",
+        RRuleFrequency.Monthly => "ay",
+        RRuleFrequency.Yearly => "yıl",
+        _ => "gün"
+    };
+    
+    // Binding helpers
+    private string _frequencyValue
+    {
+        get => Options.Frequency.ToString();
+        set
+        {
+            if (Enum.TryParse<RRuleFrequency>(value, out var freq))
+            {
+                Options.Frequency = freq;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _intervalValue
+    {
+        get => Options.Interval.ToString();
+        set
+        {
+            if (int.TryParse(value, out var v) && v > 0)
+            {
+                Options.Interval = v;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _monthDayValue
+    {
+        get => Options.ByMonthDay.ToString();
+        set
+        {
+            if (int.TryParse(value, out var v) && v >= 1 && v <= 31)
+            {
+                Options.ByMonthDay = v;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _setPosValue
+    {
+        get => Options.BySetPos.ToString();
+        set
+        {
+            if (int.TryParse(value, out var v))
+            {
+                Options.BySetPos = v;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _weekDayValue
+    {
+        get => ((int)Options.ByWeekDay).ToString();
+        set
+        {
+            if (int.TryParse(value, out var v))
+            {
+                Options.ByWeekDay = (DayOfWeek)v;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _monthValue
+    {
+        get => Options.ByMonth.ToString();
+        set
+        {
+            if (int.TryParse(value, out var v) && v >= 1 && v <= 12)
+            {
+                Options.ByMonth = v;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _countValue
+    {
+        get => Options.Count.ToString();
+        set
+        {
+            if (int.TryParse(value, out var v) && v > 0)
+            {
+                Options.Count = v;
+                NotifyChange();
+            }
+        }
+    }
+    
+    private string _untilValue
+    {
+        get => Options.Until?.ToString("yyyy-MM-dd") ?? "";
+        set
+        {
+            if (DateTime.TryParse(value, out var d))
+            {
+                Options.Until = d;
+                NotifyChange();
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        InitializeWeekDays();
+        
+        if (!string.IsNullOrWhiteSpace(Value))
+        {
+            Options = RRuleBuilder.Parse(Value);
+        }
+        else
+        {
+            Options = RRuleOptions.CreateDefault(StartDate);
+        }
+        
+        _initialized = true;
+    }
+    
+    protected override void OnParametersSet()
+    {
+        if (_initialized && !string.IsNullOrWhiteSpace(Value))
+        {
+            var currentRRule = RRuleBuilder.Build(Options);
+            if (currentRRule != Value)
+            {
+                Options = RRuleBuilder.Parse(Value);
+            }
+        }
+    }
+    
+    private void InitializeWeekDays()
+    {
+        _weekDays = new List<WeekDayInfo>
+        {
+            new() { Day = DayOfWeek.Monday, ShortName = "Pt", LongName = "Pazartesi" },
+            new() { Day = DayOfWeek.Tuesday, ShortName = "Sa", LongName = "Salı" },
+            new() { Day = DayOfWeek.Wednesday, ShortName = "Ça", LongName = "Çarşamba" },
+            new() { Day = DayOfWeek.Thursday, ShortName = "Pe", LongName = "Perşembe" },
+            new() { Day = DayOfWeek.Friday, ShortName = "Cu", LongName = "Cuma" },
+            new() { Day = DayOfWeek.Saturday, ShortName = "Ct", LongName = "Cumartesi" },
+            new() { Day = DayOfWeek.Sunday, ShortName = "Pz", LongName = "Pazar" }
+        };
+    }
+    
+    private void ToggleDay(DayOfWeek day)
+    {
+        if (Options.ByDays.Contains(day))
+            Options.ByDays.Remove(day);
+        else
+            Options.ByDays.Add(day);
+        
+        NotifyChange();
+    }
+    
+    private async void NotifyChange()
+    {
+        var rrule = RRuleBuilder.Build(Options);
+        
+        if (ValueChanged.HasDelegate)
+            await ValueChanged.InvokeAsync(rrule);
+        
+        if (OnOptionsChanged.HasDelegate)
+            await OnOptionsChanged.InvokeAsync(Options);
+        
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,235 @@
+@page "/components/rrule"
+@using Blazwind.Components.Border
+@using Blazwind.Components.Input
+@using Blazwind.Components.RRule
+@using Blazwind.Components.Typography
+@using Blazwind.Examples.Components.Samples
+
+@inject ToastService ToastService
+@inject DialogService DialogService
+
+@rendermode @(new InteractiveServerRenderMode(false))
+
+<PageTitle>RRULE Designer Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="RRULE Designer"
+            Description="RFC 5545 compliant recurring event rule designer. Can be used as a form or dialog."
+            Icon="fa-solid fa-repeat"
+            Color="BwColor.Primary"/>
+
+    @* Main Designer *@
+    <BwRow Spacing="BwSpacing.Lg" Wrap="true" Class="grid lg:grid-cols-2">
+        <BwCard Title="Recurring Rule Designer"
+                Subtitle="Create RRULE with visual interface"
+                Icon="fa-solid fa-calendar-check"
+                Color="BwColor.Primary">
+            <BwRRuleDesigner @bind-Value="_rruleValue"
+                             StartDate="@DateTime.Today"
+                             OnOptionsChanged="HandleOptionsChanged"/>
+        </BwCard>
+
+        <BwCard Title="Output"
+                Subtitle="Generated RRULE and preview"
+                Icon="fa-solid fa-code"
+                Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwBorder Color="BwColor.Success" Padding="BwSize.Medium" Title="RRULE Output">
+                    <code class="text-sm font-mono text-emerald-700 dark:text-emerald-400 block break-all">
+                        RRULE:@_rruleValue
+                    </code>
+                </BwBorder>
+
+                <BwBorder Color="BwColor.Info" Padding="BwSize.Medium" Title="Human Readable">
+                    <BwTypography Size="BwSize.Medium" Color="BwColor.Dark">
+                        <i class="fa-solid fa-quote-left text-blue-400 mr-2"></i>
+                        @_humanReadable
+                        <i class="fa-solid fa-quote-right text-blue-400 ml-2"></i>
+                    </BwTypography>
+                </BwBorder>
+
+                <BwRow Spacing="BwSpacing.Sm">
+                    <BwButton Text="Copy"
+                              Icon="fa-solid fa-copy"
+                              Color="BwColor.Primary"
+                              Variant="BwVariant.Outline"
+                              OnClick="CopyToClipboard"/>
+                    <BwButton Text="Reset"
+                              Icon="fa-solid fa-rotate-left"
+                              Color="BwColor.Secondary"
+                              Variant="BwVariant.Ghost"
+                              OnClick="ResetRule"/>
+                </BwRow>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Parse Existing RRULE *@
+    <BwCard Title="Parse Existing RRULE"
+            Subtitle="Load an existing RRULE into the designer"
+            Icon="fa-solid fa-file-import"
+            Color="BwColor.Warning">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwInputButton Placeholder="Paste RRULE string (e.g., FREQ=WEEKLY;BYDAY=MO,WE,FR)"
+                           @bind-Value="_parseInput">
+                <Buttons>
+                    <BwButton Text="Load"
+                              Icon="fa-solid fa-upload"
+                              Color="BwColor.Warning"
+                              OnClick="LoadRRule"/>
+                </Buttons>
+            </BwInputButton>
+
+            <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Dismissible="false">
+                <strong>Tip:</strong> Paste an RRULE string into the field above and click "Load".
+                The designer will automatically load the settings.
+            </BwAlert>
+        </BwColumn>
+    </BwCard>
+
+    @* Preset Examples *@
+    <BwCard Title="Preset Examples"
+            Subtitle="Common recurrence patterns"
+            Icon="fa-solid fa-list"
+            Color="BwColor.Secondary">
+        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+            <BwButton Text="Every Day"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Primary"
+                      OnClick="@(() => ApplyPreset("FREQ=DAILY"))"/>
+            <BwButton Text="Weekdays"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Primary"
+                      OnClick="@(() => ApplyPreset("FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"))"/>
+            <BwButton Text="Weekends"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Success"
+                      OnClick="@(() => ApplyPreset("FREQ=WEEKLY;BYDAY=SA,SU"))"/>
+            <BwButton Text="Monthly on 15th"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Warning"
+                      OnClick="@(() => ApplyPreset("FREQ=MONTHLY;BYMONTHDAY=15"))"/>
+            <BwButton Text="First Monday of Month"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Warning"
+                      OnClick="@(() => ApplyPreset("FREQ=MONTHLY;BYDAY=1MO"))"/>
+            <BwButton Text="Once a Year (Jan 1st)"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Danger"
+                      OnClick="@(() => ApplyPreset("FREQ=YEARLY;BYMONTH=1;BYMONTHDAY=1"))"/>
+            <BwButton Text="Every 2 Weeks on Friday"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Info"
+                      OnClick="@(() => ApplyPreset("FREQ=WEEKLY;INTERVAL=2;BYDAY=FR"))"/>
+            <BwButton Text="Repeat 10 Times"
+                      Size="BwSize.Small"
+                      Variant="BwVariant.Soft"
+                      Color="BwColor.Secondary"
+                      OnClick="@(() => ApplyPreset("FREQ=WEEKLY;BYDAY=MO;COUNT=10"))"/>
+        </BwRow>
+    </BwCard>
+
+    @* Dialog Usage Demo *@
+    <BwCard Title="Dialog Usage"
+            Subtitle="Use as modal in event editing"
+            Icon="fa-solid fa-window-restore"
+            Color="BwColor.Info">
+        <BwFlex Direction="BwFlexDirection.Row" Gap="BwSpacing.Sm" AlignItems="BwCrossAxisAlignment.Center">
+            <BwButton Text="Open Dialog"
+                      Icon="fa-solid fa-calendar-plus"
+                      Color="BwColor.Info"
+                      OnClick="ShowRRuleDialog"/>
+            @if (!string.IsNullOrEmpty(_dialogResult))
+            {
+                <BwTypography Color="BwColor.Success" Class="flex items-center gap-2">
+                    <i class="fa-solid fa-check-circle"></i>
+                    Selected: @_dialogResult
+                </BwTypography>
+            }
+        </BwFlex>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private string _rruleValue = "FREQ=WEEKLY;BYDAY=MO,WE,FR";
+    private string _humanReadable = "";
+    private string _parseInput = "";
+    private string _dialogResult = "";
+
+    protected override void OnInitialized()
+    {
+        UpdateHumanReadable();
+    }
+
+    private void HandleOptionsChanged(RRuleOptions options)
+    {
+        UpdateHumanReadable();
+    }
+
+    private void UpdateHumanReadable()
+    {
+        if (!string.IsNullOrWhiteSpace(_rruleValue))
+        {
+            var options = RRuleBuilder.Parse(_rruleValue);
+            _humanReadable = RRuleBuilder.GetHumanReadable(options);
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        // This would need JS interop in real app
+        await ToastService.SuccessAsync("RRULE copied to clipboard!", $"RRULE:{_rruleValue}");
+    }
+
+    private void ResetRule()
+    {
+        _rruleValue = "FREQ=WEEKLY;BYDAY=MO";
+        UpdateHumanReadable();
+    }
+
+    private void LoadRRule()
+    {
+        if (!string.IsNullOrWhiteSpace(_parseInput))
+        {
+            _rruleValue = _parseInput.Replace("RRULE:", "").Trim();
+            UpdateHumanReadable();
+        }
+    }
+
+    private void ApplyPreset(string preset)
+    {
+        _rruleValue = preset;
+        UpdateHumanReadable();
+    }
+
+    private async Task ShowRRuleDialog()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "InitialValue", _rruleValue }
+        };
+
+        var options = new DialogOptions
+        {
+            Width = "600px",
+            TitleColor = BwColor.Info
+        };
+
+        var result = await DialogService.ShowAsync<RRuleDialogContent>("Recurrence Settings", parameters, options);
+
+        if (!result.Canceled && result.Data is string rrule)
+        {
+            _dialogResult = rrule;
+            _rruleValue = rrule;
+            UpdateHumanReadable();
+        }
+    }
+
+}

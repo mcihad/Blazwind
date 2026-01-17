@@ -1,0 +1,36 @@
+@namespace Blazwind.Components.Drawer
+@using Blazwind.Components.Services
+@inject DrawerService DrawerService
+@implements IDisposable
+
+@foreach (var drawer in DrawerService.Drawers)
+{
+    <BwDrawer @key="drawer.Id"
+              Id="@drawer.Id.ToString("N")"
+              Title="@drawer.Title"
+              Options="@drawer.Options"
+              OnClose="@(() => DrawerService.Close(drawer))">
+        <ChildContent>
+            <CascadingValue Value="drawer" IsFixed="true">
+                <DynamicComponent Type="@drawer.ComponentType" Parameters="@drawer.Parameters" />
+            </CascadingValue>
+        </ChildContent>
+    </BwDrawer>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        DrawerService.OnChange += HandleChange;
+    }
+
+    private async void HandleChange()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        DrawerService.OnChange -= HandleChange;
+    }
+}

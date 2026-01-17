@@ -1,0 +1,202 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+@{
+    var gapClass = BuildGapClasses();
+    var style = BuildGridStyle();
+}
+
+<div class="@gapClass @Class" style="@style">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    /// <summary>
+    /// XAML-style row definitions. Examples: "Auto,*,Auto", "*,2*,*", "100px,*,50px"
+    /// Supported: * (1fr), 2* (2fr), Auto, px, %, rem values
+    /// </summary>
+    [Parameter] public string? RowDefs { get; set; }
+    
+    /// <summary>
+    /// XAML-style column definitions. Examples: "*,2*,Auto", "200px,*,300px"
+    /// Supported: * (1fr), 2* (2fr), Auto, px, %, rem values
+    /// </summary>
+    [Parameter] public string? ColumnDefs { get; set; }
+    
+    /// <summary>
+    /// If set, creates a fixed number of equal columns. Ignored if ColumnDefs is set.
+    /// </summary>
+    [Parameter] public int? Columns { get; set; }
+
+    /// <summary>
+    /// Minimum width for each item in auto-fill mode. Default is "250px".
+    /// Ignored if Columns or ColumnDefs is set.
+    /// </summary>
+    [Parameter] public string MinItemWidth { get; set; } = "250px";
+
+    /// <summary>
+    /// Overall gap between items. Used if ColumnSpacing/RowSpacing not set.
+    /// </summary>
+    [Parameter] public BwSpacing Gap { get; set; } = BwSpacing.Md;
+    
+    /// <summary>
+    /// Horizontal spacing between columns. Overrides Gap for column direction.
+    /// </summary>
+    [Parameter] public BwSpacing? ColumnSpacing { get; set; }
+    
+    /// <summary>
+    /// Vertical spacing between rows. Overrides Gap for row direction.
+    /// </summary>
+    [Parameter] public BwSpacing? RowSpacing { get; set; }
+    
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+    
+    private string BuildGapClasses()
+    {
+        // If ColumnSpacing or RowSpacing are set, use separate gap classes
+        if (ColumnSpacing.HasValue || RowSpacing.HasValue)
+        {
+            var colGap = SpacingToColumnGap(ColumnSpacing ?? Gap);
+            var rowGap = SpacingToRowGap(RowSpacing ?? Gap);
+            return $"{colGap} {rowGap}";
+        }
+        
+        // Otherwise use unified gap
+        return Gap switch
+        {
+            BwSpacing.None => "gap-0",
+            BwSpacing.Xs => "gap-1",
+            BwSpacing.Sm => "gap-2",
+            BwSpacing.Md => "gap-4",
+            BwSpacing.Lg => "gap-6",
+            BwSpacing.Xl => "gap-8",
+            BwSpacing.Xxl => "gap-12",
+            _ => "gap-4"
+        };
+    }
+    
+    // Full class names for Tailwind JIT compiler
+    private static string SpacingToColumnGap(BwSpacing spacing) => spacing switch
+    {
+        BwSpacing.None => "gap-x-0",
+        BwSpacing.Xs => "gap-x-1",
+        BwSpacing.Sm => "gap-x-2",
+        BwSpacing.Md => "gap-x-4",
+        BwSpacing.Lg => "gap-x-6",
+        BwSpacing.Xl => "gap-x-8",
+        BwSpacing.Xxl => "gap-x-12",
+        _ => "gap-x-4"
+    };
+    
+    private static string SpacingToRowGap(BwSpacing spacing) => spacing switch
+    {
+        BwSpacing.None => "gap-y-0",
+        BwSpacing.Xs => "gap-y-1",
+        BwSpacing.Sm => "gap-y-2",
+        BwSpacing.Md => "gap-y-4",
+        BwSpacing.Lg => "gap-y-6",
+        BwSpacing.Xl => "gap-y-8",
+        BwSpacing.Xxl => "gap-y-12",
+        _ => "gap-y-4"
+    };
+    
+    private string BuildGridStyle()
+    {
+        var parts = new List<string> { "display: grid" };
+        
+        // Column template
+        if (!string.IsNullOrWhiteSpace(ColumnDefs))
+        {
+            parts.Add($"grid-template-columns: {ParseDefinitions(ColumnDefs)}");
+        }
+        else if (Columns.HasValue)
+        {
+            parts.Add($"grid-template-columns: repeat({Columns}, minmax(0, 1fr))");
+        }
+        else
+        {
+            parts.Add($"grid-template-columns: repeat(auto-fill, minmax({MinItemWidth}, 1fr))");
+        }
+        
+        // Row template
+        if (!string.IsNullOrWhiteSpace(RowDefs))
+        {
+            parts.Add($"grid-template-rows: {ParseDefinitions(RowDefs)}");
+        }
+        
+        // Append custom style
+        if (!string.IsNullOrWhiteSpace(Style))
+        {
+            parts.Add(Style.TrimEnd(';'));
+        }
+        
+        return string.Join("; ", parts) + ";";
+    }
+    
+    /// <summary>
+    /// Parses XAML-style definitions like "*,2*,Auto,200px" to CSS values
+    /// </summary>
+    private static string ParseDefinitions(string definitions)
+    {
+        var parts = definitions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var cssValues = new List<string>();
+        
+        foreach (var part in parts)
+        {
+            cssValues.Add(ParseSingleDefinition(part));
+        }
+        
+        return string.Join(" ", cssValues);
+    }
+    
+    private static string ParseSingleDefinition(string def)
+    {
+        var trimmed = def.Trim();
+        
+        // Auto
+        if (trimmed.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+        {
+            return "auto";
+        }
+        
+        // Star notation: *, 2*, 3*, etc.
+        if (trimmed.EndsWith("*"))
+        {
+            var prefix = trimmed[..^1];
+            if (string.IsNullOrEmpty(prefix))
+            {
+                return "1fr";
+            }
+            if (int.TryParse(prefix, out var multiplier))
+            {
+                return $"{multiplier}fr";
+            }
+            if (double.TryParse(prefix, out var decimalMultiplier))
+            {
+                return $"{decimalMultiplier}fr";
+            }
+            // Fallback if parsing fails
+            return "1fr";
+        }
+        
+        // Already has units (px, %, rem, em, etc.) - pass through
+        if (trimmed.EndsWith("px") || trimmed.EndsWith("%") || 
+            trimmed.EndsWith("rem") || trimmed.EndsWith("em") ||
+            trimmed.EndsWith("vh") || trimmed.EndsWith("vw"))
+        {
+            return trimmed;
+        }
+        
+        // Pure number - assume pixels
+        if (double.TryParse(trimmed, out var numericValue))
+        {
+            return $"{numericValue}px";
+        }
+        
+        // Unknown - pass through (might be CSS function like minmax(), etc.)
+        return trimmed;
+    }
+}

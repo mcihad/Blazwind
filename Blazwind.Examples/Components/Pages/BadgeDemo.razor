@@ -1,0 +1,217 @@
+@page "/components/badge"
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Typography
+
+<PageTitle>Badge Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Badge" Description="Status indicators, labels and notification badges." Icon="fa-solid fa-tag"
+            Color="BwColor.Primary"/>
+
+    @* Variants *@
+    <BwCard Title="Variants" Subtitle="Different visual styles" Icon="fa-solid fa-palette" Color="BwColor.Primary">
+        <BwRow Spacing="BwSpacing.Md">
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Sm">
+                    <BwTypography Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Secondary">Soft
+                        (Default)
+                    </BwTypography>
+                    <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+                        <BwBadge Color="BwColor.Primary">Primary</BwBadge>
+                        <BwBadge Color="BwColor.Success">Success</BwBadge>
+                        <BwBadge Color="BwColor.Danger">Danger</BwBadge>
+                        <BwBadge Color="BwColor.Warning">Warning</BwBadge>
+                        <BwBadge Color="BwColor.Info">Info</BwBadge>
+                        <BwBadge Color="BwColor.Secondary">Secondary</BwBadge>
+                    </BwFlex>
+                </BwFlex>
+            </BwColumn>
+
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Sm">
+                    <BwTypography Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Secondary">Filled
+                    </BwTypography>
+                    <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+                        <BwBadge Color="BwColor.Primary" Variant="BwVariant.Filled">Primary</BwBadge>
+                        <BwBadge Color="BwColor.Success" Variant="BwVariant.Filled">Success</BwBadge>
+                        <BwBadge Color="BwColor.Danger" Variant="BwVariant.Filled">Danger</BwBadge>
+                        <BwBadge Color="BwColor.Warning" Variant="BwVariant.Filled">Warning</BwBadge>
+                    </BwFlex>
+                </BwFlex>
+            </BwColumn>
+
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Sm">
+                    <BwTypography Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Secondary">Outline
+                    </BwTypography>
+                    <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+                        <BwBadge Color="BwColor.Primary" Variant="BwVariant.Outline">Primary</BwBadge>
+                        <BwBadge Color="BwColor.Success" Variant="BwVariant.Outline">Success</BwBadge>
+                        <BwBadge Color="BwColor.Danger" Variant="BwVariant.Outline">Danger</BwBadge>
+                    </BwFlex>
+                </BwFlex>
+            </BwColumn>
+
+            <BwColumn Span="12" Md="6" Lg="3">
+                <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Sm">
+                    <BwTypography Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Secondary">Ghost
+                    </BwTypography>
+                    <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+                        <BwBadge Color="BwColor.Primary" Variant="BwVariant.Ghost">Primary</BwBadge>
+                        <BwBadge Color="BwColor.Success" Variant="BwVariant.Ghost">Success</BwBadge>
+                        <BwBadge Color="BwColor.Danger" Variant="BwVariant.Ghost">Danger</BwBadge>
+                    </BwFlex>
+                </BwFlex>
+            </BwColumn>
+        </BwRow>
+    </BwCard>
+
+    @* Sizes *@
+    <BwCard Title="Sizes" Subtitle="Different sizes" Icon="fa-solid fa-text-height" Color="BwColor.Info">
+        <BwFlex Wrap="BwFlexWrap.Wrap" AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md">
+            <BwFlex Direction="BwFlexDirection.Column" AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwBadge Color="BwColor.Primary" Size="BwSize.ExtraSmall">Extra Small</BwBadge>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Xs</BwTypography>
+            </BwFlex>
+            <BwFlex Direction="BwFlexDirection.Column" AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwBadge Color="BwColor.Primary" Size="BwSize.Small">Small</BwBadge>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Sm</BwTypography>
+            </BwFlex>
+            <BwFlex Direction="BwFlexDirection.Column" AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwBadge Color="BwColor.Primary" Size="BwSize.Medium">Medium</BwBadge>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Md</BwTypography>
+            </BwFlex>
+            <BwFlex Direction="BwFlexDirection.Column" AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Sm">
+                <BwBadge Color="BwColor.Primary" Size="BwSize.Large">Large</BwBadge>
+                <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">Lg</BwTypography>
+            </BwFlex>
+        </BwFlex>
+    </BwCard>
+
+    <BwRow Spacing="BwSpacing.Md">
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Pills" Subtitle="Rounded corner badges" Icon="fa-solid fa-capsules" Color="BwColor.Success">
+                <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+                    <BwBadge Color="BwColor.Primary" IsPill="true">99+</BwBadge>
+                    <BwBadge Color="BwColor.Success" IsPill="true">New</BwBadge>
+                    <BwBadge Color="BwColor.Danger" IsPill="true">Error</BwBadge>
+                    <BwBadge Color="BwColor.Warning" IsPill="true">5</BwBadge>
+                    <BwBadge Color="BwColor.Info" IsPill="true" Variant="BwVariant.Filled">Beta</BwBadge>
+                </BwFlex>
+            </BwCard>
+        </BwColumn>
+
+        <BwColumn Span="12" Md="6">
+            <BwCard Title="Icon Badges" Subtitle="Enriched with icons" Icon="fa-solid fa-icons" Color="BwColor.Warning">
+                <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm">
+                    <BwBadge Color="BwColor.Success" Icon="fa-solid fa-check">Approved</BwBadge>
+                    <BwBadge Color="BwColor.Danger" Icon="fa-solid fa-xmark">Rejected</BwBadge>
+                    <BwBadge Color="BwColor.Warning" Icon="fa-solid fa-clock">Pending</BwBadge>
+                    <BwBadge Color="BwColor.Info" Icon="fa-solid fa-info-circle">Info</BwBadge>
+                    <BwBadge Color="BwColor.Primary" Icon="fa-solid fa-star" IsPill="true">Favorite</BwBadge>
+                </BwFlex>
+            </BwCard>
+        </BwColumn>
+    </BwRow>
+
+    @* Dot Indicator *@
+    <BwCard Title="Dot Indicator" Subtitle="Badges with status dots" Icon="fa-solid fa-circle" Color="BwColor.Primary">
+        <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Md">
+            <BwBadge Color="BwColor.Success" ShowDot="true">Online</BwBadge>
+            <BwBadge Color="BwColor.Danger" ShowDot="true">Offline</BwBadge>
+            <BwBadge Color="BwColor.Warning" ShowDot="true">Away</BwBadge>
+            <BwBadge Color="BwColor.Info" ShowDot="true">Busy</BwBadge>
+            <BwBadge Color="BwColor.Primary" ShowDot="true" Variant="BwVariant.Outline">Active</BwBadge>
+            <BwBadge Color="BwColor.Success" ShowDot="true" IsPill="true" Variant="BwVariant.Filled">Live</BwBadge>
+        </BwFlex>
+    </BwCard>
+
+    @* Dismissible *@
+    @* Dismissible *@
+    <BwCard Title="Dismissible Badges" Subtitle="Dismissible badges (for tags/filters)" Icon="fa-solid fa-times-circle"
+            Color="BwColor.Danger">
+        <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Sm" Class="mb-4">
+            @foreach (var tag in _tags)
+            {
+                <BwBadge Color="BwColor.Primary" Dismissible="true" OnDismiss="() => RemoveTag(tag)" IsPill="true">@tag
+                </BwBadge>
+            }
+        </BwFlex>
+        @if (_tags.Count == 0)
+        {
+            <div class="flex items-center gap-2">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">All tags deleted.</BwTypography>
+                <BwButton Variant="BwVariant.Ghost" Size="BwSize.Small" Color="BwColor.Primary" OnClick="ResetTags">
+                    Reset
+                </BwButton>
+            </div>
+        }
+    </BwCard>
+
+    @* Use Cases *@
+    <BwCard Title="Usage Examples" Subtitle="Real world scenarios" Icon="fa-solid fa-lightbulb" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            @* Notification Badge *@
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md"
+                    Class="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+                <BwTypography Class="w-32" Size="BwSize.Small" Color="BwColor.Secondary">Notification:</BwTypography>
+                <div class="relative">
+                    <BwButton Variant="BwVariant.Outline" Color="BwColor.Secondary" Icon="fa-solid fa-bell"/>
+                    <span
+                        class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white font-bold">3</span>
+                </div>
+            </BwFlex>
+
+            @* Status in Table *@
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md"
+                    Class="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+                <BwTypography Class="w-32" Size="BwSize.Small" Color="BwColor.Secondary">Table Status:</BwTypography>
+                <BwFlex Gap="BwSpacing.Sm">
+                    <BwBadge Color="BwColor.Success" ShowDot="true">Active</BwBadge>
+                    <BwBadge Color="BwColor.Warning" ShowDot="true">Pending</BwBadge>
+                    <BwBadge Color="BwColor.Danger" ShowDot="true">Inactive</BwBadge>
+                </BwFlex>
+            </BwFlex>
+
+            @* Version/Release Badge *@
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md"
+                    Class="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+                <BwTypography Class="w-32" Size="BwSize.Small" Color="BwColor.Secondary">Version:</BwTypography>
+                <BwFlex Gap="BwSpacing.Sm">
+                    <BwBadge Color="BwColor.Primary" Variant="BwVariant.Filled" IsPill="true">v2.0.0</BwBadge>
+                    <BwBadge Color="BwColor.Success" Variant="BwVariant.Soft" IsPill="true">Stable</BwBadge>
+                    <BwBadge Color="BwColor.Warning" Variant="BwVariant.Outline" IsPill="true">Beta</BwBadge>
+                </BwFlex>
+            </BwFlex>
+
+            @* Category Tags *@
+            <BwFlex AlignItems="BwCrossAxisAlignment.Center" Gap="BwSpacing.Md"
+                    Class="p-4 bg-gray-50 rounded-lg dark:bg-gray-800">
+                <BwTypography Class="w-32" Size="BwSize.Small" Color="BwColor.Secondary">Categories:</BwTypography>
+                <BwFlex Wrap="BwFlexWrap.Wrap" Gap="BwSpacing.Xs">
+                    <BwBadge Color="BwColor.Info" Size="BwSize.ExtraSmall" Icon="fa-solid fa-code">Frontend</BwBadge>
+                    <BwBadge Color="BwColor.Success" Size="BwSize.ExtraSmall" Icon="fa-solid fa-server">Backend
+                    </BwBadge>
+                    <BwBadge Color="BwColor.Warning" Size="BwSize.ExtraSmall" Icon="fa-solid fa-database">Database
+                    </BwBadge>
+                    <BwBadge Color="BwColor.Danger" Size="BwSize.ExtraSmall" Icon="fa-solid fa-bug">Bugfix</BwBadge>
+                </BwFlex>
+            </BwFlex>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+    private List<string> _tags = new() { "Blazor", "C#", ".NET", "Tailwind", "TypeScript" };
+
+    private void RemoveTag(string tag)
+    {
+        _tags.Remove(tag);
+    }
+
+    private void ResetTags()
+    {
+        _tags = new List<string> { "Blazor", "C#", ".NET", "Tailwind", "TypeScript" };
+    }
+
+}

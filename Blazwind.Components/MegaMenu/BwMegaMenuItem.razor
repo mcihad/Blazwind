@@ -1,0 +1,72 @@
+@namespace Blazwind.Components.MegaMenu
+@using Blazwind.Components.Shared
+@using Microsoft.AspNetCore.Components.Routing
+
+@if (!string.IsNullOrEmpty(Href))
+{
+    <NavLink href="@Href" class="@AllClasses" Match="NavLinkMatch.All">
+        @RenderContent
+    </NavLink>
+}
+else
+{
+    <div class="@AllClasses cursor-pointer" @onclick="HandleClick">
+        @RenderContent
+    </div>
+}
+
+@code {
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public string? Badge { get; set; }
+    [Parameter] public BwColor BadgeColor { get; set; } = BwColor.Primary;
+    [Parameter] public bool IsNew { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private string AllClasses => $"flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors {HoverClass} {DisabledClass} {Class}".Trim();
+
+    private string HoverClass => Disabled ? "" : "hover:bg-gray-100 dark:hover:bg-gray-800";
+    private string DisabledClass => Disabled ? "opacity-50 cursor-not-allowed" : "";
+
+    private RenderFragment RenderContent => __builder =>
+    {
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <i class="@Icon text-sm text-gray-400 w-4"></i>
+        }
+        <span class="flex-1 text-gray-700 dark:text-gray-200">@Label</span>
+        @if (IsNew)
+        {
+            <span
+                class="px-1 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded">
+                Yeni
+            </span>
+        }
+        @if (!string.IsNullOrEmpty(Badge))
+        {
+            <span class="px-1 py-0.5 text-[10px] font-medium @BadgeClasses rounded">@Badge</span>
+        }
+    };
+
+    private string BadgeClasses => BadgeColor switch
+    {
+        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+        BwColor.Warning => "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400",
+        _ => "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+    };
+
+    private async Task HandleClick()
+    {
+        if (!Disabled)
+        {
+            await OnClick.InvokeAsync();
+        }
+    }
+}

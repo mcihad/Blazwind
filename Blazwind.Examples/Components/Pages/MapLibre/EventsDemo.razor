@@ -1,0 +1,201 @@
+@page "/maps/events"
+@layout MapFullscreenLayout
+@using Blazwind.Components.Map
+@using Blazwind.Components.Map.Models
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Input
+@using Blazwind.Components.Card
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Badge
+
+<div class="relative w-full h-full">
+    <!-- Map (Background) -->
+    <BwMapLibre @ref="_map"
+                StyleUrl="https://demotiles.maplibre.org/style.json"
+                Center="@(new[] { 37.015, 39.75 })"
+                Zoom="6"
+                Class="absolute inset-0 w-full h-full"
+                
+                OnLoad="@(() => Log("Map Loaded"))"
+                OnIdle="@(() => Log("Map Idle"))"
+                OnError="@(msg => Log($"Error: {msg}", "text-red-600 font-bold"))"
+                
+                OnClick="@(e => Log($"Click: {e.LngLat}", "text-blue-600"))"
+                OnDoubleClick="@(e => Log($"Double Click: {e.LngLat}", "text-purple-600"))"
+                OnContextMenu="@(e => Log($"Context Menu: {e.LngLat}", "text-orange-600"))"
+                
+                OnMoveStart="@(() => Log("Move Start", filter: _logMove))"
+                OnMove="@(e => Log($"Move: {e.Center}", filter: _logMove))"
+                OnMoveEnd="@(e => Log("Move End", filter: _logMove))"
+                
+                OnZoomStart="@(z => Log($"Zoom Start: {z:F2}", filter: _logZoom))"
+                OnZoom="@(z => Log($"Zoom: {z:F2}", filter: _logZoom))"
+                OnZoomEnd="@(z => Log($"Zoom End: {z:F2}", filter: _logZoom))"
+                
+                OnRotateStart="@(b => Log($"Rotate Start: {b:F2}", filter: _logRotate))"
+                OnRotate="@(b => Log($"Rotate: {b:F2}", filter: _logRotate))"
+                OnRotateEnd="@(b => Log($"Rotate End: {b:F2}", filter: _logRotate))"
+                
+                OnPitchStart="@(p => Log($"Pitch Start: {p:F2}", filter: _logPitch))"
+                OnPitch="@(p => Log($"Pitch: {p:F2}", filter: _logPitch))"
+                OnPitchEnd="@(p => Log($"Pitch End: {p:F2}", filter: _logPitch))"
+                
+                OnMouseEnter="@(() => Log("Mouse Enter", filter: _logMouse))"
+                OnMouseLeave="@(() => Log("Mouse Leave", filter: _logMouse))"
+                OnMouseMove="@(e => Log($"Mouse Move: {e.LngLat}", filter: _logMouse))"
+                
+                OnTouchStart="@(e => Log($"Touch Start", filter: _logMouse))"
+                OnTouchEnd="@(e => Log($"Touch End", filter: _logMouse))"
+                
+                OnSourceLoaded="@(id => Log($"Source Loaded: {id}", filter: _logSources))"
+                OnStyleImageMissing="@(id => Log($"Image Missing: {id}", "text-yellow-600 font-medium"))"
+    >
+        <BwMapLibreSource Id="sivas-districts" Type="@MapSourceType.GeoJson">
+             <BwMapLibreLayer Id="district-fill" 
+                              Type="@MapLayerType.Fill"
+                              Paint="@(new { fill_color = "#0055AA", fill_opacity = 0.4 })"
+                              OnClick="@(e => Log($"Layer Click: {e.LayerId}", "text-green-600 font-bold"))"
+                              OnMouseEnter="@(e => Log($"Layer Enter: {e.LayerId}", filter: _logMouse))"
+                              OnMouseLeave="@(e => Log($"Layer Leave: {e.LayerId}", filter: _logMouse))"
+                              Interactive="true"
+                              ClickOrder="10" />
+        </BwMapLibreSource>
+    </BwMapLibre>
+    
+    <!-- Back Button -->
+    <div class="absolute top-4 left-4 z-50">
+        <a href="/maps" class="relative inline-flex items-center justify-center gap-2 font-medium rounded transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 border-2 border-transparent px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-100 focus:ring-gray-400 no-underline">
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+            <span>Back</span>
+        </a>
+    </div>
+    
+    <!-- Left Floating Panel: Filters -->
+    <BwCard Class="absolute top-16 left-4 z-10 max-w-xs shadow-xl bg-white/95 backdrop-blur border-none" BodyClass="p-4 space-y-2">
+        <Header>
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                <BwTypography Weight="BwFontWeight.Bold" Color="BwColor.Dark">Event Filters</BwTypography>
+            </div>
+        </Header>
+        <ChildContent>
+            <BwFlex Direction="BwFlexDirection.Column" Gap="BwSpacing.Sm">
+                 <BwCheckbox @bind-Value="_logMove" Label="Move Events" Color="BwColor.Primary" Size="BwSize.Small" />
+                 <BwCheckbox @bind-Value="_logZoom" Label="Zoom Events" Color="BwColor.Primary" Size="BwSize.Small" />
+                 <BwCheckbox @bind-Value="_logRotate" Label="Rotate Events" Color="BwColor.Primary" Size="BwSize.Small" />
+                 <BwCheckbox @bind-Value="_logPitch" Label="Pitch Events" Color="BwColor.Primary" Size="BwSize.Small" />
+                 <BwCheckbox @bind-Value="_logMouse" Label="Mouse/Touch Events" Color="BwColor.Primary" Size="BwSize.Small" />
+                 <BwCheckbox @bind-Value="_logSources" Label="Source Events" Color="BwColor.Primary" Size="BwSize.Small" />
+            </BwFlex>
+            <div class="mt-4 pt-2 border-t border-gray-100 dark:border-gray-700">
+                <BwButton Variant="BwVariant.Ghost" Color="BwColor.Secondary" Size="BwSize.Small" OnClick="ClearLogs" Class="w-full">
+                    Clear
+                </BwButton>
+            </div>
+        </ChildContent>
+    </BwCard>
+
+    <!-- Right Floating Panel: Log -->
+    <BwCard Class="absolute top-4 right-4 z-10 w-96 max-h-[calc(100vh-2rem)] shadow-xl bg-white/95 backdrop-blur border-none flex flex-col" BodyClass="p-0 flex-1 overflow-hidden flex flex-col">
+        <Header>
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-white/50">
+                <BwTypography Weight="BwFontWeight.Bold" Size="BwSize.Small" Color="BwColor.Dark">Event Log</BwTypography>
+                <BwBadge Color="BwColor.Info" Size="BwSize.ExtraSmall" Variant="BwVariant.Soft">@_logs.Count</BwBadge>
+            </div>
+        </Header>
+        <ChildContent>
+            <div class="flex-1 overflow-y-auto p-2 font-mono text-xs space-y-1" id="log-container">
+                @if (_logs.Count == 0)
+                {
+                    <div class="text-center py-8">
+                         <BwTypography Color="BwColor.Secondary" IsItalic="true">No events yet...</BwTypography>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var log in _logs)
+                    {
+                        <div class="border-b border-gray-100 dark:border-gray-700 pb-1 last:border-0 hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded transition-colors @log.Class">
+                            <span class="text-gray-400 dark:text-gray-500 mr-2 select-none">[@log.Time]</span>
+                            <span class="break-all dark:text-gray-300">@log.Message</span>
+                        </div>
+                    }
+                }
+            </div>
+        </ChildContent>
+    </BwCard>
+</div>
+
+@code {
+    private BwMapLibre? _map;
+    
+    // Filters
+    private bool _logMove = false;
+    private bool _logZoom = true;
+    private bool _logRotate = false;
+    private bool _logPitch = false;
+    private bool _logMouse = false; // Includes mousemove, enter, leave
+    private bool _logSources = false;
+
+    private readonly List<LogEntry> _logs = new();
+
+    private record LogEntry(string Time, string Message, string Class);
+
+    private void Log(string message, string cssClass = "", bool filter = true)
+    {
+        if (!filter) return;
+
+        _logs.Insert(0, new LogEntry(DateTime.Now.ToString("HH:mm:ss.fff"), message, cssClass));
+        
+        if (_logs.Count > 100)
+        {
+            _logs.RemoveRange(100, _logs.Count - 100);
+        }
+        
+        StateHasChanged();
+    }
+
+    private void ClearLogs()
+    {
+        _logs.Clear();
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _map != null)
+        {
+            // Load GeoJSON data for the generic layer
+            // Using a simple polygon covering part of Turkey/Sivas
+            var geoJson = new
+            {
+                type = "FeatureCollection",
+                features = new[]
+                {
+                    new
+                    {
+                        type = "Feature",
+                        geometry = new
+                        {
+                            type = "Polygon",
+                            coordinates = new[]
+                            {
+                                new[]
+                                {
+                                    new[] { 36.0, 39.0 },
+                                    new[] { 38.0, 39.0 },
+                                    new[] { 38.0, 40.5 },
+                                    new[] { 36.0, 40.5 },
+                                    new[] { 36.0, 39.0 }
+                                }
+                            }
+                        },
+                        properties = new { name = "Test Zone" }
+                    }
+                }
+            };
+
+            await _map.SetGeoJsonDataAsync("sivas-districts", geoJson);
+        }
+    }
+}

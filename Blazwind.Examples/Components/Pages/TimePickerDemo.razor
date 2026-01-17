@@ -1,0 +1,79 @@
+@page "/components/timepicker"
+@using Blazwind.Components.Input
+
+<PageTitle>TimePicker Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="TimePicker"
+            Description="Component used for time selection, with label and validation support."
+            Icon="fa-solid fa-clock"
+            Color="BwColor.Warning"/>
+
+    @* Basic Examples *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Basic Usage" Subtitle="Default time inputs" Icon="fa-solid fa-clock-rotate-left"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwTimePicker Label="Start Time"
+                              Value="@(new TimeSpan(9, 0, 0))"
+                              HelperText="Work start time"/>
+
+                <BwTimePicker Label="End Time"
+                              Value="@(new TimeSpan(18, 0, 0))"/>
+
+                <BwTimePicker Label="Reminder"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="Use Case" Subtitle="Work hours planning" Icon="fa-solid fa-calendar-day" Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwRow Spacing="BwSpacing.Md">
+                    <BwColumn Span="6">
+                        <BwTimePicker Label="Open" Value="@(new TimeSpan(9, 0, 0))"/>
+                    </BwColumn>
+                    <BwColumn Span="6">
+                        <BwTimePicker Label="Close" Value="@(new TimeSpan(18, 0, 0))"/>
+                    </BwColumn>
+                </BwRow>
+
+                <BwRow Spacing="BwSpacing.Md">
+                    <BwColumn Span="6">
+                        <BwTimePicker Label="Lunch Start" Value="@(new TimeSpan(12, 0, 0))"/>
+                    </BwColumn>
+                    <BwColumn Span="6">
+                        <BwTimePicker Label="Lunch End" Value="@(new TimeSpan(13, 0, 0))"/>
+                    </BwColumn>
+                </BwRow>
+
+                <DemoSummaryBox Title="Summary">
+                    09:00 - 18:00 (Lunch: 12:00 - 13:00)
+                </DemoSummaryBox>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Sizes & States *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Success">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwTimePicker Label="Small" Size="BwSize.Small"/>
+                <BwTimePicker Label="Medium" Size="BwSize.Medium"/>
+                <BwTimePicker Label="Large" Size="BwSize.Large"/>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="States" Subtitle="Error, Disabled, Required" Icon="fa-solid fa-toggle-on" Color="BwColor.Danger">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwTimePicker Label="Error State"
+                              ErrorMessage="Please select a valid time."/>
+
+                <BwTimePicker Label="Disabled"
+                              IsDisabled="true"
+                              Value="@(new TimeSpan(9, 0, 0))"/>
+
+                <BwTimePicker Label="Required Field"
+                              IsRequired="true"/>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+</BwColumn>

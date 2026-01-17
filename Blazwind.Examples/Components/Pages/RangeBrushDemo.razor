@@ -1,0 +1,252 @@
+@page "/components/range-brush"
+@using Blazwind.Components.Range
+
+<PageTitle>Range Brush Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Range Brush"
+            Description="Advanced brush selectors for financial analysis and time series. Draggable range selection."
+            Icon="fa-solid fa-chart-area" Color="BwColor.Secondary"/>
+
+    @* BwRangeBrush - Basic *@
+    <BwCard Title="BwRangeBrush - Basic Brush Selector" Subtitle="Draggable range selection"
+            Icon="fa-solid fa-arrows-left-right" Color="BwColor.Primary">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwRangeBrush StartPercent="25" EndPercent="75" Color="BwColor.Primary" Label="Basic Brush"
+                          OnBrushChanged="OnBasicBrushChanged"/>
+
+            <div class="flex items-center justify-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Start</div>
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">@_basicStart.ToString("F1")%</div>
+                </div>
+                <div class="text-gray-300 dark:text-gray-600">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">End</div>
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">@_basicEnd.ToString("F1")%</div>
+                </div>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* BwNumberRangeBrush with Histogram *@
+    <BwCard Title="BwNumberRangeBrush - Histogram" Subtitle="Price filter with data distribution visualization"
+            Icon="fa-solid fa-chart-bar" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwNumberRangeBrush Min="0" Max="500" Start="100" End="350" Step="10" Label="Stock Price Filter" Prefix="₺"
+                                Color="BwColor.Success" Data="_stockPriceDistribution" ShowHistogram="true"
+                                Presets="_stockPresets"
+                                OnBrushChanged="OnStockBrushChanged"/>
+
+            <div class="flex items-center justify-center gap-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Min Price</div>
+                    <div class="text-xl font-bold text-green-600 dark:text-green-400">₺@_stockStart.ToString("N0")</div>
+                </div>
+                <div class="text-center px-4 border-x border-gray-200 dark:border-gray-700">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Range</div>
+                    <div class="text-xl font-bold text-green-600 dark:text-green-400">₺@((_stockEnd -
+                                                                                              _stockStart).ToString("N0"))</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Max Price</div>
+                    <div class="text-xl font-bold text-green-600 dark:text-green-400">₺@_stockEnd.ToString("N0")</div>
+                </div>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Date & Time Brush *@
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid lg:grid-cols-2">
+        <BwCard Title="BwDateRangeBrush" Subtitle="Time series selector" Icon="fa-solid fa-chart-line"
+                Color="BwColor.Primary">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwDateRangeBrush MinDate="DateTime.Today.AddMonths(-6)" MaxDate="DateTime.Today"
+                                  StartDate="DateTime.Today.AddMonths(-2)" EndDate="DateTime.Today.AddDays(-15)"
+                                  Label="Sales Data Analysis" Color="BwColor.Primary" ShowTimeline="true"
+                                  Data="_salesTimeSeries"
+                                  Presets="_dateBrushPresets" OnBrushChanged="OnSalesBrushChanged"/>
+
+                <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Selected Period:</span>
+                    <span class="font-semibold text-blue-600 dark:text-blue-400">
+                        @_salesStart.ToString("d MMM yyyy") - @_salesEnd.ToString("d MMM yyyy")
+                    </span>
+                </div>
+            </BwColumn>
+        </BwCard>
+
+        <BwCard Title="BwTimeRangeBrush" Subtitle="Daily activity selector" Icon="fa-solid fa-clock"
+                Color="BwColor.Warning">
+            <BwColumn Spacing="BwSpacing.Md">
+                <BwTimeRangeBrush MinTime="TimeSpan.Zero" MaxTime="TimeSpan.FromHours(24)"
+                                  StartTime="TimeSpan.FromHours(9)" EndTime="TimeSpan.FromHours(18)"
+                                  Label="Active User Hours"
+                                  Color="BwColor.Warning" ShowActivityChart="true" Data="_hourlyActivity"
+                                  Presets="_timeBrushPresets"
+                                  OnBrushChanged="OnActivityBrushChanged"/>
+
+                <div
+                    class="flex items-center justify-between p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm">
+                    <span class="text-gray-600 dark:text-gray-400">Selected Hours:</span>
+                    <span class="font-semibold text-yellow-600 dark:text-yellow-400">
+                        @_activityStart.ToString(@"hh\:mm") - @_activityEnd.ToString(@"hh\:mm")
+                    </span>
+                </div>
+            </BwColumn>
+        </BwCard>
+    </BwRow>
+
+    @* Date Range with Step Units *@
+    <BwCard Title="BwDateRangeBrush - Step Units" Subtitle="Date selection with day, week, month step units"
+            Icon="fa-solid fa-calendar-week" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid lg:grid-cols-3">
+                <div>
+                    <BwDateRangeBrush MinDate="DateTime.Today.AddDays(-14)" MaxDate="DateTime.Today"
+                                      StartDate="DateTime.Today.AddDays(-7)" EndDate="DateTime.Today.AddDays(-2)"
+                                      StepUnit="DateStepUnit.Day" Label="Daily (Last 2 Weeks)" Color="BwColor.Primary"
+                                      ShowTimeline="false"/>
+                </div>
+                <div>
+                    <BwDateRangeBrush MinDate="DateTime.Today.AddMonths(-3)" MaxDate="DateTime.Today"
+                                      StartDate="DateTime.Today.AddDays(-21)" EndDate="DateTime.Today.AddDays(-7)"
+                                      StepUnit="DateStepUnit.Week" Label="Weekly (Last 3 Months)"
+                                      Color="BwColor.Success"
+                                      ShowTimeline="false"/>
+                </div>
+                <div>
+                    <BwDateRangeBrush MinDate="DateTime.Today.AddYears(-1)" MaxDate="DateTime.Today"
+                                      StartDate="DateTime.Today.AddMonths(-6)" EndDate="DateTime.Today.AddMonths(-2)"
+                                      StepUnit="DateStepUnit.Month" Label="Monthly (Last 1 Year)" Color="BwColor.Info"
+                                      ShowTimeline="false"/>
+                </div>
+            </BwRow>
+        </BwColumn>
+    </BwCard>
+
+    @* Color Variants *@
+    <BwCard Title="Color Variants" Subtitle="Brush color options" Icon="fa-solid fa-palette" Color="BwColor.Danger">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRangeBrush StartPercent="20" EndPercent="80" Label="Primary" Color="BwColor.Primary"
+                          ShowValues="false"/>
+            <BwRangeBrush StartPercent="30" EndPercent="70" Label="Success" Color="BwColor.Success"
+                          ShowValues="false"/>
+            <BwRangeBrush StartPercent="25" EndPercent="75" Label="Warning" Color="BwColor.Warning"
+                          ShowValues="false"/>
+            <BwRangeBrush StartPercent="35" EndPercent="65" Label="Danger" Color="BwColor.Danger" ShowValues="false"/>
+            <BwRangeBrush StartPercent="15" EndPercent="85" Label="Info" Color="BwColor.Info" ShowValues="false"/>
+        </BwColumn>
+    </BwCard>
+</BwColumn>
+
+@code {
+
+    // State for labels instead of toasts
+    private double _basicStart = 25;
+    private double _basicEnd = 75;
+    private double _stockStart = 100;
+    private double _stockEnd = 350;
+    private DateTime _salesStart = DateTime.Today.AddMonths(-2);
+    private DateTime _salesEnd = DateTime.Today.AddDays(-15);
+    private TimeSpan _activityStart = TimeSpan.FromHours(9);
+    private TimeSpan _activityEnd = TimeSpan.FromHours(18);
+
+    // Stock Price Distribution Data
+    private readonly List<double> _stockPriceDistribution = new()
+    {
+        5, 12, 25, 45, 78, 95, 120, 100, 85, 65, 45, 30, 20, 15, 10, 8, 5, 3, 2, 1
+    };
+
+    // Stock Brush Presets
+    private readonly List<BwNumberRangeBrush.NumberBrushPreset> _stockPresets = new()
+    {
+        new BwNumberRangeBrush.NumberBrushPreset { Label = "Low Price", Start = 0, End = 100 },
+        new BwNumberRangeBrush.NumberBrushPreset { Label = "Mid Range", Start = 100, End = 250 },
+        new BwNumberRangeBrush.NumberBrushPreset { Label = "High Price", Start = 250, End = 500 }
+    };
+
+    // Sales Time Series Data
+    private readonly List<BwDateRangeBrush.TimeSeriesPoint> _salesTimeSeries = new();
+
+    // Date Brush Presets
+    private readonly List<BwDateRangeBrush.DateBrushPreset> _dateBrushPresets = new()
+    {
+        new BwDateRangeBrush.DateBrushPreset { Label = "Last Month", StartDate = DateTime.Today.AddMonths(-1), EndDate = DateTime.Today },
+        new BwDateRangeBrush.DateBrushPreset { Label = "Last 3 Months", StartDate = DateTime.Today.AddMonths(-3), EndDate = DateTime.Today },
+        new BwDateRangeBrush.DateBrushPreset { Label = "All Period", StartDate = DateTime.Today.AddMonths(-6), EndDate = DateTime.Today }
+    };
+
+    // Hourly Activity Data
+    private readonly List<BwTimeRangeBrush.TimeActivityPoint> _hourlyActivity = new();
+
+    // Time Brush Presets
+    private readonly List<BwTimeRangeBrush.TimeBrushPreset> _timeBrushPresets = new()
+    {
+        new BwTimeRangeBrush.TimeBrushPreset { Label = "Business Hours", StartTime = TimeSpan.FromHours(9), EndTime = TimeSpan.FromHours(18) },
+        new BwTimeRangeBrush.TimeBrushPreset { Label = "Peak Hours", StartTime = TimeSpan.FromHours(10), EndTime = TimeSpan.FromHours(14) },
+        new BwTimeRangeBrush.TimeBrushPreset { Label = "Evening", StartTime = TimeSpan.FromHours(18), EndTime = TimeSpan.FromHours(23) }
+    };
+
+    protected override void OnInitialized()
+    {
+        // Generate sample sales data
+        var random = new Random(42);
+        for (var i = 180; i >= 0; i--)
+        {
+            _salesTimeSeries.Add(new BwDateRangeBrush.TimeSeriesPoint
+            {
+                Date = DateTime.Today.AddDays(-i),
+                Value = 50 + random.NextDouble() * 100 + (i % 7 == 0 ? 30 : 0)
+            });
+        }
+
+        // Generate hourly activity data
+        for (var h = 0; h < 24; h++)
+        {
+            var activity = h switch
+            {
+                >= 0 and < 6 => 5 + random.NextDouble() * 10,
+                >= 6 and < 9 => 20 + random.NextDouble() * 30,
+                >= 9 and < 12 => 70 + random.NextDouble() * 30,
+                >= 12 and < 14 => 50 + random.NextDouble() * 20,
+                >= 14 and < 18 => 80 + random.NextDouble() * 20,
+                >= 18 and < 21 => 60 + random.NextDouble() * 25,
+                _ => 15 + random.NextDouble() * 15
+            };
+            _hourlyActivity.Add(new BwTimeRangeBrush.TimeActivityPoint
+            {
+                Time = TimeSpan.FromHours(h),
+                Value = activity
+            });
+        }
+    }
+
+    // Event handlers - update state for labels
+    private void OnBasicBrushChanged(BrushChangedEventArgs<double> args)
+    {
+        _basicStart = args.StartPercent;
+        _basicEnd = args.EndPercent;
+    }
+
+    private void OnStockBrushChanged(BrushChangedEventArgs<double> args)
+    {
+        _stockStart = args.Start;
+        _stockEnd = args.End;
+    }
+
+    private void OnSalesBrushChanged(BrushChangedEventArgs<DateTime> args)
+    {
+        _salesStart = args.Start;
+        _salesEnd = args.End;
+    }
+
+    private void OnActivityBrushChanged(BrushChangedEventArgs<TimeSpan> args)
+    {
+        _activityStart = args.Start;
+        _activityEnd = args.End;
+    }
+
+}

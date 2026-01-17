@@ -1,0 +1,64 @@
+@using Blazwind.Components.Card
+@using Blazwind.Components.Button
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<BwCard Color="@Color"
+        Class="@($"cursor-pointer group h-full !rounded-[2rem] border-0 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 bg-gradient-to-br {BgGradientClass}")"
+        BodyClass="h-full p-6 flex flex-col items-center justify-center text-center gap-5"
+        @onclick="OnClick">
+    
+    @* Soft Gradient Icon Container *@
+    <div class="relative p-2">
+        @* Decorative Glow *@
+        <div class="absolute inset-0 bg-gradient-to-br @GradientFromTo opacity-30 blur-xl rounded-full scale-0 group-hover:scale-125 transition-transform duration-500"></div>
+        
+        <BwButton Variant="BwVariant.Soft" 
+                  Color="@Color"
+                  Icon="@Icon"
+                  IconPosition="BwIconPosition.Only"
+                  Class="!h-16 !w-16 !rounded-[1.2rem] !text-3xl pointer-events-none relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-sm ring-1 ring-black/5" />
+    </div>
+    
+    @* Text Content *@
+    <div class="flex flex-col gap-1.5 z-10">
+        <h3 class="font-bold text-slate-800 text-lg tracking-tight group-hover:text-blue-600 transition-colors duration-300">
+            @Title
+        </h3>
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
+            @Category
+        </span>
+    </div>
+
+</BwCard>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Category { get; set; } = "";
+    [Parameter] public string Icon { get; set; } = "";
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private string BgGradientClass => Color switch
+    {
+        BwColor.Success => "from-white to-emerald-50",
+        BwColor.Warning => "from-white to-amber-50",
+        BwColor.Danger => "from-white to-rose-50",
+        BwColor.Info => "from-white to-sky-50",
+        BwColor.Secondary => "from-white to-purple-50",
+        BwColor.Dark => "from-white to-gray-100",
+        _ => "from-white to-blue-50"
+    };
+
+    // Helper for glow gradient
+    private string GradientFromTo => Color switch
+    {
+        BwColor.Success => "from-emerald-400 to-teal-400",
+        BwColor.Warning => "from-amber-400 to-orange-400",
+        BwColor.Danger => "from-rose-400 to-red-500",
+        BwColor.Info => "from-sky-400 to-blue-400",
+        BwColor.Secondary => "from-purple-400 to-indigo-400",
+        BwColor.Dark => "from-slate-600 to-slate-800",
+        _ => "from-blue-400 to-indigo-500"
+    };
+}

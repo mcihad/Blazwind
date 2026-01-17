@@ -1,0 +1,54 @@
+@page "/charts/nightingales"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Nightingale Chart - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Nightingale (Rose) Chart" 
+            Description="Pie chart'ın gelişmiş bir versiyonu. Yarıçap alanı veriyi temsil eder."
+            Icon="fa-solid fa-chart-pie"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Model Performansı" Subtitle="Sınıflara göre doğruluk dağılımı" Icon="fa-solid fa-fan" Color="BwColor.Success">
+        <BwChart Options="_nightindaleOptions" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _nightindaleOptions = new()
+    {
+        Title = new ChartTitle { Text = "Categorical Distribution", Subtext = "Rose Chart", Left = ChartPosition.Center },
+        Tooltip = new ChartTooltip { Trigger = ChartTooltipTrigger.Item, Formatter = "{b} : {c} ({d}%)" },  Legend = new ChartLegend { Top = ChartPosition.Bottom },
+        Series = new List<ChartSeries>
+        {
+            new()
+            {
+                Name = "Model Score",
+                Type = ChartSeriesType.Pie,
+                Radius = new List<string> { "30px", "200px" },
+                Center = new List<string> { "50%", "50%" },
+                RoseType = ChartRoseType.Area,
+                ItemStyle = new ChartItemStyle { BorderRadius = 8 },
+                Data = new List<object>
+                {
+                    new { value = 40, name = "Sınıf A" },
+                    new { value = 38, name = "Sınıf B" },
+                    new { value = 32, name = "Sınıf C" },
+                    new { value = 30, name = "Sınıf D" },
+                    new { value = 28, name = "Sınıf E" },
+                    new { value = 26, name = "Sınıf F" },
+                    new { value = 22, name = "Sınıf G" },
+                    new { value = 18, name = "Sınıf H" }
+                }
+            }
+        },
+        Color = new List<string> 
+        { 
+            "#0ea5e9", "#22c55e", "#eab308", "#f97316", 
+            "#ef4444", "#a855f7", "#ec4899", "#6366f1" 
+        }
+    };
+}

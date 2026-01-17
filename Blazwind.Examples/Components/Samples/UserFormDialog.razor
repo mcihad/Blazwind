@@ -1,0 +1,50 @@
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Button
+@inject DialogService DialogService
+
+<div class="space-y-4">
+    <p class="text-sm text-gray-600">
+        This dialog is rendered dynamically. ID: <strong>@Id</strong>
+    </p>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Username</label>
+        <input @bind="username"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2" />
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">Role</label>
+        <select @bind="role"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2 bg-white">
+            <option>Admin</option>
+            <option>User</option>
+            <option>Editor</option>
+        </select>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4 border-t border-gray-100 mt-4">
+        <BwButton Text="Cancel" Color="BwColor.Secondary" Variant="BwVariant.Ghost" OnClick="Cancel" />
+        <BwButton Text="Save" Color="BwColor.Primary" OnClick="Save" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+
+    private string username = "";
+    private string role = "User";
+
+    private void Cancel()
+    {
+        if (DialogInstance != null) DialogService.Close(DialogInstance);
+    }
+
+    private void Save()
+    {
+        // Return complex object or simple value
+        var result = new { Username = username, Role = role, UpdatedAt = DateTime.Now };
+        if (DialogInstance != null) DialogService.Close(DialogInstance, DialogResult.Ok((object)result));
+    }
+}

@@ -1,0 +1,79 @@
+@namespace Blazwind.Components.Card
+@using Blazwind.Components.Shared
+
+@{
+    var (bgClass, textClass, iconBgClass) = Color switch
+    {
+        BwColor.Primary => ("bg-white dark:bg-gray-900", "text-blue-600 dark:text-blue-400", "bg-blue-100 dark:bg-blue-900/30"),
+        BwColor.Success => ("bg-white dark:bg-gray-900", "text-green-600 dark:text-green-400", "bg-green-100 dark:bg-green-900/30"),
+        BwColor.Danger => ("bg-white dark:bg-gray-900", "text-red-600 dark:text-red-400", "bg-red-100 dark:bg-red-900/30"),
+        BwColor.Warning => ("bg-white dark:bg-gray-900", "text-amber-600 dark:text-amber-400", "bg-amber-100 dark:bg-amber-900/30"),
+        BwColor.Info => ("bg-white dark:bg-gray-900", "text-cyan-600 dark:text-cyan-400", "bg-cyan-100 dark:bg-cyan-900/30"),
+        BwColor.Dark => ("bg-gray-900 dark:bg-black", "text-white dark:text-gray-100", "bg-gray-700 dark:bg-gray-800"),
+        _ => ("bg-white dark:bg-gray-900", "text-gray-900 dark:text-gray-100", "bg-gray-100 dark:bg-gray-700/30")
+    };
+    
+    var trendClass = Trend switch
+    {
+        BwTrend.Up => "text-green-600 dark:text-green-400",
+        BwTrend.Down => "text-red-600 dark:text-red-400",
+        _ => "text-gray-500 dark:text-gray-400"
+    };
+    
+    var trendIcon = Trend switch
+    {
+        BwTrend.Up => "fa-solid fa-arrow-up",
+        BwTrend.Down => "fa-solid fa-arrow-down",
+        _ => ""
+    };
+}
+
+<div class="@bgClass rounded border border-gray-200 dark:border-gray-700 p-4 shadow-sm @Class">
+    <div class="flex items-start justify-between">
+        <div class="flex-1">
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@Title</p>
+            <p class="mt-1 text-2xl font-bold @textClass">@Value</p>
+            
+            @if (!string.IsNullOrEmpty(TrendValue))
+            {
+                <div class="mt-2 flex items-center gap-1 @trendClass text-sm">
+                    @if (!string.IsNullOrEmpty(trendIcon))
+                    {
+                        <i class="@trendIcon text-xs"></i>
+                    }
+                    <span class="font-medium">@TrendValue</span>
+                    @if (!string.IsNullOrEmpty(TrendDescription))
+                    {
+                        <span class="text-gray-400 dark:text-gray-500">@TrendDescription</span>
+                    }
+                </div>
+            }
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <div class="@iconBgClass w-10 h-10 rounded flex items-center justify-center shrink-0">
+                <i class="@Icon @textClass"></i>
+            </div>
+        }
+    </div>
+    
+    @if (ChildContent != null)
+    {
+        <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+            @ChildContent
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public string? TrendValue { get; set; }
+    [Parameter] public string? TrendDescription { get; set; }
+    [Parameter] public BwTrend Trend { get; set; } = BwTrend.Neutral;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

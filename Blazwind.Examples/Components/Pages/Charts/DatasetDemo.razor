@@ -1,0 +1,57 @@
+@page "/charts/dataset"
+@using Blazwind.Components.Chart
+@using Blazwind.Components.Card
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+<PageTitle>Dataset & Encoding - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Dataset & Encoding" 
+            Description="Veri seti (Dataset) kullanarak tek bir kaynaktan çoklu grafik besleme. AI veri analitiğinde ham veriyi görselleştirmek için standart yöntemdir."
+            Icon="fa-solid fa-database"
+            Color="BwColor.Primary" />
+
+    <BwCard Title="Multi-View Analysis" Subtitle="Aynı verinin Pie ve Bar olarak sunumu" Icon="fa-solid fa-table-columns" Color="BwColor.Info">
+        <BwChart Options="_datasetOptions" Height="500px" />
+    </BwCard>
+</BwColumn>
+
+@code {
+    private ChartOptions _datasetOptions = new()
+    {
+        Title = new ChartTitle { Text = "Shared Dataset", Subtext = "Pie & Bar Combined" },
+        Legend = new ChartLegend(),
+        Tooltip = new ChartTooltip(),
+        Dataset = new 
+        {
+            source = new List<List<object>>
+            {
+                new() { "Product", "2023", "2024", "2025" },
+                new() { "Model A", 43.3, 85.8, 93.7 },
+                new() { "Model B", 83.1, 73.4, 55.1 },
+                new() { "Model C", 86.4, 65.2, 82.5 },
+                new() { "Model D", 72.4, 53.9, 39.1 }
+            }
+        },
+        XAxis = new ChartAxis { Type = ChartAxisType.Category },
+        YAxis = new ChartAxis(),
+        Grid = new ChartGrid { Top = "55%" },
+        Series = new List<ChartSeries>
+        {
+            new() { Type = ChartSeriesType.Line, Smooth = true, SeriesLayoutBy = "row" },
+            new() { Type = ChartSeriesType.Line, Smooth = true, SeriesLayoutBy = "row" },
+            new() { Type = ChartSeriesType.Line, Smooth = true, SeriesLayoutBy = "row" },
+            new() { Type = ChartSeriesType.Line, Smooth = true, SeriesLayoutBy = "row" },
+            new() 
+            { 
+                Type = ChartSeriesType.Pie, 
+                Id = "pie",
+                Radius = "30%", 
+                Center = new List<string> { "50%", "25%" },
+                Label = new ChartLabel { Formatter = "{b}: {@2023} ({d}%)" },
+                Encode = new { itemName = "Product", value = "2023", tooltip = "2023" }
+            }
+        }
+    };
+}

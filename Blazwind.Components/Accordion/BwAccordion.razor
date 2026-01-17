@@ -1,0 +1,101 @@
+@namespace Blazwind.Components.Accordion
+@inherits BwBase
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+
+<CascadingValue Value="this">
+    <div class="@_classes" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+        @ChildContent
+    </div>
+</CascadingValue>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool AllowMultiple { get; set; } = false;
+    [Parameter] public int? DefaultOpenIndex { get; set; }
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+
+    private List<BwAccordionItem> _items = new();
+    private HashSet<BwAccordionItem> _expandedItems = new();
+
+    private string _classes => CombineClasses(GetBaseClasses());
+
+    private string GetBaseClasses()
+    {
+        var classes = new List<string>();
+        
+        if (Variant == BwVariant.Outline)
+        {
+            classes.Add("border border-gray-200 dark:border-gray-700 rounded-md divide-y divide-gray-200 dark:divide-gray-700");
+        }
+        else if (Variant == BwVariant.Ghost)
+        {
+            classes.Add("divide-y divide-gray-200 dark:divide-gray-700");
+        }
+        else if (Variant == BwVariant.Filled)
+        {
+             classes.Add("bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md divide-y divide-gray-200 dark:divide-gray-700 shadow-sm");
+        }
+        
+        // Global font size adjustments if desired, or leave it to items?
+        // Usually accordion container might not set text size, but items do.
+        // However, setting it here ensures inheritance if items don't override.
+        switch(Size)
+        {
+            case BwSize.ExtraSmall: classes.Add("text-xs"); break;
+            case BwSize.Small: classes.Add("text-xs"); break;
+            case BwSize.Medium: classes.Add("text-sm"); break;
+            case BwSize.Large: classes.Add("text-base"); break;
+            case BwSize.ExtraLarge: classes.Add("text-lg"); break;
+        }
+
+        return string.Join(" ", classes);
+    }
+
+    protected override void OnInitialized()
+    {
+        // DefaultOpenIndex will be handled after items register
+    }
+
+    internal void RegisterItem(BwAccordionItem item)
+    {
+        _items.Add(item);
+        
+        // Check if this item should be open by default
+        if (DefaultOpenIndex.HasValue && _items.Count - 1 == DefaultOpenIndex.Value)
+        {
+            _expandedItems.Add(item);
+        }
+        StateHasChanged();
+    }
+
+    internal void UnregisterItem(BwAccordionItem item)
+    {
+        _items.Remove(item);
+        _expandedItems.Remove(item);
+        StateHasChanged();
+    }
+
+    internal void ToggleItem(BwAccordionItem item)
+    {
+        if (item.IsDisabled) return;
+
+        if (_expandedItems.Contains(item))
+        {
+            _expandedItems.Remove(item);
+        }
+        else
+        {
+            if (!AllowMultiple)
+            {
+                _expandedItems.Clear();
+            }
+            _expandedItems.Add(item);
+        }
+        StateHasChanged();
+    }
+
+    internal bool IsExpanded(BwAccordionItem item) => _expandedItems.Contains(item);
+}

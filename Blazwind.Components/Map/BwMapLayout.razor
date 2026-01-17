@@ -1,0 +1,78 @@
+@namespace Blazwind.Components.Map
+
+<div class="@ComputedClass" style="@ComputedStyle">
+    @ChildContent
+</div>
+
+@code {
+    /// <summary>
+    /// CSS class for the layout container
+    /// </summary>
+    [Parameter] public string? Class { get; set; }
+
+    /// <summary>
+    /// Additional CSS styles
+    /// </summary>
+    [Parameter] public string? Style { get; set; }
+
+    /// <summary>
+    /// Whether to fill the entire viewport
+    /// </summary>
+    [Parameter] public bool Fullscreen { get; set; } = true;
+
+    /// <summary>
+    /// Fixed height when not fullscreen (CSS value)
+    /// </summary>
+    [Parameter] public string? Height { get; set; }
+
+    /// <summary>
+    /// Fixed width when not fullscreen (CSS value)
+    /// </summary>
+    [Parameter] public string? Width { get; set; }
+
+    /// <summary>
+    /// Content (should contain BwMapLibre component)
+    /// </summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string ComputedClass
+    {
+        get
+        {
+            var classes = new List<string> { "bw-map-layout" };
+            if (Fullscreen) classes.Add("bw-map-layout--fullscreen");
+            if (!string.IsNullOrEmpty(Class)) classes.Add(Class);
+            return string.Join(" ", classes);
+        }
+    }
+
+    private string ComputedStyle
+    {
+        get
+        {
+            if (Fullscreen)
+            {
+                return $"position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 50; {Style}".Trim();
+            }
+
+            var styles = new List<string>();
+
+            if (!string.IsNullOrEmpty(Width))
+                styles.Add($"width: {Width}");
+            else
+                styles.Add("width: 100%");
+
+            if (!string.IsNullOrEmpty(Height))
+                styles.Add($"height: {Height}");
+            else
+                styles.Add("height: 500px");
+
+            styles.Add("position: relative");
+
+            if (!string.IsNullOrEmpty(Style))
+                styles.Add(Style);
+
+            return string.Join("; ", styles);
+        }
+    }
+}
