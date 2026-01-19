@@ -17,7 +17,7 @@
         </BwCarousel>
     </BwCard>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Auto Play" Subtitle="Switches every 5 seconds" Icon="fa-solid fa-play"
                 Color="BwColor.Success">
             <BwCarousel Items="_colors" AutoPlay="true" Interval="3000" Loop="true">
@@ -60,7 +60,7 @@
         </BwCarousel>
     </BwCard>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Loopless" Subtitle="Stops at the end" Icon="fa-solid fa-stop" Color="BwColor.Danger">
             <BwCarousel Items="_images.Take(3).ToList<object>()" Loop="false">
                 <ItemTemplate Context="item">

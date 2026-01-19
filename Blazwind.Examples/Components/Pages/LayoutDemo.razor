@@ -55,7 +55,7 @@
     @* BwColumn Examples *@
     <BwCard Title="BwColumn - Vertical Layout" Subtitle="Arranges items vertically (flex-col)."
         Icon="fa-solid fa-arrows-up-down" Color="BwColor.Success">
-        <BwRow Spacing="BwSpacing.Lg" Wrap="true" Class="grid md:grid-cols-3">
+        <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="3">
             <div>
                 <p class="text-sm text-gray-500 mb-2">Spacing: Sm</p>
                 <BwColumn Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
@@ -176,6 +176,30 @@
                     {
                         <div class="bg-cyan-500 text-white px-6 py-3 rounded">@i</div>
                     }
+                </BwRow>
+            </div>
+        </BwColumn>
+    </BwCard>
+
+    @* Responsive Grid *@
+    <BwCard Title="Responsive Grid System" Subtitle="Use Cols, SmCols, MdCols, etc. to switch to CSS Grid layout."
+            Icon="fa-solid fa-border-all" Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Icon="fa-solid fa-info-circle" Title="Quick Grid">
+                When you use <code>Cols</code>, <code>SmCols</code>, etc., the row automatically switches to <code>display: grid</code>.
+                You don't need to manually add <code>grid</code> classes. Max 8 columns supported using these helpers.
+            </BwAlert>
+            
+            <div>
+                <p class="text-sm text-gray-500 mb-2">Responsive: 1 col mobile, 2 cols tablet, 4 cols desktop</p>
+                <div class="mb-2 text-xs text-gray-400">
+                    <code>&lt;BwRow Cols="1" MdCols="2" LgCols="4" ...&gt;</code>
+                </div>
+                <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2" LgCols="4" Class="bg-gray-100 p-3 rounded">
+                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 1</div>
+                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 2</div>
+                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 3</div>
+                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 4</div>
                 </BwRow>
             </div>
         </BwColumn>

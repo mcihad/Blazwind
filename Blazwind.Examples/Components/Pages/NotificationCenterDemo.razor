@@ -4,16 +4,16 @@
 <PageTitle>NotificationCenter Demo - Blazwind</PageTitle>
 @inject NotificationService NotificationService
 
-<BwColumn Spacing="BwSpacing.Lg">
-    <BwRow MainAxisAlignment="BwMainAxisAlignment.SpaceBetween" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-        <BwHero Title="Notification Center" Description="Notification center component." Icon="fa-solid fa-bell"
-                Color="BwColor.Primary"/>
+<BwColumn Spacing="BwSpacing.Sm">
+    <BwHero Title="Notification Center" Description="Notification center component." Icon="fa-solid fa-bell"
+            Color="BwColor.Primary"/>
 
+
+    <BwRow MainAxisAlignment="BwMainAxisAlignment.End" CrossAxisAlignment="BwCrossAxisAlignment.End">
         <BwNotificationCenter/>
     </BwRow>
-
     <BwCard Title="Add Notification" Subtitle="Add different types of notifications" Icon="fa-solid fa-plus-circle">
-        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="4">
             <BwButton Variant="BwVariant.Outline" Color="BwColor.Info" OnClick="AddInfo" Icon="fa-solid fa-info-circle"
                       Text="Info"/>
             <BwButton Variant="BwVariant.Outline" Color="BwColor.Success" OnClick="AddSuccess"
@@ -27,7 +27,7 @@
 
     <BwCard Title="Bulk Operations" Subtitle="Manage multiple notifications" Icon="fa-solid fa-tasks"
             Color="BwColor.Secondary">
-        <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
             <BwButton Variant="BwVariant.Ghost" OnClick="AddBulk" Icon="fa-solid fa-plus" Text="Add 5 Notifications"/>
             <BwButton Variant="BwVariant.Ghost" OnClick="MarkAllRead" Icon="fa-solid fa-check-double"
                       Text="Mark All as Read"/>
@@ -36,7 +36,7 @@
         </BwRow>
     </BwCard>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Badge Counter" Subtitle="Unread notification count" Icon="fa-solid fa-bell"
                 Color="BwColor.Danger"/>
         <BwCard Title="Type Colors" Subtitle="Info, Success, Warning, Error" Icon="fa-solid fa-palette"
@@ -46,7 +46,7 @@
         <BwCard Title="Read Status" Subtitle="Click to mark as read" Icon="fa-solid fa-eye" Color="BwColor.Warning"/>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Lg">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwStatCard Title="Total Notifications" Value="@NotificationService.Notifications.Count.ToString()"
                     Icon="fa-solid fa-bell" Color="BwColor.Secondary"/>
         <BwStatCard Title="Unread" Value="@NotificationService.UnreadCount.ToString()" Icon="fa-solid fa-envelope"

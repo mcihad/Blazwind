@@ -59,7 +59,7 @@
     </BwCard>
 
     @* Date & Time Brush *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid lg:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="BwDateRangeBrush" Subtitle="Time series selector" Icon="fa-solid fa-chart-line"
                 Color="BwColor.Primary">
             <BwColumn Spacing="BwSpacing.Md">
@@ -103,7 +103,7 @@
     <BwCard Title="BwDateRangeBrush - Step Units" Subtitle="Date selection with day, week, month step units"
             Icon="fa-solid fa-calendar-week" Color="BwColor.Success">
         <BwColumn Spacing="BwSpacing.Lg">
-            <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid lg:grid-cols-3">
+            <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="3">
                 <div>
                     <BwDateRangeBrush MinDate="DateTime.Today.AddDays(-14)" MaxDate="DateTime.Today"
                                       StartDate="DateTime.Today.AddDays(-7)" EndDate="DateTime.Today.AddDays(-2)"

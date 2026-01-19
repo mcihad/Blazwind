@@ -8,7 +8,7 @@
             Description="Modernly designed countdown component. Gradient backgrounds, shadow effects and full dark mode support."
             Icon="fa-solid fa-clock" Color="BwColor.Danger"/>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Basic Usage" Subtitle="Countdown to date" Icon="fa-solid fa-calendar" Color="BwColor.Primary">
             <BwColumn Spacing="BwSpacing.Md" CrossAxisAlignment="BwCrossAxisAlignment.Center">
                 <BwTypography Color="BwColor.Secondary">Time Remaining Until New Year:</BwTypography>
@@ -27,7 +27,7 @@
 
     <BwCard Title="Filled Variant - Gradient Styles" Subtitle="Eye-catching design with modern gradient backgrounds"
             Icon="fa-solid fa-fill-drip" Color="BwColor.Primary">
-        <BwRow Spacing="BwSpacing.Lg" Wrap="true" MainAxisAlignment="BwMainAxisAlignment.Center">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
             <BwCountdown Duration="TimeSpan.FromHours(1)" Variant="BwVariant.Filled" Color="BwColor.Primary"/>
             <BwCountdown Duration="TimeSpan.FromHours(1)" Variant="BwVariant.Filled" Color="BwColor.Success"/>
             <BwCountdown Duration="TimeSpan.FromHours(1)" Variant="BwVariant.Filled" Color="BwColor.Danger"/>
@@ -35,7 +35,7 @@
         </BwRow>
     </BwCard>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Soft Variant" Subtitle="Soft background colors" Icon="fa-solid fa-feather" Color="BwColor.Info">
             <BwColumn Spacing="BwSpacing.Md" CrossAxisAlignment="BwCrossAxisAlignment.Center">
                 <BwCountdown Duration="TimeSpan.FromMinutes(30)" Variant="BwVariant.Soft" Color="BwColor.Primary"/>
@@ -52,7 +52,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Sizes" Subtitle="Small, Medium, Large, ExtraLarge" Icon="fa-solid fa-text-height"
                 Color="BwColor.Secondary">
             <BwColumn Spacing="BwSpacing.Lg" CrossAxisAlignment="BwCrossAxisAlignment.Center">

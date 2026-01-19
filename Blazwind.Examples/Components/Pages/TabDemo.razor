@@ -5,7 +5,7 @@
 
 <PageTitle>Tabs Demo - Blazwind</PageTitle>
 
-<BwColumn Spacing="BwSpacing.Lg">
+<BwColumn Spacing="BwSpacing.Sm">
     <BwHero Title="Tabs Component"
             Description="5 different styles for separating content into different views. Closable tabs and confirmation mechanism."
             Icon="fa-solid fa-folder-open"
@@ -74,7 +74,7 @@
     </BwCard>
 
     @* Underline & Pills *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Underline Style" Subtitle="Classic tab with underline indicator" Icon="fa-solid fa-underline"
                 Color="BwColor.Primary">
             <BwTabs Variant="BwVariant.Ghost">
@@ -109,7 +109,7 @@
     </BwRow>
 
     @* Badges & Justified *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Badge Supported" Subtitle="Show counter or status in tab titles" Icon="fa-solid fa-tag"
                 Color="BwColor.Danger">
             <BwTabs Variant="BwVariant.Ghost">
@@ -162,7 +162,7 @@
     </BwCard>
 
     @* Overflow & Limits *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Limited Tabs" Subtitle="Show maximum 3 tabs (MaxTabs=3)" Icon="fa-solid fa-ban"
                 Color="BwColor.Warning">
             <BwTabs Variant="BwVariant.Ghost" MaxTabs="3">

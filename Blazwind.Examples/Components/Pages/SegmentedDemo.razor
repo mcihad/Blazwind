@@ -8,7 +8,7 @@
     <BwHero Title="Segmented Component" Description="Segmented control used as radio button alternative."
             Icon="fa-solid fa-toggle-on" Color="BwColor.Primary"/>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Basic Usage" Subtitle="Simple options" Icon="fa-solid fa-list" Color="BwColor.Primary">
             <BwColumn Spacing="BwSpacing.Md" Class="items-center">
                 <BwSegmented Options="_viewOptions" @bind-Value="_selectedView"/>
@@ -25,7 +25,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
             <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
                 <div>
@@ -53,7 +53,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Icon Only" Subtitle="Icons without text" Icon="fa-solid fa-image" Color="BwColor.Secondary">
             <BwColumn Spacing="BwSpacing.Md" Class="items-center">
                 <BwSegmented Options="_iconOnlyOptions" @bind-Value="_selectedIcon"/>

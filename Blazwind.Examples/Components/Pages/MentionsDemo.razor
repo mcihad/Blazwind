@@ -8,7 +8,7 @@
     <BwHero Title="Mentions Component" Description="Textarea with at symbol for user tagging." Icon="fa-solid fa-at"
             Color="BwColor.Primary"/>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Basic Usage" Subtitle="Tag users with at" Icon="fa-solid fa-user-tag" Color="BwColor.Primary">
             <BwColumn Spacing="BwSpacing.Md">
                 <BwMentions @bind-Value="_text1" Mentions="_users" Placeholder="Tag a user by typing at..."
@@ -26,7 +26,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
             <BwColumn Spacing="BwSpacing.Md">
                 <BwColumn>

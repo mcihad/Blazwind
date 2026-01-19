@@ -12,7 +12,7 @@
     @* TreeSelect Input *@
     <BwCard Title="TreeSelect Dropdown" Subtitle="Dropdown input for tree structures" Icon="fa-solid fa-caret-down"
             Color="BwColor.Success">
-        <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+        <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
             <div>
                 <BwTreeSelect TItem="string"
                               Label="Select Category"
@@ -32,7 +32,7 @@
         </BwRow>
     </BwCard>
     @* Basic Tree *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Basic Usage" Subtitle="Folder/file hierarchy" Icon="fa-solid fa-folder" Color="BwColor.Primary">
             <BwTree TItem="string" Nodes="_basicNodes" ShowToolbar="true"/>
         </BwCard>
@@ -43,7 +43,7 @@
     </BwRow>
 
     @* Lazy Loading & ShowChildCount *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Lazy Loading" Subtitle="Load data asynchronously on click" Icon="fa-solid fa-cloud-arrow-down"
                 Color="BwColor.Warning">
             <BwTree TItem="string"
@@ -75,7 +75,7 @@
     </BwRow>
 
     @* Selection Modes *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Checkbox Selection" Subtitle="Multiple selection mode" Icon="fa-solid fa-check-square"
                 Color="BwColor.Success">
             <BwTree TItem="string"
@@ -135,7 +135,7 @@
     </BwCard>
 
     @* Selectable Row *@
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Selectable Row" Subtitle="Click to select (without checkboxes)" Icon="fa-solid fa-hand-pointer"
                 Color="BwColor.Primary">
             <BwTree TItem="string"

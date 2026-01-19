@@ -8,7 +8,7 @@
             Description="Collapsible content component for single panel. Unlike Accordion, it works independently."
             Icon="fa-solid fa-chevron-down" Color="BwColor.Primary"/>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Basic Usage" Subtitle="Simple collapse example" Icon="fa-solid fa-layer-group"
                 Color="BwColor.Primary">
             <BwColumn Spacing="BwSpacing.Md">
@@ -45,7 +45,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Color Options" Subtitle="Different colors with icons" Icon="fa-solid fa-palette"
                 Color="BwColor.Warning">
             <BwColumn Spacing="BwSpacing.Md">
@@ -76,7 +76,7 @@
                 <BwCollapse Title="With Extra Content">
                     <Extra>
                         <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" Icon="fa-solid fa-edit"/>
-                    </Extra>
+                    </Extra>        
                     <ChildContent>
                         Collapse with additional button on the right.
                     </ChildContent>

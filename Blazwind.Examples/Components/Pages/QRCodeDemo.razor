@@ -8,7 +8,7 @@
     <BwHero Title="QR Code Component" Description="QR code generator component." Icon="fa-solid fa-qrcode"
             Color="BwColor.Dark"/>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Basic Usage" Subtitle="QR code for URL" Icon="fa-solid fa-link" Color="BwColor.Primary">
             <div class="flex flex-col items-center gap-4">
                 <BwQRCode Value="https://blazwind.dev" Size="200"/>
@@ -28,7 +28,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         <BwCard Title="Dynamic QR Code" Subtitle="With text input" Icon="fa-solid fa-keyboard" Color="BwColor.Success">
             <BwColumn Spacing="BwSpacing.Md" Class="items-center">
                 <BwInput @bind-Value="_customText" Placeholder="Enter QR code text..."/>

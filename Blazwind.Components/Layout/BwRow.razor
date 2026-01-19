@@ -1,75 +1,55 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
 
-@{
-    var justifyClass = MainAxisAlignment switch
-    {
-        BwMainAxisAlignment.Start => "justify-start",
-        BwMainAxisAlignment.Center => "justify-center",
-        BwMainAxisAlignment.End => "justify-end",
-        BwMainAxisAlignment.SpaceBetween => "justify-between",
-        BwMainAxisAlignment.SpaceAround => "justify-around",
-        BwMainAxisAlignment.SpaceEvenly => "justify-evenly",
-        _ => "justify-start"
-    };
-    
-    var alignClass = CrossAxisAlignment switch
-    {
-        BwCrossAxisAlignment.Start => "items-start",
-        BwCrossAxisAlignment.Center => "items-center",
-        BwCrossAxisAlignment.End => "items-end",
-        BwCrossAxisAlignment.Stretch => "items-stretch",
-        BwCrossAxisAlignment.Baseline => "items-baseline",
-        _ => "items-stretch"
-    };
-    
-    var gapClass = "";
-    if (GutterX.HasValue || GutterY.HasValue)
-    {
-        // Use manual gutters if provided
-        var gx = GutterX ?? 0;
-        var gy = GutterY ?? 0;
-        gapClass = $"gap-x-{gx} gap-y-{gy}";
-    }
-    else
-    {
-        // Fallback to Spacing enum
-        gapClass = Spacing switch
-        {
-            BwSpacing.None => "",
-            BwSpacing.Xs => "gap-1",
-            BwSpacing.Sm => "gap-2",
-            BwSpacing.Md => "gap-4",
-            BwSpacing.Lg => "gap-6",
-            BwSpacing.Xl => "gap-8",
-            BwSpacing.Xxl => "gap-12",
-            _ => "gap-4"
-        };
-    }
-    
-    // Rows usually wrap in a grid system
-    var wrapClass = Wrap ? "flex-wrap" : "flex-wrap"; // Default to wrap for grid rows? Original was Wrap param. 
-    // If usage implies Grid, we typically want Wrap. User set Wrap=true default? No, default was false.
-    // But in ListDemo I didn't set Wrap="true", I just said GutterX="0".
-    // If I use Columns with Spans that exceed 12, I NEED wrap.
-    // Let's rely on Wrap parameter but default to true if it's acting as a Grid Row (GutterX logic)?
-    // Or just respect the param. Let's respect the param but user might need to set Wrap="true".
-    // Actually ListDemo usage implies "modern grid", which implies wrapping.
-    // Let's change default Sync: ListDemo usage didn't specify Wrap. If I change default to True, it might affect others.
-    // But BwRow is "Row". Rows wrap. 
-    // Let's set default Wrap to true? No, that breaks existing usages relying on no-wrap.
-    // I check ListDemo. It puts multiple Cols. They sum to >12? No, `Span="12"`. They stack.
-    // Flex-wrap is needed for stacking full width cols.
-    
-    // Re-evaluating Wrap default. 
-    wrapClass = Wrap ? "flex-wrap" : "flex-nowrap";
-}
-
-<div class="flex flex-row @justifyClass @alignClass @gapClass @wrapClass @Class">
+<div class="@LayoutClass @JustifyClass @AlignClass @GapClass @Class">
     @ChildContent
 </div>
 
 @code {
+    // Helper returns explicit Tailwind class names (listed literals so Tailwind's scanner finds them)
+    private static string GetGapClasses(int? gx, int? gy)
+    {
+        string MapX(int? v) => v switch
+        {
+            0 => "gap-x-0",
+            1 => "gap-x-1",
+            2 => "gap-x-2",
+            3 => "gap-x-3",
+            4 => "gap-x-4",
+            5 => "gap-x-5",
+            6 => "gap-x-6",
+            7 => "gap-x-7",
+            8 => "gap-x-8",
+            9 => "gap-x-9",
+            10 => "gap-x-10",
+            11 => "gap-x-11",
+            12 => "gap-x-12",
+            _ => ""
+        };
+
+        string MapY(int? v) => v switch
+        {
+            0 => "gap-y-0",
+            1 => "gap-y-1",
+            2 => "gap-y-2",
+            3 => "gap-y-3",
+            4 => "gap-y-4",
+            5 => "gap-y-5",
+            6 => "gap-y-6",
+            7 => "gap-y-7",
+            8 => "gap-y-8",
+            9 => "gap-y-9",
+            10 => "gap-y-10",
+            11 => "gap-y-11",
+            12 => "gap-y-12",
+            _ => ""
+        };
+
+        var xs = MapX(gx);
+        var ys = MapY(gy);
+        return string.Join(" ", new[] { xs, ys }.Where(s => !string.IsNullOrWhiteSpace(s)));
+    }
+
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
     [Parameter] public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
@@ -79,4 +59,118 @@
     
     [Parameter] public int? GutterX { get; set; }
     [Parameter] public int? GutterY { get; set; }
-}
+
+    [Parameter] public int? Cols { get; set; }
+    [Parameter] public int? SmCols { get; set; }
+    [Parameter] public int? MdCols { get; set; }
+    [Parameter] public int? LgCols { get; set; }
+    [Parameter] public int? XlCols { get; set; }
+
+    private bool IsGrid => Cols > 0 || SmCols > 0 || MdCols > 0 || LgCols > 0 || XlCols > 0;
+
+    private string AlignClass => CrossAxisAlignment switch
+    {
+        BwCrossAxisAlignment.Start => "items-start",
+        BwCrossAxisAlignment.Center => "items-center",
+        BwCrossAxisAlignment.End => "items-end",
+        BwCrossAxisAlignment.Stretch => "items-stretch",
+        BwCrossAxisAlignment.Baseline => "items-baseline",
+        _ => "items-stretch"
+    };
+
+    private string JustifyClass => MainAxisAlignment switch
+    {
+        BwMainAxisAlignment.Start => "justify-start",
+        BwMainAxisAlignment.Center => "justify-center",
+        BwMainAxisAlignment.End => "justify-end",
+        BwMainAxisAlignment.SpaceBetween => "justify-between",
+        BwMainAxisAlignment.SpaceAround => "justify-around",
+        BwMainAxisAlignment.SpaceEvenly => "justify-evenly",
+        _ => "justify-start"
+    };
+
+    private string GapClass
+    {
+        get
+        {
+            if (GutterX.HasValue || GutterY.HasValue)
+            {
+                return GetGapClasses(GutterX, GutterY);
+            }
+            return Spacing switch
+            {
+                BwSpacing.None => "",
+                BwSpacing.Xs => "gap-1",
+                BwSpacing.Sm => "gap-2",
+                BwSpacing.Md => "gap-4",
+                BwSpacing.Lg => "gap-6",
+                BwSpacing.Xl => "gap-8",
+                BwSpacing.Xxl => "gap-12",
+                _ => "gap-4"
+            };
+        }
+    }
+
+    private string LayoutClass
+    {
+        get
+        {
+            if (IsGrid)
+            {
+                return GetGridClasses();
+            }
+            var wrapClass = Wrap ? "flex-wrap" : "flex-nowrap";
+            return $"flex flex-row {wrapClass}";
+        }
+    }
+
+    private string GetGridClasses()
+    {
+        if (!IsGrid) return "";
+        var sb = new System.Text.StringBuilder();
+        sb.Append("grid");
+        
+        if (Cols > 0) sb.Append(" " + GetBaseColClass(Cols.Value));
+        if (SmCols > 0) sb.Append(" " + GetSmColClass(SmCols.Value));
+        if (MdCols > 0) sb.Append(" " + GetMdColClass(MdCols.Value));
+        if (LgCols > 0) sb.Append(" " + GetLgColClass(LgCols.Value));
+        if (XlCols > 0) sb.Append(" " + GetXlColClass(XlCols.Value));
+        
+        return sb.ToString();
+    }
+
+    private string GetBaseColClass(int c) => c switch
+    {
+        1 => "grid-cols-1", 2 => "grid-cols-2", 3 => "grid-cols-3", 4 => "grid-cols-4",
+        5 => "grid-cols-5", 6 => "grid-cols-6", 7 => "grid-cols-7", 8 => "grid-cols-8",
+        _ => "grid-cols-1"
+    };
+
+    private string GetSmColClass(int c) => c switch
+    {
+        1 => "sm:grid-cols-1", 2 => "sm:grid-cols-2", 3 => "sm:grid-cols-3", 4 => "sm:grid-cols-4",
+        5 => "sm:grid-cols-5", 6 => "sm:grid-cols-6", 7 => "sm:grid-cols-7", 8 => "sm:grid-cols-8",
+        _ => "sm:grid-cols-1"
+    };
+
+    private string GetMdColClass(int c) => c switch
+    {
+        1 => "md:grid-cols-1", 2 => "md:grid-cols-2", 3 => "md:grid-cols-3", 4 => "md:grid-cols-4",
+        5 => "md:grid-cols-5", 6 => "md:grid-cols-6", 7 => "md:grid-cols-7", 8 => "md:grid-cols-8",
+        _ => "md:grid-cols-1"
+    };
+
+    private string GetLgColClass(int c) => c switch
+    {
+        1 => "lg:grid-cols-1", 2 => "lg:grid-cols-2", 3 => "lg:grid-cols-3", 4 => "lg:grid-cols-4",
+        5 => "lg:grid-cols-5", 6 => "lg:grid-cols-6", 7 => "lg:grid-cols-7", 8 => "lg:grid-cols-8",
+        _ => "lg:grid-cols-1"
+    };
+
+    private string GetXlColClass(int c) => c switch
+    {
+        1 => "xl:grid-cols-1", 2 => "xl:grid-cols-2", 3 => "xl:grid-cols-3", 4 => "xl:grid-cols-4",
+        5 => "xl:grid-cols-5", 6 => "xl:grid-cols-6", 7 => "xl:grid-cols-7", 8 => "xl:grid-cols-8",
+        _ => "xl:grid-cols-1"
+    };
+    }

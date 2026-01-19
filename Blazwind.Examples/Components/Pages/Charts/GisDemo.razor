@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         @* Arazi Kullanımı *@
         <BwCard Title="Arazi Kullanım Dağılımı" Subtitle="Şehir arazi sınıflandırması." Icon="fa-solid fa-layer-group" Color="BwColor.Primary">
             <BwChart Options="_landUsePie" Height="300px" />
@@ -43,7 +43,7 @@
         <BwChart Options="_infrastructureRadar" Height="400px" />
     </BwCard>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Wrap="true" Cols="1" MdCols="2" LgCols="2">
         @* Mesafe Analizi *@
         <BwCard Title="Hizmet Noktası Mesafe Analizi" Subtitle="Ortalama erişim mesafeleri." Icon="fa-solid fa-route" Color="BwColor.Success">
             <BwChart Options="_distanceChart" Height="280px" />

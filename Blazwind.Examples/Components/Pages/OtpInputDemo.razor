@@ -7,7 +7,7 @@
     <BwHero Title="OTP Input Component" Description="PIN/OTP input component for verification code entry."
             Icon="fa-solid fa-lock" Color="BwColor.Success"/>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Basic Usage" Subtitle="6-digit verification code" Icon="fa-solid fa-key" Color="BwColor.Primary">
             <BwColumn Spacing="BwSpacing.Md" Class="items-center">
                 <BwOtpInput Id="otp1" @bind-Value="_otpValue" OnComplete="HandleComplete"/>
@@ -38,7 +38,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
             <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
                 <div>
@@ -71,7 +71,7 @@
         </BwCard>
     </BwRow>
 
-    <BwRow Spacing="BwSpacing.Md" Wrap="true" Class="grid md:grid-cols-2">
+    <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Special Cases" Subtitle="Masked, disabled, error" Icon="fa-solid fa-cog"
                 Color="BwColor.Secondary">
             <BwColumn Spacing="BwSpacing.Lg" Class="items-center">
