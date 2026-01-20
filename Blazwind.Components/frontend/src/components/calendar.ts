@@ -16,6 +16,7 @@ interface DragState {
     slotMinutes: number;
     currentDayDelta: number;
     initialDayOffset: number; // Added: Initial visual offset in columns
+    hasMoved: boolean;
 }
 
 interface ResizeState {
@@ -97,8 +98,8 @@ export function startDrag(eventId: string, startDayIndex: number, clientX: numbe
         return;
     }
 
-    // Store initial offset within the container
-    const initialOffsetTop = parseFloat(positionedContainer.style.top) || 0;
+    // Use offsetTop which is more reliable than style.top
+    const initialOffsetTop = positionedContainer.offsetTop;
 
     // Calculate initial visual offset (to handle cases where element is in wrong column but transformed)
     const eventRect = positionedContainer.getBoundingClientRect();
@@ -120,15 +121,13 @@ export function startDrag(eventId: string, startDayIndex: number, clientX: numbe
         slotHeight,
         slotMinutes,
         currentDayDelta: 0,
-        initialDayOffset
+        initialDayOffset,
+        hasMoved: false
     };
 
-    positionedContainer.classList.add('bw-calendar-dragging');
-    positionedContainer.style.zIndex = '100';
-    positionedContainer.style.opacity = '0.9';
-    positionedContainer.style.cursor = 'grabbing';
-    positionedContainer.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
-    positionedContainer.style.transition = 'none';
+    // We defer adding styles until actual movement occurs to allow for clicks
+    // positionedContainer.classList.add('bw-calendar-dragging');
+    // ...
 }
 
 /**
@@ -178,48 +177,44 @@ function handleMove(clientX: number, clientY: number): void {
         const dy = clientY - dragState.startY;
         const dx = clientX - dragState.startX;
 
+        // Threshold check: if NOT moved yet, check if we exceeded threshold
+        if (!dragState.hasMoved) {
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 10) return; // Ignore small movements (jitters/taps)
+
+            // Threshold exceeded, officially dragging
+            dragState.hasMoved = true;
+
+            // Apply drag styles NOW
+            const el = dragState.eventElement;
+            el.classList.add('bw-calendar-dragging');
+            el.style.zIndex = '100';
+            el.style.opacity = '0.9';
+            el.style.cursor = 'grabbing';
+            el.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+            el.style.transition = 'none';
+        }
+
         // Vertical: Snap to slot
         const snappedDy = Math.round(dy / dragState.slotHeight) * dragState.slotHeight;
         const newTop = Math.max(0, dragState.originalTop + snappedDy);
 
-        // Debug log (only when there's actual movement)
-        if (Math.abs(dy) > 5 || Math.abs(dx) > 5) {
-            console.log('handleMove:', { dy, dx, snappedDy, newTop, element: dragState.eventElement });
-        }
-
+        // ... (rest logic same)
         dragState.eventElement.style.top = `${newTop}px`;
 
         // Horizontal: Calculate day offset based on column width
         const columnWidth = dragState.dayColumnElement.offsetWidth;
-
-        // Purely mouse-based delta
         const mouseDayDelta = Math.round(dx / columnWidth);
-
-        // Effective delta including initial offset (if element was already shifted)
         const effectiveDayDelta = dragState.initialDayOffset + mouseDayDelta;
 
-        // Calculate parent index to ensure clamping works relative to the actual parent column
-        // logicalDayIndex = parentIndex + effectiveDayDelta
-        // We want logicalDayIndex to be in [0, 6]
-        // But we were given startDayIndex (logical).
-        // parentIndex = startDayIndex - initialDayOffset
         const parentIndex = dragState.startDayIndex - dragState.initialDayOffset;
-
-        // Clamp so that (parentIndex + effectiveDayDelta) is in [0, 6]
         const clampedEffectiveDelta = Math.max(-parentIndex, Math.min(6 - parentIndex, effectiveDayDelta));
-
-        // The delta we report to .NET is relative to startDayIndex (Logical)
-        // netDayDelta = newLogicalIndex - startDayIndex
-        // newLogicalIndex = parentIndex + clampedEffectiveDelta
-        // netDayDelta = (startDayIndex - initialDayOffset + clampedEffectiveDelta) - startDayIndex
-        //             = clampedEffectiveDelta - initialDayOffset
         const reportDayDelta = clampedEffectiveDelta - dragState.initialDayOffset;
 
         if (reportDayDelta !== dragState.currentDayDelta) {
             dragState.currentDayDelta = reportDayDelta;
         }
 
-        // Apply transform for horizontal movement
         const translateX = clampedEffectiveDelta * columnWidth;
         dragState.eventElement.style.transform = `translateX(${translateX}px)`;
     }
@@ -252,38 +247,34 @@ async function handleEnd(): Promise<void> {
     if (dragState?.isDragging && dragState.eventElement) {
         const eventEl = dragState.eventElement;
 
-        // Calculate time delta (vertical)
-        const newTop = eventEl.offsetTop;
-        const slotIndex = Math.round(newTop / dragState.slotHeight);
-        const originalSlotIndex = Math.round(dragState.originalTop / dragState.slotHeight);
-        const minutesDelta = (slotIndex - originalSlotIndex) * dragState.slotMinutes;
-
-        // Get day delta from state
-        const dayDelta = dragState.currentDayDelta;
-
-        console.log('Drag end calculation:', { newTop, slotIndex, originalSlotIndex, minutesDelta, dayDelta });
-
         // Capture state before nulling
         const currentDragState = dragState;
         dragState = null;
 
-        // Call .NET with both time and day changes
-        if (dotNetReference && (minutesDelta !== 0 || dayDelta !== 0)) {
-            console.log('Calling .NET OnEventDragged:', { eventId: currentDragState.eventId, minutesDelta, dayDelta });
-            try {
-                // We MUST reset styles before calling .NET or immediately after.
-                // If we keep "Visual Sync" styles (transforms), they conflict with Blazor's re-render in the new column.
-                // It's better to reset, potentially cause a millisecond flash, but ensure the new position is canonical.
-                resetDragStyles(eventEl, currentDragState.originalTop);
+        // Only process if we actually moved
+        if (currentDragState.hasMoved) {
+            // Calculate time delta (vertical)
+            const newTop = eventEl.offsetTop;
+            const slotIndex = Math.round(newTop / currentDragState.slotHeight);
+            const originalSlotIndex = Math.round(currentDragState.originalTop / currentDragState.slotHeight);
+            const minutesDelta = (slotIndex - originalSlotIndex) * currentDragState.slotMinutes;
 
-                await dotNetReference.invokeMethodAsync('OnEventDragged', currentDragState.eventId, minutesDelta, dayDelta);
-            } catch (e) {
-                console.error('Error calling OnEventDragged:', e);
+            // Get day delta from state
+            const dayDelta = currentDragState.currentDayDelta;
+
+            console.log('Drag end calculation:', { newTop, slotIndex, originalSlotIndex, minutesDelta, dayDelta });
+
+            if (dotNetReference && (minutesDelta !== 0 || dayDelta !== 0)) {
+                try {
+                    resetDragStyles(eventEl, currentDragState.originalTop);
+                    await dotNetReference.invokeMethodAsync('OnEventDragged', currentDragState.eventId, minutesDelta, dayDelta);
+                } catch (e) {
+                    console.error('Error calling OnEventDragged:', e);
+                    resetDragStyles(eventEl, currentDragState.originalTop);
+                }
+            } else {
                 resetDragStyles(eventEl, currentDragState.originalTop);
             }
-        } else {
-            console.log('Not calling .NET - no change or no dotNetReference');
-            resetDragStyles(eventEl, currentDragState.originalTop);
         }
     }
 
@@ -374,6 +365,12 @@ export function scrollToTime(containerId: string, hour: number): void {
 
     const targetMinutes = (hour - startHour) * 60;
     const scrollPosition = (targetMinutes / slotMinutes) * slotHeight;
+
+    // Only scroll if we haven't scrolled yet (approx) or if it's forced
+    if (scrollableEl.scrollTop > 0) {
+        // Already scrolled, don't jump
+        return;
+    }
 
     scrollableEl.scrollTo({
         top: Math.max(0, scrollPosition - 100),

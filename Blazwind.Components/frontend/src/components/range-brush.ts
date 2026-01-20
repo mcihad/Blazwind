@@ -63,6 +63,9 @@ export function initialize(
 
     instances.set(elementId, instance);
 
+    // Initial visual update
+    updateVisuals(instance, initialStart, initialEnd - initialStart);
+
     // Left handle - resize from left
     leftHandle.addEventListener('mousedown', (e) => startResize(e, instance, 'resize-left'));
     leftHandle.addEventListener('touchstart', (e) => startResizeTouch(e, instance, 'resize-left'), { passive: false });
@@ -78,7 +81,6 @@ export function initialize(
 
 function startDrag(e: MouseEvent, instance: BrushInstance): void {
     const target = e.target as HTMLElement;
-    // Don't start drag if clicking on handles
     if (target.closest('.bw-brush-handle-left') || target.closest('.bw-brush-handle-right')) return;
 
     e.preventDefault();
@@ -130,6 +132,9 @@ function beginDrag(clientX: number, instance: BrushInstance, mode: DragState['mo
     document.body.style.cursor = mode === 'drag' ? 'grabbing' : 'ew-resize';
     instance.brush.classList.add('bw-brush-active');
 
+    // Notify .NET dragging started
+    instance.dotNetRef.invokeMethodAsync('HandleDragStart');
+
     // Add global listeners
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -160,51 +165,30 @@ function applyMove(clientX: number): void {
     let newWidth = initialWidth;
 
     if (mode === 'drag') {
-        // Move entire brush, keep width constant
         newLeft = initialLeft + deltaPercent;
         newWidth = initialWidth;
-
-        // Clamp to track bounds
         if (newLeft < 0) newLeft = 0;
         if (newLeft + newWidth > 100) newLeft = 100 - newWidth;
-
     } else if (mode === 'resize-left') {
-        // Move left edge, right edge stays fixed
         const rightEdge = initialLeft + initialWidth;
         newLeft = initialLeft + deltaPercent;
         newWidth = rightEdge - newLeft;
-
-        // Enforce minimum width
         if (newWidth < instance.minWidthPercent) {
             newWidth = instance.minWidthPercent;
             newLeft = rightEdge - instance.minWidthPercent;
         }
-
-        // Clamp left to 0
         if (newLeft < 0) {
             newLeft = 0;
             newWidth = rightEdge;
         }
-
     } else if (mode === 'resize-right') {
-        // Move right edge, left edge stays fixed
         newLeft = initialLeft;
         newWidth = initialWidth + deltaPercent;
-
-        // Enforce minimum width
-        if (newWidth < instance.minWidthPercent) {
-            newWidth = instance.minWidthPercent;
-        }
-
-        // Clamp to right edge
-        if (newLeft + newWidth > 100) {
-            newWidth = 100 - newLeft;
-        }
+        if (newWidth < instance.minWidthPercent) newWidth = instance.minWidthPercent;
+        if (newLeft + newWidth > 100) newWidth = 100 - newLeft;
     }
 
-    // Apply changes
-    instance.brush.style.left = `${newLeft}%`;
-    instance.brush.style.width = `${newWidth}%`;
+    updateVisuals(instance, newLeft, newWidth);
 
     // Real-time update with throttling
     const now = Date.now();
@@ -212,6 +196,18 @@ function applyMove(clientX: number): void {
         lastNotifyTime = now;
         notifyChange(instance);
     }
+}
+
+function updateVisuals(instance: BrushInstance, left: number, width: number): void {
+    instance.brush.style.left = `${left}%`;
+    instance.brush.style.width = `${width}%`;
+
+    // Update masks
+    const maskLeft = instance.track.querySelector('.absolute.inset-y-0.left-0') as HTMLElement;
+    const maskRight = instance.track.querySelector('.absolute.inset-y-0.right-0') as HTMLElement;
+
+    if (maskLeft) maskLeft.style.width = `${left}%`;
+    if (maskRight) maskRight.style.width = `${100 - (left + width)}%`;
 }
 
 function onMouseUp(): void {
@@ -238,8 +234,10 @@ function endDrag(): void {
     document.removeEventListener('touchmove', onTouchMove);
     document.removeEventListener('touchend', onTouchEnd);
 
-    // Notify .NET
+    // Notify .NET of final change
     notifyChange(instance);
+    // Notify .NET drag ended
+    instance.dotNetRef.invokeMethodAsync('HandleDragEnd');
 
     dragState = null;
 }

@@ -114,11 +114,14 @@
     private DotNetObjectReference<BwRangeBrush>? _dotNetRef;
     private double _startPercent;
     private double _endPercent;
+    private bool _isDragging;
 
     private double CurrentStartPercent => _startPercent;
     private double CurrentEndPercent => _endPercent;
     private double CurrentStart => Min + (Max - Min) * (_startPercent / 100);
     private double CurrentEnd => Min + (Max - Min) * (_endPercent / 100);
+
+    protected override bool ShouldRender() => !_isDragging;
 
     protected override void OnInitialized()
     {
@@ -135,6 +138,24 @@
             _endPercent = ((End - Min) / (Max - Min)) * 100;
         }
     }
+    
+    protected override void OnParametersSet()
+    {
+        // Update internal state if parameters change externally and we're not dragging
+        if (!_isDragging)
+        {
+             // Calculate fresh percentages
+            var newStartPercent = ((Start - Min) / (Max - Min)) * 100;
+            var newEndPercent = ((End - Min) / (Max - Min)) * 100;
+            
+            // Only update if difference is significant (avoid floating point noise)
+            if (Math.Abs(newStartPercent - _startPercent) > 0.01 || Math.Abs(newEndPercent - _endPercent) > 0.01)
+            {
+                _startPercent = newStartPercent;
+                _endPercent = newEndPercent;
+            }
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -144,6 +165,20 @@
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
             MinWidthPercent);
         }
+    }
+    
+    [JSInvokable]
+    public void HandleDragStart()
+    {
+        _isDragging = true;
+    }
+
+    [JSInvokable]
+    public void HandleDragEnd()
+    {
+        _isDragging = false;
+        // Trigger a render to ensure consistency
+        StateHasChanged();
     }
 
     [JSInvokable]

@@ -95,17 +95,25 @@
                     @if (step.Status == ApprovalStatus.Approved)
                     {
                         @* Mobile: vertical, Desktop: horizontal *@
-                        <div class="hidden sm:block w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
-                        <i class="hidden sm:block fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
-                        <div class="sm:hidden h-6 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
-                        <i class="sm:hidden fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
+                        <div class="hidden sm:flex items-center">
+                            <div class="w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
+                            <i class="fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
+                        </div>
+                        <div class="flex sm:hidden flex-col items-center">
+                             <div class="h-6 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
+                             <i class="fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
+                        </div>
                     }
                     else
                     {
-                        <div class="hidden sm:block w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
-                        <i class="hidden sm:block fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
-                        <div class="sm:hidden h-6 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
-                        <i class="sm:hidden fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
+                         <div class="hidden sm:flex items-center">
+                            <div class="w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                            <i class="fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
+                         </div>
+                         <div class="flex sm:hidden flex-col items-center">
+                            <div class="h-6 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                            <i class="fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
+                         </div>
                     }
                 }
                 else

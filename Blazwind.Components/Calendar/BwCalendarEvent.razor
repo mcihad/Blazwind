@@ -19,6 +19,7 @@
      style="@bgStyle @StyleOverride"
      @onmousedown="HandleMouseDown"
      @onmousedown:preventDefault="@_isDragging"
+     @ontouchstart="HandleTouchStart"
      @onclick="HandleClick"
      @onclick:stopPropagation="true">
     
@@ -112,6 +113,19 @@
             await OnClick.InvokeAsync(Event);
         }
         _isDragging = false;
+    }
+    
+    private async Task HandleTouchStart(Microsoft.AspNetCore.Components.Web.TouchEventArgs e)
+    {
+        if (!AllowDrag || e.Touches.Length == 0) return;
+        
+        var touch = e.Touches[0];
+        _startX = touch.ClientX;
+        _startY = touch.ClientY;
+        _isDragging = true;
+        
+        // Start drag via JS
+        await JS.InvokeVoidAsync("Blazwind.Calendar.startDrag", Event.Id, DayIndex, touch.ClientX, touch.ClientY, SlotHeight, SlotMinutes);
     }
     
     private async Task HandleResizeStart(EventArgs e)
