@@ -1,34 +1,31 @@
-@namespace Blazwind.Components.Workflow
-@using Blazwind.Components.Shared
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.JSInterop
+@using Blazwind.Components.Workflow.Interfaces
+@using Blazwind.Components.Workflow.Events
+@using Blazwind.Components.Workflow.Nodes
+@using Blazwind.Components.Workflow.Models
 @using System.Text.Json
+@using Microsoft.JSInterop
 @inject IJSRuntime JS
-@implements IAsyncDisposable
 
-<div class="bw-workflow @Class" style="@_containerStyle">
-    <div @ref="_container" class="w-full h-full overflow-auto bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700"></div>
+<div @ref="_container" class="@CombineClasses($"w-full bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700")" style="height: @Height; @Style">
 </div>
 
 @code {
     private ElementReference _container;
     private string? _instanceId;
-    private DotNetObjectReference<BwWorkflow>? _netRef;
     private bool _isInitialized;
-    
-    private string _containerStyle => $"height: {Height}; {Style}";
+    private DotNetObjectReference<BwWorkflow>? _netRef;
     
     #region Parameters
     
     /// <summary>
-    /// CSS class
+    /// Workflow nodes
     /// </summary>
-    [Parameter] public string? Class { get; set; }
+    [Parameter] public List<IWorkflowNode> Nodes { get; set; } = new();
     
     /// <summary>
-    /// CSS style
+    /// Workflow edges
     /// </summary>
-    [Parameter] public string? Style { get; set; }
+    [Parameter] public List<IWorkflowEdge> Edges { get; set; } = new();
     
     /// <summary>
     /// Container height
@@ -36,59 +33,85 @@
     [Parameter] public string Height { get; set; } = "400px";
     
     /// <summary>
-    /// Workflow nodes
+    /// Additional inline styles
     /// </summary>
-    [Parameter] public List<WorkflowNode> Nodes { get; set; } = new();
+    [Parameter] public string? Style { get; set; }
     
     /// <summary>
-    /// Workflow edges (connections)
+    /// Additional CSS classes
     /// </summary>
-    [Parameter] public List<WorkflowEdge> Edges { get; set; } = new();
+    [Parameter] public string? Class { get; set; }
     
     /// <summary>
     /// Node width
     /// </summary>
-    [Parameter] public int NodeWidth { get; set; } = 160;
+    [Parameter] public int NodeWidth { get; set; } = 180;
     
     /// <summary>
     /// Node height
     /// </summary>
-    [Parameter] public int NodeHeight { get; set; } = 60;
+    [Parameter] public int NodeHeight { get; set; } = 70;
     
     /// <summary>
-    /// Horizontal spacing
+    /// Horizontal spacing between nodes
     /// </summary>
-    [Parameter] public int HorizontalSpacing { get; set; } = 80;
+    [Parameter] public int HorizontalSpacing { get; set; } = 100;
     
     /// <summary>
-    /// Vertical spacing
+    /// Vertical spacing between nodes
     /// </summary>
-    [Parameter] public int VerticalSpacing { get; set; } = 60;
+    [Parameter] public int VerticalSpacing { get; set; } = 80;
     
     /// <summary>
-    /// Workflow direction
+    /// Flow direction
     /// </summary>
     [Parameter] public WorkflowDirection Direction { get; set; } = WorkflowDirection.Horizontal;
     
     /// <summary>
-    /// Show node labels
+    /// Show labels on nodes
     /// </summary>
     [Parameter] public bool ShowLabels { get; set; } = true;
     
     /// <summary>
-    /// Interactive (clickable nodes)
+    /// Enable node interactions
     /// </summary>
     [Parameter] public bool Interactive { get; set; } = true;
     
     /// <summary>
-    /// Callback when node is clicked
+    /// Enable node dragging
     /// </summary>
-    [Parameter] public EventCallback<WorkflowNode> OnNodeClick { get; set; }
+    [Parameter] public bool Draggable { get; set; } = true;
     
     /// <summary>
-    /// Fit content to screen on load
+    /// Enable animations
+    /// </summary>
+    [Parameter] public bool Animated { get; set; } = true;
+    
+    /// <summary>
+    /// Fit to screen on load
     /// </summary>
     [Parameter] public bool FitToScreen { get; set; } = true;
+    
+    /// <summary>
+    /// Node click event
+    /// </summary>
+    [Parameter] public EventCallback<NodeClickedEventArgs> OnNodeClick { get; set; }
+    
+    /// <summary>
+    /// Node position changed event (after drag)
+    /// </summary>
+    [Parameter] public EventCallback<NodePositionChangedEventArgs> OnNodePositionChanged { get; set; }
+    
+    /// <summary>
+    /// Node status changed event
+    /// </summary>
+    [Parameter] public EventCallback<NodeStatusChangedEventArgs> OnNodeStatusChanged { get; set; }
+    
+    /// <summary>
+    /// Additional attributes
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
     
     #endregion
     
@@ -114,8 +137,26 @@
         
         var data = new
         {
-            nodes = Nodes,
-            edges = Edges
+            nodes = Nodes.Select(n => new
+            {
+                id = n.Id,
+                label = n.Label,
+                description = n.Description,
+                icon = n.Icon,
+                status = n.Status.ToString().ToLower(),
+                position = new { x = n.Position.X, y = n.Position.Y },
+                nodeType = n.NodeType,
+                metadata = n.Metadata
+            }),
+            edges = Edges.Select(e => new
+            {
+                id = e.Id,
+                from = e.FromNodeId,
+                to = e.ToNodeId,
+                label = e.Label,
+                edgeType = e.EdgeType,
+                animated = e.Animated
+            })
         };
         
         var options = new
@@ -127,6 +168,8 @@
             direction = Direction.ToString().ToLower(),
             showLabels = ShowLabels,
             interactive = Interactive,
+            draggable = Draggable,
+            animated = Animated,
             fitToScreen = FitToScreen
         };
         
@@ -140,16 +183,48 @@
         {
             var data = new
             {
-                nodes = Nodes,
-                edges = Edges
+                nodes = Nodes.Select(n => new
+                {
+                    id = n.Id,
+                    label = n.Label,
+                    description = n.Description,
+                    icon = n.Icon,
+                    status = n.Status.ToString().ToLower(),
+                    position = new { x = n.Position.X, y = n.Position.Y },
+                    nodeType = n.NodeType,
+                    metadata = n.Metadata
+                }),
+                edges = Edges.Select(e => new
+                {
+                    id = e.Id,
+                    from = e.FromNodeId,
+                    to = e.ToNodeId,
+                    label = e.Label,
+                    edgeType = e.EdgeType,
+                    animated = e.Animated
+                })
             };
             
             await JS.InvokeVoidAsync("Blazwind.Workflow.update", _instanceId, data);
         }
     }
     
-    // Public API for Controlling Zoom/Pan
+    #region Public API
     
+    /// <summary>
+    /// Update a node's status
+    /// </summary>
+    public async Task UpdateNodeStatusAsync(string nodeId, WorkflowNodeStatus status)
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Workflow.updateNodeStatus", _instanceId, nodeId, status.ToString().ToLower());
+        }
+    }
+    
+    /// <summary>
+    /// Zoom in
+    /// </summary>
     public async Task ZoomInAsync()
     {
         if (_instanceId != null)
@@ -157,7 +232,10 @@
             await JS.InvokeVoidAsync("Blazwind.Workflow.zoomIn", _instanceId);
         }
     }
-
+    
+    /// <summary>
+    /// Zoom out
+    /// </summary>
     public async Task ZoomOutAsync()
     {
         if (_instanceId != null)
@@ -166,6 +244,9 @@
         }
     }
     
+    /// <summary>
+    /// Fit diagram to screen
+    /// </summary>
     public async Task FitToScreenAsync()
     {
         if (_instanceId != null)
@@ -174,32 +255,53 @@
         }
     }
     
+    #endregion
+    
+    #region JS Interop Callbacks
+    
     [JSInvokable]
     public async Task HandleNodeClick(string nodeId, string nodeJson)
     {
-        try
+        var node = Nodes.FirstOrDefault(n => n.Id == nodeId);
+        if (node != null && OnNodeClick.HasDelegate)
         {
-            var node = JsonSerializer.Deserialize<WorkflowNode>(nodeJson, new JsonSerializerOptions 
-            { 
-                PropertyNameCaseInsensitive = true 
-            });
-            if (node != null)
+            await OnNodeClick.InvokeAsync(new NodeClickedEventArgs
             {
-                await OnNodeClick.InvokeAsync(node);
-            }
+                NodeId = nodeId,
+                Node = node
+            });
         }
-        catch { }
     }
     
-    /// <summary>
-    /// Update node status
-    /// </summary>
-    public async Task UpdateNodeStatusAsync(string nodeId, WorkflowNodeStatus status)
+    [JSInvokable]
+    public async Task HandleNodePositionChanged(string nodeId, JsonElement oldPos, JsonElement newPos)
     {
-        if (_instanceId != null)
+        var node = Nodes.FirstOrDefault(n => n.Id == nodeId);
+        if (node != null)
         {
-            await JS.InvokeVoidAsync("Blazwind.Workflow.updateNodeStatus", _instanceId, nodeId, status.ToString().ToLower());
+            var oldPosition = new NodePosition(oldPos.GetProperty("x").GetDouble(), oldPos.GetProperty("y").GetDouble());
+            var newPosition = new NodePosition(newPos.GetProperty("x").GetDouble(), newPos.GetProperty("y").GetDouble());
+            
+            // Update node position
+            node.Position = newPosition;
+            
+            if (OnNodePositionChanged.HasDelegate)
+            {
+                await OnNodePositionChanged.InvokeAsync(new NodePositionChangedEventArgs
+                {
+                    NodeId = nodeId,
+                    OldPosition = oldPosition,
+                    NewPosition = newPosition
+                });
+            }
         }
+    }
+    
+    #endregion
+    
+    private string CombineClasses(string baseClasses)
+    {
+        return string.IsNullOrEmpty(Class) ? baseClasses : $"{baseClasses} {Class}";
     }
     
     public async ValueTask DisposeAsync()

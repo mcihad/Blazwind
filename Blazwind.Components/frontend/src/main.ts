@@ -26,7 +26,7 @@ import * as SignaturePad from './components/signaturePad';
 import * as Barcode from './components/barcode';
 import * as OrgChart from './components/orgChart';
 import * as Printable from './components/printable';
-import * as Workflow from './components/workflow';
+import * as Workflow from './workflow';
 import * as Gantt from './components/gantt';
 import * as DocumentViewer from './components/documentViewer';
 import * as Tour from './components/tour';
