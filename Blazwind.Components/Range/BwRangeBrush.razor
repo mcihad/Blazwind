@@ -166,7 +166,7 @@
             EndPercent = _endPercent
         });
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private double SnapToStep(double value) => Math.Round(value / Step) * Step;

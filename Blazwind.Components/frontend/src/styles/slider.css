@@ -6,6 +6,15 @@
     border-radius: 9999px;
     outline: none;
     cursor: pointer;
+    /* Background is set via inline style for gradient, but provide fallback */
+    background: linear-gradient(to right, var(--slider-fill-color, #3B82F6) 0%, var(--slider-fill-color, #3B82F6) 50%, #E5E7EB 50%, #E5E7EB 100%);
+}
+
+/* WebKit Track - needed for Chrome/Safari to show the background */
+.bw-slider::-webkit-slider-runnable-track {
+    height: var(--slider-track-height, 8px);
+    border-radius: 9999px;
+    /* Track background is handled by the input element itself */
 }
 
 /* WebKit (Chrome, Safari, Edge) */

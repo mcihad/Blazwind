@@ -164,11 +164,14 @@
 
     private async Task FocusInput(int index)
     {
-        try
+        if (index >= 0 && index < _inputRefs.Length)
         {
-            await JS.InvokeVoidAsync("eval", $"document.querySelectorAll('[id=\"{Id}\"] input')[{index}]?.focus()");
+            try
+            {
+                await _inputRefs[index].FocusAsync();
+            }
+            catch { }
         }
-        catch { }
     }
 
     private async Task UpdateValue()

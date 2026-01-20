@@ -24,6 +24,8 @@ interface DragState {
 
 const instances = new Map<string, BrushInstance>();
 let dragState: DragState | null = null;
+let lastNotifyTime = 0;
+const THROTTLE_MS = 16; // ~60fps
 
 /**
  * Initialize brush component
@@ -203,6 +205,13 @@ function applyMove(clientX: number): void {
     // Apply changes
     instance.brush.style.left = `${newLeft}%`;
     instance.brush.style.width = `${newWidth}%`;
+
+    // Real-time update with throttling
+    const now = Date.now();
+    if (now - lastNotifyTime >= THROTTLE_MS) {
+        lastNotifyTime = now;
+        notifyChange(instance);
+    }
 }
 
 function onMouseUp(): void {
