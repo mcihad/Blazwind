@@ -29,14 +29,14 @@
         class="bw-brush-track relative h-10 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden cursor-pointer select-none">
         @* Inactive areas *@
         <div class="absolute inset-y-0 left-0 bg-gray-200/80 dark:bg-gray-900/60 transition-all"
-            style="width: @(StartPercent)%;"></div>
+            style="width: @GetInvariantPercent(StartPercent)%;"></div>
         <div class="absolute inset-y-0 right-0 bg-gray-200/80 dark:bg-gray-900/60 transition-all"
-            style="width: @(100 - EndPercent)%;"></div>
+            style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
 
         @* Selection Brush *@
         <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
                     @GetBrushBgClass() shadow-md hover:shadow-lg transition-shadow"
-            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+            style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-2.5 cursor-ew-resize
@@ -129,17 +129,69 @@
     private double _startPercent;
     private double _endPercent;
 
+    private bool _isDragging;
+    
+    private double _prevStart;
+    private double _prevEnd;
+    private double _prevMin; // Needed as Min/Max changes affect percent calculation
+    private double _prevMax;
+
     private double StartPercent => _startPercent;
     private double EndPercent => _endPercent;
     private double CurrentStart => SnapToStep(Min + (Max - Min) * (_startPercent / 100));
     private double CurrentEnd => SnapToStep(Min + (Max - Min) * (_endPercent / 100));
     private double MaxDataValue => Data?.Max() ?? 0;
 
+    protected override bool ShouldRender() => !_isDragging;
+
     protected override void OnInitialized()
     {
         _elementId = $"bw-number-brush-{Guid.NewGuid():N}";
+        InitializeState();
+    }
+    
+    private void InitializeState()
+    {
         _startPercent = ((Start - Min) / (Max - Min)) * 100;
         _endPercent = ((End - Min) / (Max - Min)) * 100;
+        
+        _prevStart = Start;
+        _prevEnd = End;
+        _prevMin = Min;
+        _prevMax = Max;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_isDragging) return;
+
+        bool paramsChanged = Math.Abs(Start - _prevStart) > double.Epsilon ||
+                             Math.Abs(End - _prevEnd) > double.Epsilon ||
+                             Math.Abs(Min - _prevMin) > double.Epsilon ||
+                             Math.Abs(Max - _prevMax) > double.Epsilon;
+
+        if (!paramsChanged) return;
+
+        _startPercent = ((Start - Min) / (Max - Min)) * 100;
+        _endPercent = ((End - Min) / (Max - Min)) * 100;
+
+        _prevStart = Start;
+        _prevEnd = End;
+        _prevMin = Min;
+        _prevMax = Max;
+    }
+    
+    [JSInvokable]
+    public void HandleDragStart()
+    {
+        _isDragging = true;
+    }
+
+    [JSInvokable]
+    public void HandleDragEnd()
+    {
+        _isDragging = false;
+        StateHasChanged();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -208,6 +260,9 @@
         result += Suffix ?? "";
         return result;
     }
+
+    private string GetInvariantPercent(double value) => 
+        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     private string GetBrushBgClass() => Color switch
     {

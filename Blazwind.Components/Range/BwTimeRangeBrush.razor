@@ -29,14 +29,14 @@
     <div class="bw-brush-track relative h-8 rounded-lg @GetTrackBgClass() overflow-hidden cursor-pointer select-none">
         @* Inactive areas *@
         <div class="absolute inset-y-0 left-0 bg-gray-300/50 dark:bg-gray-900/60 transition-all"
-            style="width: @(StartPercent)%;"></div>
+            style="width: @GetInvariantPercent(StartPercent)%;"></div>
         <div class="absolute inset-y-0 right-0 bg-gray-300/50 dark:bg-gray-900/60 transition-all"
-            style="width: @(100 - EndPercent)%;"></div>
+            style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
 
         @* Selection Brush *@
         <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
                     @GetBrushBgClass() shadow hover:shadow-md transition-all"
-            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+            style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-2.5 cursor-ew-resize @GetHandleClass()
@@ -143,6 +143,13 @@
     private double _startPercent;
     private double _endPercent;
 
+    private bool _isDragging;
+    
+    private TimeSpan _prevStart;
+    private TimeSpan _prevEnd;
+    private TimeSpan _prevMin;
+    private TimeSpan _prevMax;
+
     private double StartPercent => _startPercent;
     private double EndPercent => _endPercent;
     private double TotalMinutes => (MaxTime - MinTime).TotalMinutes;
@@ -150,6 +157,8 @@
     100))));
     private TimeSpan CurrentEndTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (_endPercent / 100))));
     private double MaxValue => Data?.Max(x => x.Value) ?? 0;
+    
+    protected override bool ShouldRender() => !_isDragging;
 
     private string DurationText
     {
@@ -165,12 +174,57 @@
     protected override void OnInitialized()
     {
         _elementId = $"bw-time-brush-{Guid.NewGuid():N}";
+        InitializeState();
+    }
+    
+    private void InitializeState()
+    {
+        if (TotalMinutes > 0)
+        {
+            _startPercent = ((StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+            _endPercent = ((EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+        }
+        
+        _prevStart = StartTime;
+        _prevEnd = EndTime;
+        _prevMin = MinTime;
+        _prevMax = MaxTime;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_isDragging) return;
+
+        bool paramsChanged = StartTime != _prevStart ||
+                             EndTime != _prevEnd ||
+                             MinTime != _prevMin ||
+                             MaxTime != _prevMax;
+
+        if (!paramsChanged) return;
 
         if (TotalMinutes > 0)
         {
             _startPercent = ((StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
             _endPercent = ((EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
         }
+
+        _prevStart = StartTime;
+        _prevEnd = EndTime;
+        _prevMin = MinTime;
+        _prevMax = MaxTime;
+    }
+    
+    [JSInvokable]
+    public void HandleDragStart()
+    {
+        _isDragging = true;
+    }
+
+    [JSInvokable]
+    public void HandleDragEnd()
+    {
+        _isDragging = false;
+        StateHasChanged();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -241,6 +295,9 @@
         var totalMinutes = Math.Round(time.TotalMinutes / stepMinutes) * stepMinutes;
         return TimeSpan.FromMinutes(totalMinutes);
     }
+
+    private string GetInvariantPercent(double value) => 
+        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     private string GetTrackBgClass() => Color switch
     {

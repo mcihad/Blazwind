@@ -20,15 +20,15 @@
             <BwButton Text="Gün" 
                       Variant="@(ViewMode == GanttViewMode.Day ? BwVariant.Filled : BwVariant.Outline)" 
                       Color="@(ViewMode == GanttViewMode.Day ? BwColor.Primary : BwColor.Secondary)"
-                      OnClick="() => SetViewMode(GanttViewMode.Day)" />
+                      OnClick="async () => await SetViewMode(GanttViewMode.Day)" />
             <BwButton Text="Hafta" 
                       Variant="@(ViewMode == GanttViewMode.Week ? BwVariant.Filled : BwVariant.Outline)" 
                       Color="@(ViewMode == GanttViewMode.Week ? BwColor.Primary : BwColor.Secondary)"
-                      OnClick="() => SetViewMode(GanttViewMode.Week)" />
+                      OnClick="async () => await SetViewMode(GanttViewMode.Week)" />
             <BwButton Text="Ay" 
                       Variant="@(ViewMode == GanttViewMode.Month ? BwVariant.Filled : BwVariant.Outline)" 
                       Color="@(ViewMode == GanttViewMode.Month ? BwColor.Primary : BwColor.Secondary)"
-                      OnClick="() => SetViewMode(GanttViewMode.Month)" />
+                      OnClick="async () => await SetViewMode(GanttViewMode.Month)" />
         </BwButtonGroup>
     </BwRow>
 
@@ -112,10 +112,10 @@
                 </div>
 
                 @* Today Line *@
-                @if (TodayOffset >= 0 && TodayOffset <= TimelinePeriods.Count)
+                @if (TodayOffset >= 0)
                 {
                     <div class="absolute top-0 bottom-0 w-0.5 bg-red-400 z-20"
-                         style="left: @(TodayOffset * GetColumnWidth())px;">
+                         style="left: @(TodayOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))px;">
                         <div class="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-red-400"></div>
                     </div>
                 }
@@ -214,14 +214,51 @@
 
     private List<GanttTask> FlatTasks => FlattenTasks(Tasks);
     private List<string> TimelinePeriods = new();
+    private List<DateTime> PeriodBoundaries = new(); // Start dates of each period
     private DateTime _timelineStart;
     private DateTime _timelineEnd;
-    private double TodayOffset => (DateTime.Today - _timelineStart).TotalDays;
+    private double TodayOffset => CalculateTodayOffset();
     private string? _hoveredTaskId;
 
     protected override void OnParametersSet()
     {
         CalculateTimeline();
+    }
+    
+    private double CalculateTodayOffset()
+    {
+        if (ViewMode != GanttViewMode.Month || PeriodBoundaries.Count == 0)
+        {
+            return (DateTime.Today - _timelineStart).TotalDays;
+        }
+        
+        // Month view - calculate based on period boundaries
+        var columnWidth = GetColumnWidth();
+        double offset = 0;
+        
+        for (int i = 0; i < PeriodBoundaries.Count; i++)
+        {
+            var periodStart = PeriodBoundaries[i];
+            var periodEnd = i < PeriodBoundaries.Count - 1 ? PeriodBoundaries[i + 1] : _timelineEnd.AddDays(1);
+            var periodDays = (periodEnd - periodStart).TotalDays;
+            
+            if (DateTime.Today >= periodEnd)
+            {
+                offset += columnWidth;
+            }
+            else if (DateTime.Today >= periodStart && DateTime.Today < periodEnd)
+            {
+                var daysInto = (DateTime.Today - periodStart).TotalDays;
+                offset += (daysInto / periodDays * columnWidth);
+                break;
+            }
+            else
+            {
+                break;
+            }
+        }
+        
+        return offset;
     }
 
     private List<GanttTask> FlattenTasks(List<GanttTask> tasks, int level = 0)
@@ -248,8 +285,28 @@
         }
         else
         {
-            _timelineStart = StartDate ?? allTasks.Min(t => t.StartDate).AddDays(-3);
-            _timelineEnd = EndDate ?? allTasks.Max(t => t.EndDate).AddDays(7);
+            var minDate = allTasks.Min(t => t.StartDate);
+            var maxDate = allTasks.Max(t => t.EndDate);
+            
+            // Adjust timeline based on view mode for better alignment
+            if (ViewMode == GanttViewMode.Month)
+            {
+                // Start from beginning of the month
+                _timelineStart = StartDate ?? new DateTime(minDate.Year, minDate.Month, 1);
+                // End at the end of the month
+                var endMonth = maxDate.AddMonths(1);
+                _timelineEnd = EndDate ?? new DateTime(endMonth.Year, endMonth.Month, 1).AddDays(-1);
+            }
+            else if (ViewMode == GanttViewMode.Week)
+            {
+                _timelineStart = StartDate ?? minDate.AddDays(-3);
+                _timelineEnd = EndDate ?? maxDate.AddDays(7);
+            }
+            else
+            {
+                _timelineStart = StartDate ?? minDate.AddDays(-2);
+                _timelineEnd = EndDate ?? maxDate.AddDays(5);
+            }
         }
 
         TimelinePeriods = GeneratePeriods();
@@ -258,10 +315,13 @@
     private List<string> GeneratePeriods()
     {
         var periods = new List<string>();
+        PeriodBoundaries = new List<DateTime>();
         var current = _timelineStart;
 
         while (current <= _timelineEnd)
         {
+            PeriodBoundaries.Add(current);
+            
             switch (ViewMode)
             {
                 case GanttViewMode.Day:
@@ -305,22 +365,90 @@
         {
             GanttViewMode.Day => 1,
             GanttViewMode.Week => 7,
-            GanttViewMode.Month => 30,
+            GanttViewMode.Month => 30, // Average for JS interop
             _ => 1
         };
     }
 
     private string GetTaskBarStyle(GanttTask task, int rowIndex)
     {
-        var daysPerColumn = GetDaysPerColumn();
         var columnWidth = GetColumnWidth();
         var rowHeight = 32;
+        double startOffset = 0;
+        double width = 0;
 
-        var startOffset = (task.StartDate - _timelineStart).TotalDays / daysPerColumn * columnWidth;
-        var width = task.IsMilestone ? 16 : Math.Max(16, task.DurationDays / daysPerColumn * columnWidth);
+        if (ViewMode == GanttViewMode.Month && PeriodBoundaries.Count > 0)
+        {
+            // For month view, calculate based on actual period boundaries
+            double totalOffset = 0;
+            for (int i = 0; i < PeriodBoundaries.Count; i++)
+            {
+                var periodStart = PeriodBoundaries[i];
+                var periodEnd = i < PeriodBoundaries.Count - 1 ? PeriodBoundaries[i + 1] : _timelineEnd.AddDays(1);
+                var periodDays = (periodEnd - periodStart).TotalDays;
+                
+                if (task.StartDate >= periodEnd)
+                {
+                    // Task starts after this period
+                    totalOffset += columnWidth;
+                }
+                else if (task.StartDate >= periodStart && task.StartDate < periodEnd)
+                {
+                    // Task starts in this period
+                    var daysInto = (task.StartDate - periodStart).TotalDays;
+                    startOffset = totalOffset + (daysInto / periodDays * columnWidth);
+                    break;
+                }
+                else if (task.StartDate < periodStart)
+                {
+                    // Task started before this period
+                    startOffset = totalOffset;
+                    break;
+                }
+            }
+            
+            // Calculate width based on actual days spanning across months
+            double remainingDuration = task.DurationDays;
+            var currentDate = task.StartDate;
+            
+            for (int i = 0; i < PeriodBoundaries.Count && remainingDuration > 0; i++)
+            {
+                var periodStart = PeriodBoundaries[i];
+                var periodEnd = i < PeriodBoundaries.Count - 1 ? PeriodBoundaries[i + 1] : _timelineEnd.AddDays(1);
+                var periodDays = (periodEnd - periodStart).TotalDays;
+                
+                if (currentDate >= periodEnd)
+                {
+                    continue;
+                }
+                
+                var effectiveStart = currentDate > periodStart ? currentDate : periodStart;
+                var taskEnd = task.EndDate.AddDays(1); // EndDate is inclusive
+                var effectiveEnd = taskEnd < periodEnd ? taskEnd : periodEnd;
+                
+                if (effectiveStart < effectiveEnd)
+                {
+                    var daysInPeriod = (effectiveEnd - effectiveStart).TotalDays;
+                    width += (daysInPeriod / periodDays * columnWidth);
+                    remainingDuration -= daysInPeriod;
+                    currentDate = effectiveEnd;
+                }
+            }
+            
+            width = task.IsMilestone ? 16 : Math.Max(16, width);
+        }
+        else
+        {
+            // Day and Week views - simple calculation
+            var daysPerColumn = GetDaysPerColumn();
+            startOffset = (task.StartDate - _timelineStart).TotalDays / daysPerColumn * columnWidth;
+            width = task.IsMilestone ? 16 : Math.Max(16, task.DurationDays / daysPerColumn * columnWidth);
+        }
+
         var top = rowIndex * rowHeight + 6;
-
-        return $"left: {startOffset}px; width: {width}px; top: {top}px; height: 20px;";
+        
+        // Use InvariantCulture to ensure decimal point (not comma) for WASM compatibility
+        return $"left: {startOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}px; width: {width.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}px; top: {top}px; height: 20px;";
     }
 
     private string GetTaskBgColor(GanttTask task)
@@ -341,10 +469,11 @@
         };
     }
 
-    private void SetViewMode(GanttViewMode mode)
+    private async Task SetViewMode(GanttViewMode mode)
     {
         ViewMode = mode;
         CalculateTimeline();
+        await UpdateJsOptionsAsync();
     }
 
     // JS Interop for drag/resize
@@ -352,13 +481,21 @@
     private DotNetObjectReference<BwGantt>? _netRef;
     private string? _instanceId;
     private bool _isJsInitialized;
+    private bool _previousEditableState;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && Editable)
+        if (Editable && !_isJsInitialized)
         {
             await InitializeJsInteropAsync();
         }
+        else if (!Editable && _isJsInitialized)
+        {
+            await DisposeJsAsync();
+        }
+        
+        // Track editable state changes
+        _previousEditableState = Editable;
     }
 
     private async Task InitializeJsInteropAsync()
@@ -369,22 +506,68 @@
         var columnWidth = GetColumnWidth();
         var daysPerColumn = GetDaysPerColumn();
         
+        // Retry logic for WASM
+        var retries = 0;
+        while (!_isJsInitialized && retries < 3)
+        {
+            try
+            {
+                await Task.Delay(retries * 50); // Progressive delay
+                _instanceId = await JS.InvokeAsync<string>(
+                    "Blazwind.Gantt.init", 
+                    _timelineContainer, 
+                    _netRef,
+                    daysPerColumn,
+                    columnWidth,
+                    32 // row height
+                );
+                _isJsInitialized = true;
+            }
+            catch
+            {
+                retries++;
+                if (retries >= 3)
+                {
+                    // Give up after 3 retries
+                    break;
+                }
+            }
+        }
+    }
+    
+    private async Task UpdateJsOptionsAsync()
+    {
+        if (!_isJsInitialized || string.IsNullOrEmpty(_instanceId)) return;
+        
         try
         {
-            _instanceId = await JS.InvokeAsync<string>(
-                "Blazwind.Gantt.init", 
-                _timelineContainer, 
-                _netRef,
-                daysPerColumn,
-                columnWidth,
-                32 // row height
+            await JS.InvokeVoidAsync(
+                "Blazwind.Gantt.updateOptions",
+                _instanceId,
+                GetDaysPerColumn(),
+                GetColumnWidth()
             );
-            _isJsInitialized = true;
         }
         catch
         {
-            // JS not available yet
+            // JS not available
         }
+    }
+    
+    private async Task DisposeJsAsync()
+    {
+        if (_instanceId != null)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.Gantt.dispose", _instanceId);
+            }
+            catch { }
+        }
+        _netRef?.Dispose();
+        _netRef = null;
+        _instanceId = null;
+        _isJsInitialized = false;
     }
 
     [JSInvokable]
@@ -453,14 +636,6 @@
 
     public async ValueTask DisposeAsync()
     {
-        if (_instanceId != null)
-        {
-            try
-            {
-                await JS.InvokeVoidAsync("Blazwind.Gantt.dispose", _instanceId);
-            }
-            catch { }
-        }
-        _netRef?.Dispose();
+        await DisposeJsAsync();
     }
 }

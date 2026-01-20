@@ -25,14 +25,14 @@
             class="bw-brush-track relative h-12 rounded-lg @GetTrackBgClass() overflow-hidden cursor-pointer select-none">
             @* Inactive areas (grayed out) *@
             <div class="absolute inset-y-0 left-0 bg-gray-200/80 dark:bg-gray-900/60 backdrop-blur-sm transition-all"
-                style="width: @(_startPercent)%;"></div>
+                style="width: @GetInvariantPercent(_startPercent)%;"></div>
             <div class="absolute inset-y-0 right-0 bg-gray-200/80 dark:bg-gray-900/60 backdrop-blur-sm transition-all"
-                style="width: @(100 - _endPercent)%;"></div>
+                style="width: @GetInvariantPercent(100 - _endPercent)%;"></div>
 
             @* Selection Brush *@
             <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing transition-shadow
                         @GetBrushBgClass() hover:shadow-lg"
-                style="left: @(_startPercent)%; width: @(_endPercent - _startPercent)%;">
+                style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
 
                 @* Left Handle - wider hit area for easier dragging *@
                 <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-5 -ml-1 cursor-ew-resize group/handle
@@ -123,10 +123,19 @@
 
     protected override bool ShouldRender() => !_isDragging;
 
+    private double _prevStart;
+    private double _prevEnd;
+    private double _prevStartPercent;
+    private double _prevEndPercent;
+
     protected override void OnInitialized()
     {
         _elementId = $"bw-brush-{Guid.NewGuid():N}";
-        // Use StartPercent/EndPercent if provided, otherwise calculate from Start/End
+        InitializeState();
+    }
+    
+    private void InitializeState()
+    {
         if (StartPercent > 0 || EndPercent < 100)
         {
             _startPercent = StartPercent;
@@ -137,24 +146,44 @@
             _startPercent = ((Start - Min) / (Max - Min)) * 100;
             _endPercent = ((End - Min) / (Max - Min)) * 100;
         }
+        
+        _prevStart = Start;
+        _prevEnd = End;
+        _prevStartPercent = StartPercent;
+        _prevEndPercent = EndPercent;
     }
-    
+
     protected override void OnParametersSet()
     {
-        // Update internal state if parameters change externally and we're not dragging
-        if (!_isDragging)
+        // Skip updates if dragging
+        if (_isDragging) return;
+
+        // Check if parameters actually changed
+        bool startChanged = Math.Abs(Start - _prevStart) > double.Epsilon;
+        bool endChanged = Math.Abs(End - _prevEnd) > double.Epsilon;
+        bool startPercentChanged = Math.Abs(StartPercent - _prevStartPercent) > double.Epsilon;
+        bool endPercentChanged = Math.Abs(EndPercent - _prevEndPercent) > double.Epsilon;
+
+        if (!startChanged && !endChanged && !startPercentChanged && !endPercentChanged) return;
+
+        // Determine which set of parameters to use
+        // Priority: StartPercent/EndPercent if changed, then Start/End
+        if (startPercentChanged || endPercentChanged)
         {
-             // Calculate fresh percentages
-            var newStartPercent = ((Start - Min) / (Max - Min)) * 100;
-            var newEndPercent = ((End - Min) / (Max - Min)) * 100;
-            
-            // Only update if difference is significant (avoid floating point noise)
-            if (Math.Abs(newStartPercent - _startPercent) > 0.01 || Math.Abs(newEndPercent - _endPercent) > 0.01)
-            {
-                _startPercent = newStartPercent;
-                _endPercent = newEndPercent;
-            }
+            _startPercent = StartPercent;
+            _endPercent = EndPercent;
         }
+        else if (startChanged || endChanged)
+        {
+            _startPercent = ((Start - Min) / (Max - Min)) * 100;
+            _endPercent = ((End - Min) / (Max - Min)) * 100;
+        }
+
+        // Update tracking variables
+        _prevStart = Start;
+        _prevEnd = End;
+        _prevStartPercent = StartPercent;
+        _prevEndPercent = EndPercent;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -217,6 +246,9 @@
         var range = SnapToStep(CurrentEnd) - SnapToStep(CurrentStart);
         return string.IsNullOrEmpty(Format) ? range.ToString("N0") : range.ToString(Format);
     }
+
+    private string GetInvariantPercent(double value) => 
+        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     private string GetTrackBgClass() => Color switch
     {

@@ -30,14 +30,14 @@
         class="bw-brush-track relative h-8 rounded-lg @GetTrackBgClass() overflow-hidden cursor-pointer select-none border border-gray-200 dark:border-gray-700">
         @* Inactive areas *@
         <div class="absolute inset-y-0 left-0 bg-gray-300/50 dark:bg-gray-900/70 transition-all"
-            style="width: @(StartPercent)%;"></div>
+            style="width: @GetInvariantPercent(StartPercent)%;"></div>
         <div class="absolute inset-y-0 right-0 bg-gray-300/50 dark:bg-gray-900/70 transition-all"
-            style="width: @(100 - EndPercent)%;"></div>
+            style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
 
         @* Selection Brush *@
         <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing transition-shadow
                     @GetBrushBgClass() shadow hover:shadow-md"
-            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+            style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-3 cursor-ew-resize @GetHandleClass()
@@ -149,12 +149,21 @@
     private double _startPercent;
     private double _endPercent;
 
+    private bool _isDragging;
+    
+    private DateTime _prevStart;
+    private DateTime _prevEnd;
+    private DateTime _prevMin;
+    private DateTime _prevMax;
+
     private double StartPercent => _startPercent;
     private double EndPercent => _endPercent;
     private int TotalDays => (int)(MaxDate - MinDate).TotalDays;
     private DateTime CurrentStartDate => SnapToStep(MinDate.AddDays(TotalDays * (_startPercent / 100)));
     private DateTime CurrentEndDate => SnapToStep(MinDate.AddDays(TotalDays * (_endPercent / 100)));
     private double MaxValue => Data?.Max(x => x.Value) ?? 0;
+
+    protected override bool ShouldRender() => !_isDragging;
 
     private string RangeText => StepUnit switch
     {
@@ -188,10 +197,53 @@
     protected override void OnInitialized()
     {
         _elementId = $"bw-date-brush-{Guid.NewGuid():N}";
+        InitializeState();
+    }
+    
+    private void InitializeState()
+    {
+        var totalDays = (double)TotalDays;
+        _startPercent = totalDays > 0 ? ((StartDate - MinDate).TotalDays / totalDays) * 100 : 0;
+        _endPercent = totalDays > 0 ? ((EndDate - MinDate).TotalDays / totalDays) * 100 : 100;
+
+        _prevStart = StartDate;
+        _prevEnd = EndDate;
+        _prevMin = MinDate;
+        _prevMax = MaxDate;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_isDragging) return;
+
+        bool paramsChanged = StartDate != _prevStart ||
+                             EndDate != _prevEnd ||
+                             MinDate != _prevMin ||
+                             MaxDate != _prevMax;
+
+        if (!paramsChanged) return;
 
         var totalDays = (double)TotalDays;
         _startPercent = totalDays > 0 ? ((StartDate - MinDate).TotalDays / totalDays) * 100 : 0;
         _endPercent = totalDays > 0 ? ((EndDate - MinDate).TotalDays / totalDays) * 100 : 100;
+
+        _prevStart = StartDate;
+        _prevEnd = EndDate;
+        _prevMin = MinDate;
+        _prevMax = MaxDate;
+    }
+    
+    [JSInvokable]
+    public void HandleDragStart()
+    {
+        _isDragging = true;
+    }
+
+    [JSInvokable]
+    public void HandleDragEnd()
+    {
+        _isDragging = false;
+        StateHasChanged();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -262,6 +314,9 @@
         var percent = ((date - MinDate).TotalDays / totalDays) * 100;
         return percent >= _startPercent && percent <= _endPercent;
     }
+
+    private string GetInvariantPercent(double value) => 
+        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     private string GetTrackBgClass() => Color switch
     {
