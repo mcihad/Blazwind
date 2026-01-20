@@ -8,7 +8,9 @@ interface RangeInstance {
     track: HTMLElement;
     startThumb: HTMLElement;
     endThumb: HTMLElement;
-    activeRange: HTMLElement; // Added active range element
+    activeRange: HTMLElement;
+    startTooltip: HTMLElement | null;
+    endTooltip: HTMLElement | null;
     min: number;
     max: number;
     step: number;
@@ -45,9 +47,12 @@ export function initialize(
     const track = element.querySelector('.bw-range-track') as HTMLElement;
     const startThumb = element.querySelector('.bw-range-thumb-start') as HTMLElement;
     const endThumb = element.querySelector('.bw-range-thumb-end') as HTMLElement;
-    const activeRange = track.querySelector('.bw-active-range') as HTMLElement; // Get active range bar
+    const activeRange = track.querySelector('.bw-active-range') as HTMLElement;
 
     if (!track || !startThumb || !endThumb || !activeRange) return;
+
+    const startTooltip = startThumb.querySelector('.bw-tooltip-start') as HTMLElement;
+    const endTooltip = endThumb.querySelector('.bw-tooltip-end') as HTMLElement;
 
     const instance: RangeInstance = {
         element,
@@ -55,6 +60,8 @@ export function initialize(
         startThumb,
         endThumb,
         activeRange,
+        startTooltip,
+        endTooltip,
         min,
         max,
         step,
@@ -78,6 +85,10 @@ export function initialize(
 function startDrag(e: MouseEvent, instance: RangeInstance, thumb: 'start' | 'end'): void {
     e.preventDefault();
     e.stopPropagation();
+
+    // Show tooltip
+    const tooltip = thumb === 'start' ? instance.startTooltip : instance.endTooltip;
+    if (tooltip) tooltip.classList.remove('opacity-0');
 
     const thumbEl = thumb === 'start' ? instance.startThumb : instance.endThumb;
     const trackRect = instance.track.getBoundingClientRect();
@@ -106,6 +117,10 @@ function startDragTouch(e: TouchEvent, instance: RangeInstance, thumb: 'start' |
     e.preventDefault();
     e.stopPropagation();
 
+    // Show tooltip
+    const tooltip = thumb === 'start' ? instance.startTooltip : instance.endTooltip;
+    if (tooltip) tooltip.classList.remove('opacity-0');
+
     const thumbEl = thumb === 'start' ? instance.startThumb : instance.endThumb;
     const trackRect = instance.track.getBoundingClientRect();
     const thumbRect = thumbEl.getBoundingClientRect();
@@ -127,26 +142,22 @@ function startDragTouch(e: TouchEvent, instance: RangeInstance, thumb: 'start' |
 
 function handleTrackClick(e: MouseEvent, instance: RangeInstance): void {
     const target = e.target as HTMLElement;
-    // Don't handle if clicking on thumbs
     if (target.closest('.bw-range-thumb-start') || target.closest('.bw-range-thumb-end')) return;
 
     const trackRect = instance.track.getBoundingClientRect();
     const clickPercent = ((e.clientX - trackRect.left) / trackRect.width) * 100;
 
-    // Get current positions
     const startRect = instance.startThumb.getBoundingClientRect();
     const endRect = instance.endThumb.getBoundingClientRect();
     const startPercent = ((startRect.left + startRect.width / 2 - trackRect.left) / trackRect.width) * 100;
     const endPercent = ((endRect.left + endRect.width / 2 - trackRect.left) / trackRect.width) * 100;
 
-    // Move nearest thumb
     const distToStart = Math.abs(clickPercent - startPercent);
     const distToEnd = Math.abs(clickPercent - endPercent);
 
     const thumb = distToStart < distToEnd ? 'start' : 'end';
     const percent = Math.max(0, Math.min(100, clickPercent));
 
-    // Update locally for click
     updateVisuals(instance, thumb, percent);
     notifyChange(instance, thumb, percent);
 }
@@ -168,48 +179,43 @@ function applyMove(clientX: number): void {
 
     const { instance, thumb, trackWidth, trackLeft } = dragState;
 
-    // Calculate new percent based on absolute mouse position
     let newPercent = ((clientX - trackLeft) / trackWidth) * 100;
     newPercent = Math.max(0, Math.min(100, newPercent));
 
-    // Update visuals immediately
     updateVisuals(instance, thumb, newPercent);
-
     notifyChange(instance, thumb, newPercent);
 }
 
 function updateVisuals(instance: RangeInstance, thumb: 'start' | 'end', percent: number): void {
-    // Determine the other thumb's position
     let startPercent, endPercent;
 
     if (thumb === 'start') {
-
-
-        // Ensure start doesn't pass end (with step calculation logic in mind, ideally we snap here too but keeping it simple for visuals)
-        // Note: For pure visual feedback, we rely on the percent. Logic matching is handled in .NET or snap logic.
-        // We need to read the OTHER thumb's current style percent to update the bar.
         const currentEndStyle = parseFloat(instance.endThumb.style.left) || 100;
-
-        if (percent > currentEndStyle) percent = currentEndStyle; // Simple constraints
-
+        if (percent > currentEndStyle) percent = currentEndStyle;
         startPercent = percent;
         endPercent = currentEndStyle;
-
         instance.startThumb.style.left = `${percent}%`;
     } else {
         const currentStartStyle = parseFloat(instance.startThumb.style.left) || 0;
-
-        if (percent < currentStartStyle) percent = currentStartStyle; // Simple constraints
-
+        if (percent < currentStartStyle) percent = currentStartStyle;
         startPercent = currentStartStyle;
         endPercent = percent;
-
         instance.endThumb.style.left = `${percent}%`;
     }
 
-    // Update active range bar
     instance.activeRange.style.left = `${startPercent}%`;
     instance.activeRange.style.width = `${endPercent - startPercent}%`;
+
+    // Update Tooltip Text
+    const tooltip = thumb === 'start' ? instance.startTooltip : instance.endTooltip;
+    if (tooltip) {
+        const val = instance.min + (instance.max - instance.min) * (percent / 100);
+        // Snap to step logic (same as C# or very close)
+        const snapped = Math.round(val / instance.step) * instance.step;
+        // Format
+        const formatted = Number.isInteger(snapped) ? snapped.toString() : snapped.toFixed(2);
+        tooltip.textContent = formatted;
+    }
 }
 
 function onMouseUp(): void {
@@ -223,7 +229,11 @@ function onTouchEnd(): void {
 function endDrag(): void {
     if (!dragState) return;
 
-    const { instance } = dragState;
+    const { instance, thumb } = dragState;
+
+    // Hide tooltip
+    const tooltip = thumb === 'start' ? instance.startTooltip : instance.endTooltip;
+    if (tooltip) tooltip.classList.add('opacity-0');
 
     document.body.style.userSelect = '';
     document.body.style.cursor = '';
@@ -233,9 +243,7 @@ function endDrag(): void {
     document.removeEventListener('touchmove', onTouchMove);
     document.removeEventListener('touchend', onTouchEnd);
 
-    // Notify drag end
     instance.dotNetRef.invokeMethodAsync('HandleDragEnd');
-
     dragState = null;
 }
 

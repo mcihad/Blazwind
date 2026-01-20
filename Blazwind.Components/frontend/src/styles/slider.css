@@ -108,36 +108,3 @@
     background: #4B5563;
     border-color: #4B5563;
 }
-
-/* Vertical Slider */
-.bw-slider.vertical {
-    writing-mode: bt-lr;
-    /* IE */
-    -webkit-appearance: slider-vertical;
-    /* WebKit */
-    width: var(--slider-track-height, 8px);
-    height: 200px;
-    margin: 0;
-    padding: 0;
-}
-
-.bw-slider.vertical::-webkit-slider-runnable-track {
-    width: var(--slider-track-height, 8px);
-    height: 100%;
-    background: transparent;
-    border: none;
-}
-
-.bw-slider.vertical::-webkit-slider-thumb {
-    margin-left: 0;
-    margin-top: 0;
-}
-
-.bw-slider.vertical::-moz-range-track {
-    width: var(--slider-track-height, 8px);
-    height: 100%;
-}
-
-.bw-slider.vertical::-moz-range-thumb {
-    margin-left: 0;
-}

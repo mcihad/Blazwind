@@ -30,10 +30,10 @@
                 @* Start Thumb *@
                 <div class="bw-range-thumb-start absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
                     style="left: @GetInvariantPercent(_startPercent)%;">
-                    @if (ShowTooltip && _isDraggingStart)
+                    @if (ShowTooltip)
                     {
                         <div
-                            class="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap @GetColorClass()">
+                            class="bw-tooltip-start absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap opacity-0 transition-opacity @GetColorClass()">
                             @FormatValue(_currentStart)
                         </div>
                     }
@@ -42,10 +42,10 @@
                 @* End Thumb *@
                 <div class="bw-range-thumb-end absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
                     style="left: @GetInvariantPercent(_endPercent)%;">
-                    @if (ShowTooltip && _isDraggingEnd)
+                    @if (ShowTooltip)
                     {
                         <div
-                            class="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap @GetColorClass()">
+                            class="bw-tooltip-end absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap opacity-0 transition-opacity @GetColorClass()">
                             @FormatValue(_currentEnd)
                         </div>
                     }
