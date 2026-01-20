@@ -85,6 +85,11 @@
     /// </summary>
     [Parameter] public EventCallback<WorkflowNode> OnNodeClick { get; set; }
     
+    /// <summary>
+    /// Fit content to screen on load
+    /// </summary>
+    [Parameter] public bool FitToScreen { get; set; } = true;
+    
     #endregion
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -121,7 +126,8 @@
             verticalSpacing = VerticalSpacing,
             direction = Direction.ToString().ToLower(),
             showLabels = ShowLabels,
-            interactive = Interactive
+            interactive = Interactive,
+            fitToScreen = FitToScreen
         };
         
         _instanceId = await JS.InvokeAsync<string>("Blazwind.Workflow.init", _container, data, options, _netRef);
@@ -139,6 +145,32 @@
             };
             
             await JS.InvokeVoidAsync("Blazwind.Workflow.update", _instanceId, data);
+        }
+    }
+    
+    // Public API for Controlling Zoom/Pan
+    
+    public async Task ZoomInAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Workflow.zoomIn", _instanceId);
+        }
+    }
+
+    public async Task ZoomOutAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Workflow.zoomOut", _instanceId);
+        }
+    }
+    
+    public async Task FitToScreenAsync()
+    {
+        if (_instanceId != null)
+        {
+            await JS.InvokeVoidAsync("Blazwind.Workflow.fitToScreen", _instanceId);
         }
     }
     

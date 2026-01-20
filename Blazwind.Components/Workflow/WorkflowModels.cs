@@ -84,6 +84,12 @@ public class WorkflowNode
     public Dictionary<string, object>? Metadata { get; set; }
 
     /// <summary>
+    /// Visual variant (solid, outline, ghost)
+    /// </summary>
+    [JsonPropertyName("variant")]
+    public string Variant { get; set; } = "solid";
+
+    /// <summary>
     /// Helper method to create a start node
     /// </summary>
     public static WorkflowNode CreateStart(string id, string label = "Başlangıç") => new()

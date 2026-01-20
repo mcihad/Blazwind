@@ -92,9 +92,9 @@
     private readonly List<WorkflowNode> _applicationWorkflowNodes = new()
     {
         WorkflowNode.CreateStart("start", "Application Received"),
-        WorkflowNode.CreateTask("check", "Document Check", WorkflowNodeStatus.Completed),
-        WorkflowNode.CreateTask("review", "Review", WorkflowNodeStatus.Active),
-        WorkflowNode.CreateTask("approve", "Approval"),
+        new WorkflowNode { Id = "check", Type = "task", Label = "Document Check", Status = "completed", Icon = "fa-solid fa-clipboard-check" },
+        new WorkflowNode { Id = "review", Type = "task", Label = "Review", Status = "active", Icon = "fa-solid fa-magnifying-glass" },
+        new WorkflowNode { Id = "approve", Type = "task", Label = "Approval", Icon = "fa-solid fa-signature" },
         WorkflowNode.CreateEnd("end", "Completed")
     };
 
@@ -110,8 +110,8 @@
     private List<WorkflowNode> _leaveWorkflowNodes = new()
     {
         WorkflowNode.CreateStart("start", "Request"),
-        WorkflowNode.CreateTask("manager", "Manager Approval", WorkflowNodeStatus.Active),
-        WorkflowNode.CreateTask("hr", "HR Approval"),
+        new WorkflowNode { Id = "manager", Type = "task", Label = "Manager Approval", Status = "active", Icon = "fa-solid fa-user-tie" },
+        new WorkflowNode { Id = "hr", Type = "task", Label = "HR Approval", Icon = "fa-solid fa-building" },
         WorkflowNode.CreateEnd("end", "Completed")
     };
 
@@ -164,14 +164,14 @@
     private readonly List<WorkflowNode> _tenderWorkflowNodes = new()
     {
         WorkflowNode.CreateStart("start", "Tender Announcement"),
-        WorkflowNode.CreateTask("docs", "Prepare Specifications", WorkflowNodeStatus.Completed),
-        WorkflowNode.CreateTask("announce", "Announcement Publication", WorkflowNodeStatus.Completed),
-        WorkflowNode.CreateTask("collect", "Collect Bids", WorkflowNodeStatus.Completed),
-        WorkflowNode.CreateTask("evaluate", "Evaluation", WorkflowNodeStatus.Active),
+        new WorkflowNode { Id = "docs", Type = "task", Label = "Prepare Specifications", Status = "completed", Icon = "fa-solid fa-file-contract" },
+        new WorkflowNode { Id = "announce", Type = "task", Label = "Announcement", Status = "completed", Icon = "fa-solid fa-bullhorn" },
+        new WorkflowNode { Id = "collect", Type = "task", Label = "Collect Bids", Status = "completed", Icon = "fa-solid fa-inbox" },
+        new WorkflowNode { Id = "evaluate", Type = "task", Label = "Evaluation", Status = "active", Icon = "fa-solid fa-scale-balanced" },
         WorkflowNode.CreateDecision("decision", "Suitable Bid?"),
-        WorkflowNode.CreateTask("award", "Award Decision"),
-        WorkflowNode.CreateTask("cancel", "Cancel", WorkflowNodeStatus.Skipped),
-        WorkflowNode.CreateTask("contract", "Contract"),
+        new WorkflowNode { Id = "award", Type = "task", Label = "Award Decision", Icon = "fa-solid fa-medal" },
+        new WorkflowNode { Id = "cancel", Type = "task", Label = "Cancel", Status = "skipped", Icon = "fa-solid fa-ban" },
+        new WorkflowNode { Id = "contract", Type = "task", Label = "Contract", Icon = "fa-solid fa-file-signature" },
         WorkflowNode.CreateEnd("end", "Completed")
     };
 

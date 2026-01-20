@@ -11,7 +11,8 @@ export interface WorkflowNode {
     label: string;
     description?: string;
     status?: WorkflowNodeStatus;
-    icon?: string;
+    icon?: string; // FontAwesome icon class (e.g., 'fa-solid fa-user')
+    variant?: 'solid' | 'outline' | 'ghost'; // For future styling
     metadata?: Record<string, any>;
 }
 
@@ -21,6 +22,7 @@ export interface WorkflowEdge {
     to: string;
     label?: string;
     condition?: string;
+    animated?: boolean;
 }
 
 export interface WorkflowData {
@@ -37,76 +39,63 @@ export interface WorkflowOptions {
     showLabels?: boolean;
     interactive?: boolean;
     animated?: boolean;
+    fitToScreen?: boolean;
 }
 
 interface WorkflowInstance {
+    id: string;
     container: HTMLElement;
     data: WorkflowData;
     options: WorkflowOptions;
     netRef: any;
     svg: SVGSVGElement | null;
+    mainGroup: SVGGElement | null;
+    transform: { x: number; y: number; k: number };
+    isDragging: boolean;
+    lastMouse: { x: number; y: number };
 }
 
 const instances: Map<string, WorkflowInstance> = new Map();
 
-// Enhanced status colors with gradients
+// Enhanced status colors with gradients and glassmorphism
 const statusStyles: Record<WorkflowNodeStatus, {
     bgStart: string;
     bgEnd: string;
     border: string;
     text: string;
     shadow: string;
-    glow: string;
+    iconColor: string;
 }> = {
     pending: {
-        bgStart: '#f9fafb', bgEnd: '#f3f4f6',
-        border: '#d1d5db', text: '#6b7280',
-        shadow: 'rgba(156, 163, 175, 0.3)',
-        glow: 'none'
+        bgStart: '#ffffff', bgEnd: '#f9fafb',
+        border: '#e5e7eb', text: '#374151',
+        shadow: 'rgba(0,0,0,0.05)',
+        iconColor: '#9ca3af'
     },
     active: {
-        bgStart: '#eff6ff', bgEnd: '#dbeafe',
-        border: '#3b82f6', text: '#1d4ed8',
-        shadow: 'rgba(59, 130, 246, 0.4)',
-        glow: '#3b82f6'
+        bgStart: '#eff6ff', bgEnd: '#dbeafe', // Blue-50 to Blue-100
+        border: '#3b82f6', text: '#1e40af', // Blue-500, Blue-800
+        shadow: 'rgba(59, 130, 246, 0.25)',
+        iconColor: '#2563eb'
     },
     completed: {
-        bgStart: '#ecfdf5', bgEnd: '#d1fae5',
-        border: '#10b981', text: '#059669',
-        shadow: 'rgba(16, 185, 129, 0.3)',
-        glow: 'none'
+        bgStart: '#f0fdf4', bgEnd: '#dcfce7', // Green
+        border: '#22c55e', text: '#166534',
+        shadow: 'rgba(34, 197, 94, 0.2)',
+        iconColor: '#16a34a'
     },
     error: {
-        bgStart: '#fef2f2', bgEnd: '#fee2e2',
-        border: '#ef4444', text: '#dc2626',
-        shadow: 'rgba(239, 68, 68, 0.4)',
-        glow: '#ef4444'
+        bgStart: '#fef2f2', bgEnd: '#fee2e2', // Red
+        border: '#ef4444', text: '#991b1b',
+        shadow: 'rgba(239, 68, 68, 0.2)',
+        iconColor: '#dc2626'
     },
     skipped: {
-        bgStart: '#f9fafb', bgEnd: '#f3f4f6',
-        border: '#9ca3af', text: '#9ca3af',
-        shadow: 'rgba(156, 163, 175, 0.2)',
-        glow: 'none'
+        bgStart: '#f3f4f6', bgEnd: '#e5e7eb', // Gray
+        border: '#9ca3af', text: '#6b7280',
+        shadow: 'rgba(0,0,0,0.05)',
+        iconColor: '#9ca3af'
     }
-};
-
-// Node icons (SVG paths)
-const nodeIcons: Record<WorkflowNodeType, string> = {
-    start: 'M8 5v14l11-7z', // Play icon
-    end: 'M6 6h12v12H6z', // Stop icon
-    task: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', // Clipboard
-    decision: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01', // Question
-    parallel: 'M4 6h16M4 12h16M4 18h16', // Menu lines
-    subprocess: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z' // Boxes
-};
-
-// Status icons
-const statusIcons: Record<WorkflowNodeStatus, string> = {
-    pending: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', // Clock
-    active: 'M13 10V3L4 14h7v7l9-11h-7z', // Lightning
-    completed: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', // Check circle
-    error: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z', // Exclamation
-    skipped: 'M13 7l5 5m0 0l-5 5m5-5H6' // Arrow right
 };
 
 export function init(
@@ -118,6 +107,7 @@ export function init(
     const id = `wf-${crypto.randomUUID()}`;
 
     const instance: WorkflowInstance = {
+        id,
         container,
         data,
         options: {
@@ -129,16 +119,174 @@ export function init(
             showLabels: options.showLabels !== false,
             interactive: options.interactive !== false,
             animated: options.animated !== false,
+            fitToScreen: true,
             ...options
         },
         netRef,
-        svg: null
+        svg: null,
+        mainGroup: null,
+        transform: { x: 0, y: 0, k: 1 },
+        isDragging: false,
+        lastMouse: { x: 0, y: 0 }
     };
 
     instances.set(id, instance);
+
+    // Setup container styles
+    container.style.position = 'relative';
+    container.style.overflow = 'hidden';
+    container.style.cursor = 'grab';
+    container.style.userSelect = 'none';
+
+    // Add controls overlay
+    addControls(container, id);
+
     render(id);
+    setupInteractions(id);
 
     return id;
+}
+
+function addControls(container: HTMLElement, id: string) {
+    const controls = document.createElement('div');
+    controls.className = 'absolute bottom-4 right-4 flex flex-col gap-2 z-10';
+    controls.innerHTML = `
+        <div class="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 border-b border-gray-100 dark:border-gray-700 transition" onclick="Blazwind.Workflow.zoomIn('${id}')">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 border-b border-gray-100 dark:border-gray-700 transition" onclick="Blazwind.Workflow.fitToScreen('${id}')">
+                <i class="fa-solid fa-compress"></i>
+            </button>
+            <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition" onclick="Blazwind.Workflow.zoomOut('${id}')">
+                <i class="fa-solid fa-minus"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(controls);
+}
+
+function setupInteractions(id: string) {
+    const instance = instances.get(id);
+    if (!instance) return;
+
+    const { container } = instance;
+
+    // Wheel Zoom
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = -Math.sign(e.deltaY) * 0.1;
+        zoom(id, delta, e.offsetX, e.offsetY);
+    });
+
+    // Mouse Pan
+    container.addEventListener('mousedown', (e) => {
+        if (e.target !== container && (e.target as Element).tagName !== 'svg') return; // Allow clicking nodes
+        instance.isDragging = true;
+        instance.lastMouse = { x: e.clientX, y: e.clientY };
+        container.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!instance.isDragging) return;
+        const dx = e.clientX - instance.lastMouse.x;
+        const dy = e.clientY - instance.lastMouse.y;
+        instance.lastMouse = { x: e.clientX, y: e.clientY };
+        pan(id, dx, dy);
+    });
+
+    window.addEventListener('mouseup', () => {
+        instance.isDragging = false;
+        container.style.cursor = 'grab';
+    });
+
+    // Touch support could be added here similar to mouse events
+}
+
+export function zoomIn(id: string) {
+    const instance = instances.get(id);
+    if (!instance) return;
+    const center = { x: instance.container.clientWidth / 2, y: instance.container.clientHeight / 2 };
+    zoom(id, 0.2, center.x, center.y);
+}
+
+export function zoomOut(id: string) {
+    const instance = instances.get(id);
+    if (!instance) return;
+    const center = { x: instance.container.clientWidth / 2, y: instance.container.clientHeight / 2 };
+    zoom(id, -0.2, center.x, center.y);
+}
+
+function zoom(id: string, delta: number, cx: number, cy: number) {
+    const instance = instances.get(id);
+    if (!instance || !instance.mainGroup) return;
+
+    const oldK = instance.transform.k;
+    const newK = Math.max(0.1, Math.min(4, oldK * (1 + delta))); // Clamp zoom 0.1x to 4x
+
+    // Zoom towards cursor/center
+    // newX = cx - (cx - oldX) * (newK / oldK)
+    instance.transform.x = cx - (cx - instance.transform.x) * (newK / oldK);
+    instance.transform.y = cy - (cy - instance.transform.y) * (newK / oldK);
+    instance.transform.k = newK;
+
+    updateTransform(instance);
+}
+
+function pan(id: string, dx: number, dy: number) {
+    const instance = instances.get(id);
+    if (!instance || !instance.mainGroup) return;
+
+    instance.transform.x += dx;
+    instance.transform.y += dy;
+
+    updateTransform(instance);
+}
+
+function updateTransform(instance: WorkflowInstance) {
+    if (instance.mainGroup) {
+        instance.mainGroup.setAttribute('transform', `translate(${instance.transform.x}, ${instance.transform.y}) scale(${instance.transform.k})`);
+
+        // Update grid background pattern size/opacity if we had one
+    }
+}
+
+export function fitToScreen(id: string) {
+    const instance = instances.get(id);
+    if (!instance || !instance.mainGroup) return;
+
+    const { options } = instance;
+    const positions = calculateNodePositions(instance.data, options);
+    const padding = 60;
+
+    // Calculate content bounds
+    const xs = Object.values(positions).map(p => p.x);
+    const ys = Object.values(positions).map(p => p.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs) + options.nodeWidth!;
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys) + options.nodeHeight!;
+
+    const contentWidth = maxX - minX + padding * 2;
+    const contentHeight = maxY - minY + padding * 2;
+
+    const containerWidth = instance.container.clientWidth;
+    const containerHeight = instance.container.clientHeight;
+
+    const scaleX = containerWidth / contentWidth;
+    const scaleY = containerHeight / contentHeight;
+    const scale = Math.min(scaleX, scaleY, 1) * 0.9; // 90% fit
+
+    const midX = (minX + maxX) / 2;
+    const midY = (minY + maxY) / 2;
+
+    instance.transform = {
+        x: containerWidth / 2 - midX * scale,
+        y: containerHeight / 2 - midY * scale,
+        k: scale
+    };
+
+    updateTransform(instance);
 }
 
 function render(id: string): void {
@@ -146,39 +294,40 @@ function render(id: string): void {
     if (!instance) return;
 
     const { container, data, options } = instance;
+
+    // Clear keeping controls
+    const controls = container.querySelector('div.absolute'); // Keep controls
     container.innerHTML = '';
-
-    // Calculate positions for nodes
-    const nodePositions = calculateNodePositions(data, options);
-
-    // Calculate SVG dimensions
-    const padding = 60;
-    const maxX = Math.max(...Object.values(nodePositions).map(p => p.x + options.nodeWidth!)) + padding;
-    const maxY = Math.max(...Object.values(nodePositions).map(p => p.y + options.nodeHeight!)) + padding;
+    if (controls) container.appendChild(controls);
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', `${maxX}`);
-    svg.setAttribute('height', `${maxY}`);
-    svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY}`);
-    svg.style.minWidth = `${maxX}px`; // Ensure minimum width for scrolling
-    svg.style.minHeight = `${maxY}px`; // Ensure minimum height
-    svg.style.overflow = 'visible';
-    svg.style.display = 'block'; // Prevent inline display issues
-    svg.style.fontFamily = 'Inter, system-ui, sans-serif';
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.display = 'block';
 
-    // Add definitions (gradients, filters, markers) with scoped IDs
+    // Definitions
     const defs = createDefs(id);
     svg.appendChild(defs);
 
-    // Render edges first
+    // Main Group for Pan/Zoom
+    const mainGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    mainGroup.setAttribute('class', 'workflow-content');
+    svg.appendChild(mainGroup);
+
+    // Dots Background (Optional, helps visualization of movement)
+    // We can add a pattern to defs and a large rect in SVG before mainGroup
+
+    const nodePositions = calculateNodePositions(data, options);
+
+    // Edges
     const edgesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     edgesGroup.setAttribute('class', 'workflow-edges');
     data.edges.forEach(edge => {
         renderEdge(edgesGroup, edge, nodePositions, options, data.nodes, id);
     });
-    svg.appendChild(edgesGroup);
+    mainGroup.appendChild(edgesGroup);
 
-    // Render nodes
+    // Nodes
     const nodesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     nodesGroup.setAttribute('class', 'workflow-nodes');
     data.nodes.forEach(node => {
@@ -187,16 +336,21 @@ function render(id: string): void {
             renderNode(id, nodesGroup, node, pos.x, pos.y, options, id);
         }
     });
-    svg.appendChild(nodesGroup);
+    mainGroup.appendChild(nodesGroup);
 
     instance.svg = svg;
+    instance.mainGroup = mainGroup;
     container.appendChild(svg);
+
+    if (options.fitToScreen) {
+        setTimeout(() => fitToScreen(id), 10);
+    }
 }
 
 function createDefs(scopeId: string): SVGDefsElement {
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
 
-    // Gradients for each status
+    // Gradients
     Object.entries(statusStyles).forEach(([status, style]) => {
         const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
         gradient.setAttribute('id', `${scopeId}-grad-${status}`);
@@ -204,33 +358,27 @@ function createDefs(scopeId: string): SVGDefsElement {
         gradient.setAttribute('y1', '0%');
         gradient.setAttribute('x2', '0%');
         gradient.setAttribute('y2', '100%');
-
-        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-        stop1.setAttribute('offset', '0%');
-        stop1.setAttribute('stop-color', style.bgStart);
-
-        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-        stop2.setAttribute('offset', '100%');
-        stop2.setAttribute('stop-color', style.bgEnd);
-
-        gradient.appendChild(stop1);
-        gradient.appendChild(stop2);
+        gradient.innerHTML = `
+            <stop offset="0%" stop-color="${style.bgStart}" />
+            <stop offset="100%" stop-color="${style.bgEnd}" />
+        `;
         defs.appendChild(gradient);
     });
 
-    // Drop shadow filter
+    // Drop Shadow - softer and more modern
     const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
     shadow.setAttribute('id', `${scopeId}-shadow`);
-    shadow.setAttribute('x', '-20%');
-    shadow.setAttribute('y', '-20%');
-    shadow.setAttribute('width', '140%');
-    shadow.setAttribute('height', '140%');
+    shadow.setAttribute('x', '-50%');
+    shadow.setAttribute('y', '-50%');
+    shadow.setAttribute('width', '200%');
+    shadow.setAttribute('height', '200%');
     shadow.innerHTML = `
-        <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="rgba(0,0,0,0.15)" />
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.06)" />
+        <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="rgba(0,0,0,0.04)" />
     `;
     defs.appendChild(shadow);
 
-    // Glow filter for active nodes
+    // Active Glow - more pronounced blue glow
     const glow = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
     glow.setAttribute('id', `${scopeId}-glow`);
     glow.setAttribute('x', '-50%');
@@ -238,101 +386,102 @@ function createDefs(scopeId: string): SVGDefsElement {
     glow.setAttribute('width', '200%');
     glow.setAttribute('height', '200%');
     glow.innerHTML = `
-        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-        <feMerge>
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-        </feMerge>
+        <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="rgba(59, 130, 246, 0.35)" />
     `;
     defs.appendChild(glow);
 
-    // Arrow marker
+    // Arrow Marker (Standard) - cleaner, smaller arrowhead
     const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     marker.setAttribute('id', `${scopeId}-arrowhead`);
-    marker.setAttribute('markerWidth', '12');
-    marker.setAttribute('markerHeight', '8');
-    marker.setAttribute('refX', '10');
-    marker.setAttribute('refY', '4');
+    marker.setAttribute('markerWidth', '8');
+    marker.setAttribute('markerHeight', '6');
+    marker.setAttribute('refX', '7');
+    marker.setAttribute('refY', '3');
     marker.setAttribute('orient', 'auto');
-    marker.innerHTML = `<path d="M0,0 L12,4 L0,8 L3,4 Z" fill="#94a3b8" />`;
+    marker.innerHTML = `<path d="M0,0.5 L7,3 L0,5.5 L1.5,3 Z" fill="#94a3b8" />`;
     defs.appendChild(marker);
 
-    // Animated arrow marker
-    const animMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-    animMarker.setAttribute('id', `${scopeId}-arrowhead-active`);
-    animMarker.setAttribute('markerWidth', '12');
-    animMarker.setAttribute('markerHeight', '8');
-    animMarker.setAttribute('refX', '10');
-    animMarker.setAttribute('refY', '4');
-    animMarker.setAttribute('orient', 'auto');
-    animMarker.innerHTML = `<path d="M0,0 L12,4 L0,8 L3,4 Z" fill="#3b82f6" />`;
-    defs.appendChild(animMarker);
+    // Arrow Marker (Active) - matching blue
+    const activeMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    activeMarker.setAttribute('id', `${scopeId}-arrowhead-active`);
+    activeMarker.setAttribute('markerWidth', '8');
+    activeMarker.setAttribute('markerHeight', '6');
+    activeMarker.setAttribute('refX', '7');
+    activeMarker.setAttribute('refY', '3');
+    activeMarker.setAttribute('orient', 'auto');
+    activeMarker.innerHTML = `<path d="M0,0.5 L7,3 L0,5.5 L1.5,3 Z" fill="#3b82f6" />`;
+    defs.appendChild(activeMarker);
 
     return defs;
 }
 
-function calculateNodePositions(
-    data: WorkflowData,
-    options: WorkflowOptions
-): Record<string, { x: number; y: number }> {
+function calculateNodePositions(data: WorkflowData, options: WorkflowOptions): Record<string, { x: number; y: number }> {
+    // Simple topological sort / hierarchy layout
+    // Reuse existing logic but ensuring robust fallback
     const positions: Record<string, { x: number; y: number }> = {};
     const { nodeWidth, nodeHeight, horizontalSpacing, verticalSpacing, direction } = options;
 
-    // Build adjacency list
     const adjacency: Record<string, string[]> = {};
     const inDegree: Record<string, number> = {};
 
-    data.nodes.forEach(node => {
-        adjacency[node.id] = [];
-        inDegree[node.id] = 0;
+    data.nodes.forEach(n => {
+        adjacency[n.id] = [];
+        inDegree[n.id] = 0;
     });
 
-    data.edges.forEach(edge => {
-        if (adjacency[edge.from]) {
-            adjacency[edge.from].push(edge.to);
-        }
-        if (inDegree[edge.to] !== undefined) {
-            inDegree[edge.to]++;
-        }
+    data.edges.forEach(e => {
+        if (adjacency[e.from]) adjacency[e.from].push(e.to);
+        if (inDegree[e.to] !== undefined) inDegree[e.to]++;
     });
 
-    // Topological sort to determine levels
+    // Level-based layout
     const levels: string[][] = [];
+    let queue = Object.keys(inDegree).filter(id => inDegree[id] === 0);
+    // If cycle or no start, pick one
+    if (queue.length === 0 && data.nodes.length > 0) queue = [data.nodes[0].id];
+
     const visited = new Set<string>();
-    const queue = Object.keys(inDegree).filter(id => inDegree[id] === 0);
 
     while (queue.length > 0) {
         const level = [...queue];
         levels.push(level);
-        queue.length = 0;
+        queue = [];
 
         level.forEach(nodeId => {
             visited.add(nodeId);
             (adjacency[nodeId] || []).forEach(nextId => {
                 inDegree[nextId]--;
-                if (inDegree[nextId] === 0 && !visited.has(nextId)) {
+                if (inDegree[nextId] <= 0 && !visited.has(nextId)) {
                     queue.push(nextId);
+                    visited.add(nextId);
                 }
             });
         });
+
+        // Safety break for disconnected components
+        if (queue.length === 0 && visited.size < data.nodes.length) {
+            const unvisited = data.nodes.find(n => !visited.has(n.id));
+            if (unvisited) {
+                queue.push(unvisited.id);
+                visited.add(unvisited.id);
+            }
+        }
     }
 
-    // Calculate max level width for centering
     const maxLevelSize = Math.max(...levels.map(l => l.length));
 
-    // Assign positions with centering
     levels.forEach((level, levelIndex) => {
         const levelOffset = (maxLevelSize - level.length) / 2;
         level.forEach((nodeId, nodeIndex) => {
             if (direction === 'horizontal') {
                 positions[nodeId] = {
-                    x: 40 + levelIndex * (nodeWidth! + horizontalSpacing!),
-                    y: 40 + (nodeIndex + levelOffset) * (nodeHeight! + verticalSpacing!)
+                    x: levelIndex * (nodeWidth! + horizontalSpacing!),
+                    y: (nodeIndex + levelOffset) * (nodeHeight! + verticalSpacing!)
                 };
             } else {
                 positions[nodeId] = {
-                    x: 40 + (nodeIndex + levelOffset) * (nodeWidth! + horizontalSpacing!),
-                    y: 40 + levelIndex * (nodeHeight! + verticalSpacing!)
+                    x: (nodeIndex + levelOffset) * (nodeWidth! + horizontalSpacing!),
+                    y: levelIndex * (nodeHeight! + verticalSpacing!)
                 };
             }
         });
@@ -341,286 +490,210 @@ function calculateNodePositions(
     return positions;
 }
 
-function renderNode(
-    chartId: string,
-    group: SVGGElement,
-    node: WorkflowNode,
-    x: number,
-    y: number,
-    options: WorkflowOptions,
-    scopeId: string
-): void {
+function renderNode(chartId: string, group: SVGGElement, node: WorkflowNode, x: number, y: number, options: WorkflowOptions, scopeId: string) {
     const instance = instances.get(chartId);
     if (!instance) return;
 
-    const { nodeWidth, nodeHeight, interactive, animated } = options;
-    const status = (node.status || 'pending') as WorkflowNodeStatus;
+    const { nodeWidth, nodeHeight, interactive } = options;
+    const status = (node.status || 'pending');
     const style = statusStyles[status];
 
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('class', `workflow-node node-${status}`);
-    g.setAttribute('data-node-id', node.id);
+    g.setAttribute('data-id', node.id);
+    g.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)';
     g.style.cursor = interactive ? 'pointer' : 'default';
-    g.style.transition = 'transform 0.2s ease';
 
-    // Apply filters
-    if (status === 'active' || status === 'error') {
-        g.setAttribute('filter', `url(#${scopeId}-glow)`);
-    } else {
-        g.setAttribute('filter', `url(#${scopeId}-shadow)`);
-    }
+    // Hover effects via CSS/JS
+    // Note: We use foreignObject for icon support if possible, or simple standard rendering
+    // Let's use standard Shapes but cleaner
 
-    // Node shape based on type
+    // Shadow Group (Offset)
+    // Shadow Group (Offset) - Removed unused var
+
+    // Main Shape
     let shape: SVGElement;
-
     if (node.type === 'start' || node.type === 'end') {
-        // Ellipse for start/end
-        shape = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+        const r = Math.min(nodeWidth!, nodeHeight!) / 2;
+        shape = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         shape.setAttribute('cx', `${x + nodeWidth! / 2}`);
         shape.setAttribute('cy', `${y + nodeHeight! / 2}`);
-        shape.setAttribute('rx', `${nodeWidth! / 2 - 5}`);
-        shape.setAttribute('ry', `${nodeHeight! / 2 - 5}`);
+        shape.setAttribute('r', `${r}`);
     } else if (node.type === 'decision') {
-        // Diamond for decision
         shape = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
         const cx = x + nodeWidth! / 2;
         const cy = y + nodeHeight! / 2;
-        const hw = nodeWidth! / 2 - 5;
-        const hh = nodeHeight! / 2 - 5;
-        shape.setAttribute('points', `${cx},${cy - hh} ${cx + hw},${cy} ${cx},${cy + hh} ${cx - hw},${cy}`);
+        const w = nodeWidth!;
+        const h = nodeHeight!;
+        shape.setAttribute('points', `${cx},${y} ${x + w},${cy} ${cx},${y + h} ${x},${cy}`);
     } else {
-        // Rounded rectangle for task, parallel, subprocess
         shape = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         shape.setAttribute('x', `${x}`);
         shape.setAttribute('y', `${y}`);
         shape.setAttribute('width', `${nodeWidth}`);
         shape.setAttribute('height', `${nodeHeight}`);
-        shape.setAttribute('rx', '8');
-        shape.setAttribute('ry', '8');
+        shape.setAttribute('rx', '12'); // Modern rounded corners
     }
 
     shape.setAttribute('fill', `url(#${scopeId}-grad-${status})`);
     shape.setAttribute('stroke', style.border);
-    shape.setAttribute('stroke-width', status === 'active' ? '2.5' : '2');
+    shape.setAttribute('stroke-width', '1.5'); // Slightly thicker border
+    if (status === 'active') {
+        shape.setAttribute('filter', `url(#${scopeId}-glow)`);
+    } else {
+        shape.setAttribute('filter', `url(#${scopeId}-shadow)`);
+    }
+
     g.appendChild(shape);
 
-    // Status icon (top-right corner)
-    const iconSize = 16;
-    const iconX = x + nodeWidth! - iconSize - 8;
-    const iconY = y + 8;
+    // Icon & Label Container via ForeignObject for rich content (FontAwesome!)
+    // If not supported by environment, fallback to SVG
 
-    const iconCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    iconCircle.setAttribute('cx', `${iconX + iconSize / 2}`);
-    iconCircle.setAttribute('cy', `${iconY + iconSize / 2}`);
-    iconCircle.setAttribute('r', `${iconSize / 2 + 2}`);
-    iconCircle.setAttribute('fill', style.border);
-    g.appendChild(iconCircle);
+    const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    fo.setAttribute('x', `${x}`);
+    fo.setAttribute('y', `${y}`);
+    fo.setAttribute('width', `${nodeWidth}`);
+    fo.setAttribute('height', `${nodeHeight}`);
+    fo.style.pointerEvents = 'none'; // Let clicks pass through to Group
 
-    const statusIcon = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    statusIcon.setAttribute('d', statusIcons[status]);
-    statusIcon.setAttribute('fill', 'none');
-    statusIcon.setAttribute('stroke', 'white');
-    statusIcon.setAttribute('stroke-width', '1.5');
-    statusIcon.setAttribute('stroke-linecap', 'round');
-    statusIcon.setAttribute('stroke-linejoin', 'round');
-    statusIcon.setAttribute('transform', `translate(${iconX}, ${iconY}) scale(0.67)`);
-    g.appendChild(statusIcon);
+    const div = document.createElement('div');
+    div.className = 'w-full h-full flex items-center justify-center p-2 text-center flex-col';
+    div.style.color = style.text;
 
-    // Node type icon (left side)
-    if (node.type !== 'task') {
-        const typeIconX = x + 12;
-        const typeIconY = y + nodeHeight! / 2 - 10;
-        const typeIcon = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        typeIcon.setAttribute('d', nodeIcons[node.type]);
-        typeIcon.setAttribute('fill', 'none');
-        typeIcon.setAttribute('stroke', style.text);
-        typeIcon.setAttribute('stroke-width', '1.5');
-        typeIcon.setAttribute('stroke-linecap', 'round');
-        typeIcon.setAttribute('stroke-linejoin', 'round');
-        typeIcon.setAttribute('transform', `translate(${typeIconX}, ${typeIconY}) scale(0.83)`);
-        g.appendChild(typeIcon);
+    // Icon
+    if (node.icon) {
+        div.innerHTML += `<i class="${node.icon} text-lg mb-1" style="color: ${style.iconColor}"></i>`;
+    } else if (node.type !== 'task' && node.type !== 'start' && node.type !== 'end') {
+        // Default icons
     }
 
     // Label
     if (options.showLabels) {
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        const textX = node.type !== 'task' ? x + 35 : x + nodeWidth! / 2;
-        text.setAttribute('x', `${textX}`);
-        text.setAttribute('y', `${y + nodeHeight! / 2 + 1}`);
-        text.setAttribute('text-anchor', node.type !== 'task' ? 'start' : 'middle');
-        text.setAttribute('dominant-baseline', 'middle');
-        text.setAttribute('fill', style.text);
-        text.setAttribute('font-size', '13');
-        text.setAttribute('font-weight', '600');
-
-        // Truncate text
-        const maxLen = node.type !== 'task' ? 14 : 18;
-        text.textContent = node.label.length > maxLen
-            ? node.label.substring(0, maxLen - 2) + '...'
-            : node.label;
-        g.appendChild(text);
-
-        // Description (smaller, below label)
+        div.innerHTML += `<span class="text-xs font-semibold leading-tight line-clamp-2">${node.label}</span>`;
+        // Description
         if (node.description && node.type === 'task') {
-            const desc = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            desc.setAttribute('x', `${x + nodeWidth! / 2}`);
-            desc.setAttribute('y', `${y + nodeHeight! / 2 + 16}`);
-            desc.setAttribute('text-anchor', 'middle');
-            desc.setAttribute('fill', '#9ca3af');
-            desc.setAttribute('font-size', '10');
-            desc.textContent = node.description.length > 22
-                ? node.description.substring(0, 20) + '...'
-                : node.description;
-            g.appendChild(desc);
+            div.innerHTML += `<span class="text-[9px] opacity-70 mt-1 line-clamp-1">${node.description}</span>`;
         }
     }
 
-    // Pulse animation for active nodes
-    if (animated && status === 'active') {
-        const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-        pulse.setAttribute('attributeName', 'opacity');
-        pulse.setAttribute('values', '1;0.7;1');
-        pulse.setAttribute('dur', '2s');
-        pulse.setAttribute('repeatCount', 'indefinite');
-        shape.appendChild(pulse);
-    }
+    fo.appendChild(div);
+    g.appendChild(fo);
 
-    // Event handlers
+    // Event Listeners
     if (interactive) {
-        g.addEventListener('click', () => {
+        g.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent drag start interference sometimes
             instance.netRef.invokeMethodAsync('HandleNodeClick', node.id, JSON.stringify(node));
         });
 
         g.addEventListener('mouseenter', () => {
-            g.style.transform = 'scale(1.01)';
-            g.style.filter = `url(#${scopeId}-glow)`;
+            // Simple hover effect - just highlight stroke, no transform to avoid jumps
+            shape.setAttribute('stroke-width', '2.5');
+            shape.style.filter = 'brightness(1.05)';
         });
-
         g.addEventListener('mouseleave', () => {
-            g.style.transform = 'scale(1)';
-            if (status !== 'active' && status !== 'error') {
-                g.style.filter = `url(#${scopeId}-shadow)`;
-            }
+            shape.setAttribute('stroke-width', '1.5');
+            shape.style.filter = '';
         });
     }
 
     group.appendChild(g);
 }
 
-function renderEdge(
-    group: SVGGElement,
-    edge: WorkflowEdge,
-    positions: Record<string, { x: number; y: number }>,
-    options: WorkflowOptions,
-    nodes: WorkflowNode[],
-    scopeId: string
-): void {
-    const fromPos = positions[edge.from];
-    const toPos = positions[edge.to];
-    if (!fromPos || !toPos) return;
+function renderEdge(group: SVGGElement, edge: WorkflowEdge, positions: any, options: WorkflowOptions, nodes: WorkflowNode[], scopeId: string) {
+    const from = positions[edge.from];
+    const to = positions[edge.to];
+    if (!from || !to) return;
 
     const { nodeWidth, nodeHeight, direction, animated } = options;
-
-    // Get source node status for edge styling
     const sourceNode = nodes.find(n => n.id === edge.from);
-    const isActiveEdge = sourceNode?.status === 'completed' || sourceNode?.status === 'active';
+    const isActive = sourceNode?.status === 'active' || sourceNode?.status === 'completed'; // Simplified logic
 
-    // Calculate connection points
-    let startX: number, startY: number, endX: number, endY: number;
+    // Path calculation
+    let pathD = '';
+    const start = { x: 0, y: 0 };
+    const end = { x: 0, y: 0 };
 
     if (direction === 'horizontal') {
-        startX = fromPos.x + nodeWidth!;
-        startY = fromPos.y + nodeHeight! / 2;
-        endX = toPos.x;
-        endY = toPos.y + nodeHeight! / 2;
+        start.x = from.x + nodeWidth!;
+        start.y = from.y + nodeHeight! / 2;
+        end.x = to.x;
+        end.y = to.y + nodeHeight! / 2;
+
+        // Improved Bezier: use distance-proportional control points for smoother curves
+        const dx = end.x - start.x;
+        const controlOffset = Math.min(Math.abs(dx) * 0.5, 80); // Cap at 80px
+        pathD = `M${start.x},${start.y} C${start.x + controlOffset},${start.y} ${end.x - controlOffset},${end.y} ${end.x},${end.y}`;
     } else {
-        startX = fromPos.x + nodeWidth! / 2;
-        startY = fromPos.y + nodeHeight!;
-        endX = toPos.x + nodeWidth! / 2;
-        endY = toPos.y;
+        start.x = from.x + nodeWidth! / 2;
+        start.y = from.y + nodeHeight!;
+        end.x = to.x + nodeWidth! / 2;
+        end.y = to.y;
+
+        // Improved Bezier for vertical
+        const dy = end.y - start.y;
+        const controlOffset = Math.min(Math.abs(dy) * 0.5, 60);
+        pathD = `M${start.x},${start.y} C${start.x},${start.y + controlOffset} ${end.x},${end.y - controlOffset} ${end.x},${end.y}`;
     }
 
-    // Create path with nice curves
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
-    if (direction === 'horizontal') {
-        const midX = (startX + endX) / 2;
-        path.setAttribute('d', `M${startX},${startY} C${midX},${startY} ${midX},${endY} ${endX},${endY}`);
-    } else {
-        const midY = (startY + endY) / 2;
-        path.setAttribute('d', `M${startX},${startY} C${startX},${midY} ${endX},${midY} ${endX},${endY}`);
-    }
-
+    path.setAttribute('d', pathD);
     path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', isActiveEdge ? '#3b82f6' : '#94a3b8');
-    path.setAttribute('stroke-width', isActiveEdge ? '2.5' : '2');
-    path.setAttribute('marker-end', isActiveEdge ? `url(#${scopeId}-arrowhead-active)` : `url(#${scopeId}-arrowhead)`);
+    path.setAttribute('stroke', isActive ? '#3b82f6' : '#94a3b8'); // Slightly nicer gray
+    path.setAttribute('stroke-width', isActive ? '2' : '1.5');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    path.setAttribute('marker-end', isActive ? `url(#${scopeId}-arrowhead-active)` : `url(#${scopeId}-arrowhead)`);
 
-    // Animated dash for active edges
-    if (animated && isActiveEdge) {
-        path.setAttribute('stroke-dasharray', '8 4');
-        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-        animate.setAttribute('attributeName', 'stroke-dashoffset');
-        animate.setAttribute('from', '24');
-        animate.setAttribute('to', '0');
-        animate.setAttribute('dur', '1s');
-        animate.setAttribute('repeatCount', 'indefinite');
-        path.appendChild(animate);
+    if (animated && isActive) {
+        path.setAttribute('stroke-dasharray', '8,4');
+        const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        anim.setAttribute('attributeName', 'stroke-dashoffset');
+        anim.setAttribute('from', '24');
+        anim.setAttribute('to', '0');
+        anim.setAttribute('dur', '1.5s');
+        anim.setAttribute('repeatCount', 'indefinite');
+        path.appendChild(anim);
     }
 
     group.appendChild(path);
 
-    // Edge label
+    // Label
     if (edge.label) {
-        const midX = (startX + endX) / 2;
-        const midY = (startY + endY) / 2;
+        // Simple label at midpoint
+        const midX = (start.x + end.x) / 2;
+        const midY = (start.y + end.y) / 2;
 
-        // Background for label
-        const labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        labelBg.setAttribute('x', `${midX - 25}`);
-        labelBg.setAttribute('y', `${midY - 10}`);
-        labelBg.setAttribute('width', '50');
-        labelBg.setAttribute('height', '18');
-        labelBg.setAttribute('rx', '4');
-        labelBg.setAttribute('fill', 'white');
-        labelBg.setAttribute('stroke', '#e5e7eb');
-        group.appendChild(labelBg);
+        // Background rect
+        const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+        fo.setAttribute('x', `${midX - 30}`);
+        fo.setAttribute('y', `${midY - 10}`);
+        fo.setAttribute('width', '60');
+        fo.setAttribute('height', '20');
 
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', `${midX}`);
-        text.setAttribute('y', `${midY + 3}`);
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('fill', '#6b7280');
-        text.setAttribute('font-size', '11');
-        text.setAttribute('font-weight', '500');
-        text.textContent = edge.label;
-        group.appendChild(text);
+        fo.innerHTML = `<div class="bg-white dark:bg-gray-800 text-gray-500 text-[10px] px-1 rounded border border-gray-200 dark:border-gray-700 text-center shadow-sm truncate">${edge.label}</div>`;
+        group.appendChild(fo);
     }
 }
 
 export function update(id: string, data: WorkflowData): void {
     const instance = instances.get(id);
-    if (instance) {
-        instance.data = data;
-        render(id);
-    }
+    if (!instance) return;
+    instance.data = data;
+    render(id);
 }
 
 export function updateNodeStatus(id: string, nodeId: string, status: WorkflowNodeStatus): void {
     const instance = instances.get(id);
-    if (instance) {
-        const node = instance.data.nodes.find(n => n.id === nodeId);
-        if (node) {
-            node.status = status;
-            render(id);
-        }
+    if (!instance) return;
+
+    const node = instance.data.nodes.find(n => n.id === nodeId);
+    if (node) {
+        node.status = status;
+        render(id); // Re-render to update gradients/styles
     }
 }
 
 export function dispose(id: string): void {
-    const instance = instances.get(id);
-    if (instance) {
-        instance.container.innerHTML = '';
-        instances.delete(id);
-    }
+    instances.delete(id);
 }
