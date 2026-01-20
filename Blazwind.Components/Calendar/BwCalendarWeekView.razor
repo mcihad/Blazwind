@@ -17,10 +17,10 @@
 
 
 
-    @* Time Grid *@
-    <div class="flex-1 overflow-y-auto relative">
+    @* Time Grid - with horizontal scroll on mobile *@
+    <div class="flex-1 overflow-y-auto overflow-x-auto relative">
         @* Week Header - Sticky *@
-        <div class="sticky top-0 z-30 flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-sm">
+        <div class="sticky top-0 z-30 flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-sm min-w-[700px]">
             @* Time column spacer *@
             <div class="flex-shrink-0 w-14 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700"></div>
 
@@ -30,7 +30,7 @@
                 var isToday = day.Date == DateTime.Today;
                 var dayClass = isToday ? TodayHeaderClass : "text-gray-700 dark:text-gray-300";
 
-                <div class="flex-1 text-center py-2 border-l border-gray-200 dark:border-gray-700 first:border-l-0">
+                <div class="flex-1 min-w-[90px] text-center py-2 border-l border-gray-200 dark:border-gray-700 first:border-l-0">
                     <div class="text-xs text-gray-500 dark:text-gray-400">@dayNames[index]</div>
                     <div
                         class="text-sm font-semibold mt-0.5 @dayClass @(isToday ? "w-7 h-7 rounded-full mx-auto flex items-center justify-center" : "")">
@@ -50,7 +50,7 @@
             </div>
         }
 
-        <div class="relative min-h-full">
+        <div class="relative min-h-full min-w-[700px]">
             @* Time slots grid *@
             @for (var slotIndex = 0; slotIndex < slotCount; slotIndex++)
             {

@@ -107,11 +107,11 @@ const variantConfig: any = {
 };
 
 const positionClasses: Record<string, string> = {
-    'top-right': 'top-4 right-4 items-end',
-    'top-left': 'top-4 left-4 items-start',
+    'top-right': 'top-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-4 items-center sm:items-end',
+    'top-left': 'top-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-4 items-center sm:items-start',
     'top-center': 'top-4 left-1/2 -translate-x-1/2 items-center',
-    'bottom-right': 'bottom-4 right-4 items-end',
-    'bottom-left': 'bottom-4 left-4 items-start',
+    'bottom-right': 'bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-4 items-center sm:items-end',
+    'bottom-left': 'bottom-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-4 items-center sm:items-start',
     'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center'
 };
 
@@ -126,7 +126,7 @@ function getOrCreateContainer(position: string): HTMLElement {
     const flexDir = isBottom ? 'flex-col-reverse' : 'flex-col';
 
     // Added pointer-events-none to container so clicks pass through empty areas
-    container.className = `fixed z-[9990] flex ${flexDir} gap-3 w-full max-w-sm pointer-events-none transition-all duration-300 ${positionClasses[position]}`;
+    container.className = `fixed z-[9990] flex ${flexDir} gap-3 w-[calc(100%-2rem)] max-w-sm pointer-events-none transition-all duration-300 ${positionClasses[position]}`;
     document.body.appendChild(container);
     containers.set(position, container);
     return container;

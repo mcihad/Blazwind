@@ -160,8 +160,10 @@ function render(id: string): void {
     svg.setAttribute('width', `${maxX}`);
     svg.setAttribute('height', `${maxY}`);
     svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY}`);
-    svg.style.minWidth = '100%';
+    svg.style.minWidth = `${maxX}px`; // Ensure minimum width for scrolling
+    svg.style.minHeight = `${maxY}px`; // Ensure minimum height
     svg.style.overflow = 'visible';
+    svg.style.display = 'block'; // Prevent inline display issues
     svg.style.fontFamily = 'Inter, system-ui, sans-serif';
 
     // Add definitions (gradients, filters, markers)

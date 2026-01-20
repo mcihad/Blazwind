@@ -94,13 +94,18 @@
                 {
                     @if (step.Status == ApprovalStatus.Approved)
                     {
-                        <div class="w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
-                        <i class="fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
+                        @* Mobile: vertical, Desktop: horizontal *@
+                        <div class="hidden sm:block w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
+                        <i class="hidden sm:block fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
+                        <div class="sm:hidden h-6 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
+                        <i class="sm:hidden fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
                     }
                     else
                     {
-                        <div class="w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
-                        <i class="fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
+                        <div class="hidden sm:block w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                        <i class="hidden sm:block fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
+                        <div class="sm:hidden h-6 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                        <i class="sm:hidden fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
                     }
                 }
                 else
@@ -142,7 +147,7 @@
     private double ProgressPercent => TotalCount > 0 ? (double)CompletedCount / TotalCount * 100 : 0;
 
     private string DirectionClass => Direction == ApprovalDirection.Horizontal 
-        ? "flex flex-row flex-wrap items-center gap-2" 
+        ? "flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2" 
         : "flex flex-col items-stretch gap-2";
 
     private string GetStepCardClass(ApprovalStatus status, bool isActive)
@@ -224,7 +229,7 @@
     private string GetConnectorClass(ApprovalStatus status, bool isActive)
     {
         var flexClass = Direction == ApprovalDirection.Horizontal 
-            ? "flex items-center" 
+            ? "flex flex-col sm:flex-row items-center justify-center" 
             : "flex flex-col items-center";
         
         return flexClass;
