@@ -40,21 +40,21 @@
     @* Header *@
     @if (Header != null)
     {
-        <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-4 sticky top-0 z-40">
+        <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-2 sticky top-0 z-40">
             <BwSidebarToggle />
             @Header
         </header>
     }
 
     @* Content *@
-    <main class="flex-1 p-6 bg-gray-50 dark:bg-black">
+    <main class="flex-1 p-2 bg-gray-50 dark:bg-black">
         @ChildContent
     </main>
 
     @* Footer *@
     @if (Footer != null)
     {
-        <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+        <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-2">
             @Footer
         </footer>
     }

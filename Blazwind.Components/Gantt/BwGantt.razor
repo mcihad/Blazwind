@@ -36,9 +36,9 @@
     <div class="overflow-auto" style="height: @Height;">
         <div class="flex min-w-max">
             @* Task List (Left Panel - Sticky) *@
-            <div class="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-50">
+            <div class="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-30">
                 @* Task List Header *@
-                <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 h-8 flex items-center text-xs font-semibold text-gray-600 dark:text-gray-400 z-50" style="top: 0;">
+                <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 h-8 flex items-center text-xs font-semibold text-gray-600 dark:text-gray-400 z-32" style="top: 0;">
                     Görevler
                 </div>
                 @* Task List Items - fixed height rows *@
@@ -79,7 +79,7 @@
         @* Timeline (Right Panel) *@
         <div class="flex-1">
             @* Timeline Header - same height as task list header *@
-            <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex z-40 h-8" style="top: 0;">
+            <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex z-20 h-8" style="top: 0;">
                 @foreach (var period in TimelinePeriods)
                 {
                     <div class="flex-shrink-0 text-center border-r border-gray-200 dark:border-gray-700 px-1 flex items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-400"
@@ -114,7 +114,7 @@
                 @* Today Line *@
                 @if (TodayOffset >= 0)
                 {
-                    <div class="absolute top-0 bottom-0 w-0.5 bg-red-400 z-20"
+                    <div class="absolute top-0 bottom-0 w-0.5 bg-red-400 z-10"
                          style="left: @(TodayOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))px;">
                         <div class="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-red-400"></div>
                     </div>

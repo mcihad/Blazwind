@@ -11,6 +11,7 @@
     background: linear-gradient(to right, var(--slider-fill-color, #3B82F6) 0%, var(--slider-fill-color, #3B82F6) 50%, #E5E7EB 50%, #E5E7EB 100%);
     margin: 0;
     padding: 0;
+    touch-action: none;
 }
 
 /* WebKit Track - needed for Chrome/Safari to show the background */

@@ -9,7 +9,7 @@
     @* Toolbar - for images *@
     @if (ShowToolbar && Type != DocumentType.Pdf)
     {
-        <div class="flex flex-wrap items-center justify-between gap-2 p-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 print:hidden sticky top-0 z-50">
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 print:hidden sticky top-0 z-30">
             <div class="flex items-center gap-1">
                 @* Zoom controls *@
                 <button type="button" 
@@ -151,7 +151,7 @@
 
         @if (_isLoading)
         {
-            <div class="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm text-white transition-opacity duration-200">
+            <div class="absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-sm text-white transition-opacity duration-200">
                 <div class="text-center">
                     <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
                     <p class="text-sm">İşlem yapılıyor...</p>
