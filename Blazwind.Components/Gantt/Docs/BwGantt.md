@@ -51,6 +51,30 @@ A sophisticated project and task management component. It provides a visual time
 }
 ```
 
+### Persistent View Mode
+Use `@bind-ViewMode` to persist the user's selected view mode. This is useful when multiple Gantt charts are on the same page and each should maintain its own view mode independently.
+
+```razor
+<BwGantt Tasks="_projectTasks" 
+         @bind-ViewMode="_currentViewMode"
+         Title="Project Timeline"
+         Height="350px"
+         Editable="true"
+         OnTaskClick="HandleTaskClick" />
+
+@code {
+    private GanttViewMode _currentViewMode = GanttViewMode.Week;
+    
+    private async Task HandleTaskClick(GanttTask task)
+    {
+        Console.WriteLine($"{task.Title} selected");
+        // View mode is automatically preserved when tasks are clicked
+    }
+}
+```
+
+The view mode will be preserved even when tasks are dragged, resized, or clicked. Each Gantt instance maintains its own state independently.
+
 ## API Reference
 
 ### BwGantt Parameters
@@ -60,7 +84,8 @@ A sophisticated project and task management component. It provides a visual time
 | `Tasks` | `List<GanttTask>` | - | The list of project tasks. |
 | `Title` | `string` | `"Proje Planı"` | Header label for the component. |
 | `Height` | `string` | `"400px"` | Vertical scroll height of the main content. |
-| `ViewMode`| `GanttViewMode` | `Week` | Display scale (`Day`, `Week`, `Month`). |
+| `ViewMode`| `GanttViewMode` | `Week` | Display scale (`Day`, `Week`, `Month`). Use `@bind-ViewMode` for two-way binding. |
+| `ViewModeChanged`| `EventCallback<GanttViewMode>` | - | Triggered when the view mode is changed by the user. |
 | `Editable`| `bool` | `false` | Enables drag-and-drop and resizing of task bars. |
 | `StartDate`| `DateTime?` | `null` | Manual timeline start. If null, calculated from tasks. |
 | `EndDate` | `DateTime?` | `null` | Manual timeline end. If null, calculated from tasks. |

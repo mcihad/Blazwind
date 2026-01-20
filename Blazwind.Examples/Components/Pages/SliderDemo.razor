@@ -4,45 +4,87 @@
 <PageTitle>Slider Demo - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
-    <BwHero Title="Slider"
-            Description="Slider component for selecting values by sliding."
-            Icon="fa-solid fa-sliders"
-            Color="BwColor.Primary"/>
+    <BwHero Title="Slider" Description="Slider component for selecting values by sliding." Icon="fa-solid fa-sliders"
+        Color="BwColor.Primary" />
 
     @* Basic Usage *@
     <BwCard Title="Basic Usage" Subtitle="Min, Max, Step" Icon="fa-solid fa-sliders" Color="BwColor.Primary">
         <BwColumn Spacing="BwSpacing.Lg">
-            <BwSlider Label="Volume Level" @bind-Value="_volume"/>
-            <BwSlider Label="Brightness" Min="0" Max="255" Step="5" @bind-Value="_brightness"/>
+            <BwSlider Label="Volume Level" @bind-Value="_volume" />
+            <BwSlider Label="Brightness" Min="0" Max="255" Step="5" @bind-Value="_brightness" />
         </BwColumn>
     </BwCard>
 
     @* Variants *@
     <BwCard Title="Variants" Subtitle="Color options" Icon="fa-solid fa-palette" Color="BwColor.Success">
         <BwColumn Spacing="BwSpacing.Lg">
-            <BwSlider Label="Primary" Color="BwColor.Primary" Value="60"/>
-            <BwSlider Label="Success" Color="BwColor.Success" Value="80"/>
-            <BwSlider Label="Warning" Color="BwColor.Warning" Value="40"/>
-            <BwSlider Label="Danger" Color="BwColor.Danger" Value="20"/>
+            <BwSlider Label="Primary" Color="BwColor.Primary" Value="60" />
+            <BwSlider Label="Success" Color="BwColor.Success" Value="80" />
+            <BwSlider Label="Warning" Color="BwColor.Warning" Value="40" />
+            <BwSlider Label="Danger" Color="BwColor.Danger" Value="20" />
         </BwColumn>
     </BwCard>
 
     @* Sizes *@
     <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-text-height" Color="BwColor.Warning">
         <BwColumn Spacing="BwSpacing.Lg">
-            <BwSlider Label="Small" Size="BwSize.Small" Value="50"/>
-            <BwSlider Label="Medium" Size="BwSize.Medium" Value="50"/>
-            <BwSlider Label="Large" Size="BwSize.Large" Value="50"/>
+            <BwSlider Label="Small" Size="BwSize.Small" Value="50" />
+            <BwSlider Label="Medium" Size="BwSize.Medium" Value="50" />
+            <BwSlider Label="Large" Size="BwSize.Large" Value="50" />
+        </BwColumn>
+    </BwCard>
+
+    @* Vertical Sliders *@
+    <BwCard Title="Vertical Orientation" Subtitle="Vertical sliders with different heights and colors"
+        Icon="fa-solid fa-arrows-up-down" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Lg">
+            <div class="flex gap-8 items-start">
+                <BwSlider Label="Volume" IsVertical="true" VerticalHeight="250px" @bind-Value="_verticalVolume"
+                    Color="BwColor.Primary" />
+                <BwSlider Label="Bass" IsVertical="true" VerticalHeight="250px" @bind-Value="_verticalBass"
+                    Color="BwColor.Success" />
+                <BwSlider Label="Treble" IsVertical="true" VerticalHeight="250px" @bind-Value="_verticalTreble"
+                    Color="BwColor.Warning" />
+                <BwSlider Label="Mid" IsVertical="true" VerticalHeight="250px" @bind-Value="_verticalMid"
+                    Color="BwColor.Info" />
+            </div>
+
+            <div class="border-t pt-4">
+                <h3 class="text-sm font-semibold mb-4">Different Heights</h3>
+                <div class="flex gap-8 items-end">
+                    <BwSlider Label="Small" IsVertical="true" VerticalHeight="150px" Value="30" Color="BwColor.Primary"
+                        Size="BwSize.Small" />
+                    <BwSlider Label="Medium" IsVertical="true" VerticalHeight="200px" Value="50"
+                        Color="BwColor.Success" />
+                    <BwSlider Label="Large" IsVertical="true" VerticalHeight="300px" Value="70" Color="BwColor.Warning"
+                        Size="BwSize.Large" />
+                </div>
+            </div>
+
+            <div class="border-t pt-4">
+                <h3 class="text-sm font-semibold mb-4">All Colors</h3>
+                <div class="flex gap-6 items-end">
+                    <BwSlider IsVertical="true" VerticalHeight="180px" Value="80" Color="BwColor.Primary" />
+                    <BwSlider IsVertical="true" VerticalHeight="180px" Value="60" Color="BwColor.Success" />
+                    <BwSlider IsVertical="true" VerticalHeight="180px" Value="40" Color="BwColor.Warning" />
+                    <BwSlider IsVertical="true" VerticalHeight="180px" Value="20" Color="BwColor.Danger" />
+                    <BwSlider IsVertical="true" VerticalHeight="180px" Value="90" Color="BwColor.Info" />
+                </div>
+            </div>
         </BwColumn>
     </BwCard>
 
     @* States *@
     <BwCard Title="States" Subtitle="Disabled" Icon="fa-solid fa-toggle-on" Color="BwColor.Secondary">
-        <BwSlider Label="Disabled" Value="70" IsDisabled="true"/>
+        <BwSlider Label="Disabled" Value="70" IsDisabled="true" />
     </BwCard>
 </BwColumn>
 
 @code {
     private double _volume = 50;
     private double _brightness = 128;
+    private double _verticalVolume = 60;
+    private double _verticalBass = 40;
+    private double _verticalTreble = 70;
+    private double _verticalMid = 55;
 }

@@ -24,12 +24,12 @@
                 <div class="absolute inset-x-0 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
 
                 @* Active Range *@
-                <div class="absolute h-2 rounded-full @GetColorClass()"
-                    style="left: @(_startPercent)%; width: @(_endPercent - _startPercent)%;"></div>
+                <div class="bw-active-range absolute h-2 rounded-full @GetColorClass()"
+                    style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;"></div>
 
                 @* Start Thumb *@
                 <div class="bw-range-thumb-start absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
-                    style="left: @(_startPercent)%;">
+                    style="left: @GetInvariantPercent(_startPercent)%;">
                     @if (ShowTooltip && _isDraggingStart)
                     {
                         <div
@@ -41,7 +41,7 @@
 
                 @* End Thumb *@
                 <div class="bw-range-thumb-end absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
-                    style="left: @(_endPercent)%;">
+                    style="left: @GetInvariantPercent(_endPercent)%;">
                     @if (ShowTooltip && _isDraggingEnd)
                     {
                         <div
@@ -98,19 +98,54 @@
     private double _endPercent;
     private bool _isDraggingStart;
     private bool _isDraggingEnd;
+    
+    private double _prevStart;
+    private double _prevEnd;
+    private double _prevMin;
+    private double _prevMax;
+
+    private bool IsDragging => _isDraggingStart || _isDraggingEnd;
+
+    protected override bool ShouldRender() => !IsDragging;
 
     protected override void OnInitialized()
     {
         _elementId = $"bw-range-{Guid.NewGuid():N}";
+        InitializeState();
+    }
+    
+    private void InitializeState()
+    {
         _currentStart = Start;
         _currentEnd = End;
+        
+        _prevStart = Start;
+        _prevEnd = End;
+        _prevMin = Min;
+        _prevMax = Max;
+        
         UpdatePercentages();
     }
 
     protected override void OnParametersSet()
     {
+        if (IsDragging) return;
+
+        bool paramsChanged = Math.Abs(Start - _prevStart) > double.Epsilon ||
+                             Math.Abs(End - _prevEnd) > double.Epsilon ||
+                             Math.Abs(Min - _prevMin) > double.Epsilon ||
+                             Math.Abs(Max - _prevMax) > double.Epsilon;
+
+        if (!paramsChanged) return;
+
         _currentStart = Start;
         _currentEnd = End;
+        
+        _prevStart = Start;
+        _prevEnd = End;
+        _prevMin = Min;
+        _prevMax = Max;
+        
         UpdatePercentages();
     }
 
@@ -179,6 +214,9 @@
 
     private string FormatValue(double value) => string.IsNullOrEmpty(Format) ? value.ToString("N0") :
     value.ToString(Format);
+    
+    private string GetInvariantPercent(double value) => 
+        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     private string GetColorClass() => Color switch
     {

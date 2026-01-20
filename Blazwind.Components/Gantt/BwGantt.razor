@@ -203,6 +203,7 @@
     [Parameter] public string Title { get; set; } = "Proje Planı";
     [Parameter] public string Height { get; set; } = "400px";
     [Parameter] public GanttViewMode ViewMode { get; set; } = GanttViewMode.Week;
+    [Parameter] public EventCallback<GanttViewMode> ViewModeChanged { get; set; }
     [Parameter] public DateTime? StartDate { get; set; }
     [Parameter] public DateTime? EndDate { get; set; }
     [Parameter] public string? Class { get; set; }
@@ -471,9 +472,13 @@
 
     private async Task SetViewMode(GanttViewMode mode)
     {
-        ViewMode = mode;
-        CalculateTimeline();
-        await UpdateJsOptionsAsync();
+        if (ViewMode != mode)
+        {
+            ViewMode = mode;
+            CalculateTimeline();
+            await UpdateJsOptionsAsync();
+            await ViewModeChanged.InvokeAsync(mode);
+        }
     }
 
     // JS Interop for drag/resize

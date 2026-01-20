@@ -166,15 +166,15 @@ function render(id: string): void {
     svg.style.display = 'block'; // Prevent inline display issues
     svg.style.fontFamily = 'Inter, system-ui, sans-serif';
 
-    // Add definitions (gradients, filters, markers)
-    const defs = createDefs();
+    // Add definitions (gradients, filters, markers) with scoped IDs
+    const defs = createDefs(id);
     svg.appendChild(defs);
 
     // Render edges first
     const edgesGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     edgesGroup.setAttribute('class', 'workflow-edges');
     data.edges.forEach(edge => {
-        renderEdge(edgesGroup, edge, nodePositions, options, data.nodes);
+        renderEdge(edgesGroup, edge, nodePositions, options, data.nodes, id);
     });
     svg.appendChild(edgesGroup);
 
@@ -184,7 +184,7 @@ function render(id: string): void {
     data.nodes.forEach(node => {
         const pos = nodePositions[node.id];
         if (pos) {
-            renderNode(id, nodesGroup, node, pos.x, pos.y, options);
+            renderNode(id, nodesGroup, node, pos.x, pos.y, options, id);
         }
     });
     svg.appendChild(nodesGroup);
@@ -193,13 +193,13 @@ function render(id: string): void {
     container.appendChild(svg);
 }
 
-function createDefs(): SVGDefsElement {
+function createDefs(scopeId: string): SVGDefsElement {
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
 
     // Gradients for each status
     Object.entries(statusStyles).forEach(([status, style]) => {
         const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-        gradient.setAttribute('id', `grad-${status}`);
+        gradient.setAttribute('id', `${scopeId}-grad-${status}`);
         gradient.setAttribute('x1', '0%');
         gradient.setAttribute('y1', '0%');
         gradient.setAttribute('x2', '0%');
@@ -220,7 +220,7 @@ function createDefs(): SVGDefsElement {
 
     // Drop shadow filter
     const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-    shadow.setAttribute('id', 'shadow');
+    shadow.setAttribute('id', `${scopeId}-shadow`);
     shadow.setAttribute('x', '-20%');
     shadow.setAttribute('y', '-20%');
     shadow.setAttribute('width', '140%');
@@ -232,7 +232,7 @@ function createDefs(): SVGDefsElement {
 
     // Glow filter for active nodes
     const glow = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
-    glow.setAttribute('id', 'glow');
+    glow.setAttribute('id', `${scopeId}-glow`);
     glow.setAttribute('x', '-50%');
     glow.setAttribute('y', '-50%');
     glow.setAttribute('width', '200%');
@@ -248,7 +248,7 @@ function createDefs(): SVGDefsElement {
 
     // Arrow marker
     const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-    marker.setAttribute('id', 'arrowhead');
+    marker.setAttribute('id', `${scopeId}-arrowhead`);
     marker.setAttribute('markerWidth', '12');
     marker.setAttribute('markerHeight', '8');
     marker.setAttribute('refX', '10');
@@ -259,7 +259,7 @@ function createDefs(): SVGDefsElement {
 
     // Animated arrow marker
     const animMarker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
-    animMarker.setAttribute('id', 'arrowhead-active');
+    animMarker.setAttribute('id', `${scopeId}-arrowhead-active`);
     animMarker.setAttribute('markerWidth', '12');
     animMarker.setAttribute('markerHeight', '8');
     animMarker.setAttribute('refX', '10');
@@ -347,7 +347,8 @@ function renderNode(
     node: WorkflowNode,
     x: number,
     y: number,
-    options: WorkflowOptions
+    options: WorkflowOptions,
+    scopeId: string
 ): void {
     const instance = instances.get(chartId);
     if (!instance) return;
@@ -364,9 +365,9 @@ function renderNode(
 
     // Apply filters
     if (status === 'active' || status === 'error') {
-        g.setAttribute('filter', 'url(#glow)');
+        g.setAttribute('filter', `url(#${scopeId}-glow)`);
     } else {
-        g.setAttribute('filter', 'url(#shadow)');
+        g.setAttribute('filter', `url(#${scopeId}-shadow)`);
     }
 
     // Node shape based on type
@@ -398,7 +399,7 @@ function renderNode(
         shape.setAttribute('ry', '8');
     }
 
-    shape.setAttribute('fill', `url(#grad-${status})`);
+    shape.setAttribute('fill', `url(#${scopeId}-grad-${status})`);
     shape.setAttribute('stroke', style.border);
     shape.setAttribute('stroke-width', status === 'active' ? '2.5' : '2');
     g.appendChild(shape);
@@ -492,13 +493,13 @@ function renderNode(
 
         g.addEventListener('mouseenter', () => {
             g.style.transform = 'scale(1.01)';
-            g.style.filter = 'url(#glow)';
+            g.style.filter = `url(#${scopeId}-glow)`;
         });
 
         g.addEventListener('mouseleave', () => {
             g.style.transform = 'scale(1)';
             if (status !== 'active' && status !== 'error') {
-                g.style.filter = 'url(#shadow)';
+                g.style.filter = `url(#${scopeId}-shadow)`;
             }
         });
     }
@@ -511,7 +512,8 @@ function renderEdge(
     edge: WorkflowEdge,
     positions: Record<string, { x: number; y: number }>,
     options: WorkflowOptions,
-    nodes: WorkflowNode[]
+    nodes: WorkflowNode[],
+    scopeId: string
 ): void {
     const fromPos = positions[edge.from];
     const toPos = positions[edge.to];
@@ -552,7 +554,7 @@ function renderEdge(
     path.setAttribute('fill', 'none');
     path.setAttribute('stroke', isActiveEdge ? '#3b82f6' : '#94a3b8');
     path.setAttribute('stroke-width', isActiveEdge ? '2.5' : '2');
-    path.setAttribute('marker-end', isActiveEdge ? 'url(#arrowhead-active)' : 'url(#arrowhead)');
+    path.setAttribute('marker-end', isActiveEdge ? `url(#${scopeId}-arrowhead-active)` : `url(#${scopeId}-arrowhead)`);
 
     // Animated dash for active edges
     if (animated && isActiveEdge) {

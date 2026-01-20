@@ -8,6 +8,7 @@ interface RangeInstance {
     track: HTMLElement;
     startThumb: HTMLElement;
     endThumb: HTMLElement;
+    activeRange: HTMLElement; // Added active range element
     min: number;
     max: number;
     step: number;
@@ -44,14 +45,16 @@ export function initialize(
     const track = element.querySelector('.bw-range-track') as HTMLElement;
     const startThumb = element.querySelector('.bw-range-thumb-start') as HTMLElement;
     const endThumb = element.querySelector('.bw-range-thumb-end') as HTMLElement;
+    const activeRange = track.querySelector('.bw-active-range') as HTMLElement; // Get active range bar
 
-    if (!track || !startThumb || !endThumb) return;
+    if (!track || !startThumb || !endThumb || !activeRange) return;
 
     const instance: RangeInstance = {
         element,
         track,
         startThumb,
         endThumb,
+        activeRange,
         min,
         max,
         step,
@@ -141,7 +144,11 @@ function handleTrackClick(e: MouseEvent, instance: RangeInstance): void {
     const distToEnd = Math.abs(clickPercent - endPercent);
 
     const thumb = distToStart < distToEnd ? 'start' : 'end';
-    notifyChange(instance, thumb, Math.max(0, Math.min(100, clickPercent)));
+    const percent = Math.max(0, Math.min(100, clickPercent));
+
+    // Update locally for click
+    updateVisuals(instance, thumb, percent);
+    notifyChange(instance, thumb, percent);
 }
 
 function onMouseMove(e: MouseEvent): void {
@@ -165,7 +172,44 @@ function applyMove(clientX: number): void {
     let newPercent = ((clientX - trackLeft) / trackWidth) * 100;
     newPercent = Math.max(0, Math.min(100, newPercent));
 
+    // Update visuals immediately
+    updateVisuals(instance, thumb, newPercent);
+
     notifyChange(instance, thumb, newPercent);
+}
+
+function updateVisuals(instance: RangeInstance, thumb: 'start' | 'end', percent: number): void {
+    // Determine the other thumb's position
+    let startPercent, endPercent;
+
+    if (thumb === 'start') {
+
+
+        // Ensure start doesn't pass end (with step calculation logic in mind, ideally we snap here too but keeping it simple for visuals)
+        // Note: For pure visual feedback, we rely on the percent. Logic matching is handled in .NET or snap logic.
+        // We need to read the OTHER thumb's current style percent to update the bar.
+        const currentEndStyle = parseFloat(instance.endThumb.style.left) || 100;
+
+        if (percent > currentEndStyle) percent = currentEndStyle; // Simple constraints
+
+        startPercent = percent;
+        endPercent = currentEndStyle;
+
+        instance.startThumb.style.left = `${percent}%`;
+    } else {
+        const currentStartStyle = parseFloat(instance.startThumb.style.left) || 0;
+
+        if (percent < currentStartStyle) percent = currentStartStyle; // Simple constraints
+
+        startPercent = currentStartStyle;
+        endPercent = percent;
+
+        instance.endThumb.style.left = `${percent}%`;
+    }
+
+    // Update active range bar
+    instance.activeRange.style.left = `${startPercent}%`;
+    instance.activeRange.style.width = `${endPercent - startPercent}%`;
 }
 
 function onMouseUp(): void {

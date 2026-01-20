@@ -6,7 +6,7 @@
 @{
     var marginClass = GetDensityMarginClass();
     var percentage = ((Value - Min) / (Max - Min)) * 100;
-    
+
     var fillColor = Color switch
     {
         BwColor.Primary => "#3B82F6",
@@ -16,7 +16,7 @@
         BwColor.Info => "#0EA5E9",
         _ => "#3B82F6"
     };
-    
+
     var thumbColor = Color switch
     {
         BwColor.Primary => "#2563EB",
@@ -26,23 +26,32 @@
         BwColor.Info => "#0284C7",
         _ => "#2563EB"
     };
-    
+
     var heightPx = Size switch
     {
         BwSize.Small => "4px",
         BwSize.Large => "12px",
         _ => "8px"
     };
-    
+
     var thumbSizePx = Size switch
     {
         BwSize.Small => "12px",
         BwSize.Large => "24px",
         _ => "16px"
     };
-    
-    var trackGradient = $"linear-gradient(to right, {fillColor} 0%, {fillColor} {percentage}%, #E5E7EB {percentage}%, #E5E7EB 100%)";
+
+    var percentageStr = percentage.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    var trackGradient = IsVertical
+    ? $"linear-gradient(to top, {fillColor} 0%, {fillColor} {percentageStr}%, #E5E7EB {percentageStr}%, #E5E7EB 100%)"
+    : $"linear-gradient(to right, {fillColor} 0%, {fillColor} {percentageStr}%, #E5E7EB {percentageStr}%, #E5E7EB 100%)";
     var errorTrackColor = HasError ? "#FCA5A5" : "#E5E7EB";
+
+    var containerClass = IsVertical ? "flex flex-row items-center gap-4" : "";
+    var sliderClass = IsVertical ? "bw-slider vertical" : "bw-slider w-full";
+    var sliderStyle = IsVertical
+    ? $"--slider-track-height: {heightPx}; --slider-thumb-size: {thumbSizePx}; --slider-fill-color: {fillColor}; --slider-thumb-color: {thumbColor}; background: {trackGradient}; height: {VerticalHeight};"
+    : $"--slider-track-height: {heightPx}; --slider-thumb-size: {thumbSizePx}; --slider-fill-color: {fillColor}; --slider-thumb-color: {thumbColor}; background: {trackGradient};";
 }
 
 <div class="@marginClass @Class" style="@Style">
@@ -65,42 +74,38 @@
                     }
                 </div>
             }
-            @if (ShowValue)
+            @if (ShowValue && !IsVertical)
             {
                 <span class="text-sm font-medium text-gray-600 dark:text-gray-400">@Value.ToString(ValueFormat)</span>
             }
         </div>
     }
-    
-    <div class="relative @(IsDisabled ? "opacity-50 cursor-not-allowed" : "")">
-        <input type="range"
-               class="bw-slider w-full"
-               min="@Min"
-               max="@Max"
-               step="@Step"
-               value="@Value"
-               disabled="@IsDisabled"
-               @oninput="HandleSliderInput"
-               @onfocus="HandleFocusEvent"
-               @onblur="HandleBlurEvent"
-               style="--slider-track-height: @heightPx; --slider-thumb-size: @thumbSizePx; --slider-fill-color: @fillColor; --slider-thumb-color: @thumbColor; background: @trackGradient;" />
+
+    <div class="relative @(IsDisabled ? "opacity-50 cursor-not-allowed" : "") @containerClass">
+        <input type="range" class="@sliderClass" min="@Min" max="@Max" step="@Step" value="@Value"
+            disabled="@IsDisabled" @oninput="HandleSliderInput" @onfocus="HandleFocusEvent" @onblur="HandleBlurEvent"
+            style="@sliderStyle" />
+
+        @if (ShowValue && IsVertical)
+        {
+            <span class="text-sm font-medium text-gray-600 dark:text-gray-400">@Value.ToString(ValueFormat)</span>
+        }
     </div>
-    
+
     @* Marks *@
-    @if (ShowMarks && Marks != null)
+    @if (ShowMarks && Marks != null && !IsVertical)
     {
         <div class="relative mt-1">
             @foreach (var mark in Marks)
             {
                 var markPercent = ((mark - Min) / (Max - Min)) * 100;
-                <div class="absolute -translate-x-1/2 text-xs text-gray-500 dark:text-gray-400"
-                     style="left: @markPercent%;">
+                <div class="absolute -translate-x-1/2 text-xs text-gray-500 dark:text-gray-400" style="left: @markPercent%;">
                     @mark
                 </div>
             }
         </div>
     }
-    
+
     @* Error/Helper Messages *@
     @if (HasError)
     {
@@ -118,30 +123,36 @@
 @code {
     /// <summary>Minimum value</summary>
     [Parameter] public double Min { get; set; } = 0;
-    
+
     /// <summary>Maximum value</summary>
     [Parameter] public double Max { get; set; } = 100;
-    
+
     /// <summary>Step increment</summary>
     [Parameter] public double Step { get; set; } = 1;
-    
+
     /// <summary>Show current value</summary>
     [Parameter] public bool ShowValue { get; set; } = true;
-    
+
     /// <summary>Show tooltip while dragging</summary>
     [Parameter] public bool ShowTooltip { get; set; } = true;
-    
+
     /// <summary>Show tick marks</summary>
     [Parameter] public bool ShowMarks { get; set; }
-    
+
     /// <summary>Custom mark values</summary>
     [Parameter] public double[]? Marks { get; set; }
-    
+
     /// <summary>Value format string</summary>
     [Parameter] public string ValueFormat { get; set; } = "0";
-    
+
     /// <summary>Color variant</summary>
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    /// <summary>Vertical orientation</summary>
+    [Parameter] public bool IsVertical { get; set; }
+
+    /// <summary>Height for vertical slider</summary>
+    [Parameter] public string VerticalHeight { get; set; } = "200px";
 
     private async Task HandleSliderInput(ChangeEventArgs e)
     {
@@ -150,14 +161,14 @@
             Value = newValue;
             await ValueChanged.InvokeAsync(Value);
             await OnChange.InvokeAsync(Value);
-            
+
             if (CascadedEditContext != null && For != null)
             {
                 CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
             }
         }
     }
-    
+
     private async Task HandleFocusEvent(FocusEventArgs e)
     {
         IsFocused = true;

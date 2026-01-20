@@ -7,6 +7,7 @@ Sayısal değerleri kaydırarak seçmek için kullanılan bileşen.
 *   **Aralık:** `Min`, `Max` ve `Step` ayarları.
 *   **Değer Gösterimi:** `ShowValue` ile anlık değer gösterimi.
 *   **Format:** `ValueFormat` ile sayı formatı (örn: C2, N0).
+*   **Yönelim:** Yatay veya dikey (`IsVertical`) olarak kullanılabilir.
 
 ## Kullanım
 
@@ -22,6 +23,15 @@ Sayısal değerleri kaydırarak seçmek için kullanılan bileşen.
           ShowValue="true" 
           ValueFormat="C0" 
           @bind-Value="price" />
+```
+
+### Dikey Slider
+
+```razor
+<BwSlider Label="Hacim" 
+          IsVertical="true" 
+          VerticalHeight="300px"
+          @bind-Value="volume" />
 ```
 
 ### Validasyon
@@ -47,6 +57,8 @@ Sayısal değerleri kaydırarak seçmek için kullanılan bileşen.
 | `Marks` | `double[]` | `null` | Gösterilecek özel değer işaretleri listesi. |
 | `Color` | `BwColor` | `Primary` | Dolgu rengi. |
 | `Size` | `BwSize` | `Medium` | Kaydırıcı ve tutamak boyutu. |
+| `IsVertical` | `bool` | `false` | Dikey yönelimde gösterir. |
+| `VerticalHeight` | `string` | `"200px"` | Dikey slider yüksekliği. |
 | `Label` | `string` | `null` | Alan etiketi. |
 | `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
 | `For` | `Expression` | `null` | Validasyon için alan referansı. |

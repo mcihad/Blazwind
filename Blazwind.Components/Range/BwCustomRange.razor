@@ -24,15 +24,15 @@
         class="bw-brush-track relative h-8 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden cursor-pointer select-none">
         @* Inactive Left *@
         <div class="absolute inset-y-0 left-0 bg-gray-300/60 dark:bg-gray-900/70 transition-all"
-            style="width: @(StartPercent)%;"></div>
+            style="width: @GetInvariantPercent(_startPercent)%;"></div>
         @* Inactive Right *@
         <div class="absolute inset-y-0 right-0 bg-gray-300/60 dark:bg-gray-900/70 transition-all"
-            style="width: @(100 - EndPercent)%;"></div>
+            style="width: @GetInvariantPercent(100 - _endPercent)%;"></div>
 
         @* Selection Brush *@
         <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
                     @GetBrushBgClass() shadow hover:shadow-md transition-all"
-            style="left: @(StartPercent)%; width: @(EndPercent - StartPercent)%;">
+            style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-3 cursor-ew-resize @GetHandleClass()
@@ -123,21 +123,42 @@
     private double _startPercent;
     private double _endPercent;
 
+    private bool _isDragging;
+    
+    private double _prevStart;
+    private double _prevEnd;
+
+    protected override bool ShouldRender() => !_isDragging;
+
     protected override void OnInitialized()
     {
         _elementId = $"bw-custom-range-{Guid.NewGuid():N}";
+        InitializeState();
+    }
+    
+    private void InitializeState()
+    {
         _startPercent = StartPercent;
         _endPercent = EndPercent;
+        
+        _prevStart = StartPercent;
+        _prevEnd = EndPercent;
     }
 
     protected override void OnParametersSet()
     {
-        // Allow external control of position
-        if (Math.Abs(_startPercent - StartPercent) > 0.1 || Math.Abs(_endPercent - EndPercent) > 0.1)
-        {
-            _startPercent = StartPercent;
-            _endPercent = EndPercent;
-        }
+        if (_isDragging) return;
+
+        bool paramsChanged = Math.Abs(StartPercent - _prevStart) > double.Epsilon ||
+                             Math.Abs(EndPercent - _prevEnd) > double.Epsilon;
+
+        if (!paramsChanged) return;
+        
+        _startPercent = StartPercent;
+        _endPercent = EndPercent;
+        
+        _prevStart = StartPercent;
+        _prevEnd = EndPercent;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -148,6 +169,19 @@
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
             MinWidthPercent);
         }
+    }
+    
+    [JSInvokable]
+    public void HandleDragStart()
+    {
+        _isDragging = true;
+    }
+
+    [JSInvokable]
+    public void HandleDragEnd()
+    {
+        _isDragging = false;
+        StateHasChanged();
     }
 
     [JSInvokable]
@@ -176,6 +210,9 @@
         await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, _startPercent, _endPercent);
         StateHasChanged();
     }
+    
+    private string GetInvariantPercent(double value) => 
+        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     private string GetBrushBgClass() => Color switch
     {
