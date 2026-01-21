@@ -62,6 +62,24 @@ Set `Orientation` to `Vertical` for a sidebar-like toolbar.
 | `Shadow` | `bool` | `true` | Whether to show a shadow. |
 | `Glass` | `bool` | `true` | Enables glassmorphism effect (backdrop blur). |
 | `Offset` | `int` | `16` | Distance in pixels from the edge (when positioned). |
+| `Wrap` | `bool` | `false` | Allow items to wrap on multiple lines (mobile-friendly). |
+| `MaxWidth` | `string?` | `null` | Max width constraint (e.g., `"100%"`, `"400px"`). |
+
+### Mobile Responsiveness
+
+For toolbars with many items, use `Wrap` and `MaxWidth` to prevent overflow:
+
+```razor
+<BwToolbar Wrap="true" MaxWidth="100%">
+    <!-- Many items here -->
+</BwToolbar>
+```
+
+### Smart Dropdown Positioning
+
+Dropdown menus automatically detect viewport position and adjust direction:
+- Opens **upward** if near bottom of screen
+- Aligns **right** if near right edge
 
 ### Helper Components
 - **BwToolButton**: A button within the toolbar.

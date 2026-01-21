@@ -13,7 +13,7 @@
     <BwCard Title="Text Editor" Subtitle="Professional text formatting toolbar" Icon="fa-solid fa-pen-fancy"
             Color="BwColor.Primary">
         <div class="space-y-4">
-            <BwToolbar>
+            <BwToolbar Wrap="true" MaxWidth="100%">
                 <BwToolButton Icon="fa-solid fa-bold" Tooltip="Bold (Ctrl+B)" IsActive="_isBold"
                               OnClick="@(() => _isBold = !_isBold)" Color="BwColor.Primary"/>
                 <BwToolButton Icon="fa-solid fa-italic" Tooltip="Italic (Ctrl+I)" IsActive="_isItalic"
@@ -160,7 +160,7 @@
     @* Design Tools *@
     <BwCard Title="Design Tools" Subtitle="Figma/Sketch-like design toolbar" Icon="fa-solid fa-pen-ruler"
             Color="BwColor.Info">
-        <BwToolbar>
+        <BwToolbar Wrap="true" MaxWidth="100%">
             <BwToolButton Icon="fa-solid fa-arrow-pointer" Tooltip="Select (V)" IsActive="_tool == 0"
                           OnClick="@(() => _tool = 0)"/>
             <BwToolButton Icon="fa-solid fa-hand" Tooltip="Move (H)" IsActive="_tool == 1"
@@ -204,7 +204,7 @@
     @* Media Player *@
     <BwCard Title="Media Player" Subtitle="Music and video controls" Icon="fa-solid fa-play" Color="BwColor.Danger">
         <div class="space-y-4">
-            <BwToolbar>
+            <BwToolbar Wrap="true" MaxWidth="100%">
                 <BwToolButton Icon="fa-solid fa-shuffle" Tooltip="Shuffle" IsActive="_shuffle"
                               OnClick="@(() => _shuffle = !_shuffle)"/>
                 <BwToolButton Icon="fa-solid fa-backward-step" Tooltip="Previous"/>

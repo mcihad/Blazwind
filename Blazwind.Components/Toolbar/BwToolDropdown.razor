@@ -1,7 +1,9 @@
 @namespace Blazwind.Components.Toolbar
 @using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
 
-<div class="relative">
+<div class="relative" @ref="_containerRef">
     <button type="button" class="@ButtonClasses" disabled="@Disabled" title="@Tooltip" @onclick="Toggle"
         @onmouseenter="Open" @onmouseleave="StartCloseTimer">
         @if (!string.IsNullOrEmpty(Icon))
@@ -34,11 +36,15 @@
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
 
+    private ElementReference _containerRef;
     private bool _isOpen;
+    private bool _openUpward;
+    private bool _alignRight;
     private CancellationTokenSource? _closeCts;
 
     private bool IsVertical => Toolbar?.IsVertical ?? false;
-    private bool OpenUpward => Toolbar?.IsAtBottom ?? false;
+    private bool OpenUpward => _openUpward || (Toolbar?.IsAtBottom ?? false);
+    private bool AlignRight => _alignRight || (Toolbar?.IsAtRight ?? false);
 
     private string ChevronRotation => _isOpen ? (OpenUpward ? "" : "rotate-180") : "";
 
@@ -87,11 +93,11 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
     {
         get
         {
-            var baseClasses = "absolute z-50 min-w-36 p-1.5 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-lg shadow-xl shadow-black/10 dark:shadow-black/30 border border-gray-200/60 dark:border-gray-700/60";
+            var baseClasses = "absolute z-50 min-w-36 max-w-[calc(100vw-2rem)] p-1.5 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-lg shadow-xl shadow-black/10 dark:shadow-black/30 border border-gray-200/60 dark:border-gray-700/60";
 
             if (IsVertical)
             {
-                if (Toolbar?.IsAtRight ?? false)
+                if (AlignRight)
                 {
                     return $"{baseClasses} right-full top-0 mr-2";
                 }
@@ -99,23 +105,41 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
             }
             else if (OpenUpward)
             {
-                var horizontalAlign = (Toolbar?.IsAtRight ?? false) ? "right-0" : "left-0";
+                var horizontalAlign = AlignRight ? "right-0" : "left-0";
                 return $"{baseClasses} {horizontalAlign} bottom-full mb-2";
             }
             else
             {
-                var horizontalAlign = (Toolbar?.IsAtRight ?? false) ? "right-0" : "left-0";
+                var horizontalAlign = AlignRight ? "right-0" : "left-0";
                 return $"{baseClasses} {horizontalAlign} top-full mt-2";
             }
         }
     }
 
-    private void Open()
+    private async Task Open()
     {
         if (!Disabled)
         {
             CancelCloseTimer();
+            await CalculateDropdownPosition();
             _isOpen = true;
+        }
+    }
+
+    private async Task CalculateDropdownPosition()
+    {
+        try
+        {
+            var result = await JS.InvokeAsync<int[]>("Blazwind.Toolbar.getDropdownDirection", _containerRef);
+            if (result != null && result.Length >= 2)
+            {
+                _openUpward = result[0] == 1;
+                _alignRight = result[1] == 1;
+            }
+        }
+        catch
+        {
+            // Fallback to default behavior
         }
     }
 
@@ -138,7 +162,7 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
         _closeCts?.Cancel();
     }
 
-    private void Toggle()
+    private async Task Toggle()
     {
         if (!Disabled)
         {
@@ -148,7 +172,7 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
             }
             else
             {
-                Open();
+                await Open();
             }
         }
     }

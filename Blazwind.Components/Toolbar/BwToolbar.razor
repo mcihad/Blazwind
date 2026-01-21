@@ -18,6 +18,12 @@
     [Parameter] public bool Shadow { get; set; } = true;
     [Parameter] public bool Glass { get; set; } = true;
     [Parameter] public int Offset { get; set; } = 16;
+    
+    /// <summary>Allow items to wrap on multiple lines</summary>
+    [Parameter] public bool Wrap { get; set; } = false;
+    
+    /// <summary>Max width constraint (e.g. "100%", "400px")</summary>
+    [Parameter] public string? MaxWidth { get; set; }
 
     public bool IsAtBottom => Position is ToolbarPosition.Bottom or ToolbarPosition.BottomLeft or
     ToolbarPosition.BottomRight;
@@ -30,15 +36,16 @@
         get
         {
             var classes = new List<string>
-{
-"inline-flex items-center",
-OrientationClass,
-SizeClass,
-Rounded ? "rounded-lg" : "",
-Shadow ? "shadow-xl shadow-black/10 dark:shadow-black/50" : "",
-Glass ? "backdrop-blur-xl bg-white/80 dark:bg-gray-900/80" : "bg-white dark:bg-gray-900",
-"border border-gray-200/60 dark:border-gray-700/60"
-};
+            {
+                "inline-flex items-center",
+                OrientationClass,
+                SizeClass,
+                Wrap ? "flex-wrap" : "",
+                Rounded ? "rounded-lg" : "",
+                Shadow ? "shadow-xl shadow-black/10 dark:shadow-black/50" : "",
+                Glass ? "backdrop-blur-xl bg-white/80 dark:bg-gray-900/80" : "bg-white dark:bg-gray-900",
+                "border border-gray-200/60 dark:border-gray-700/60"
+            };
 
             if (Position != ToolbarPosition.None)
             {
@@ -58,6 +65,8 @@ Glass ? "backdrop-blur-xl bg-white/80 dark:bg-gray-900/80" : "bg-white dark:bg-g
         get
         {
             var styles = new List<string>();
+            if (!string.IsNullOrEmpty(MaxWidth))
+                styles.Add($"max-width: {MaxWidth}");
             if (!string.IsNullOrEmpty(Style))
                 styles.Add(Style);
             return string.Join(";", styles);
