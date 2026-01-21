@@ -23,7 +23,6 @@
     "echarts": "^6.0.0",
     "jsbarcode": "^3.12.1",
     "maplibre-gl": "^5.15.0",
-    "orgchart.js": "^0.0.4",
     "pdfjs-dist": "^5.4.530",
     "qrcode": "^1.5.4",
     "signature_pad": "^5.1.3",
