@@ -93,6 +93,37 @@ The view mode will be preserved even when tasks are dragged, resized, or clicked
 | `OnTaskDrag` | `EventCallback<GanttTaskDragEventArgs>`| - | Triggered after moving a task bar. |
 | `OnTaskResize`| `EventCallback<GanttTaskResizeEventArgs>`| - | Triggered after resizing a task bar. |
 
+### Task List Panel Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `ShowTaskList` | `bool` | `true` | Show/hide the task list panel on the left. |
+| `TaskListWidth` | `int` | `256` | Width of the task list panel in pixels. |
+| `TaskListResizable` | `bool` | `true` | Allow resizing the task list panel by dragging. |
+| `TaskItemTemplate` | `RenderFragment<GanttTask>?` | `null` | Custom template for task list items. |
+| `ShowBarLabels` | `bool` | `false` | Show task titles on timeline bars. |
+| `OnTaskListVisibilityChanged` | `EventCallback<bool>` | - | Fired when task list is toggled. |
+| `OnTaskListWidthChanged` | `EventCallback<int>` | - | Fired after panel resize. |
+
+### Example: Custom Task Template
+
+```razor
+<BwGantt Tasks="_tasks" ShowTaskList="true" TaskListResizable="true">
+    <TaskItemTemplate>
+        <div class="flex items-center gap-2">
+            <span class="text-xs">@context.Title</span>
+            <span class="badge">@context.Progress%</span>
+        </div>
+    </TaskItemTemplate>
+</BwGantt>
+```
+
+### Example: Bar Labels
+
+```razor
+<BwGantt Tasks="_tasks" ShowBarLabels="true" />
+```
+
 ## Data Models
 
 ### GanttTask Properties

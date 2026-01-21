@@ -172,8 +172,63 @@ function setupDragHandlers(id: string): void {
             document.addEventListener('mouseup', onMouseUp);
         }
     });
+
+    // Setup task list resize
+    setupTaskListResize(id);
+}
+
+/**
+ * Setup task list panel resize handler
+ */
+function setupTaskListResize(id: string): void {
+    const instance = instances.get(id);
+    if (!instance) return;
+
+    const container = instance.container;
+    const taskList = container.querySelector('.bw-gantt-task-list') as HTMLElement;
+    const resizeHandle = container.querySelector('.bw-gantt-task-list .bw-gantt-resize-handle') as HTMLElement;
+
+    if (!taskList || !resizeHandle) return;
+
+    let isResizing = false;
+    let startX = 0;
+    let startWidth = 0;
+
+    resizeHandle.addEventListener('mousedown', (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = taskList.offsetWidth;
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+
+        const onMouseMove = (e: MouseEvent) => {
+            if (!isResizing) return;
+            const delta = e.clientX - startX;
+            const newWidth = Math.max(150, Math.min(startWidth + delta, 500));
+            taskList.style.width = `${newWidth}px`;
+        };
+
+        const onMouseUp = async () => {
+            if (!isResizing) return;
+            isResizing = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+
+            const finalWidth = taskList.offsetWidth;
+            await instance.netRef.invokeMethodAsync('HandleTaskListResize', finalWidth);
+
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
 }
 
 export function dispose(id: string): void {
     instances.delete(id);
 }
+

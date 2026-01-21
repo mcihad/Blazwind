@@ -7,19 +7,19 @@
 
 <BwColumn Spacing="BwSpacing.Lg">
     <BwHero Title="BwGantt"
-        Description="Gantt chart for project and task planning. Timeline, progress tracking, drag-and-drop support."
-        Icon="fa-solid fa-bars-progress" Color="BwColor.Success" />
+            Description="Gantt chart for project and task planning. Timeline, progress tracking, drag-and-drop support."
+            Icon="fa-solid fa-bars-progress" Color="BwColor.Success"/>
 
     @* Editable Project Plan *@
     <BwCard Title="Editable Project Plan" Subtitle="Drag tasks to move them or resize from edges."
-        Icon="fa-solid fa-building" Color="BwColor.Primary">
+            Icon="fa-solid fa-building" Color="BwColor.Primary">
         <BwColumn Spacing="BwSpacing.Sm">
             <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-                <BwSwitch Label="Activate Edit Mode" @bind-IsChecked="_editMode" />
+                <BwSwitch Label="Activate Edit Mode" @bind-IsChecked="_editMode"/>
             </BwRow>
             <BwGantt Tasks="_projectTasks" Title="Infrastructure Renewal 2026" Height="350px"
-                @bind-ViewMode="_projectViewMode" Editable="_editMode" OnTaskClick="HandleTaskClick"
-                OnTaskDrag="HandleTaskDrag" OnTaskResize="HandleTaskResize" />
+                     @bind-ViewMode="_projectViewMode" Editable="_editMode" OnTaskClick="HandleTaskClick"
+                     OnTaskDrag="HandleTaskDrag" OnTaskResize="HandleTaskResize"/>
         </BwColumn>
     </BwCard>
 
@@ -27,27 +27,78 @@
     <BwRow Spacing="BwSpacing.Lg" Wrap="true">
         <BwColumn Span="12" Lg="6">
             <BwCard Title="Day View" Subtitle="Detailed scheduling." Icon="fa-solid fa-calendar-day"
-                Color="BwColor.Info">
+                    Color="BwColor.Info">
                 <BwGantt Tasks="_weeklyTasks" Title="Haftalık Plan" Height="220px" @bind-ViewMode="_dayViewMode"
-                    Editable="_editMode" OnTaskClick="HandleTaskClick" OnTaskDrag="HandleTaskDrag"
-                    OnTaskResize="HandleTaskResize" />
+                         Editable="_editMode" OnTaskClick="HandleTaskClick" OnTaskDrag="HandleTaskDrag"
+                         OnTaskResize="HandleTaskResize"/>
             </BwCard>
         </BwColumn>
         <BwColumn Span="12" Lg="6">
             <BwCard Title="Month View" Subtitle="Long-term planning." Icon="fa-solid fa-calendar"
-                Color="BwColor.Warning">
+                    Color="BwColor.Warning">
                 <BwGantt Tasks="_projectTasks" Title="Annual Plan" Height="220px" @bind-ViewMode="_monthViewMode"
-                    Editable="_editMode" OnTaskClick="HandleTaskClick" OnTaskDrag="HandleTaskDrag"
-                    OnTaskResize="HandleTaskResize" />
+                         Editable="_editMode" OnTaskClick="HandleTaskClick" OnTaskDrag="HandleTaskDrag"
+                         OnTaskResize="HandleTaskResize"/>
             </BwCard>
         </BwColumn>
     </BwRow>
 
     @* Milestone Example *@
     <BwCard Title="Milestone Display" Subtitle="Critical dates and milestones." Icon="fa-solid fa-diamond"
-        Color="BwColor.Secondary">
+            Color="BwColor.Secondary">
         <BwGantt Tasks="_milestoneTasks" Title="Project Milestones" Height="180px" @bind-ViewMode="_milestoneViewMode"
-            OnTaskClick="HandleTaskClick" />
+                 OnTaskClick="HandleTaskClick"/>
+    </BwCard>
+
+    @* New Features Demo *@
+    <BwCard Title="New Features Showcase" Subtitle="Bar labels, custom templates, and panel controls."
+            Icon="fa-solid fa-wand-magic-sparkles" Color="BwColor.Info">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Md" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <BwSwitch Label="Show Bar Labels" @bind-IsChecked="_showBarLabels"/>
+                <BwSwitch Label="Show Task List" @bind-IsChecked="_showTaskList"/>
+                <BwSwitch Label="Use Custom Template" @bind-IsChecked="_useCustomTemplate"/>
+                <span class="text-sm text-gray-500">Panel Width: @_panelWidth px</span>
+            </BwRow>
+
+            @if (_useCustomTemplate)
+            {
+                <BwGantt Tasks="_projectTasks"
+                         Title="Feature Showcase"
+                         Height="300px"
+                         ShowBarLabels="_showBarLabels"
+                         ShowTaskList="_showTaskList"
+                         TaskListWidth="_panelWidth"
+                         TaskListResizable="true"
+                         OnTaskListVisibilityChanged="HandlePanelVisibilityChanged"
+                         OnTaskListWidthChanged="HandlePanelWidthChanged"
+                         OnTaskClick="HandleTaskClick">
+                    <TaskItemTemplate>
+                        <div class="flex items-center gap-2 w-full">
+                            <div class="w-2 h-2 rounded-full"
+                                 style="background-color: @(context.Color ?? "#3b82f6")"></div>
+                            <span class="flex-1 truncate font-medium text-xs">@context.Title</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-full @GetStatusClass(context.Status)">
+                                @GetStatusText(context.Status)
+                            </span>
+                        </div>
+                    </TaskItemTemplate>
+                </BwGantt>
+            }
+            else
+            {
+                <BwGantt Tasks="_projectTasks"
+                         Title="Feature Showcase"
+                         Height="300px"
+                         ShowBarLabels="_showBarLabels"
+                         ShowTaskList="_showTaskList"
+                         TaskListWidth="_panelWidth"
+                         TaskListResizable="true"
+                         OnTaskListVisibilityChanged="HandlePanelVisibilityChanged"
+                         OnTaskListWidthChanged="HandlePanelWidthChanged"
+                         OnTaskClick="HandleTaskClick"/>
+            }
+        </BwColumn>
     </BwCard>
 </BwColumn>
 
@@ -58,161 +109,167 @@
     private GanttViewMode _monthViewMode = GanttViewMode.Month;
     private GanttViewMode _milestoneViewMode = GanttViewMode.Week;
 
+    // New feature states
+    private bool _showBarLabels = true;
+    private bool _showTaskList = true;
+    private bool _useCustomTemplate;
+    private int _panelWidth = 256;
+
     private readonly List<GanttTask> _projectTasks = new()
-{
-new GanttTask
-{
-Id = "1",
-Title = "Planning Phase",
-StartDate = DateTime.Today.AddDays(-30),
-EndDate = DateTime.Today.AddDays(-20),
-Progress = 100,
-Status = GanttTaskStatus.Completed,
-Color = "#10b981",
-AssigneeName = "Project Team"
-},
-new GanttTask
-{
-Id = "2",
-Title = "Feasibility Report",
-StartDate = DateTime.Today.AddDays(-25),
-EndDate = DateTime.Today.AddDays(-15),
-Progress = 100,
-Status = GanttTaskStatus.Completed,
-Color = "#10b981"
-},
-new GanttTask
-{
-Id = "3",
-Title = "Tender Process",
-StartDate = DateTime.Today.AddDays(-15),
-EndDate = DateTime.Today.AddDays(-5),
-Progress = 100,
-Status = GanttTaskStatus.Completed,
-Color = "#10b981",
-AssigneeName = "Procurement"
-},
-new GanttTask
-{
-Id = "4",
-Title = "Excavation Works",
-StartDate = DateTime.Today.AddDays(-5),
-EndDate = DateTime.Today.AddDays(10),
-Progress = 60,
-Status = GanttTaskStatus.InProgress,
-Color = "#3b82f6",
-AssigneeName = "Contractor A"
-},
-new GanttTask
-{
-Id = "5",
-Title = "Pipe Laying",
-StartDate = DateTime.Today.AddDays(5),
-EndDate = DateTime.Today.AddDays(25),
-Progress = 20,
-Status = GanttTaskStatus.InProgress,
-Color = "#3b82f6",
-AssigneeName = "Contractor B"
-},
-new GanttTask
-{
-Id = "6",
-Title = "Asphalt Work",
-StartDate = DateTime.Today.AddDays(20),
-EndDate = DateTime.Today.AddDays(35),
-Progress = 0,
-Status = GanttTaskStatus.Pending,
-Color = "#6b7280"
-},
-new GanttTask
-{
-Id = "7",
-Title = "Testing and Acceptance",
-StartDate = DateTime.Today.AddDays(35),
-EndDate = DateTime.Today.AddDays(42),
-Progress = 0,
-Status = GanttTaskStatus.Pending,
-Color = "#8b5cf6"
-}
-};
+    {
+        new GanttTask
+        {
+            Id = "1",
+            Title = "Planning Phase",
+            StartDate = DateTime.Today.AddDays(-30),
+            EndDate = DateTime.Today.AddDays(-20),
+            Progress = 100,
+            Status = GanttTaskStatus.Completed,
+            Color = "#10b981",
+            AssigneeName = "Project Team"
+        },
+        new GanttTask
+        {
+            Id = "2",
+            Title = "Feasibility Report",
+            StartDate = DateTime.Today.AddDays(-25),
+            EndDate = DateTime.Today.AddDays(-15),
+            Progress = 100,
+            Status = GanttTaskStatus.Completed,
+            Color = "#10b981"
+        },
+        new GanttTask
+        {
+            Id = "3",
+            Title = "Tender Process",
+            StartDate = DateTime.Today.AddDays(-15),
+            EndDate = DateTime.Today.AddDays(-5),
+            Progress = 100,
+            Status = GanttTaskStatus.Completed,
+            Color = "#10b981",
+            AssigneeName = "Procurement"
+        },
+        new GanttTask
+        {
+            Id = "4",
+            Title = "Excavation Works",
+            StartDate = DateTime.Today.AddDays(-5),
+            EndDate = DateTime.Today.AddDays(10),
+            Progress = 60,
+            Status = GanttTaskStatus.InProgress,
+            Color = "#3b82f6",
+            AssigneeName = "Contractor A"
+        },
+        new GanttTask
+        {
+            Id = "5",
+            Title = "Pipe Laying",
+            StartDate = DateTime.Today.AddDays(5),
+            EndDate = DateTime.Today.AddDays(25),
+            Progress = 20,
+            Status = GanttTaskStatus.InProgress,
+            Color = "#3b82f6",
+            AssigneeName = "Contractor B"
+        },
+        new GanttTask
+        {
+            Id = "6",
+            Title = "Asphalt Work",
+            StartDate = DateTime.Today.AddDays(20),
+            EndDate = DateTime.Today.AddDays(35),
+            Progress = 0,
+            Status = GanttTaskStatus.Pending,
+            Color = "#6b7280"
+        },
+        new GanttTask
+        {
+            Id = "7",
+            Title = "Testing and Acceptance",
+            StartDate = DateTime.Today.AddDays(35),
+            EndDate = DateTime.Today.AddDays(42),
+            Progress = 0,
+            Status = GanttTaskStatus.Pending,
+            Color = "#8b5cf6"
+        }
+    };
 
     private readonly List<GanttTask> _weeklyTasks = new()
-{
-new GanttTask
-{
-Id = "w1",
-Title = "Street 1 Excavation",
-StartDate = DateTime.Today,
-EndDate = DateTime.Today.AddDays(2),
-Progress = 50,
-Status = GanttTaskStatus.InProgress,
-Color = "#f59e0b"
-},
-new GanttTask
-{
-Id = "w2",
-Title = "Street 2 Excavation",
-StartDate = DateTime.Today.AddDays(2),
-EndDate = DateTime.Today.AddDays(4),
-Progress = 0,
-Status = GanttTaskStatus.Pending,
-Color = "#f59e0b"
-},
-new GanttTask
-{
-Id = "w3",
-Title = "Pipe Installation",
-StartDate = DateTime.Today.AddDays(3),
-EndDate = DateTime.Today.AddDays(6),
-Progress = 0,
-Status = GanttTaskStatus.Pending,
-Color = "#3b82f6"
-}
-};
+    {
+        new GanttTask
+        {
+            Id = "w1",
+            Title = "Street 1 Excavation",
+            StartDate = DateTime.Today,
+            EndDate = DateTime.Today.AddDays(2),
+            Progress = 50,
+            Status = GanttTaskStatus.InProgress,
+            Color = "#f59e0b"
+        },
+        new GanttTask
+        {
+            Id = "w2",
+            Title = "Street 2 Excavation",
+            StartDate = DateTime.Today.AddDays(2),
+            EndDate = DateTime.Today.AddDays(4),
+            Progress = 0,
+            Status = GanttTaskStatus.Pending,
+            Color = "#f59e0b"
+        },
+        new GanttTask
+        {
+            Id = "w3",
+            Title = "Pipe Installation",
+            StartDate = DateTime.Today.AddDays(3),
+            EndDate = DateTime.Today.AddDays(6),
+            Progress = 0,
+            Status = GanttTaskStatus.Pending,
+            Color = "#3b82f6"
+        }
+    };
 
     private readonly List<GanttTask> _milestoneTasks = new()
-{
-new GanttTask
-{
-Id = "m1",
-Title = "Project Start",
-StartDate = DateTime.Today.AddDays(-30),
-EndDate = DateTime.Today.AddDays(-30),
-IsMilestone = true,
-Progress = 100,
-Color = "#10b981"
-},
-new GanttTask
-{
-Id = "m2",
-Title = "Tender Completed",
-StartDate = DateTime.Today.AddDays(-10),
-EndDate = DateTime.Today.AddDays(-10),
-IsMilestone = true,
-Progress = 100,
-Color = "#10b981"
-},
-new GanttTask
-{
-Id = "m3",
-Title = "Mid Review",
-StartDate = DateTime.Today.AddDays(15),
-EndDate = DateTime.Today.AddDays(15),
-IsMilestone = true,
-Progress = 0,
-Color = "#f59e0b"
-},
-new GanttTask
-{
-Id = "m4",
-Title = "Project Delivery",
-StartDate = DateTime.Today.AddDays(45),
-EndDate = DateTime.Today.AddDays(45),
-IsMilestone = true,
-Progress = 0,
-Color = "#8b5cf6"
-}
-};
+    {
+        new GanttTask
+        {
+            Id = "m1",
+            Title = "Project Start",
+            StartDate = DateTime.Today.AddDays(-30),
+            EndDate = DateTime.Today.AddDays(-30),
+            IsMilestone = true,
+            Progress = 100,
+            Color = "#10b981"
+        },
+        new GanttTask
+        {
+            Id = "m2",
+            Title = "Tender Completed",
+            StartDate = DateTime.Today.AddDays(-10),
+            EndDate = DateTime.Today.AddDays(-10),
+            IsMilestone = true,
+            Progress = 100,
+            Color = "#10b981"
+        },
+        new GanttTask
+        {
+            Id = "m3",
+            Title = "Mid Review",
+            StartDate = DateTime.Today.AddDays(15),
+            EndDate = DateTime.Today.AddDays(15),
+            IsMilestone = true,
+            Progress = 0,
+            Color = "#f59e0b"
+        },
+        new GanttTask
+        {
+            Id = "m4",
+            Title = "Project Delivery",
+            StartDate = DateTime.Today.AddDays(45),
+            EndDate = DateTime.Today.AddDays(45),
+            IsMilestone = true,
+            Progress = 0,
+            Color = "#8b5cf6"
+        }
+    };
 
     private async Task HandleTaskClick(GanttTask task)
     {
@@ -222,8 +279,8 @@ Color = "#8b5cf6"
     private async Task HandleTaskDrag(GanttTaskDragEventArgs args)
     {
         await ToastService.SuccessAsync(
-        $"{args.Task.Title} moved",
-        $"{args.DaysMoved} days {(args.DaysMoved > 0 ? "forward" : "backward")} shifted"
+            $"{args.Task.Title} moved",
+            $"{args.DaysMoved} days {(args.DaysMoved > 0 ? "forward" : "backward")} shifted"
         );
     }
 
@@ -234,9 +291,44 @@ Color = "#8b5cf6"
         var diff = newDuration - oldDuration;
 
         await ToastService.WarningAsync(
-        $"{args.Task.Title} resized",
-        $"Duration: {oldDuration} → {newDuration} days ({(diff > 0 ? "+" : "")}{diff})"
+            $"{args.Task.Title} resized",
+            $"Duration: {oldDuration} → {newDuration} days ({(diff > 0 ? "+" : "")}{diff})"
         );
+    }
+
+    private async Task HandlePanelVisibilityChanged(bool isVisible)
+    {
+        _showTaskList = isVisible;
+        await ToastService.InfoAsync("Task Panel", isVisible ? "Panel shown" : "Panel hidden");
+    }
+
+    private async Task HandlePanelWidthChanged(int width)
+    {
+        _panelWidth = width;
+        await ToastService.InfoAsync("Panel Resized", $"New width: {width}px");
+    }
+
+    private string GetStatusClass(GanttTaskStatus status)
+    {
+        return status switch
+        {
+            GanttTaskStatus.Completed => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+            GanttTaskStatus.InProgress => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+            GanttTaskStatus.Pending => "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+            GanttTaskStatus.Delayed => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+            _ => "bg-gray-100 text-gray-600"
+        };
+    }
+ private string GetStatusText(GanttTaskStatus status)
+    {
+        return status switch
+        {
+            GanttTaskStatus.Completed => "Done",
+            GanttTaskStatus.InProgress => "Active",
+            GanttTaskStatus.Pending => "Pending",
+            GanttTaskStatus.Delayed => "Delayed",
+            _ => status.ToString()
+        };
     }
 
 }

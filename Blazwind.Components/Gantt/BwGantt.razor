@@ -36,44 +36,85 @@
     <div class="overflow-auto" style="height: @Height;">
         <div class="flex min-w-max">
             @* Task List (Left Panel - Sticky) *@
-            <div class="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-30">
-                @* Task List Header *@
-                <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 h-8 flex items-center text-xs font-semibold text-gray-600 dark:text-gray-400 z-32" style="top: 0;">
-                    Görevler
-                </div>
-                @* Task List Items - fixed height rows *@
-                @{ int taskIndex = 0; }
-                @foreach (var task in FlatTasks)
-                {
-                    var isHovered = _hoveredTaskId == task.Id;
-                    <div class="bw-gantt-task-row flex items-center gap-2 px-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer text-sm transition-colors h-8 @(task.ParentId != null ? "pl-6" : "") @(isHovered ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700")"
-                         data-task-index="@taskIndex"
-                         @onclick="() => HandleTaskClick(task)"
-                         @onmouseenter="() => _hoveredTaskId = task.Id"
-                         @onmouseleave="() => _hoveredTaskId = null">
-                        @if (task.Children.Count > 0)
-                        {
-                            <i class="fa-solid fa-folder text-amber-500 text-xs"></i>
-                        }
-                        else if (task.IsMilestone)
-                        {
-                            <i class="fa-solid fa-diamond text-purple-500 text-xs"></i>
-                        }
-                        else
-                        {
-                            <i class="fa-solid fa-circle text-xs" style="color: @(task.Color ?? "#3b82f6")"></i>
-                        }
-                        <span class="truncate flex-1 @(task.Status == GanttTaskStatus.Completed ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-700 dark:text-gray-200")">
-                            @task.Title
-                        </span>
-                        @if (!string.IsNullOrEmpty(task.AssigneeAvatar) || !string.IsNullOrEmpty(task.AssigneeName))
-                        {
-                            <BwAvatar Name="@task.AssigneeName" Src="@task.AssigneeAvatar" Size="BwSize.ExtraSmall" />
-                        }
+            @if (ShowTaskList && _isTaskListVisible)
+            {
+                <div class="bw-gantt-task-list flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-30 relative"
+                     style="width: @(_currentTaskListWidth)px;">
+                    @* Task List Header *@
+                    <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 h-8 flex items-center justify-between text-xs font-semibold text-gray-600 dark:text-gray-400 z-32" style="top: 0;">
+                        <span>Görevler</span>
+                        <button type="button" class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors" 
+                                @onclick="ToggleTaskList" title="Görev listesini gizle">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
                     </div>
-                    taskIndex++;
-                }
-            </div>
+                    @* Task List Items - fixed height rows *@
+                    @{ int taskIndex = 0; }
+                    @foreach (var task in FlatTasks)
+                    {
+                        var isHovered = _hoveredTaskId == task.Id;
+                        var currentTask = task;
+                        <div class="bw-gantt-task-row flex items-center gap-2 px-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer text-sm transition-colors h-8 @(task.ParentId != null ? "pl-6" : "") @(isHovered ? "bg-blue-50 dark:bg-blue-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-700")"
+                             data-task-index="@taskIndex"
+                             @onclick="() => HandleTaskClick(task)"
+                             @onmouseenter="() => _hoveredTaskId = task.Id"
+                             @onmouseleave="() => _hoveredTaskId = null">
+                            @if (TaskItemTemplate != null)
+                            {
+                                @TaskItemTemplate(currentTask)
+                            }
+                            else
+                            {
+                                @if (task.Children.Count > 0)
+                                {
+                                    <i class="fa-solid fa-folder text-amber-500 text-xs"></i>
+                                }
+                                else if (task.IsMilestone)
+                                {
+                                    <i class="fa-solid fa-diamond text-purple-500 text-xs"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-circle text-xs" style="color: @(task.Color ?? "#3b82f6")"></i>
+                                }
+                                <span class="truncate flex-1 @(task.Status == GanttTaskStatus.Completed ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-700 dark:text-gray-200")">
+                                    @task.Title
+                                </span>
+                                @if (!string.IsNullOrEmpty(task.AssigneeAvatar) || !string.IsNullOrEmpty(task.AssigneeName))
+                                {
+                                    <BwAvatar Name="@task.AssigneeName" Src="@task.AssigneeAvatar" Size="BwSize.ExtraSmall" />
+                                }
+                            }
+                        </div>
+                        taskIndex++;
+                    }
+                    
+                    @* Resize Handle *@
+                    @if (TaskListResizable)
+                    {
+                        <div class="bw-gantt-resize-handle absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500 transition-colors z-40"
+                             @onmousedown="StartTaskListResize"
+                             @onmousedown:preventDefault="true"></div>
+                    }
+                </div>
+            }
+            else if (ShowTaskList)
+            {
+                @* Collapsed state - show expand button *@
+                <div class="flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-30" style="width: 32px;">
+                    <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 h-8 flex items-center justify-center z-32">
+                        <button type="button" class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors" 
+                                @onclick="ToggleTaskList" title="Görev listesini göster">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                    @* Row placeholders for alignment *@
+                    @foreach (var task in FlatTasks)
+                    {
+                        <div class="h-8 border-b border-gray-100 dark:border-gray-700"></div>
+                    }
+                </div>
+            }
 
 
         @* Timeline (Right Panel) *@
@@ -162,7 +203,15 @@
                                 @* Label *@
                                 <div class="absolute inset-0 flex items-center justify-center px-1">
                                     <span class="text-[9px] font-medium text-white truncate drop-shadow">
-                                        @if (task.Progress > 0 && task.Progress < 100)
+                                        @if (ShowBarLabels)
+                                        {
+                                            @task.Title
+                                            @if (task.Progress > 0 && task.Progress < 100)
+                                            {
+                                                <text> (@task.Progress%)</text>
+                                            }
+                                        }
+                                        else if (task.Progress > 0 && task.Progress < 100)
                                         {
                                             @($"{task.Progress}%")
                                         }
@@ -198,6 +247,16 @@
     </div>
 </BwCard>
 
+@* Resize overlay - captures mouse during panel resize *@
+@if (_isResizingTaskList)
+{
+    <div class="fixed inset-0 z-50 cursor-col-resize"
+         @onmousemove="OnResizeMouseMove"
+         @onmouseup="OnResizeMouseUp"
+         @onmouseleave="OnResizeMouseUp">
+    </div>
+}
+
 @code {
     [Parameter] public List<GanttTask> Tasks { get; set; } = new();
     [Parameter] public string Title { get; set; } = "Proje Planı";
@@ -212,6 +271,36 @@
     [Parameter] public EventCallback<GanttTask> OnTaskClick { get; set; }
     [Parameter] public EventCallback<GanttTaskResizeEventArgs> OnTaskResize { get; set; }
     [Parameter] public EventCallback<GanttTaskDragEventArgs> OnTaskDrag { get; set; }
+    
+    // Task List Panel Parameters
+    /// <summary>Show/hide the task list panel on the left</summary>
+    [Parameter] public bool ShowTaskList { get; set; } = true;
+    
+    /// <summary>Width of the task list panel in pixels</summary>
+    [Parameter] public int TaskListWidth { get; set; } = 256;
+    
+    /// <summary>Allow resizing the task list panel</summary>
+    [Parameter] public bool TaskListResizable { get; set; } = true;
+    
+    /// <summary>Custom template for task list items</summary>
+    [Parameter] public RenderFragment<GanttTask>? TaskItemTemplate { get; set; }
+    
+    /// <summary>Show task titles on timeline bars</summary>
+    [Parameter] public bool ShowBarLabels { get; set; } = false;
+    
+    // Task List Events
+    /// <summary>Fired when task list visibility changes</summary>
+    [Parameter] public EventCallback<bool> OnTaskListVisibilityChanged { get; set; }
+    
+    /// <summary>Fired when task list width changes after resize</summary>
+    [Parameter] public EventCallback<int> OnTaskListWidthChanged { get; set; }
+    
+    // Internal state
+    private bool _isTaskListVisible = true;
+    private int _currentTaskListWidth = 256;
+    private bool _isResizingTaskList = false;
+    private double _resizeStartX;
+    private int _resizeStartWidth;
 
     private List<GanttTask> FlatTasks => FlattenTasks(Tasks);
     private List<string> TimelinePeriods = new();
@@ -224,6 +313,47 @@
     protected override void OnParametersSet()
     {
         CalculateTimeline();
+        _isTaskListVisible = ShowTaskList;
+        _currentTaskListWidth = TaskListWidth;
+    }
+    
+    private async Task ToggleTaskList()
+    {
+        _isTaskListVisible = !_isTaskListVisible;
+        await OnTaskListVisibilityChanged.InvokeAsync(_isTaskListVisible);
+    }
+    
+    private void StartTaskListResize(MouseEventArgs e)
+    {
+        _isResizingTaskList = true;
+        _resizeStartX = e.ClientX;
+        _resizeStartWidth = _currentTaskListWidth;
+    }
+    
+    private void OnResizeMouseMove(MouseEventArgs e)
+    {
+        if (!_isResizingTaskList) return;
+        
+        var delta = e.ClientX - _resizeStartX;
+        var newWidth = _resizeStartWidth + (int)delta;
+        _currentTaskListWidth = Math.Max(150, Math.Min(newWidth, 500));
+    }
+    
+    private async Task OnResizeMouseUp(MouseEventArgs e)
+    {
+        if (_isResizingTaskList)
+        {
+            _isResizingTaskList = false;
+            await OnTaskListWidthChanged.InvokeAsync(_currentTaskListWidth);
+        }
+    }
+    
+    [JSInvokable]
+    public async Task HandleTaskListResize(int newWidth)
+    {
+        _currentTaskListWidth = Math.Max(150, Math.Min(newWidth, 500));
+        await OnTaskListWidthChanged.InvokeAsync(_currentTaskListWidth);
+        StateHasChanged();
     }
     
     private double CalculateTodayOffset()

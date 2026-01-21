@@ -102,3 +102,35 @@ WorkflowEdge.Create("from", "to", "Yes")
 | `ZoomInAsync` | `Task ZoomInAsync()` | Zooms in |
 | `ZoomOutAsync` | `Task ZoomOutAsync()` | Zooms out |
 | `FitToScreenAsync` | `Task FitToScreenAsync()` | Fits diagram to container |
+| `ExportPngAsync` | `Task ExportPngAsync()` | Exports workflow as PNG image |
+| `ToggleFullscreenAsync` | `Task ToggleFullscreenAsync()` | Toggles fullscreen mode |
+
+## Events
+
+| Event | Type | Description |
+|---|---|---|
+| `OnNodeClick` | `EventCallback<NodeClickedEventArgs>` | Fired when a node is clicked |
+| `OnNodeDragEnd` | `EventCallback<NodeDragEndEventArgs>` | Fired after a node is dragged |
+
+## Node Types (Interfaces)
+
+Use the typed node classes for better type safety:
+
+```csharp
+// Using typed nodes
+List<IWorkflowNode> _nodes = new()
+{
+    new StartNode("start", "Start"),
+    new TaskNode("task1", "User Review", "fa-solid fa-user") { Status = WorkflowNodeStatus.Active },
+    new DecisionNode("decision1", "Approved?"),
+    new EndNode("end", "Complete")
+};
+
+List<IWorkflowEdge> _edges = new()
+{
+    new WorkflowEdge("start", "task1"),
+    new WorkflowEdge("task1", "decision1"),
+    new WorkflowEdge("decision1", "end", "Yes")
+};
+```
+
