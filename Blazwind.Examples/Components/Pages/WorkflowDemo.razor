@@ -87,6 +87,57 @@
                     NodeHeight="50"
                     HorizontalSpacing="60"/>
     </BwCard>
+
+    @* Dynamic Workflow Builder *@
+    <BwCard Title="Dynamic Workflow Builder" Subtitle="Add, remove nodes and change statuses dynamically."
+            Icon="fa-solid fa-wand-magic-sparkles" Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Md">
+            <BwRow Spacing="BwSpacing.Sm" Wrap="true">
+                <BwButton Text="Add Task Node" Icon="fa-solid fa-plus" Size="BwSize.Small" Color="BwColor.Primary"
+                          OnClick="AddDynamicNode"/>
+                <BwButton Text="Add Decision Node" Icon="fa-solid fa-code-branch" Size="BwSize.Small" Color="BwColor.Warning"
+                          OnClick="AddDecisionNode"/>
+                <BwButton Text="Remove Last" Icon="fa-solid fa-trash" Size="BwSize.Small" Color="BwColor.Danger"
+                          Variant="BwVariant.Outline" OnClick="RemoveLastNode" Disabled="@(_dynamicNodes.Count <= 2)"/>
+                <BwButton Text="Next Stage" Icon="fa-solid fa-forward" Size="BwSize.Small" Color="BwColor.Success"
+                          OnClick="AdvanceStage"/>
+                <BwButton Text="Reset All" Icon="fa-solid fa-rotate-left" Size="BwSize.Small" Variant="BwVariant.Ghost"
+                          OnClick="ResetDynamicWorkflow"/>
+            </BwRow>
+            
+            <div class="text-sm text-gray-500 dark:text-gray-400">
+                Nodes: @_dynamicNodes.Count | Edges: @_dynamicEdges.Count | 
+                Active: @(_dynamicNodes.FirstOrDefault(n => n.Status == WorkflowNodeStatus.Active)?.Label ?? "None")
+            </div>
+
+            <BwWorkflow @ref="_dynamicWorkflow"
+                        Nodes="_dynamicNodes"
+                        Edges="_dynamicEdges"
+                        Height="350px"
+                        Draggable="true"
+                        OnNodeClick="HandleDynamicNodeClick"/>
+            
+            @if (_selectedDynamicNode != null)
+            {
+                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+                    <BwRow Spacing="BwSpacing.Sm" Class="items-center justify-between">
+                        <div>
+                            <h4 class="font-semibold">@_selectedDynamicNode.Label</h4>
+                            <p class="text-xs text-gray-400">Type: @_selectedDynamicNode.NodeType | Status: @_selectedDynamicNode.Status</p>
+                        </div>
+                        <BwRow Spacing="BwSpacing.Xs">
+                            <BwButton Text="Set Active" Size="BwSize.Small" Color="BwColor.Primary"
+                                      OnClick="() => SetNodeStatus(_selectedDynamicNode, WorkflowNodeStatus.Active)"/>
+                            <BwButton Text="Complete" Size="BwSize.Small" Color="BwColor.Success"
+                                      OnClick="() => SetNodeStatus(_selectedDynamicNode, WorkflowNodeStatus.Completed)"/>
+                            <BwButton Text="Error" Size="BwSize.Small" Color="BwColor.Danger" Variant="BwVariant.Outline"
+                                      OnClick="() => SetNodeStatus(_selectedDynamicNode, WorkflowNodeStatus.Error)"/>
+                        </BwRow>
+                    </BwRow>
+                </div>
+            }
+        </BwColumn>
+    </BwCard>
 </BwColumn>
 
 @code {
@@ -250,4 +301,142 @@
         WorkflowNodeStatus.Skipped => "text-gray-400",
         _ => "text-gray-500"
     };
+    
+    // Dynamic Workflow Builder
+    private BwWorkflow? _dynamicWorkflow;
+    private IWorkflowNode? _selectedDynamicNode;
+    private int _nodeCounter = 1;
+    
+    private List<IWorkflowNode> _dynamicNodes = new()
+    {
+        new StartNode("dyn-start", "Start") { Status = WorkflowNodeStatus.Completed },
+        new TaskNode("dyn-task-1", "Step 1", "fa-solid fa-1") { Status = WorkflowNodeStatus.Active },
+        new EndNode("dyn-end", "End")
+    };
+    
+    private List<IWorkflowEdge> _dynamicEdges = new()
+    {
+        new WorkflowEdge("dyn-start", "dyn-task-1"),
+        new WorkflowEdge("dyn-task-1", "dyn-end")
+    };
+    
+    private void HandleDynamicNodeClick(NodeClickedEventArgs args)
+    {
+        _selectedDynamicNode = args.Node;
+        StateHasChanged();
+    }
+    
+    private void AddDynamicNode()
+    {
+        _nodeCounter++;
+        var newId = $"dyn-task-{_nodeCounter}";
+        var lastTask = _dynamicNodes.LastOrDefault(n => n.NodeType != "end");
+        
+        // Remove edge to end
+        var endEdge = _dynamicEdges.FirstOrDefault(e => e.ToNodeId == "dyn-end" && e.FromNodeId == lastTask?.Id);
+        if (endEdge != null) _dynamicEdges.Remove(endEdge);
+        
+        // Add new node
+        var newNode = new TaskNode(newId, $"Step {_nodeCounter}", $"fa-solid fa-{_nodeCounter % 10}");
+        var insertIndex = _dynamicNodes.FindIndex(n => n.Id == "dyn-end");
+        _dynamicNodes.Insert(insertIndex, newNode);
+        
+        // Add new edges
+        if (lastTask != null) _dynamicEdges.Add(new WorkflowEdge(lastTask.Id, newId));
+        _dynamicEdges.Add(new WorkflowEdge(newId, "dyn-end"));
+        
+        StateHasChanged();
+    }
+    
+    private void AddDecisionNode()
+    {
+        _nodeCounter++;
+        var newId = $"dyn-decision-{_nodeCounter}";
+        var lastTask = _dynamicNodes.LastOrDefault(n => n.NodeType != "end");
+        
+        // Remove edge to end
+        var endEdge = _dynamicEdges.FirstOrDefault(e => e.ToNodeId == "dyn-end" && e.FromNodeId == lastTask?.Id);
+        if (endEdge != null) _dynamicEdges.Remove(endEdge);
+        
+        // Add decision node
+        var newNode = new DecisionNode(newId, $"Decision {_nodeCounter}");
+        var insertIndex = _dynamicNodes.FindIndex(n => n.Id == "dyn-end");
+        _dynamicNodes.Insert(insertIndex, newNode);
+        
+        // Add new edges
+        if (lastTask != null) _dynamicEdges.Add(new WorkflowEdge(lastTask.Id, newId));
+        _dynamicEdges.Add(new WorkflowEdge(newId, "dyn-end", "Yes"));
+        
+        StateHasChanged();
+    }
+    
+    private void RemoveLastNode()
+    {
+        // Find last non-start, non-end node
+        var lastTask = _dynamicNodes.LastOrDefault(n => n.NodeType != "start" && n.NodeType != "end");
+        if (lastTask == null) return;
+        
+        // Remove edges connected to this node
+        _dynamicEdges.RemoveAll(e => e.FromNodeId == lastTask.Id || e.ToNodeId == lastTask.Id);
+        _dynamicNodes.Remove(lastTask);
+        
+        // Reconnect remaining nodes to end
+        var newLast = _dynamicNodes.LastOrDefault(n => n.NodeType != "end");
+        if (newLast != null && !_dynamicEdges.Any(e => e.FromNodeId == newLast.Id && e.ToNodeId == "dyn-end"))
+        {
+            _dynamicEdges.Add(new WorkflowEdge(newLast.Id, "dyn-end"));
+        }
+        
+        if (_selectedDynamicNode?.Id == lastTask.Id) _selectedDynamicNode = null;
+        StateHasChanged();
+    }
+    
+    private void AdvanceStage()
+    {
+        // Find current active node
+        var active = _dynamicNodes.FirstOrDefault(n => n.Status == WorkflowNodeStatus.Active);
+        if (active == null)
+        {
+            // Start from beginning
+            var first = _dynamicNodes.FirstOrDefault(n => n.NodeType != "start");
+            if (first != null) first.Status = WorkflowNodeStatus.Active;
+        }
+        else
+        {
+            // Complete current and activate next
+            active.Status = WorkflowNodeStatus.Completed;
+            var outEdge = _dynamicEdges.FirstOrDefault(e => e.FromNodeId == active.Id);
+            if (outEdge != null)
+            {
+                var nextNode = _dynamicNodes.FirstOrDefault(n => n.Id == outEdge.ToNodeId);
+                if (nextNode != null) nextNode.Status = WorkflowNodeStatus.Active;
+            }
+        }
+        StateHasChanged();
+    }
+    
+    private void ResetDynamicWorkflow()
+    {
+        _dynamicNodes = new List<IWorkflowNode>
+        {
+            new StartNode("dyn-start", "Start") { Status = WorkflowNodeStatus.Completed },
+            new TaskNode("dyn-task-1", "Step 1", "fa-solid fa-1") { Status = WorkflowNodeStatus.Active },
+            new EndNode("dyn-end", "End")
+        };
+        _dynamicEdges = new List<IWorkflowEdge>
+        {
+            new WorkflowEdge("dyn-start", "dyn-task-1"),
+            new WorkflowEdge("dyn-task-1", "dyn-end")
+        };
+        _nodeCounter = 1;
+        _selectedDynamicNode = null;
+        StateHasChanged();
+    }
+    
+    private void SetNodeStatus(IWorkflowNode node, WorkflowNodeStatus status)
+    {
+        node.Status = status;
+        StateHasChanged();
+    }
 }
+
