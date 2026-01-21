@@ -174,7 +174,7 @@
                     <div class="bw-gantt-bar absolute flex items-center @(Editable ? "cursor-move" : "")" 
                          style="@barStyle"
                          data-task-id="@task.Id"
-                         @onclick="() => HandleTaskClick(taskLocal)">
+                         @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
                         @if (task.IsMilestone)
                         {
                             @* Milestone Diamond *@
@@ -310,11 +310,34 @@
     private double TodayOffset => CalculateTodayOffset();
     private string? _hoveredTaskId;
 
+    private bool _prevShowTaskList;
+    private int _prevTaskListWidth;
+
+    protected override void OnInitialized()
+    {
+        _isTaskListVisible = ShowTaskList;
+        _prevShowTaskList = ShowTaskList;
+        
+        _currentTaskListWidth = TaskListWidth;
+        _prevTaskListWidth = TaskListWidth;
+    }
+
     protected override void OnParametersSet()
     {
         CalculateTimeline();
-        _isTaskListVisible = ShowTaskList;
-        _currentTaskListWidth = TaskListWidth;
+        
+        // Only update internal state if parameters explicitly changed
+        if (ShowTaskList != _prevShowTaskList)
+        {
+            _isTaskListVisible = ShowTaskList;
+            _prevShowTaskList = ShowTaskList;
+        }
+        
+        if (TaskListWidth != _prevTaskListWidth)
+        {
+            _currentTaskListWidth = TaskListWidth;
+            _prevTaskListWidth = TaskListWidth;
+        }
     }
     
     private async Task ToggleTaskList()
@@ -762,6 +785,16 @@
         
         await OnTaskResize.InvokeAsync(args);
         StateHasChanged();
+    }
+
+    [JSInvokable]
+    public async Task HandleTaskClickFromJs(string taskId)
+    {
+        var task = FlatTasks.FirstOrDefault(t => t.Id == taskId);
+        if (task != null)
+        {
+            await OnTaskClick.InvokeAsync(task);
+        }
     }
 
     private async Task HandleTaskClick(GanttTask task)

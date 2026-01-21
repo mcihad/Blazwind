@@ -110,8 +110,14 @@ function setupDragHandlers(id: string): void {
             : 0;
 
         // Notify Blazor
-        if (isDragging && daysMoved !== 0) {
-            await instance.netRef.invokeMethodAsync('HandleTaskDragFromJs', taskId, daysMoved);
+        // Notify Blazor
+        if (isDragging) {
+            if (daysMoved !== 0) {
+                await instance.netRef.invokeMethodAsync('HandleTaskDragFromJs', taskId, daysMoved);
+            } else {
+                // It was a click (no movement), invoke click handler
+                await instance.netRef.invokeMethodAsync('HandleTaskClickFromJs', taskId);
+            }
         } else if (isResizing && (daysResizedStart !== 0 || daysResizedEnd !== 0)) {
             await instance.netRef.invokeMethodAsync('HandleTaskResizeFromJs', taskId, daysResizedStart, daysResizedEnd);
         }

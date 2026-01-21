@@ -70,9 +70,12 @@
                          ShowTaskList="_showTaskList"
                          TaskListWidth="_panelWidth"
                          TaskListResizable="true"
+                         Editable="true"
                          OnTaskListVisibilityChanged="HandlePanelVisibilityChanged"
                          OnTaskListWidthChanged="HandlePanelWidthChanged"
-                         OnTaskClick="HandleTaskClick">
+                         OnTaskClick="HandleTaskClick"
+                         OnTaskDrag="HandleTaskDrag"
+                         OnTaskResize="HandleTaskResize">
                     <TaskItemTemplate>
                         <div class="flex items-center gap-2 w-full">
                             <div class="w-2 h-2 rounded-full"
@@ -94,9 +97,12 @@
                          ShowTaskList="_showTaskList"
                          TaskListWidth="_panelWidth"
                          TaskListResizable="true"
+                         Editable="true"
                          OnTaskListVisibilityChanged="HandlePanelVisibilityChanged"
                          OnTaskListWidthChanged="HandlePanelWidthChanged"
-                         OnTaskClick="HandleTaskClick"/>
+                         OnTaskClick="HandleTaskClick"
+                         OnTaskDrag="HandleTaskDrag"
+                         OnTaskResize="HandleTaskResize"/>
             }
         </BwColumn>
     </BwCard>
@@ -298,14 +304,15 @@
 
     private async Task HandlePanelVisibilityChanged(bool isVisible)
     {
-        _showTaskList = isVisible;
-        await ToastService.InfoAsync("Task Panel", isVisible ? "Panel shown" : "Panel hidden");
+        // Don't update _showTaskList here, as it controls the "enabled" state, not "expanded"
+        // _showTaskList = isVisible; 
+        await ToastService.InfoAsync("Task Panel", isVisible ? "Panel expanded" : "Panel collapsed");
     }
 
     private async Task HandlePanelWidthChanged(int width)
     {
         _panelWidth = width;
-        await ToastService.InfoAsync("Panel Resized", $"New width: {width}px");
+        // await ToastService.InfoAsync("Panel Resized", $"New width: {width}px");
     }
 
     private string GetStatusClass(GanttTaskStatus status)
