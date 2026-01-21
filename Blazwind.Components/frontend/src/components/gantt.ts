@@ -67,26 +67,88 @@ function setupDragHandlers(id: string): void {
 
         const deltaX = e.clientX - startX;
 
-        if (isResizing) {
-            if (isResizeLeft) {
-                // Resize from left - change start date
+        requestAnimationFrame(() => {
+            if (!currentBar) return;
+
+            if (isResizing) {
+                if (isResizeLeft) {
+                    // Resize from left - change start date
+                    const newLeft = initialLeft + deltaX;
+                    const newWidth = initialWidth - deltaX;
+                    if (newWidth >= 16) {
+                        currentBar.style.left = `${newLeft}px`;
+                        currentBar.style.width = `${newWidth}px`;
+                        updateDependencies(container, taskId, newLeft, newLeft + newWidth, parseFloat(currentBar.style.top));
+                    }
+                } else {
+                    // Resize from right - change end date
+                    const newWidth = initialWidth + deltaX;
+                    if (newWidth >= 16) {
+                        currentBar.style.width = `${newWidth}px`;
+                        updateDependencies(container, taskId, initialLeft, initialLeft + newWidth, parseFloat(currentBar.style.top));
+                    }
+                }
+            } else if (isDragging) {
+                // Move the bar
                 const newLeft = initialLeft + deltaX;
-                const newWidth = initialWidth - deltaX;
-                if (newWidth >= 16) {
-                    currentBar.style.left = `${newLeft}px`;
-                    currentBar.style.width = `${newWidth}px`;
-                }
-            } else {
-                // Resize from right - change end date
-                const newWidth = initialWidth + deltaX;
-                if (newWidth >= 16) {
-                    currentBar.style.width = `${newWidth}px`;
-                }
+                currentBar.style.left = `${newLeft}px`;
+                updateDependencies(container, taskId, newLeft, newLeft + initialWidth, parseFloat(currentBar.style.top));
             }
-        } else if (isDragging) {
-            // Move the bar
-            currentBar.style.left = `${initialLeft + deltaX}px`;
-        }
+        });
+    };
+
+    // Helper to update SVG paths
+    const updateDependencies = (container: HTMLElement, taskId: string, left: number, right: number, top: number) => {
+        const svg = container.querySelector('svg');
+        if (!svg) return;
+
+        const gap = 30; // Curve smoothness
+        const barHeight = 20; // Hardcoded mostly
+        const taskCenterY = top + barHeight / 2; // Approximate center relative to task top
+
+        // Update lines originating FROM this task
+        const linesFrom = svg.querySelectorAll(`path[data-from="${taskId}"]`);
+        linesFrom.forEach(line => {
+            const path = line.getAttribute('d');
+            if (!path) return;
+
+            // Parse path: split by space or comma, filter empty
+            const parts = path.split(/[ ,]+/).filter(p => p.trim() !== '');
+            // Expected format: M x1 y1 C cx1 cy1 cx2 cy2 x2 y2
+            // Length should be 10: [M, x1, y1, C, cx1, cy1, cx2, cy2, x2, y2]
+
+            if (parts.length < 10) return;
+
+            // Target is fixed (x2, y2) -> last two numbers
+            const x2 = parseFloat(parts[parts.length - 2]);
+            const y2 = parseFloat(parts[parts.length - 1]);
+
+            const x1 = right;
+            const y1 = taskCenterY;
+
+            const newPath = `M ${x1} ${y1} C ${x1 + gap} ${y1}, ${x2 - gap} ${y2}, ${x2} ${y2}`;
+            line.setAttribute('d', newPath);
+        });
+
+        // Update lines pointing TO this task
+        const linesTo = svg.querySelectorAll(`path[data-to="${taskId}"]`);
+        linesTo.forEach(line => {
+            const path = line.getAttribute('d');
+            if (!path) return;
+
+            const parts = path.split(/[ ,]+/).filter(p => p.trim() !== '');
+            if (parts.length < 10) return;
+
+            // Source is fixed (x1, y1) -> M x1 y1 ...
+            const x1 = parseFloat(parts[1]);
+            const y1 = parseFloat(parts[2]);
+
+            const x2 = left;
+            const y2 = taskCenterY; // Center of current task
+
+            const newPath = `M ${x1} ${y1} C ${x1 + gap} ${y1}, ${x2 - gap} ${y2}, ${x2} ${y2}`;
+            line.setAttribute('d', newPath);
+        });
     };
 
     // Mouse up handler

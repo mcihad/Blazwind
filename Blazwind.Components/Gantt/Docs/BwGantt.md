@@ -102,11 +102,12 @@ The view mode will be preserved even when tasks are dragged, resized, or clicked
 | `TaskListResizable` | `bool` | `true` | Allow resizing the task list panel by dragging. |
 | `TaskItemTemplate` | `RenderFragment<GanttTask>?` | `null` | Custom template for task list items. |
 | `ShowBarLabels` | `bool` | `false` | Show task titles on timeline bars. |
+| `ShowTodayIndicator` | `bool` | `true` | Show a "Today" marker in the header and a vertical line in the body. |
 | `OnTaskListVisibilityChanged` | `EventCallback<bool>` | - | Fired when task list is toggled. |
 | `OnTaskListWidthChanged` | `EventCallback<int>` | - | Fired after panel resize. |
+| `ContextMenuTemplate` | `RenderFragment<GanttTask>?` | `null` | Custom content for right-click context menu on task bars. |
 
 ### Example: Custom Task Template
-
 ```razor
 <BwGantt Tasks="_tasks" ShowTaskList="true" TaskListResizable="true">
     <TaskItemTemplate>
@@ -115,6 +116,16 @@ The view mode will be preserved even when tasks are dragged, resized, or clicked
             <span class="badge">@context.Progress%</span>
         </div>
     </TaskItemTemplate>
+</BwGantt>
+```
+
+### Example: Context Menu
+```razor
+<BwGantt Tasks="_tasks">
+    <ContextMenuTemplate>
+        <BwContextMenuItem Text="Edit" Icon="fa-solid fa-pen" OnClick="() => Edit(context)" />
+        <BwContextMenuItem Text="Delete" Icon="fa-solid fa-trash" OnClick="() => Delete(context)" />
+    </ContextMenuTemplate>
 </BwGantt>
 ```
 
@@ -142,6 +153,7 @@ The view mode will be preserved even when tasks are dragged, resized, or clicked
 | `Color` | `string?` | Custom Hex color for the task bar. |
 | `IsMilestone`| `bool` | If true, renders as a diamond (single date). |
 | `Children` | `List<GanttTask>` | Nested subtasks. |
+| `Dependencies` | `List<string>` | List of predecessor Task IDs. Renders dependency lines. |
 
 ## View & Status Values
 

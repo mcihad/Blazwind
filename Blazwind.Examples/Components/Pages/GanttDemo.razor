@@ -18,12 +18,14 @@
             <BwGantt Tasks="_projectTasks" Title="Infrastructure Renewal 2026" Height="350px"
                      @bind-ViewMode="_projectViewMode" Editable="_editMode" OnTaskClick="HandleTaskClick"
                      OnTaskDrag="HandleTaskDrag" OnTaskResize="HandleTaskResize">
+                     <!--
                 <ContextMenuTemplate>
                     <BwContextMenuItem Text="Edit Task" Icon="fa-solid fa-pen" OnClick="() => EditTask(context)" />
                     <BwContextMenuItem Text="Mark as Done" Icon="fa-solid fa-check" OnClick="() => CompleteTask(context)" />
                     <BwContextMenuItem IsDivider="true" />
                     <BwContextMenuItem Text="Delete" Icon="fa-solid fa-trash" Class="text-red-600 hover:bg-red-50" OnClick="() => DeleteTask(context)" />
                 </ContextMenuTemplate>
+                -->
             </BwGantt>
         </BwColumn>
     </BwCard>
@@ -142,8 +144,8 @@
         {
             Id = "2",
             Title = "Feasibility Report",
-            StartDate = DateTime.Today.AddDays(-25),
-            EndDate = DateTime.Today.AddDays(-15),
+            StartDate = DateTime.Today.AddDays(-19), // Started after Task 1
+            EndDate = DateTime.Today.AddDays(-10),
             Progress = 100,
             Status = GanttTaskStatus.Completed,
             Color = "#10b981",
@@ -153,8 +155,8 @@
         {
             Id = "3",
             Title = "Tender Process",
-            StartDate = DateTime.Today.AddDays(-15),
-            EndDate = DateTime.Today.AddDays(-5),
+            StartDate = DateTime.Today.AddDays(-9), // Started after Task 2
+            EndDate = DateTime.Today.AddDays(0),
             Progress = 100,
             Status = GanttTaskStatus.Completed,
             Color = "#10b981",
@@ -165,8 +167,8 @@
         {
             Id = "4",
             Title = "Excavation Works",
-            StartDate = DateTime.Today.AddDays(-5),
-            EndDate = DateTime.Today.AddDays(10),
+            StartDate = DateTime.Today.AddDays(1), // Started after Task 3
+            EndDate = DateTime.Today.AddDays(15),
             Progress = 60,
             Status = GanttTaskStatus.InProgress,
             Color = "#3b82f6",
@@ -177,8 +179,8 @@
         {
             Id = "5",
             Title = "Pipe Laying",
-            StartDate = DateTime.Today.AddDays(5),
-            EndDate = DateTime.Today.AddDays(25),
+            StartDate = DateTime.Today.AddDays(16), // Started after Task 4
+            EndDate = DateTime.Today.AddDays(30),
             Progress = 20,
             Status = GanttTaskStatus.InProgress,
             Color = "#3b82f6",
@@ -189,21 +191,23 @@
         {
             Id = "6",
             Title = "Asphalt Work",
-            StartDate = DateTime.Today.AddDays(20),
-            EndDate = DateTime.Today.AddDays(35),
+            StartDate = DateTime.Today.AddDays(31),
+            EndDate = DateTime.Today.AddDays(40),
             Progress = 0,
             Status = GanttTaskStatus.Pending,
-            Color = "#6b7280"
+            Color = "#6b7280",
+            Dependencies = new List<string> { "5" }
         },
         new GanttTask
         {
             Id = "7",
             Title = "Testing and Acceptance",
-            StartDate = DateTime.Today.AddDays(35),
-            EndDate = DateTime.Today.AddDays(42),
+            StartDate = DateTime.Today.AddDays(41),
+            EndDate = DateTime.Today.AddDays(45),
             Progress = 0,
             Status = GanttTaskStatus.Pending,
-            Color = "#8b5cf6"
+            Color = "#8b5cf6",
+            Dependencies = new List<string> { "6" }
         }
     };
 
