@@ -12,13 +12,13 @@
 
 <BwCard Class="@($"bw-gantt overflow-hidden {(_isFullScreen ? "fixed inset-0 z-50 m-0 rounded-none w-screen h-screen shadow-none border-none" : Class)}")" Style="@(_isFullScreen ? "z-index: 50;" : Style)" BodyClass="p-0">
     @* Header - Modern Toolbar *@
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors duration-300">
         @* Title Section *@
         <div class="flex items-center gap-3 w-full sm:w-auto">
             <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
-            <div class="font-semibold text-gray-800 dark:text-gray-200">
+            <div class="font-semibold text-gray-800 dark:text-gray-100">
                 @Title
             </div>
         </div>
@@ -26,16 +26,16 @@
         @* Controls Container *@
         <div class="flex items-center gap-4 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
             @* View Mode Switcher (Segmented Control Style) *@
-            <div class="flex bg-gray-100 dark:bg-gray-700/50 p-1 rounded-lg flex-shrink-0">
-                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Day ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
+            <div class="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg flex-shrink-0 border border-transparent dark:border-gray-700">
+                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Day ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
                         @onclick="async () => await SetViewMode(GanttViewMode.Day)">
                     Gün
                 </button>
-                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Week ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
+                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Week ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
                         @onclick="async () => await SetViewMode(GanttViewMode.Week)">
                     Hafta
                 </button>
-                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Month ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
+                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Month ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
                         @onclick="async () => await SetViewMode(GanttViewMode.Month)">
                     Ay
                 </button>
@@ -43,18 +43,18 @@
             
             @* Actions Group *@
             <div class="flex items-center gap-1 flex-shrink-0 pl-4 border-l border-gray-200 dark:border-gray-700">
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         @onclick="ZoomOut" title="Uzaklaş">
                     <i class="fa-solid fa-minus text-xs"></i>
                 </button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                         @onclick="ZoomIn" title="Yakınlaş">
                     <i class="fa-solid fa-plus text-xs"></i>
                 </button>
                 
                 <div class="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
                 
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors @(_isFullScreen ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" : "")"
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors @(_isFullScreen ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" : "")"
                         @onclick="ToggleFullScreen" title="@(_isFullScreen ? "Küçült" : "Tam Ekran")">
                     <i class="@(_isFullScreen ? "fa-solid fa-compress" : "fa-solid fa-expand") text-xs"></i>
                 </button>
@@ -161,7 +161,7 @@
             </div>
 
             @* Timeline Grid - with @ref for JS interop *@
-            <div @ref="_timelineContainer" class="relative" style="width: @(TimelinePeriods.Count * GetColumnWidth())px;">
+            <div @ref="_timelineContainer" class="relative" style="width: @(TimelinePeriods.Count * GetColumnWidth())px; height: @(FlatTasks.Count * 32)px;">
                 @* Row Backgrounds with Grid Pattern *@
                 <div class="absolute inset-0 pointer-events-none">
                     @{ int rowBgIndex = 0; }
@@ -198,10 +198,10 @@
                 @* Today Line *@
                 @if (TodayOffset >= 0)
                 {
-                    <div class="absolute top-0 bottom-0 z-20 pointer-events-none"
+                    <div class="absolute top-0 bottom-0 z-50 pointer-events-none"
                          style="left: @(TodayOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))px;">
                         @* Line *@
-                        <div class="absolute inset-y-0 left-0 w-px bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
+                        <div class="absolute inset-y-0 left-0 w-0.5 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
                     </div>
                 }
 
