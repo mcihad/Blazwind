@@ -3,37 +3,67 @@
 @using Blazwind.Components.Avatar
 @using Blazwind.Components.Button
 @using Blazwind.Components.Card
+@using Blazwind.Components.ContextMenu
 @using Blazwind.Components.Layout
 @using Microsoft.JSInterop
 @using System.Globalization
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<BwCard Class="@($"bw-gantt overflow-hidden {Class}")" Style="@Style" BodyClass="p-0">
-    @* Header - View Controls *@
-    <BwRow MainAxisAlignment="BwMainAxisAlignment.SpaceBetween" CrossAxisAlignment="BwCrossAxisAlignment.Center" Class="px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-        <div class="font-medium text-sm text-gray-700 dark:text-gray-200 flex items-center">
-            <i class="fa-solid fa-bars-progress mr-2"></i>
-            @Title
+<BwCard Class="@($"bw-gantt overflow-hidden {(_isFullScreen ? "fixed inset-0 z-50 m-0 rounded-none w-screen h-screen shadow-none border-none" : Class)}")" Style="@(_isFullScreen ? "z-index: 50;" : Style)" BodyClass="p-0">
+    @* Header - Modern Toolbar *@
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all">
+        @* Title Section *@
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div class="font-semibold text-gray-800 dark:text-gray-200">
+                @Title
+            </div>
         </div>
-        <BwButtonGroup Size="BwSize.Small">
-            <BwButton Text="Gün" 
-                      Variant="@(ViewMode == GanttViewMode.Day ? BwVariant.Filled : BwVariant.Outline)" 
-                      Color="@(ViewMode == GanttViewMode.Day ? BwColor.Primary : BwColor.Secondary)"
-                      OnClick="async () => await SetViewMode(GanttViewMode.Day)" />
-            <BwButton Text="Hafta" 
-                      Variant="@(ViewMode == GanttViewMode.Week ? BwVariant.Filled : BwVariant.Outline)" 
-                      Color="@(ViewMode == GanttViewMode.Week ? BwColor.Primary : BwColor.Secondary)"
-                      OnClick="async () => await SetViewMode(GanttViewMode.Week)" />
-            <BwButton Text="Ay" 
-                      Variant="@(ViewMode == GanttViewMode.Month ? BwVariant.Filled : BwVariant.Outline)" 
-                      Color="@(ViewMode == GanttViewMode.Month ? BwColor.Primary : BwColor.Secondary)"
-                      OnClick="async () => await SetViewMode(GanttViewMode.Month)" />
-        </BwButtonGroup>
-    </BwRow>
+        
+        @* Controls Container *@
+        <div class="flex items-center gap-4 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-hide">
+            @* View Mode Switcher (Segmented Control Style) *@
+            <div class="flex bg-gray-100 dark:bg-gray-700/50 p-1 rounded-lg flex-shrink-0">
+                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Day ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
+                        @onclick="async () => await SetViewMode(GanttViewMode.Day)">
+                    Gün
+                </button>
+                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Week ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
+                        @onclick="async () => await SetViewMode(GanttViewMode.Week)">
+                    Hafta
+                </button>
+                <button class="px-3 py-1.5 text-xs font-medium rounded-md transition-all @(ViewMode == GanttViewMode.Month ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200")"
+                        @onclick="async () => await SetViewMode(GanttViewMode.Month)">
+                    Ay
+                </button>
+            </div>
+            
+            @* Actions Group *@
+            <div class="flex items-center gap-1 flex-shrink-0 pl-4 border-l border-gray-200 dark:border-gray-700">
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        @onclick="ZoomOut" title="Uzaklaş">
+                    <i class="fa-solid fa-minus text-xs"></i>
+                </button>
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        @onclick="ZoomIn" title="Yakınlaş">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+                
+                <div class="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+                
+                <button class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors @(_isFullScreen ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" : "")"
+                        @onclick="ToggleFullScreen" title="@(_isFullScreen ? "Küçült" : "Tam Ekran")">
+                    <i class="@(_isFullScreen ? "fa-solid fa-compress" : "fa-solid fa-expand") text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
     @* Main Content with unified vertical scroll *@
-    <div class="overflow-auto" style="height: @Height;">
+    <div class="overflow-auto" style="height: @(_isFullScreen ? "calc(100vh - 46px)" : Height);">
         <div class="flex min-w-max">
             @* Task List (Left Panel - Sticky) *@
             @if (ShowTaskList && _isTaskListVisible)
@@ -144,6 +174,19 @@
                     }
                 </div>
                 
+                @* Dependency Lines (SVG Overlay) *@
+                <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" style="overflow: visible;">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                            <polygon points="0 0, 6 2, 0 4" fill="#9ca3af" />
+                        </marker>
+                    </defs>
+                    @foreach (var dep in CalculateDependencies())
+                    {
+                        <path d="@dep" stroke="#9ca3af" stroke-width="1.5" fill="none" class="opacity-60" marker-end="url(#arrowhead)" />
+                    }
+                </svg>
+                
                 @* Vertical Grid Lines *@
                 <div class="absolute inset-0 flex pointer-events-none">
                     @foreach (var period in TimelinePeriods)
@@ -155,9 +198,10 @@
                 @* Today Line *@
                 @if (TodayOffset >= 0)
                 {
-                    <div class="absolute top-0 bottom-0 w-0.5 bg-red-400 z-10"
+                    <div class="absolute top-0 bottom-0 z-20 pointer-events-none"
                          style="left: @(TodayOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))px;">
-                        <div class="absolute -top-1 -left-1 w-2 h-2 rounded-full bg-red-400"></div>
+                        @* Line *@
+                        <div class="absolute inset-y-0 left-0 w-px bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></div>
                     </div>
                 }
 
@@ -171,74 +215,29 @@
                     var taskLocal = task;
                     
                     @* Task bar container with data-task-id for JS *@
-                    <div class="bw-gantt-bar absolute flex items-center @(Editable ? "cursor-move" : "")" 
-                         style="@barStyle"
-                         data-task-id="@task.Id"
-                         @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
-                        @if (task.IsMilestone)
-                        {
-                            @* Milestone Diamond *@
-                            <div class="w-3 h-3 transform rotate-45 shadow-sm hover:scale-110 transition-transform" 
-                                 style="background-color: @(task.Color ?? "#8b5cf6");"></div>
-                        }
-                        else
-                        {
-                            @* Task Bar with compact height *@
-                            <div class="h-5 rounded shadow-sm relative overflow-hidden group transition-all hover:shadow-md"
-                                 style="width: 100%; background-color: @(GetTaskBgColor(task));">
-                                
-                                @* Left resize handle *@
-                                @if (Editable)
-                                {
-                                    <div class="bw-gantt-resize-handle bw-gantt-resize-left absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-black/20 transition-colors z-10"></div>
-                                }
-                                
-                                @* Progress *@
-                                @if (task.Progress > 0)
-                                {
-                                    <div class="absolute inset-y-0 left-0 rounded-l"
-                                         style="width: @task.Progress%; background-color: @(task.Color ?? "#3b82f6");"></div>
-                                }
-                                
-                                @* Label *@
-                                <div class="absolute inset-0 flex items-center justify-center px-1">
-                                    <span class="text-[9px] font-medium text-white truncate drop-shadow">
-                                        @if (ShowBarLabels)
-                                        {
-                                            @task.Title
-                                            @if (task.Progress > 0 && task.Progress < 100)
-                                            {
-                                                <text> (@task.Progress%)</text>
-                                            }
-                                        }
-                                        else if (task.Progress > 0 && task.Progress < 100)
-                                        {
-                                            @($"{task.Progress}%")
-                                        }
-                                    </span>
-                                </div>
-                                
-                                @* Right resize handle *@
-                                @if (Editable)
-                                {
-                                    <div class="bw-gantt-resize-handle bw-gantt-resize-right absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-black/20 transition-colors z-10"></div>
-                                }
-                                
-                                @* Tooltip on hover *@
-                                <div class="absolute left-0 bottom-full mb-1 hidden group-hover:block z-30 pointer-events-none">
-                                    <div class="bg-gray-800 text-white text-[10px] rounded px-2 py-1 whitespace-nowrap shadow-lg">
-                                        <span class="font-medium">@task.Title</span> - @task.Progress%
-                                        <br />
-                                        @task.StartDate.ToString("dd.MM") - @task.EndDate.ToString("dd.MM")
-                                        @if (Editable)
-                                        {
-                                            <br /><span class="text-gray-400 text-[9px]">Sürükle: taşı | Kenarlar: boyutlandır</span>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
+                    @if (ContextMenuTemplate != null)
+                    {
+                        <BwContextMenu Class="@($"bw-gantt-bar absolute flex items-center {(Editable ? "cursor-move" : "")}")" 
+                                       Style="@barStyle"
+                                       @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))"
+                                       data-task-id="@task.Id">
+                            <ChildContent>
+                                @RenderTaskBar(taskLocal)
+                            </ChildContent>
+                            <MenuContent>
+                                @ContextMenuTemplate(taskLocal)
+                            </MenuContent>
+                        </BwContextMenu>
+                    }
+                    else
+                    {
+                        <div class="bw-gantt-bar absolute flex items-center @(Editable ? "cursor-move" : "")" 
+                             style="@barStyle"
+                             data-task-id="@task.Id"
+                             @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
+                             @RenderTaskBar(taskLocal)
+                        </div>
+                    }
                     rowIndex++;
                 }
             </div>
@@ -284,6 +283,94 @@
     
     /// <summary>Custom template for task list items</summary>
     [Parameter] public RenderFragment<GanttTask>? TaskItemTemplate { get; set; }
+
+    /// <summary>Custom context menu template for task bars</summary>
+    [Parameter] public RenderFragment<GanttTask>? ContextMenuTemplate { get; set; }
+
+    private RenderFragment RenderTaskBar(GanttTask task) => builder =>
+    {
+        if (task.IsMilestone)
+        {
+            builder.OpenElement(0, "div");
+            builder.AddAttribute(1, "class", "w-3 h-3 transform rotate-45 shadow-sm hover:scale-110 transition-transform");
+            builder.AddAttribute(2, "style", $"background-color: {task.Color ?? "#8b5cf6"};");
+            builder.CloseElement();
+        }
+        else
+        {
+            builder.OpenElement(3, "div");
+            builder.AddAttribute(4, "class", "h-5 rounded shadow-sm relative overflow-hidden group transition-all hover:shadow-md");
+            builder.AddAttribute(5, "style", $"width: 100%; background-color: {GetTaskBgColor(task)};");
+
+            if (Editable)
+            {
+                builder.OpenElement(6, "div");
+                builder.AddAttribute(7, "class", "bw-gantt-resize-handle bw-gantt-resize-left absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-black/20 transition-colors z-10");
+                builder.CloseElement();
+            }
+
+            if (task.Progress > 0)
+            {
+                builder.OpenElement(8, "div");
+                builder.AddAttribute(9, "class", "absolute inset-y-0 left-0 rounded-l");
+                builder.AddAttribute(10, "style", $"width: {task.Progress}%; background-color: {task.Color ?? "#3b82f6"};");
+                builder.CloseElement();
+            }
+
+            builder.OpenElement(11, "div");
+            builder.AddAttribute(12, "class", "absolute inset-0 flex items-center justify-center px-1");
+            builder.OpenElement(13, "span");
+            builder.AddAttribute(14, "class", "text-[9px] font-medium text-white truncate drop-shadow");
+            if (ShowBarLabels)
+            {
+                builder.AddContent(15, task.Title);
+                if (task.Progress > 0 && task.Progress < 100)
+                {
+                    builder.AddContent(16, $" ({task.Progress}%)");
+                }
+            }
+            else if (task.Progress > 0 && task.Progress < 100)
+            {
+                builder.AddContent(17, $"{task.Progress}%");
+            }
+            builder.CloseElement();
+            builder.CloseElement();
+
+            if (Editable)
+            {
+                builder.OpenElement(18, "div");
+                builder.AddAttribute(19, "class", "bw-gantt-resize-handle bw-gantt-resize-right absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-black/20 transition-colors z-10");
+                builder.CloseElement();
+            }
+
+            // Tooltip
+            builder.OpenElement(20, "div");
+            builder.AddAttribute(21, "class", "absolute left-0 bottom-full mb-1 hidden group-hover:block z-30 pointer-events-none");
+            builder.OpenElement(22, "div");
+            builder.AddAttribute(23, "class", "bg-gray-800 text-white text-[10px] rounded px-2 py-1 whitespace-nowrap shadow-lg");
+            builder.OpenElement(24, "span");
+            builder.AddAttribute(25, "class", "font-medium");
+            builder.AddContent(26, task.Title);
+            builder.CloseElement();
+            builder.AddContent(27, $" - {task.Progress}%");
+            builder.OpenElement(28, "br");
+            builder.CloseElement();
+            builder.AddContent(29, $"{task.StartDate:dd.MM} - {task.EndDate:dd.MM}");
+            if (Editable)
+            {
+                builder.OpenElement(30, "br");
+                builder.CloseElement();
+                builder.OpenElement(31, "span");
+                builder.AddAttribute(32, "class", "text-gray-400 text-[9px]");
+                builder.AddContent(33, "Sürükle: taşı | Kenarlar: boyutlandır");
+                builder.CloseElement();
+            }
+            builder.CloseElement();
+            builder.CloseElement(); // Tooltip wrapper
+
+            builder.CloseElement(); // Task bar container
+        }
+    };
     
     /// <summary>Show task titles on timeline bars</summary>
     [Parameter] public bool ShowBarLabels { get; set; } = false;
@@ -301,6 +388,13 @@
     private bool _isResizingTaskList = false;
     private double _resizeStartX;
     private int _resizeStartWidth;
+    private bool _isFullScreen = false;
+
+    private void ToggleFullScreen()
+    {
+        _isFullScreen = !_isFullScreen;
+        StateHasChanged();
+    }
 
     private List<GanttTask> FlatTasks => FlattenTasks(Tasks);
     private List<string> TimelinePeriods = new();
@@ -312,6 +406,7 @@
 
     private bool _prevShowTaskList;
     private int _prevTaskListWidth;
+    private int _currentColumnWidth; // Dynamic column width for zooming
 
     protected override void OnInitialized()
     {
@@ -320,6 +415,44 @@
         
         _currentTaskListWidth = TaskListWidth;
         _prevTaskListWidth = TaskListWidth;
+        
+        // Initialize column width
+        _currentColumnWidth = GetDefaultColumnWidth(ViewMode);
+    }
+    
+    private int GetDefaultColumnWidth(GanttViewMode mode)
+    {
+        return mode switch
+        {
+            GanttViewMode.Day => 40,
+            GanttViewMode.Week => 60,
+            GanttViewMode.Month => 80,
+            _ => 40
+        };
+    }
+
+    [JSInvokable]
+    public async Task HandleZoomFromJs(int delta)
+    {
+        var newWidth = _currentColumnWidth - delta; // Delta is typically +/- 100 from wheel
+        // Normalize delta
+        var change = delta > 0 ? -5 : 5;
+        
+        _currentColumnWidth = Math.Clamp(_currentColumnWidth + change, 20, 200);
+        await UpdateJsOptionsAsync();
+        StateHasChanged();
+    }
+    
+    private async Task ZoomIn()
+    {
+        _currentColumnWidth = Math.Min(_currentColumnWidth + 10, 200);
+        await UpdateJsOptionsAsync();
+    }
+
+    private async Task ZoomOut()
+    {
+        _currentColumnWidth = Math.Max(_currentColumnWidth - 10, 20);
+        await UpdateJsOptionsAsync();
     }
 
     protected override void OnParametersSet()
@@ -381,13 +514,16 @@
     
     private double CalculateTodayOffset()
     {
+        var columnWidth = GetColumnWidth();
+        
         if (ViewMode != GanttViewMode.Month || PeriodBoundaries.Count == 0)
         {
-            return (DateTime.Today - _timelineStart).TotalDays;
+            var days = (DateTime.Today - _timelineStart).TotalDays;
+            var daysPerColumn = GetDaysPerColumn();
+            return days / daysPerColumn * columnWidth;
         }
         
         // Month view - calculate based on period boundaries
-        var columnWidth = GetColumnWidth();
         double offset = 0;
         
         for (int i = 0; i < PeriodBoundaries.Count; i++)
@@ -504,13 +640,7 @@
 
     private int GetColumnWidth()
     {
-        return ViewMode switch
-        {
-            GanttViewMode.Day => 30,
-            GanttViewMode.Week => 60,
-            GanttViewMode.Month => 80,
-            _ => 40
-        };
+        return _currentColumnWidth;
     }
 
     private double GetDaysPerColumn()
@@ -605,6 +735,121 @@
         return $"left: {startOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}px; width: {width.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}px; top: {top}px; height: 20px;";
     }
 
+    private IEnumerable<string> CalculateDependencies()
+    {
+        var tasks = FlatTasks;
+        var taskMap = tasks.ToDictionary(t => t.Id);
+        var paths = new List<string>();
+
+        // Pre-calculate positions
+        var positions = new Dictionary<string, (double Right, double Top, double Left)>();
+        for (int i = 0; i < tasks.Count; i++)
+        {
+            var task = tasks[i];
+            var (startOffset, width) = CalculateTaskPosition(task);
+            var top = i * 32 + 16; // Middle of the row
+            positions[task.Id] = (startOffset + width, top, startOffset);
+        }
+
+        foreach (var task in tasks)
+        {
+            foreach (var depId in task.Dependencies)
+            {
+                if (taskMap.ContainsKey(depId) && positions.TryGetValue(depId, out var fromPos) && positions.TryGetValue(task.Id, out var toPos))
+                {
+                    // Draw cubic bezier curve
+                    var x1 = fromPos.Right;
+                    var y1 = fromPos.Top;
+                    var x2 = toPos.Left;
+                    var y2 = toPos.Top;
+                    
+                    // Simple path logic: 
+                    // Move right 10px, go to mid-y, move to target x-10, go to target
+                    var path = $"M {x1.ToString(CultureInfo.InvariantCulture)} {y1.ToString(CultureInfo.InvariantCulture)} ";
+                    path += $"C {(x1 + 20).ToString(CultureInfo.InvariantCulture)} {y1.ToString(CultureInfo.InvariantCulture)}, ";
+                    path += $"{(x2 - 20).ToString(CultureInfo.InvariantCulture)} {y2.ToString(CultureInfo.InvariantCulture)}, ";
+                    path += $"{x2.ToString(CultureInfo.InvariantCulture)} {y2.ToString(CultureInfo.InvariantCulture)}";
+                    
+                    paths.Add(path);
+                }
+            }
+        }
+
+        return paths;
+    }
+
+    private (double Left, double Width) CalculateTaskPosition(GanttTask task)
+    {
+        var columnWidth = GetColumnWidth();
+        double startOffset = 0;
+        double width = 0;
+
+        if (ViewMode == GanttViewMode.Month && PeriodBoundaries.Count > 0)
+        {
+             // For month view, calculate based on actual period boundaries
+            double totalOffset = 0;
+            for (int i = 0; i < PeriodBoundaries.Count; i++)
+            {
+                var periodStart = PeriodBoundaries[i];
+                var periodEnd = i < PeriodBoundaries.Count - 1 ? PeriodBoundaries[i + 1] : _timelineEnd.AddDays(1);
+                var periodDays = (periodEnd - periodStart).TotalDays;
+                
+                if (task.StartDate >= periodEnd)
+                {
+                    totalOffset += columnWidth;
+                }
+                else if (task.StartDate >= periodStart && task.StartDate < periodEnd)
+                {
+                    var daysInto = (task.StartDate - periodStart).TotalDays;
+                    startOffset = totalOffset + (daysInto / periodDays * columnWidth);
+                    break;
+                }
+                else if (task.StartDate < periodStart)
+                {
+                    startOffset = totalOffset;
+                    break;
+                }
+            }
+            
+            // Calculate width based on actual days spanning across months
+            double remainingDuration = task.DurationDays;
+            var currentDate = task.StartDate;
+            
+            for (int i = 0; i < PeriodBoundaries.Count && remainingDuration > 0; i++)
+            {
+                var periodStart = PeriodBoundaries[i];
+                var periodEnd = i < PeriodBoundaries.Count - 1 ? PeriodBoundaries[i + 1] : _timelineEnd.AddDays(1);
+                var periodDays = (periodEnd - periodStart).TotalDays;
+                
+                if (currentDate >= periodEnd)
+                {
+                    continue;
+                }
+                
+                var effectiveStart = currentDate > periodStart ? currentDate : periodStart;
+                var taskEnd = task.EndDate.AddDays(1); // EndDate is inclusive
+                var effectiveEnd = taskEnd < periodEnd ? taskEnd : periodEnd;
+                
+                if (effectiveStart < effectiveEnd)
+                {
+                    var daysInPeriod = (effectiveEnd - effectiveStart).TotalDays;
+                    width += (daysInPeriod / periodDays * columnWidth);
+                    remainingDuration -= daysInPeriod;
+                    currentDate = effectiveEnd;
+                }
+            }
+             width = task.IsMilestone ? 16 : Math.Max(16, width);
+        }
+        else
+        {
+            var daysPerColumn = GetDaysPerColumn();
+            startOffset = (task.StartDate - _timelineStart).TotalDays / daysPerColumn * columnWidth;
+            width = task.IsMilestone ? 16 : Math.Max(16, task.DurationDays / daysPerColumn * columnWidth);
+        }
+        
+        return (startOffset, width);
+    }
+
     private string GetTaskBgColor(GanttTask task)
     {
         if (!string.IsNullOrEmpty(task.Color))
@@ -628,6 +873,7 @@
         if (ViewMode != mode)
         {
             ViewMode = mode;
+            _currentColumnWidth = GetDefaultColumnWidth(mode); // Reset zoom on view change
             CalculateTimeline();
             await UpdateJsOptionsAsync();
             await ViewModeChanged.InvokeAsync(mode);
@@ -796,6 +1042,7 @@
             await OnTaskClick.InvokeAsync(task);
         }
     }
+
 
     private async Task HandleTaskClick(GanttTask task)
     {

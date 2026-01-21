@@ -43,6 +43,8 @@ export function updateOptions(id: string, daysPerColumn: number, columnWidth: nu
     }
 }
 
+
+
 function setupDragHandlers(id: string): void {
     const instance = instances.get(id);
     if (!instance) return;
@@ -181,6 +183,28 @@ function setupDragHandlers(id: string): void {
 
     // Setup task list resize
     setupTaskListResize(id);
+
+    // Setup zoom
+    setupZoom(id);
+}
+
+function setupZoom(id: string): void {
+    const instance = instances.get(id);
+    if (!instance) return;
+
+    const container = instance.container;
+    const timeline = container.querySelector('.relative') as HTMLElement; // The scrollable timeline part
+
+    if (timeline) {
+        timeline.addEventListener('wheel', async (e: WheelEvent) => {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                const delta = e.deltaY;
+                // Debounce/Throttle could be good here but direct call is more responsive for small steps
+                await instance.netRef.invokeMethodAsync('HandleZoomFromJs', delta);
+            }
+        }, { passive: false });
+    }
 }
 
 /**

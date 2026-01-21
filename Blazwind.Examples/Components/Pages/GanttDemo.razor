@@ -1,6 +1,7 @@
 @page "/components/gantt"
 @using Blazwind.Components.Gantt
 @using Blazwind.Components.Input
+@using Blazwind.Components.ContextMenu
 @inject ToastService ToastService
 
 <PageTitle>Gantt Chart - Blazwind</PageTitle>
@@ -14,12 +15,16 @@
     <BwCard Title="Editable Project Plan" Subtitle="Drag tasks to move them or resize from edges."
             Icon="fa-solid fa-building" Color="BwColor.Primary">
         <BwColumn Spacing="BwSpacing.Sm">
-            <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-                <BwSwitch Label="Activate Edit Mode" @bind-IsChecked="_editMode"/>
-            </BwRow>
             <BwGantt Tasks="_projectTasks" Title="Infrastructure Renewal 2026" Height="350px"
                      @bind-ViewMode="_projectViewMode" Editable="_editMode" OnTaskClick="HandleTaskClick"
-                     OnTaskDrag="HandleTaskDrag" OnTaskResize="HandleTaskResize"/>
+                     OnTaskDrag="HandleTaskDrag" OnTaskResize="HandleTaskResize">
+                <ContextMenuTemplate>
+                    <BwContextMenuItem Text="Edit Task" Icon="fa-solid fa-pen" OnClick="() => EditTask(context)" />
+                    <BwContextMenuItem Text="Mark as Done" Icon="fa-solid fa-check" OnClick="() => CompleteTask(context)" />
+                    <BwContextMenuItem IsDivider="true" />
+                    <BwContextMenuItem Text="Delete" Icon="fa-solid fa-trash" Class="text-red-600 hover:bg-red-50" OnClick="() => DeleteTask(context)" />
+                </ContextMenuTemplate>
+            </BwGantt>
         </BwColumn>
     </BwCard>
 
@@ -58,7 +63,6 @@
                 <BwSwitch Label="Show Bar Labels" @bind-IsChecked="_showBarLabels"/>
                 <BwSwitch Label="Show Task List" @bind-IsChecked="_showTaskList"/>
                 <BwSwitch Label="Use Custom Template" @bind-IsChecked="_useCustomTemplate"/>
-                <span class="text-sm text-gray-500">Panel Width: @_panelWidth px</span>
             </BwRow>
 
             @if (_useCustomTemplate)
@@ -142,7 +146,8 @@
             EndDate = DateTime.Today.AddDays(-15),
             Progress = 100,
             Status = GanttTaskStatus.Completed,
-            Color = "#10b981"
+            Color = "#10b981",
+            Dependencies = new List<string> { "1" }
         },
         new GanttTask
         {
@@ -153,7 +158,8 @@
             Progress = 100,
             Status = GanttTaskStatus.Completed,
             Color = "#10b981",
-            AssigneeName = "Procurement"
+            AssigneeName = "Procurement",
+            Dependencies = new List<string> { "2" }
         },
         new GanttTask
         {
@@ -164,7 +170,8 @@
             Progress = 60,
             Status = GanttTaskStatus.InProgress,
             Color = "#3b82f6",
-            AssigneeName = "Contractor A"
+            AssigneeName = "Contractor A",
+            Dependencies = new List<string> { "3" }
         },
         new GanttTask
         {
@@ -175,7 +182,8 @@
             Progress = 20,
             Status = GanttTaskStatus.InProgress,
             Color = "#3b82f6",
-            AssigneeName = "Contractor B"
+            AssigneeName = "Contractor B",
+            Dependencies = new List<string> { "4" }
         },
         new GanttTask
         {
@@ -280,6 +288,24 @@
     private async Task HandleTaskClick(GanttTask task)
     {
         await ToastService.InfoAsync($"{task.Title} selected", $"Progress: %{task.Progress}");
+    }
+
+    private async Task EditTask(GanttTask task)
+    {
+        await ToastService.InfoAsync("Edit Task", $"Opening edit dialog for: {task.Title}");
+    }
+
+    private async Task CompleteTask(GanttTask task)
+    {
+        task.Progress = 100;
+        task.Status = GanttTaskStatus.Completed;
+        await ToastService.SuccessAsync("Task Completed", $"{task.Title} is now complete");
+    }
+
+    private async Task DeleteTask(GanttTask task)
+    {
+        _projectTasks.Remove(task);
+        await ToastService.ErrorAsync("Task Deleted", $"{task.Title} has been removed");
     }
 
     private async Task HandleTaskDrag(GanttTaskDragEventArgs args)
