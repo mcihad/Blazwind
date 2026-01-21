@@ -81,6 +81,7 @@
                 Title = "In Progress",
                 Icon = "fa-solid fa-spinner",
                 Color = BwColor.Warning,
+                MaxItems = 2, // WIP Limit Demo
                 Items = new List<KanbanItem>
                 {
                     new()
@@ -164,7 +165,11 @@
 
     private async Task HandleItemMoved(KanbanMoveEvent e)
     {
-        await ToastService.ShowAsync(new ToastOptions { Message = $"'{e.Item?.Title}' moved: {e.SourceColumn?.Title} → {e.TargetColumn?.Title}", Color = BwColor.Success });
+        await ToastService.ShowAsync(new ToastOptions 
+        { 
+            Message = $"Move: '{e.Item?.Title}' → {e.TargetColumn?.Title} (Index: {e.NewIndex})", 
+            Color = BwColor.Success 
+        });
     }
 
     private async Task HandleItemClick(KanbanItem item)

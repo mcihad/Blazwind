@@ -65,7 +65,7 @@ A professional, drag-and-drop enabled Kanban board component for managing tasks,
 
 | Event | Payload | Description |
 | :--- | :--- | :--- |
-| `OnItemMoved` | `KanbanMoveEvent` | Triggered when a card is dropped into a target column. |
+| `OnItemMoved` | `KanbanMoveEvent` | Triggered when a card is dropped into a target column (including reordering). |
 | `OnItemClick` | `KanbanItem` | Triggered when a card is clicked. |
 | `OnAddClick` | `KanbanColumn` | Triggered when the "Add Card" button is clicked. |
 
@@ -79,6 +79,8 @@ A professional, drag-and-drop enabled Kanban board component for managing tasks,
 | `Icon` | `string?` | FontAwesome icon class for the header. |
 | `Color` | `BwColor?` | Theme color for the header border. |
 | `Items` | `List<KanbanItem>?` | Cards contained in this column. |
+| `MaxItems` | `int?` | **[New]** Visual limit for WIP. Header turns red if count exceeds this. |
+| `IsCollapsed` | `bool` | **[New]** Whether the column is collapsed to a narrow strip. |
 | `HeaderExtra` | `RenderFragment?` | Custom content to show on the right side of the header. |
 
 #### KanbanItem
@@ -101,6 +103,27 @@ A professional, drag-and-drop enabled Kanban board component for managing tasks,
 
 ## Examples
 
+### Reordering & WIP Limits
+Items can now be reordered within or between columns. Set `MaxItems` on a column to show a warning when the limit is exceeded.
+
+```razor
+@code {
+    private List<KanbanColumn> _columns = new()
+    {
+        new() 
+        { 
+            Title = "In Progress", 
+            Color = BwColor.Warning,
+            MaxItems = 3, // Shows red border if > 3 items
+            Items = ... 
+        }
+    };
+}
+```
+
+### Collapsible Columns
+Columns can be collapsed by clicking the compress icon in the header. The state is tracked in `IsCollapsed`.
+
 ### Using ItemTemplate
 You can override the default card look by using a custom template.
 
@@ -115,16 +138,3 @@ You can override the default card look by using a custom template.
 </BwKanban>
 ```
 
-### Column Colors
-Differentiate phases using the `Color` property.
-
-```razor
-@code {
-    private List<KanbanColumn> _phases = new()
-    {
-        new() { Title = "Planning", Color = BwColor.Warning },
-        new() { Title = "Production", Color = BwColor.Info },
-        new() { Title = "Shipping", Color = BwColor.Success }
-    };
-}
-```

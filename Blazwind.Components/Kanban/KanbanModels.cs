@@ -11,7 +11,14 @@ public class KanbanColumn
     public BwColor? Color { get; set; }
     public List<KanbanItem>? Items { get; set; }
     public RenderFragment? HeaderExtra { get; set; }
-    // Proposed: public int? MaxItems { get; set; }
+    /// <summary>
+    /// Max number of items allowed in column. If exceeded, visual warning is shown.
+    /// </summary>
+    public int? MaxItems { get; set; }
+    /// <summary>
+    /// Whether the column is currently collapsed.
+    /// </summary>
+    public bool IsCollapsed { get; set; }
 }
 
 public class KanbanItem
@@ -22,6 +29,7 @@ public class KanbanItem
     public List<string>? Tags { get; set; }
     public KanbanAssignee? Assignee { get; set; }
     public DateTime? DueDate { get; set; }
+    public int OrderIndex { get; set; }
     public object? Data { get; set; }
 }
 
@@ -36,5 +44,5 @@ public class KanbanMoveEvent
     public KanbanItem? Item { get; set; }
     public KanbanColumn? SourceColumn { get; set; }
     public KanbanColumn? TargetColumn { get; set; }
-    // Proposed: public int NewIndex { get; set; }
+    public int NewIndex { get; set; }
 }
