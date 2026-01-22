@@ -32,6 +32,13 @@ Includes page size selector and item information.
 }
 ```
 
+### Mobile / Compact Mode
+To use the input-based compact mode (which is active by default on mobile via `Responsive="true"`), you can also force it:
+
+```razor
+<BwPagination TotalItems="100" Compact="true" />
+```
+
 ## API - BwPagination
 
 ### Parameters
@@ -47,6 +54,8 @@ Includes page size selector and item information.
 | `PageSizeOptions` | `int[]` | `[10, 25, 50, 100]`| Options available in the page size selector. |
 | `ShowInfo` | `bool` | `true` | Show item range information (e.g., "1 - 10 / 150"). |
 | `Size` | `BwSize` | `Medium` | Size of the pagination buttons (`Small`, `Medium`, `Large`). |
+| `Compact` | `bool` | `false` | Enables compact mode (Input box style instead of list). Useful for mobile. |
+| `Responsive` | `bool` | `true` | Automatically switches to Compact mode on mobile screens. |
 | `Class` | `string?` | `null` | Additional CSS class for the container. |
 
 ### Events

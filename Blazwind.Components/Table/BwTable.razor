@@ -211,6 +211,7 @@
                           CurrentPageChanged="OnPageChanged"
                           PageSizeChanged="OnPageSizeChanged"
                           ShowPageSizeSelector="true"
+                          Compact="@CompactPagination"
                           ShowInfo="true" />
         </div>
     }
@@ -227,6 +228,7 @@
     [Parameter] public bool Hoverable { get; set; } = true;
     [Parameter] public bool Bordered { get; set; } = false;
     [Parameter] public bool Compact { get; set; } = false;
+    [Parameter] public bool CompactPagination { get; set; } = false;
     [Parameter] public bool ShowColumnSelector { get; set; } = false;
     [Parameter] public string? Class { get; set; }
     

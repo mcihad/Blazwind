@@ -68,7 +68,7 @@
             @* Task List (Left Panel - Sticky) *@
             @if (ShowTaskList && _isTaskListVisible)
             {
-                <div class="bw-gantt-task-list flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-30 relative"
+                <div class="bw-gantt-task-list flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-[35] relative"
                      style="width: @(_currentTaskListWidth)px;">
                     @* Task List Header *@
                     <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-3 h-8 flex items-center justify-between text-xs font-semibold text-gray-600 dark:text-gray-400 z-32" style="top: 0;">
@@ -131,7 +131,7 @@
             else if (ShowTaskList)
             {
                 @* Collapsed state - show expand button *@
-                <div class="flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-30" style="width: 32px;">
+                <div class="flex-shrink-0 border-r border-gray-200 dark:border-gray-700 sticky left-0 bg-white dark:bg-gray-800 z-[35]" style="width: 32px;">
                     <div class="sticky top-0 bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 h-8 flex items-center justify-center z-32">
                         <button type="button" class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors" 
                                 @onclick="ToggleTaskList" title="Görev listesini göster">

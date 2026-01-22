@@ -143,6 +143,12 @@ public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where T
     [Parameter]
     public bool AutoFit { get; set; }
 
+    /// <summary>
+    /// Enable compact pagination mode (useful for mobile or small areas)
+    /// </summary>
+    [Parameter]
+    public bool CompactPagination { get; set; } = false;
+
     #endregion
 
     #region Feature Toggles

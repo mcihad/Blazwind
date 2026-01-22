@@ -21,10 +21,10 @@
 }
 
 <nav class="flex items-center gap-4 @Class" aria-label="Pagination">
-    @* Info Display - Left side *@
+    @* Info Display - Left side (Hide in Compact/Mobile if Responsive) *@
     @if (ShowInfo)
     {
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-500 @(Compact ? "hidden" : (Responsive ? "hidden md:block" : ""))">
             @{
                 var start = TotalItems > 0 ? (CurrentPage - 1) * PageSize + 1 : 0;
                 var end = Math.Min(CurrentPage * PageSize, TotalItems);
@@ -38,10 +38,10 @@
         </div>
     }
 
-    @* Page Size Selector *@
+    @* Page Size Selector (Hide in Compact/Mobile if Responsive) *@
     @if (ShowPageSizeSelector)
     {
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 @(Compact ? "hidden" : (Responsive ? "hidden md:flex" : ""))">
             <select class="h-9 px-3 pr-8 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer appearance-none"
                     @onchange="OnPageSizeChange">
                 @foreach (var size in PageSizeOptions)
@@ -52,8 +52,8 @@
         </div>
     }
 
-    @* Navigation Buttons *@
-    <div class="flex items-center gap-1">
+    @* STANDARD NAVIGATION (Hidden heavily on Mobile if Responsive, or hidden if Compact) *@
+    <div class="items-center gap-1 @(Compact ? "hidden" : (Responsive ? "hidden md:flex" : "flex"))">
         @* First Button *@
         @if (ShowFirstLast)
         {
@@ -68,10 +68,10 @@
 
         @* Previous Button *@
         <button type="button"
-                class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
-                disabled="@(CurrentPage <= 1)"
-                title="Önceki sayfa"
-                @onclick="() => GoToPage(CurrentPage - 1)">
+                    class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                    disabled="@(CurrentPage <= 1)"
+                    title="Önceki sayfa"
+                    @onclick="() => GoToPage(CurrentPage - 1)">
             <i class="fa-solid fa-chevron-left text-xs"></i>
         </button>
 
@@ -96,10 +96,10 @@
 
         @* Next Button *@
         <button type="button"
-                class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
-                disabled="@(CurrentPage >= totalPages)"
-                title="Sonraki sayfa"
-                @onclick="() => GoToPage(CurrentPage + 1)">
+                    class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                    disabled="@(CurrentPage >= totalPages)"
+                    title="Sonraki sayfa"
+                    @onclick="() => GoToPage(CurrentPage + 1)">
             <i class="fa-solid fa-chevron-right text-xs"></i>
         </button>
 
@@ -115,6 +115,56 @@
             </button>
         }
     </div>
+
+    @* COMPACT / MOBILE NAVIGATION (Visible only if Compact OR (Responsive AND Mobile)) *@
+    <div class="items-center gap-2 @(Compact ? "flex" : (Responsive ? "flex md:hidden" : "hidden"))">
+        @* First Button *@
+        <button type="button"
+                class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                disabled="@(CurrentPage <= 1)"
+                title="İlk sayfa"
+                @onclick="() => GoToPage(1)">
+            <i class="fa-solid fa-angles-left text-xs"></i>
+        </button>
+
+        @* Prev Button *@
+        <button type="button"
+                class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                disabled="@(CurrentPage <= 1)"
+                title="Önceki sayfa"
+                @onclick="() => GoToPage(CurrentPage - 1)">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+
+        @* Input / Total *@
+        <div class="flex items-center gap-2 px-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 h-9">
+            <input type="number" 
+                   min="1" 
+                   max="@totalPages"
+                   value="@CurrentPage"
+                   class="w-8 text-center bg-transparent border-none p-0 text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-0 appearance-none [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
+                   @onchange="OnInputPageChange" />
+            <span class="text-sm text-gray-400 dark:text-gray-500">/ @totalPages</span>
+        </div>
+
+        @* Next Button *@
+        <button type="button"
+                class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                disabled="@(CurrentPage >= totalPages)"
+                title="Sonraki sayfa"
+                @onclick="() => GoToPage(CurrentPage + 1)">
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+
+        @* Last Button *@
+        <button type="button"
+                class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                disabled="@(CurrentPage >= totalPages)"
+                title="Son sayfa"
+                @onclick="() => GoToPage(totalPages)">
+            <i class="fa-solid fa-angles-right text-xs"></i>
+        </button>
+    </div>
 </nav>
 
 @code {
@@ -129,6 +179,9 @@
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
     [Parameter] public string? Class { get; set; }
     
+    [Parameter] public bool Compact { get; set; } = false;
+    [Parameter] public bool Responsive { get; set; } = true;
+    
     [Parameter] public EventCallback<int> CurrentPageChanged { get; set; }
     [Parameter] public EventCallback<int> PageSizeChanged { get; set; }
 
@@ -139,6 +192,14 @@
         
         CurrentPage = page;
         await CurrentPageChanged.InvokeAsync(page);
+    }
+    
+    private async Task OnInputPageChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var page))
+        {
+            await GoToPage(page);
+        }
     }
 
     private async Task OnPageSizeChange(ChangeEventArgs e)
