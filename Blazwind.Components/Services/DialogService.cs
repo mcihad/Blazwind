@@ -252,6 +252,15 @@ public class DialogService
         }
     }
 
+    /// <summary>Close dialog with a strongly-typed result. Converts DialogResult&lt;T&gt; to DialogResult internally.</summary>
+    public void Close<T>(DialogInstance instance, DialogResult<T> result)
+    {
+        var nonGenericResult = result.Canceled
+            ? DialogResult.Cancel()
+            : DialogResult.Ok((object?)result.Data);
+        Close(instance, nonGenericResult);
+    }
+
     /// <summary>Show an info dialog</summary>
     /// <summary>Show an info dialog</summary>
     public async Task ShowInfoAsync(string title, string message)

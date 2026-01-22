@@ -30,6 +30,11 @@
 </div>
 
 @code {
+    /// <summary>
+    /// Strongly-typed result model for this dialog.
+    /// </summary>
+    public record UserFormResult(string Username, string Role, DateTime UpdatedAt);
+
     [Parameter] public int Id { get; set; }
     [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
 
@@ -38,13 +43,15 @@
 
     private void Cancel()
     {
-        if (DialogInstance != null) DialogService.Close(DialogInstance);
+        if (DialogInstance != null)
+            DialogService.Close(DialogInstance, DialogResult.Cancel<UserFormResult>());
     }
 
     private void Save()
     {
-        // Return complex object or simple value
-        var result = new { Username = username, Role = role, UpdatedAt = DateTime.Now };
-        if (DialogInstance != null) DialogService.Close(DialogInstance, DialogResult.Ok((object)result));
+        // Type-safe result - no casting to object needed!
+        var result = new UserFormResult(username, role, DateTime.Now);
+        if (DialogInstance != null)
+            DialogService.Close(DialogInstance, DialogResult.Ok(result));
     }
 }

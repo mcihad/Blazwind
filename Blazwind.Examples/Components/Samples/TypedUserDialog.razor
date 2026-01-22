@@ -1,0 +1,73 @@
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Button
+@inject DialogService DialogService
+
+<div class="space-y-4">
+    <p class="text-sm text-gray-600">
+        This dialog demonstrates <strong>type-safe</strong> dialog results.
+        The result is automatically typed as <code>UserData</code>.
+    </p>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+        <input @bind="userData.FullName"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2 bg-white dark:bg-gray-700 dark:text-gray-100" />
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+        <input type="email" @bind="userData.Email"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2 bg-white dark:bg-gray-700 dark:text-gray-100" />
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Age</label>
+        <input type="number" @bind="userData.Age"
+            class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2 bg-white dark:bg-gray-700 dark:text-gray-100" />
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-gray-700 mt-4">
+        <BwButton Text="Cancel" Color="BwColor.Secondary" Variant="BwVariant.Ghost" OnClick="Cancel" />
+        <BwButton Text="Save" Color="BwColor.Primary" OnClick="Save" />
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Strongly-typed model for the dialog result.
+    /// </summary>
+    public class UserData
+    {
+        public string FullName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public int Age { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+    }
+
+    [Parameter] public string? InitialName { get; set; }
+    [Parameter] public string? InitialEmail { get; set; }
+    [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
+
+    private UserData userData = new();
+
+    protected override void OnInitialized()
+    {
+        userData.FullName = InitialName ?? "";
+        userData.Email = InitialEmail ?? "";
+    }
+
+    private void Cancel()
+    {
+        if (DialogInstance != null)
+            DialogService.Close(DialogInstance, DialogResult.Cancel<UserData>());
+    }
+
+    private void Save()
+    {
+        if (DialogInstance != null)
+        {
+            // No casting needed! Type-safe result with DialogResult<T>
+            DialogService.Close(DialogInstance, DialogResult.Ok(userData));
+        }
+    }
+}

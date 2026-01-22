@@ -39,6 +39,48 @@
         </div>
     </BwCard>
 
+    @* Type-Safe Dialog Results *@
+    <BwCard Title="Type-Safe Dialog Results"
+            Subtitle="Strongly-typed dialog results with DialogResult<T> - No casting needed!"
+            Icon="fa-solid fa-shield-check" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <p class="text-sm text-gray-600">
+                Dialog components can now return strongly-typed results using <code
+                    class="bg-gray-100 px-1 rounded">DialogResult.Ok&lt;T&gt;(data)</code>
+                and the caller receives <code class="bg-gray-100 px-1 rounded">DialogResult&lt;T&gt;</code> with full
+                type safety.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4">
+                <BwButton Icon="fa-solid fa-user-plus" Text="Type-Safe User Dialog" Color="BwColor.Success"
+                          OnClick="ShowTypedUserDialog"/>
+
+                @if (typedDialogResult != null)
+                {
+                    <span class="text-sm bg-green-50 text-green-700 px-3 py-1 rounded border border-green-200">
+                        <strong>Typed Result:</strong> @typedDialogResult
+                    </span>
+                }
+            </div>
+
+            <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded border text-xs font-mono space-y-1">
+                <div class="text-gray-500">// Inside dialog component - no (object) cast needed:</div>
+                <div><span class="text-purple-600">DialogService</span>.Close(Instance, <span
+                        class="text-blue-600">DialogResult</span>.Ok(myTypedData));
+                </div>
+                <div class="text-gray-500 mt-2">// Caller receives strongly-typed result:</div>
+                <div><span class="text-purple-600">var</span> result = <span class="text-purple-600">await</span>
+                    DialogService.ShowAsync&lt;<span class="text-green-600">MyDialog</span>, <span
+                        class="text-green-600">MyResultType</span>&gt;(...);
+                </div>
+                <div><span class="text-purple-600">if</span> (!result.Canceled) { <span
+                        class="text-purple-600">var</span> data = result.Data; <span class="text-gray-500">//
+                        MyResultType, not object!</span> }
+                </div>
+            </div>
+        </BwColumn>
+    </BwCard>
+
     @* Title Customization *@
     <BwCard Title="Title Customization" Subtitle="Change the title style with TitleColor and TitleSize parameters."
             Icon="fa-solid fa-palette" Color="BwColor.Success">
@@ -166,7 +208,37 @@
     private string? confirmResult;
     private string? inputResult;
     private string? userDialogResult;
+    private string? typedDialogResult;
     private bool isProgressRunning;
+
+    // --- Type-Safe Dialog Demo ---
+    private async Task ShowTypedUserDialog()
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            { "InitialName", "John Doe" },
+            { "InitialEmail", "john@example.com" }
+        };
+
+        var options = new DialogOptions { Width = "450px" };
+
+        // Strongly-typed result! No casting needed.
+        var result = await DialogService.ShowAsync<TypedUserDialog, TypedUserDialog.UserData>(
+            "Create User (Type-Safe)", parameters, options);
+
+        if (!result.Canceled && result.Data != null)
+        {
+            // result.Data is TypedUserDialog.UserData, not object!
+            var user = result.Data;
+            typedDialogResult = $"{user.FullName} ({user.Email}, Age: {user.Age})";
+            await ToastService.SuccessAsync($"User created: {user.FullName}");
+        }
+        else
+        {
+            typedDialogResult = "Canceled.";
+            await ToastService.InfoAsync("Dialog canceled.");
+        }
+    }
 
     // --- Razor Dialog Demo ---
     private async Task ShowUserDialog()
@@ -181,13 +253,14 @@
             Width = "500px"
         };
 
-        var dialog = await DialogService.ShowAsync<UserFormDialog>("Edit User",
-            parameters, options);
+        // Using the typed overload with record result
+        var dialog = await DialogService.ShowAsync<UserFormDialog, UserFormDialog.UserFormResult>(
+            "Edit User", parameters, options);
 
         if (!dialog.Canceled && dialog.Data != null)
         {
-            // Data is dynamic object from snippet
-            dynamic data = dialog.Data;
+            // Strongly typed - no dynamic needed!
+            var data = dialog.Data;
             userDialogResult = $"{data.Username} ({data.Role}) - {data.UpdatedAt:HH:mm:ss}";
             await ToastService.SuccessAsync("Form saved!");
         }
@@ -306,7 +379,7 @@
     private async Task ShowCustomConfirm()
     {
         // New overload with custom button texts
-        var result = await DialogService.ShowConfirmAsync("Custom Confirmation", 
+        var result = await DialogService.ShowConfirmAsync("Custom Confirmation",
             "This operation will be applied permanently. Do you want to continue?",
             "Yes, Continue", "I'm Canceling");
 
