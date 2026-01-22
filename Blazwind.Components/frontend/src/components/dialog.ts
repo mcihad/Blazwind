@@ -412,8 +412,8 @@ export function makeResizable(dialogId: string): void {
         if (!isResizing) return;
         const dx = event.clientX - startX;
         const dy = event.clientY - startY;
-        dialog!.style.width = `${Math.max(startWidth + dx, 200)}px`;
-        dialog!.style.height = `${Math.max(startHeight + dy, 150)}px`;
+        dialog!.style.width = `${Math.max(startWidth + dx * 2, 200)}px`;
+        dialog!.style.height = `${Math.max(startHeight + dy * 2, 150)}px`;
         dialog!.style.maxWidth = 'none';
         dialog!.style.maxHeight = 'none';
     }

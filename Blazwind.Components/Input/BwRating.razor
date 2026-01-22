@@ -129,10 +129,10 @@
         if (!AllowHalf) newValue = starIndex;
         
         // Toggle off if clicking the same full value
-        if (Value == starIndex && !AllowHalf)
-        {
-            newValue = 0;
-        }
+        // if (Value == starIndex && !AllowHalf)
+        // {
+        //     newValue = 0;
+        // }
         
         Value = Math.Max(0, Math.Min(MaxValue, newValue));
         await ValueChanged.InvokeAsync(Value);
