@@ -23,15 +23,15 @@ jobs:
 
       - name: Build Frontend
         run: |
-          cd src/Blazwind.Components/frontend
+          cd Blazwind.Components/frontend
           npm ci
           npm run build
 
       - name: Build
-        run: dotnet build src/Blazwind.Components/Blazwind.Components.csproj -c Release
+        run: dotnet build Blazwind.Components/Blazwind.Components.csproj -c Release
 
       - name: Pack
-        run: dotnet pack src/Blazwind.Components/Blazwind.Components.csproj -c Release -o out --no-build
+        run: dotnet pack Blazwind.Components/Blazwind.Components.csproj -c Release -o out --no-build
 
       - name: Publish to NuGet
         run: dotnet nuget push out/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

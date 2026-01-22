@@ -21,3 +21,9 @@ buildrep:
 # Package: Builds frontend first, then packs the Blazwind.Components library
 package: frontend-build
 	dotnet pack Blazwind.Components -c Release
+
+# Release: Tags the commit and pushes to remote to trigger CI/CD
+release:
+	@if [ -z "$(v)" ]; then echo "Error: Version is required. Usage: make release v=v1.0.0"; exit 1; fi
+	git tag -a $(v) -m "Release $(v)"
+	git push origin $(v)

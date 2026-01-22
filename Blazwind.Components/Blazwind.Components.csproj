@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>Blazwind.Components</PackageId>
-        <Version>0.0.2-alpha</Version>
+        <Version>0.0.4-alpha</Version>
         <Authors>Cihad</Authors>
         <Description>Blazwind - Modern UI Components for Blazor</Description>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
