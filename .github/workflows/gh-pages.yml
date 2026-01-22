@@ -18,7 +18,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Publish
-        run: dotnet publish Blazwind.Examples/Blazwind.Examples.csproj -c Release -o release
+        run: dotnet publish src/Blazwind.Docs/Blazwind.Docs.csproj -c Release -o release
 
       - name: Change base-tag in index.html from / to Blazwind
         run: sed -i 's/<base href="\/" \/>/<base href="\/Blazwind\/" \/>/g' release/wwwroot/index.html

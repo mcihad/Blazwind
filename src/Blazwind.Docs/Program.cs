@@ -1,5 +1,6 @@
 using Blazwind.Examples.Components;
 using Blazwind.Components;
+using Blazwind.Docs.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

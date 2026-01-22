@@ -1,0 +1,38 @@
+@using Bunit
+@using Xunit
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Shared
+@using Blazwind.Components
+@inherits TestContext
+
+@code {
+    [Fact]
+    public void RendersChildContentCorrectly()
+    {
+        var content = "New Badge";
+        var cut = Render(@<BwBadge>@content</BwBadge>);
+        
+        // Assert base classes
+        Assert.Contains("inline-flex", cut.Markup);
+        Assert.Contains("items-center", cut.Markup);
+        Assert.Contains("rounded", cut.Markup); // Default is rounded (not pill)
+        Assert.Contains(content, cut.Markup);
+    }
+
+    [Fact]
+    public void AppliesColorClassCorrectly()
+    {
+        var cut = Render(@<BwBadge Color="@BwColor.Success" />);
+        // Success Soft -> bg-green-100 text-green-800
+        Assert.Contains("bg-green-100", cut.Markup);
+        Assert.Contains("text-green-800", cut.Markup);
+    }
+
+    [Fact]
+    public void AppliesVariantClassCorrectly()
+    {
+        var cut = Render(@<BwBadge Variant="@BwVariant.Outline" Color="@BwColor.Primary" />);
+        // Outline Primary -> border border-blue-600
+        Assert.Contains("border-blue-600", cut.Markup);
+    }
+}

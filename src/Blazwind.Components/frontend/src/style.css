@@ -28,7 +28,7 @@
  * Scan both Components and Examples projects
  */
 @source "../../**/*.razor";
-@source "../../../Blazwind.Examples/**/*.razor";
+@source "../../../Blazwind.Docs/**/*.razor";
 
 
 

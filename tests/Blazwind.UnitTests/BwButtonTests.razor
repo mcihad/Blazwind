@@ -1,0 +1,36 @@
+@using Bunit
+@using Xunit
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@inherits TestContext
+
+@code {
+    [Fact]
+    public void RendersChildContentCorrectly()
+    {
+        // Arrange
+        var content = "Click me";
+
+        // Act
+        var cut = Render(@<BwButton>@content</BwButton>);
+
+        // Assert
+        // Actually the component doesn't have "bw-button" class by default based on inspection, 
+        // it uses tailwind directly. Checking for base classes found in source.
+        Assert.Contains("inline-flex", cut.Markup); 
+        Assert.Contains("items-center", cut.Markup);
+        Assert.Contains("justify-center", cut.Markup);
+        Assert.Contains("Click me", cut.Markup);
+    }
+
+    [Fact]
+    public void AppliesColorClassCorrectly()
+    {
+        // Act
+        var cut = Render(@<BwButton Color="@BwColor.Danger" />);
+
+        // Assert
+        // Danger Filled -> bg-red-600
+        Assert.Contains("bg-red-600", cut.Markup);
+    }
+}
