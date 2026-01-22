@@ -1,0 +1,83 @@
+@using Blazwind.Components.Drawer
+@using Blazwind.Components.Form
+@using Blazwind.Components.Input
+@using Blazwind.Components.Button
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+
+@inject DrawerService DrawerService
+
+<BwForm Model="@_formData" OnValidSubmit="Save" Density="BwFormDensity.Compact">
+    <BwColumn Spacing="BwSpacing.Md">
+        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded p-3 mb-3">
+            <p class="text-sm text-blue-800 dark:text-blue-200">
+                <i class="fa-solid fa-shield-check mr-2"></i>
+                <strong>Type-Safe Drawer:</strong> This drawer demonstrates strongly-typed results using <code
+                    class="bg-blue-100 dark:bg-blue-800 px-1 rounded">DrawerResult&lt;T&gt;</code>.
+            </p>
+        </div>
+
+        <BwInput @bind-Value="_formData.ProductName" Label="Product Name" LabelPosition="BwLabelPosition.Left"
+            HelperText="Enter the product name." HelpTextMode="BwHelpTextMode.Popup" Placeholder="Product name..."
+            IsRequired="true" />
+
+        <BwInput @bind-Value="_formData.Price" Label="Price" LabelPosition="BwLabelPosition.Left" Type="number"
+            HelperText="Product price (USD)." HelpTextMode="BwHelpTextMode.Popup" Placeholder="0.00"
+            IsRequired="true" />
+
+        <BwInput @bind-Value="_formData.Stock" Label="Stock Quantity" LabelPosition="BwLabelPosition.Left" Type="number"
+            HelperText="Available stock quantity." HelpTextMode="BwHelpTextMode.Popup" Placeholder="0"
+            IsRequired="true" />
+
+        <BwSelect @bind-Value="_formData.Category" Label="Category" LabelPosition="BwLabelPosition.Left"
+            HelperText="Select product category." HelpTextMode="BwHelpTextMode.Popup" Items="@_categoryItems"
+            IsRequired="true" />
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+            <BwButton Color="BwColor.Secondary" Variant="BwVariant.Outline" Text="Cancel" OnClick="Cancel" />
+            <BwButton Color="BwColor.Success" HtmlType="submit" Icon="fa-solid fa-save" Text="Save Product" />
+        </div>
+    </BwColumn>
+</BwForm>
+
+@code {
+    /// <summary>
+    /// Strongly-typed model for the drawer result.
+    /// </summary>
+    public record ProductFormData
+    {
+        public string ProductName { get; set; } = "";
+        public string Price { get; set; } = "";
+        public string Stock { get; set; } = "";
+        public string Category { get; set; } = "Electronics";
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+    }
+
+    [CascadingParameter] public DrawerInstance? DrawerInstance { get; set; }
+
+    private ProductFormData _formData = new();
+
+    private List<BwSelectItem<string>> _categoryItems = new()
+{
+new("Electronics", "Electronics"),
+new("Clothing", "Clothing"),
+new("Food & Beverage", "Food & Beverage"),
+new("Books", "Books"),
+new("Home & Garden", "Home & Garden")
+};
+
+    private void Cancel()
+    {
+        if (DrawerInstance != null)
+            DrawerService.Close(DrawerInstance, DrawerResult.Cancel<ProductFormData>());
+    }
+
+    private void Save()
+    {
+        if (DrawerInstance != null)
+        {
+            // Type-safe result - no casting to object needed!
+            DrawerService.Close(DrawerInstance, DrawerResult.Ok(_formData));
+        }
+    }
+}

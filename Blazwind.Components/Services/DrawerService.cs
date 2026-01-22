@@ -26,6 +26,38 @@ public class DrawerService
     }
 
     /// <summary>
+    /// Show a drawer with a dynamic Razor component and return strongly-typed result
+    /// </summary>
+    public async Task<DrawerResult<TResult>> ShowAsync<TComponent, TResult>(
+        string? title = null,
+        Dictionary<string, object>? parameters = null,
+        DrawerOptions? options = null) where TComponent : IComponent
+    {
+        var result = await ShowAsync<TComponent>(title, parameters, options);
+
+        if (result.Canceled)
+        {
+            return DrawerResult.Cancel<TResult>();
+        }
+
+        // Try to cast data
+        if (result.Data is TResult typedData)
+        {
+            return DrawerResult.Ok(typedData);
+        }
+
+        // Handle value types or nulls
+        try
+        {
+            return DrawerResult.Ok((TResult)result.Data!);
+        }
+        catch
+        {
+            return DrawerResult.Ok<TResult>(default!);
+        }
+    }
+
+    /// <summary>
     /// Show a drawer with a component type
     /// </summary>
     public Task<DrawerResult> ShowAsync(
@@ -63,6 +95,17 @@ public class DrawerService
             instance.TaskCompletionSource.TrySetResult(result);
             NotifyStateChanged();
         }
+    }
+
+    /// <summary>
+    /// Close drawer with a strongly-typed result. Converts DrawerResult&lt;T&gt; to DrawerResult internally.
+    /// </summary>
+    public void Close<T>(DrawerInstance instance, DrawerResult<T> result)
+    {
+        var nonGenericResult = result.Canceled
+            ? DrawerResult.Cancel()
+            : DrawerResult.Ok((object?)result.Data);
+        Close(instance, nonGenericResult);
     }
 
     /// <summary>

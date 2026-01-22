@@ -33,6 +33,13 @@
 </BwForm>
 
 @code {
+    /// <summary>
+    /// Strongly-typed model for the drawer result.
+    /// </summary>
+    public record UserFormData(string Name, string Email, string Phone, string Department);
+
+    [CascadingParameter] public DrawerInstance? DrawerInstance { get; set; }
+
     private UserModel _model = new()
     {
         Department = "Software Development"
@@ -49,12 +56,18 @@ new("Operations", "Operations")
 
     private void Cancel()
     {
-        DrawerService.Close();
+        if (DrawerInstance != null)
+            DrawerService.Close(DrawerInstance, DrawerResult.Cancel<UserFormData>());
     }
 
     private void Save()
     {
-        DrawerService.CloseWithResult(_model);
+        if (DrawerInstance != null)
+        {
+            // Type-safe result - no casting to object needed!
+            var result = new UserFormData(_model.Name, _model.Email, _model.Phone, _model.Department);
+            DrawerService.Close(DrawerInstance, DrawerResult.Ok(result));
+        }
     }
 
     public class UserModel

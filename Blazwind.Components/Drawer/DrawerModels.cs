@@ -74,6 +74,10 @@ public class DrawerResult
 
     public static DrawerResult Ok(object? data = null) => new(false, data);
     public static DrawerResult Cancel() => new(true, null);
+
+    // Generic Helper
+    public static DrawerResult<T> Ok<T>(T data) => new(false, data);
+    public static DrawerResult<T> Cancel<T>() => new(true, default);
 }
 
 /// <summary>
@@ -89,7 +93,4 @@ public class DrawerResult<T>
         Canceled = canceled;
         Data = data;
     }
-
-    public static DrawerResult<T> Ok(T data) => new(false, data);
-    public static DrawerResult<T> Cancel() => new(true, default);
 }

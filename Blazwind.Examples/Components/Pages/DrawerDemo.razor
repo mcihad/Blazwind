@@ -58,9 +58,41 @@
             </BwTypography>
         </BwColumn>
     </BwCard>
+
+    @* Type-Safe Drawer Results *@
+    <BwCard Title="Type-Safe Drawer Results" Subtitle="Strongly-typed drawer results with DrawerResult<T> - No casting needed!"
+            Icon="fa-solid fa-shield-check" Color="BwColor.Success">
+        <BwColumn Spacing="BwSpacing.Md">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Drawer components can now return strongly-typed results using <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded">DrawerResult.Ok&lt;T&gt;(data)</code> 
+                and the caller receives <code class="bg-gray-100 dark:bg-gray-800 px-1 rounded">DrawerResult&lt;T&gt;</code> with full type safety.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4">
+                <BwButton Color="BwColor.Success" Icon="fa-solid fa-box" Text="Type-Safe Product Form"
+                          OnClick="OpenTypedProductDrawer"/>
+
+                @if (typedDrawerResult != null)
+                {
+                    <span class="text-sm bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 px-3 py-1 rounded border border-green-200 dark:border-green-700">
+                        <strong>Typed Result:</strong> @typedDrawerResult
+                    </span>
+                }
+            </div>
+
+            <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 text-xs font-mono space-y-1">
+                <div class="text-gray-500">// Inside drawer component - no (object) cast needed:</div>
+                <div><span class="text-purple-600">DrawerService</span>.Close(Instance, <span class="text-blue-600">DrawerResult</span>.Ok(myTypedData));</div>
+                <div class="text-gray-500 mt-2">// Caller receives strongly-typed result:</div>
+                <div><span class="text-purple-600">var</span> result = <span class="text-purple-600">await</span> DrawerService.ShowAsync&lt;<span class="text-green-600">MyDrawer</span>, <span class="text-green-600">MyResultType</span>&gt;(...);</div>
+                <div><span class="text-purple-600">if</span> (!result.Canceled) { <span class="text-purple-600">var</span> data = result.Data; <span class="text-gray-500">// MyResultType, not object!</span> }</div>
+            </div>
+        </BwColumn>
+    </BwCard>
 </BwColumn>
 
 @code {
+    private string? typedDrawerResult;
 
     private async Task OpenDrawer(BwDirection position)
     {
@@ -118,7 +150,8 @@
             Size = BwSize.ExtraLarge
         };
 
-        var result = await DrawerService.ShowAsync<UserFormDrawerContent>(
+        // Using the typed overload with record result
+        var result = await DrawerService.ShowAsync<UserFormDrawerContent, UserFormDrawerContent.UserFormData>(
             "User Information",
             null,
             options
@@ -126,13 +159,42 @@
 
         if (!result.Canceled && result.Data != null)
         {
-            // Cast to dynamic to access properties of the returned object
-            dynamic data = result.Data;
+            // Strongly typed - no dynamic needed!
+            var data = result.Data;
             await ToastService.SuccessAsync($"User: {data.Name}, Department: {data.Department}", "User Saved");
         }
         else
         {
             await ToastService.InfoAsync("User form was canceled.", "Canceled");
+        }
+    }
+
+    private async Task OpenTypedProductDrawer()
+    {
+        var options = new DrawerOptions
+        {
+            Position = BwDirection.Right,
+            Size = BwSize.Large
+        };
+
+        // Strongly-typed result! No casting needed.
+        var result = await DrawerService.ShowAsync<TypedProductDrawer, TypedProductDrawer.ProductFormData>(
+            "Add Product (Type-Safe)",
+            null,
+            options
+        );
+
+        if (!result.Canceled && result.Data != null)
+        {
+            // result.Data is TypedProductDrawer.ProductFormData, not object!
+            var product = result.Data;
+            typedDrawerResult = $"{product.ProductName} - ${product.Price} ({product.Stock} in stock)";
+            await ToastService.SuccessAsync($"Product added: {product.ProductName}", "Success");
+        }
+        else
+        {
+            typedDrawerResult = "Canceled.";
+            await ToastService.InfoAsync("Product form canceled.", "Canceled");
         }
     }
 
