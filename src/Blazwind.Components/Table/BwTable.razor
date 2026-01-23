@@ -24,7 +24,23 @@
     var visibleColumns = _columns.Where(c => c.Visible).ToList();
 }
 
-<div class="@Class">
+<div class="relative @Class">
+    @if (IsLoading)
+    {
+        <div class="absolute inset-0 bg-white/75 dark:bg-gray-900/75 z-40 flex items-center justify-center rounded">
+            @if (LoadingContent != null)
+            {
+                @LoadingContent
+            }
+            else
+            {
+                <div class="flex flex-col items-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600"></i>
+                    <span class="text-sm text-gray-500">Yükleniyor...</span>
+                </div>
+            }
+        </div>
+    }
     @if (ShowColumnSelector && _columns.Any())
     {
         <div class="flex justify-end mb-3 relative">
@@ -245,6 +261,9 @@
     // Server-side
     [Parameter] public bool ServerSide { get; set; } = false;
     [Parameter] public EventCallback<BwTableState> OnStateChanged { get; set; }
+
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public RenderFragment? LoadingContent { get; set; }
 
     private List<BwTableColumn<TItem>> _columns = new();
     private HashSet<TItem> _selectedItems = new();

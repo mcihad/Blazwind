@@ -1,0 +1,75 @@
+@page "/components/separator"
+@using Blazwind.Components.Separator
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+
+<PageTitle>Separator Demo - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Separator Component"
+            Description="A flexible component to divide content horizontally or vertically."
+            Icon="fa-solid fa-minus" Color="BwColor.Gray"/>
+
+    @* Horizontal Separator *@
+    <BwCard Title="Horizontal Separator" Subtitle="Default horizontal styling." Icon="fa-solid fa-arrows-left-right">
+        <div class="space-y-4">
+            <div>Default</div>
+            <BwSeparator />
+            <div>With default styling.</div>
+        </div>
+    </BwCard>
+
+    @* With Text *@
+    <BwCard Title="With Text" Subtitle="Separators can have text in the middle." Icon="fa-solid fa-font">
+        <div class="space-y-4">
+            <BwSeparator Text="CENTER" />
+            <BwSeparator Text="LEFT" TextAlignment="BwAlignment.Left" />
+            <BwSeparator Text="RIGHT" TextAlignment="BwAlignment.Right" />
+        </div>
+    </BwCard>
+
+    @* Variants *@
+    <BwCard Title="Variants" Subtitle="Different border styles using BwBorderStyle." Icon="fa-solid fa-border-style">
+         <div class="space-y-6">
+            <div>
+                <div class="text-sm text-gray-500 mb-1">Solid (Default)</div>
+                <BwSeparator Variant="BwBorderStyle.Solid" />
+            </div>
+            <div>
+                <div class="text-sm text-gray-500 mb-1">Dashed</div>
+                <BwSeparator Variant="BwBorderStyle.Dashed" />
+            </div>
+            <div>
+                <div class="text-sm text-gray-500 mb-1">Dotted</div>
+                <BwSeparator Variant="BwBorderStyle.Dotted" />
+            </div>
+            <div>
+                <div class="text-sm text-gray-500 mb-1">Double</div>
+                <BwSeparator Variant="BwBorderStyle.Double" />
+            </div>
+        </div>
+    </BwCard>
+
+    @* Colors *@
+    <BwCard Title="Colors" Subtitle="Customize the color of the separator." Icon="fa-solid fa-palette">
+         <div class="space-y-4">
+            <BwSeparator Color="BwColor.Primary" Text="Primary" />
+            <BwSeparator Color="BwColor.Secondary" Text="Secondary" />
+            <BwSeparator Color="BwColor.Success" Text="Success" />
+            <BwSeparator Color="BwColor.Warning" Text="Warning" />
+            <BwSeparator Color="BwColor.Danger" Text="Danger" />
+        </div>
+    </BwCard>
+
+    @* Vertical *@
+    <BwCard Title="Vertical Separator" Subtitle="Vertical separators require a container with a defined height." Icon="fa-solid fa-arrows-up-down">
+        <div class="flex h-20 items-center justify-center border rounded-lg p-4 border-gray-200 dark:border-zinc-700">
+            <div class="text-center px-4">Blog</div>
+            <BwSeparator Orientation="BwOrientation.Vertical" />
+            <div class="text-center px-4">Docs</div>
+            <BwSeparator Orientation="BwOrientation.Vertical" />
+            <div class="text-center px-4">Source</div>
+        </div>
+    </BwCard>
+</BwColumn>

@@ -50,6 +50,17 @@ Comprehensive support for font weights from `Thin` (100) to `Black` (900).
 </BwTypography>
 ```
 
+### Styling
+*   **Align:** Text alignment (`Left`, `Center`, `Right`).
+*   **Transform:** Text transformation (`Uppercase`, `Lowercase`, `Capitalize`).
+*   **Decoration:** Style flags like `Bold`, `Italic`, `Underline`, `Strikethrough`.
+
+```razor
+<BwTypography Bold="true" Italic="true" Align="BwAlignment.Center">
+    Bold, Italic, and Centered text.
+</BwTypography>
+```
+
 ## API
 
 | Parameter | Type | Default | Description |
@@ -60,6 +71,12 @@ Comprehensive support for font weights from `Thin` (100) to `Black` (900).
 | `Size` | `BwSize` | `Medium` | Text size (`ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`). |
 | `Weight` | `BwFontWeight` | `Normal` | Font weight (`Thin` to `Black`). |
 | `Color` | `BwColor` | `Primary` | Text color variant. |
+| `Align` | `BwAlignment?` | `null` | Text alignment (Left, Center, Right). |
+| `Transform` | `BwTextTransform?` | `null` | Text transformation (Uppercase, Lowercase, Capitalize). |
+| `Bold` | `bool` | `false` | Shortcut for `Weight=Bold`. |
+| `Italic` | `bool` | `false` | Applies italic style. |
+| `Underline` | `bool` | `false` | Applies underline decoration. |
+| `Strikethrough`| `bool` | `false` | Applies line-through decoration. |
 | `IsTruncated` | `bool` | `false` | Truncate text to a single line. |
 | `LineClamp` | `int?` | `null` | Truncate text after N lines. |
 | `OnClick` | `EventCallback<MouseEventArgs>`| - | Triggered when the component is clicked. |

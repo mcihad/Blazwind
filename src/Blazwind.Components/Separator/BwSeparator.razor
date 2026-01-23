@@ -1,0 +1,91 @@
+@namespace Blazwind.Components.Separator
+@using Blazwind.Components.Shared
+
+<div class="flex items-center @(Orientation == BwOrientation.Vertical ? "flex-col h-full mx-4" : "w-full my-4") @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(Text) && Orientation == BwOrientation.Horizontal)
+    {
+        <div class="@GetLineClass(true) border-t @GetBorderClass()"></div>
+        <span class="flex-shrink-0 px-3 text-sm font-medium text-gray-500 @GetTextColorClass()">
+            @Text
+        </span>
+        <div class="@GetLineClass(false) border-t @GetBorderClass()"></div>
+    }
+    else
+    {
+        <div class="@GetBaseClass() @GetBorderClass()"></div>
+    }
+</div>
+
+@code {
+    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
+    [Parameter] public BwBorderStyle Variant { get; set; } = BwBorderStyle.Solid;
+    [Parameter] public BwColor Color { get; set; } = BwColor.Gray;
+    [Parameter] public BwAlignment TextAlignment { get; set; } = BwAlignment.Center;
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+
+    private string GetBaseClass()
+    {
+        return Orientation == BwOrientation.Horizontal ? "w-full border-t" : "h-full border-l";
+    }
+
+    private string GetLineClass(bool isLeft)
+    {
+        if (TextAlignment == BwAlignment.Center)
+        {
+            return "flex-grow";
+        }
+
+        if (TextAlignment == BwAlignment.Left)
+        {
+            return isLeft ? "w-8 flex-none" : "flex-grow";
+        }
+
+        if (TextAlignment == BwAlignment.Right)
+        {
+            return isLeft ? "flex-grow" : "w-8 flex-none";
+        }
+
+        return "flex-grow";
+    }
+
+    private string GetTextColorClass()
+    {
+        return Color switch
+        {
+            BwColor.Gray => "text-zinc-500 dark:text-zinc-400",
+            BwColor.Primary => "text-blue-500",
+            BwColor.Secondary => "text-gray-500",
+            BwColor.Success => "text-green-500",
+            BwColor.Warning => "text-yellow-500",
+            BwColor.Danger => "text-red-500",
+            BwColor.Info => "text-cyan-500",
+            _ => "text-zinc-500 dark:text-zinc-400"
+        };
+    }
+
+    private string GetBorderClass()
+    {
+        var borderStyle = Variant switch
+        {
+            BwBorderStyle.Dashed => "border-dashed",
+            BwBorderStyle.Dotted => "border-dotted",
+            BwBorderStyle.Double => "border-double border-4",
+            _ => "border-solid"
+        };
+        
+        var colorClass = Color switch {
+            BwColor.Gray => "border-gray-200 dark:border-zinc-700",
+            BwColor.Primary => "border-blue-500",
+            BwColor.Secondary => "border-gray-500",
+            BwColor.Success => "border-green-500",
+            BwColor.Warning => "border-yellow-500",
+            BwColor.Danger => "border-red-500",
+            BwColor.Info => "border-cyan-500",
+            _ => "border-gray-200 dark:border-zinc-700"
+        };
+
+        return $"{borderStyle} {colorClass}";
+    }
+}

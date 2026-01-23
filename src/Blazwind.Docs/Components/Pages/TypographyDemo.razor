@@ -49,6 +49,41 @@
         </div>
     </BwCard>
 
+    @* Styling / Decoration *@
+    <BwCard Title="Styling & Decoration" Subtitle="Bold, Italic, Underline, and Transformations" Icon="fa-solid fa-paintbrush"
+            Color="BwColor.Info">
+         <div class="grid gap-4">
+             <div>
+                 <BwTypography Tag="BwTypographyTag.H6" Class="mb-2 text-gray-400">Decorations</BwTypography>
+                 <div class="flex flex-wrap gap-4">
+                     <BwTypography Bold="true">Bold Text</BwTypography>
+                     <BwTypography Italic="true">Italic Text</BwTypography>
+                     <BwTypography Underline="true">Underlined Text</BwTypography>
+                     <BwTypography Strikethrough="true">Strikethrough Text</BwTypography>
+                     <BwTypography Bold="true" Italic="true" Underline="true" Color="BwColor.Primary">Combined Styles</BwTypography>
+                 </div>
+             </div>
+             
+             <div>
+                  <BwTypography Tag="BwTypographyTag.H6" Class="mb-2 text-gray-400">Transformations</BwTypography>
+                  <div class="flex flex-wrap gap-4">
+                      <BwTypography Transform="BwTextTransform.Uppercase">uppercase text</BwTypography>
+                      <BwTypography Transform="BwTextTransform.Lowercase">LOWERCASE TEXT</BwTypography>
+                      <BwTypography Transform="BwTextTransform.Capitalize">capitalize this text</BwTypography>
+                  </div>
+             </div>
+             
+             <div>
+                   <BwTypography Tag="BwTypographyTag.H6" Class="mb-2 text-gray-400">Alignment</BwTypography>
+                   <div class="space-y-2 border border-gray-200 dark:border-gray-700 rounded p-4">
+                       <BwTypography Align="BwAlignment.Left" Class="bg-gray-50 dark:bg-gray-800 p-1">Left Aligned</BwTypography>
+                       <BwTypography Align="BwAlignment.Center" Class="bg-gray-50 dark:bg-gray-800 p-1">Center Aligned</BwTypography>
+                       <BwTypography Align="BwAlignment.Right" Class="bg-gray-50 dark:bg-gray-800 p-1">Right Aligned</BwTypography>
+                   </div>
+             </div>
+         </div>
+    </BwCard>
+
     @* Variants / Colors *@
     <BwCard Title="Color Variants" Subtitle="Text colors compatible with your theme" Icon="fa-solid fa-palette"
             Color="BwColor.Danger">

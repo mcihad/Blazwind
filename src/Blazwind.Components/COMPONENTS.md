@@ -20,6 +20,7 @@ Below is the list of all components available in the Blazwind library along with
 - [Sidebar](Layout/Docs/BwSidebar.md)
 - [SidebarToggle](Layout/Docs/BwSidebarToggle.md)
 - [SidePanel](SidePanel/Docs/BwSidePanel.md) ⭐ NEW - Side panel component
+- [Separator](Separator/Docs/BwSeparator.md) ⭐ NEW - Content divider
 
 ## Navigation
 - [Breadcrumb](Breadcrumb/Docs/BwBreadcrumb.md)

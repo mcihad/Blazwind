@@ -1,6 +1,6 @@
 # Blazwind
 
-> **Note**: This is an **early alpha version (v0.0.2-alpha)**. APIs are subject to change.
+> **Note**: This is an **early alpha version (v0.0.4-alpha)**. APIs are subject to change.
 
 **Blazwind** is a modern, enterprise-grade Blazor component library built with Tailwind CSS. It focuses on aesthetics, performance, and developer experience.
 
@@ -17,7 +17,7 @@ Explore working examples of all components at **[https://mcihad.github.io/Blazwi
 - **Dynamic Loading**: Heavy resources like Charts and Maps are loaded only when needed
 - **TypeScript Support**: Type-safe frontend interactions
 
-> 📚 **[Full Component List](Blazwind.Components/COMPONENTS.md)** - Detailed documentation on all available components
+> 📚 **[Full Component List](src/Blazwind.Components/COMPONENTS.md)** - Detailed documentation on all available components
 
 ## 📦 Installation
 

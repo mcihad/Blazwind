@@ -138,6 +138,27 @@
         </div>
     </BwCard>
 
+    @* Loading State *@
+    <BwCard Title="Loading State" Subtitle="Loading overlay for async operations" Icon="fa-solid fa-spinner"
+            Color="BwColor.Secondary">
+        
+        <div class="mb-4">
+             <BwButton OnClick="ToggleLoading" Color="BwColor.Secondary" Variant="BwVariant.Outline">
+                 Toggle Loading (@(_isLoading ? "On" : "Off"))
+             </BwButton>
+        </div>
+
+        <BwTable TItem="Product"
+                 Items="@_products.Take(5)"
+                 IsLoading="@_isLoading"
+                 Bordered="true">
+            <BwTableColumn TItem="Product" Title="Product" Field="@(p => p.Name)"/>
+            <BwTableColumn TItem="Product" Title="Price" Field="@(p => p.Price)">
+                 <Template>$@context.Price.ToString("N2")</Template>
+            </BwTableColumn>
+        </BwTable>
+    </BwCard>
+
     @* Ellipsis (Long Text Truncation) *@
     <BwCard Title="Ellipsis (Long Text)" Subtitle="Truncate long texts with ... and tooltip" Icon="fa-solid fa-ellipsis"
             Color="BwColor.Info">
@@ -171,6 +192,12 @@
     private List<Product> _ellipsisProducts = new();
     private IEnumerable<Product> _singleSelectedItems = Enumerable.Empty<Product>();
     private IEnumerable<Product> _multiSelectedItems = Enumerable.Empty<Product>();
+    private bool _isLoading = true;
+
+    private void ToggleLoading()
+    {
+        _isLoading = !_isLoading;
+    }
 
 
     protected override void OnInitialized()

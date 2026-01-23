@@ -1,0 +1,145 @@
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+
+<div id="blazor-error-ui" style="display: none;"></div>
+
+<div id="bw-error-ui-wrapper" class="bw-error-ui-wrapper fixed bottom-4 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-full md:max-w-xl z-[9999] hidden">
+    <div class="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/80 p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 dark:border-white/10 dark:bg-zinc-900/80 dark:shadow-black/50">
+        
+        <!-- Decorative Background Gradients -->
+        <div class="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-red-500/10 blur-3xl transition-opacity group-hover:bg-red-500/15 dark:bg-red-500/10"></div>
+        <div class="pointer-events-none absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl transition-opacity group-hover:bg-orange-500/15 dark:bg-orange-500/10"></div>
+        
+        <div class="relative flex flex-col sm:flex-row sm:items-start gap-4">
+            <!-- Icon with Pulse Effect -->
+            <div class="flex-shrink-0 flex items-center justify-center">
+                <div class="relative flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-600 ring-1 ring-red-100 dark:bg-red-500/10 dark:text-red-400 dark:ring-red-500/20">
+                     <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                     <div class="absolute inset-0 rounded-xl ring-1 ring-inset ring-black/5 dark:ring-white/5"></div>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-base font-semibold leading-6 text-zinc-900 dark:text-zinc-100">
+                        @Title
+                    </h3>
+                </div>
+                
+                <div class="mt-1">
+                    <p id="blazor-error-ui-message" class="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                        @Message
+                    </p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-6 flex flex-wrap items-center gap-3">
+                    <a href="" class="group relative inline-flex cursor-pointer items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-red-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-red-600/30 transition-all hover:scale-[1.02] hover:shadow-red-600/40 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900" 
+                       onclick="location.reload(); return false;">
+                        <i class="fa-solid fa-rotate-right mr-2 transition-transform group-hover:rotate-180"></i> @ReloadText
+                    </a>
+                    
+                    <button type="button" 
+                            onclick="document.getElementById('blazor-error-ui').style.display='none'; document.getElementById('bw-error-ui-wrapper').classList.remove('bw-show');"
+                            class="group/dismiss cursor-pointer inline-flex items-center justify-center rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white">
+                        <i class="fa-solid fa-xmark mr-2 transition-transform group-hover/dismiss:rotate-90"></i> @DismissText
+                    </button>
+                    
+                    @if (ShowCopyButton)
+                    {
+                        <button onclick="navigator.clipboard.writeText(document.getElementById('blazor-error-ui-message').innerText); this.innerHTML = '<i class=\'fa-solid fa-check mr-2\'></i> Copied'; setTimeout(() => this.innerHTML = '<i class=\'fa-regular fa-copy mr-2\'></i> @CopyText', 2000)" 
+                                class="inline-flex ml-auto sm:ml-0 cursor-pointer items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-200 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
+                            <i class="fa-regular fa-copy mr-2"></i> @CopyText
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Always keep the bait hidden visually, even if display becomes block */
+    #blazor-error-ui {
+        visibility: hidden;
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    /* Logic 1: Attribute selector (Primary/Fast) - Uses Sibling Selector */
+    #blazor-error-ui[style*="block"] ~ .bw-error-ui-wrapper {
+        display: block !important;
+        animation: bw-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    /* Logic 2: Class based (Robust/Observer) */
+    .bw-error-ui-wrapper.bw-show {
+        display: block !important;
+        animation: bw-slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    
+    @@keyframes bw-slide-up {
+        0% {
+            opacity: 0;
+            transform: translate(-50%, 40px) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+        }
+    }
+    
+    /* Mobile adjust: Full width, no centering translation needed as left/right are anchored */
+    @@media (max-width: 768px) {
+        @@keyframes bw-slide-up {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    }
+</style>
+
+<script>
+    (function() {
+        // Robustness: Observer to detect when Blazor shows the error UI
+        const targetNode = document.getElementById('blazor-error-ui');
+        const wrapper = document.getElementById('bw-error-ui-wrapper');
+        
+        if (targetNode && wrapper) {
+            const observer = new MutationObserver((mutationsList) => {
+                for(const mutation of mutationsList) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        if (targetNode.style.display === 'block' || targetNode.style.display === '') {
+                             wrapper.classList.add('bw-show');
+                        } else {
+                             wrapper.classList.remove('bw-show');
+                        }
+                    }
+                }
+            });
+            observer.observe(targetNode, { attributes: true });
+        }
+    })();
+</script>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Application Error";
+    [Parameter] public string Message { get; set; } = "An unexpected error has occurred. Please reload the page if the issue persists.";
+    [Parameter] public string ReloadText { get; set; } = "Reload";
+    [Parameter] public string DismissText { get; set; } = "Dismiss";
+    [Parameter] public string CopyText { get; set; } = "Copy Error";
+    [Parameter] public bool ShowCopyButton { get; set; } = true;
+}

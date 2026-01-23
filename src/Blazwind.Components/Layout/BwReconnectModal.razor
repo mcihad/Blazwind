@@ -1,0 +1,143 @@
+@namespace Blazwind.Components.Layout
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+
+
+<div id="components-reconnect-modal"
+    class="hidden fixed inset-0 z-[9999] opacity-0 transition-opacity duration-500 ease-in-out">
+    <!-- Backdrop with blur -->
+    <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-md"></div>
+
+    <!-- Modal Card -->
+    <div class="relative top-1/2 left-1/2 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2">
+        <div
+            class="relative overflow-hidden rounded-2xl border border-white/20 bg-white/80 p-8 text-center shadow-2xl backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/80">
+
+            <!-- Decorator Glows -->
+            <div
+                class="pointer-events-none absolute -top-24 -left-24 h-48 w-48 rounded-full bg-blue-500/20 blur-3xl dark:bg-blue-500/10">
+            </div>
+            <div
+                class="pointer-events-none absolute -bottom-24 -right-24 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl dark:bg-purple-500/10">
+            </div>
+
+            <div class="relative z-10 flex flex-col items-center">
+                <!-- Attempting State -->
+                <div class="components-reconnect-show w-full">
+                    <div class="mb-6 relative mx-auto h-16 w-16">
+                        <div class="absolute inset-0 animate-ping rounded-full bg-blue-500/20"></div>
+                        <div
+                            class="relative flex h-full w-full items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/20">
+                            <div
+                                class="h-8 w-8 animate-spin rounded-full border-3 border-blue-500/30 border-t-blue-600 dark:border-blue-400/30 dark:border-t-blue-400">
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">@RejoiningTitle</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">@RejoiningMessage</p>
+                </div>
+
+                <!-- Failed State -->
+                <div class="components-reconnect-failed hidden w-full">
+                    <div
+                        class="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-500 dark:bg-red-900/20 dark:text-red-400">
+                        <i class="fa-solid fa-wifi font-bold text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">@ConnectionLostTitle</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">@ConnectionLostMessage</p>
+                    <button onclick="window.Blazor.reconnect()"
+                        class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> @RetryButtonText
+                    </button>
+                </div>
+
+                <!-- Rejected State -->
+                <div class="components-reconnect-refused hidden w-full">
+                    <div
+                        class="mb-6 mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">@ConnectionRejectedTitle
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">@ConnectionRejectedMessage</p>
+                    <button onclick="location.reload()"
+                        class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                        <i class="fa-solid fa-rotate mr-2"></i> @ReloadButtonText
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Trigger visibility based on root classes applied by Blazor */
+    #components-reconnect-modal.components-reconnect-show,
+    #components-reconnect-modal.components-reconnect-failed,
+    #components-reconnect-modal.components-reconnect-rejected {
+        display: block !important;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* State switching logic: Hide others when one is active */
+
+    /* When failed, hide show/refused */
+    .components-reconnect-failed .components-reconnect-show {
+        display: none;
+    }
+
+    .components-reconnect-failed .components-reconnect-refused {
+        display: none;
+    }
+
+    .components-reconnect-failed .components-reconnect-failed {
+        display: block !important;
+        animation: bw-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* When rejected/refused, hide show/failed */
+    .components-reconnect-rejected .components-reconnect-show {
+        display: none;
+    }
+
+    .components-reconnect-rejected .components-reconnect-failed {
+        display: none;
+    }
+
+    .components-reconnect-rejected .components-reconnect-refused {
+        display: block !important;
+        animation: bw-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Default show animation when just show is active */
+    .components-reconnect-show .components-reconnect-show {
+        animation: bw-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @@keyframes bw-slide-up {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+@code {
+    [Parameter] public string RejoiningTitle { get; set; } = "Reconnecting...";
+    [Parameter] public string RejoiningMessage { get; set; } = "We're trying to reach the server.";
+
+    [Parameter] public string ConnectionLostTitle { get; set; } = "Connection Lost";
+    [Parameter] public string ConnectionLostMessage { get; set; } = "Please check your internet connection.";
+
+    [Parameter] public string ConnectionRejectedTitle { get; set; } = "Connection Rejected";
+    [Parameter] public string ConnectionRejectedMessage { get; set; } = "The server rejected the session. Please reload.";
+
+    [Parameter] public string RetryButtonText { get; set; } = "Retry Connection";
+    [Parameter] public string ReloadButtonText { get; set; } = "Reload Page";
+}

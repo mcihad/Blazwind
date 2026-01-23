@@ -47,6 +47,8 @@ Enable the `ShowColumnSelector="true"` parameter to let users toggle column visi
 *   **Bordered**: Adds borders to the table and cells (`true`/`false`).
 *   **Hoverable**: Highlights rows on mouse hover (`true`/`false`).
 *   **Striped**: Adds zebra striping to rows (`true`/`false`).
+*   **IsLoading**: Shows a loading overlay (`true`/`false`).
+*   **LoadingContent**: Custom content for the loading overlay (`RenderFragment`).
 
 ### Columns
 For column details, see [TableColumn](Table/Docs/BwTableColumn.md).

@@ -28,12 +28,23 @@
     [Parameter] public int? LineClamp { get; set; }
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+    // New Features
+    [Parameter] public bool Bold { get; set; } // Shortcut for Weight=Bold
+    [Parameter] public bool Italic { get; set; }
+    [Parameter] public bool Underline { get; set; }
+    [Parameter] public bool Strikethrough { get; set; }
+    [Parameter] public BwAlignment? Align { get; set; }
+    [Parameter] public BwTextTransform? Transform { get; set; }
+
     private string AllClasses => string.Join(" ", new[]
     {
         BaseClasses,
         SizeClasses,
         WeightClasses,
         VariantClasses,
+        AlignmentClasses,
+        TransformClasses,
+        DecorationClasses,
         TruncateClasses,
         Class
     }).Trim();
@@ -50,19 +61,26 @@
         _                 => "text-base"
     };
 
-    private string WeightClasses => Weight switch
+    private string WeightClasses 
     {
-        BwFontWeight.Thin       => "font-thin",
-        BwFontWeight.Extralight => "font-extralight",
-        BwFontWeight.Light      => "font-light",
-        BwFontWeight.Normal     => "font-normal",
-        BwFontWeight.Medium     => "font-medium",
-        BwFontWeight.Semibold   => "font-semibold",
-        BwFontWeight.Bold       => "font-bold",
-        BwFontWeight.Extrabold  => "font-extrabold",
-        BwFontWeight.Black      => "font-black",
-        _                       => "font-normal"
-    };
+        get
+        {
+            if (Bold) return "font-bold";
+            return Weight switch
+            {
+                BwFontWeight.Thin       => "font-thin",
+                BwFontWeight.Extralight => "font-extralight",
+                BwFontWeight.Light      => "font-light",
+                BwFontWeight.Normal     => "font-normal",
+                BwFontWeight.Medium     => "font-medium",
+                BwFontWeight.Semibold   => "font-semibold",
+                BwFontWeight.Bold       => "font-bold",
+                BwFontWeight.Extrabold  => "font-extrabold",
+                BwFontWeight.Black      => "font-black",
+                _                       => "font-normal"
+            };
+        }
+    }
 
     private string VariantClasses => Color switch
     {
@@ -78,12 +96,38 @@
         _                => "text-gray-900 dark:text-white"
     };
 
+    private string AlignmentClasses => Align switch
+    {
+        BwAlignment.Left => "text-left",
+        BwAlignment.Center => "text-center",
+        BwAlignment.Right => "text-right",
+        _ => ""
+    };
+    
+    private string TransformClasses => Transform switch
+    {
+        BwTextTransform.Uppercase => "uppercase",
+        BwTextTransform.Lowercase => "lowercase",
+        BwTextTransform.Capitalize => "capitalize",
+        _ => ""
+    };
+    
+    private string DecorationClasses
+    {
+        get
+        {
+            var classes = new List<string>();
+            if (Italic) classes.Add("italic");
+            if (Underline) classes.Add("underline decoration-2 underline-offset-2");
+            if (Strikethrough) classes.Add("line-through");
+            return string.Join(" ", classes);
+        }
+    }
+
     private string TruncateClasses
     {
         get
         {
-            // En çok kullanılan 1-6 satır için sabit sınıfları yazıyoruz
-            // Tailwind v3.4+ genelde 1-6'yı varsayılan olarak içerir
             return (IsTruncated, LineClamp) switch
             {
                 (true, null)               => "truncate",
@@ -94,7 +138,7 @@
                 (_, 4)                     => "line-clamp-4",
                 (_, 5)                     => "line-clamp-5",
                 (_, 6)                     => "line-clamp-6",
-                _ when LineClamp is > 0    => $"line-clamp-{LineClamp}", // fallback - tailwind config'te safelist varsa çalışır
+                _ when LineClamp is > 0    => $"line-clamp-{LineClamp}",
                 _                          => ""
             };
         }
