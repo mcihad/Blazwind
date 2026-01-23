@@ -1,0 +1,58 @@
+@namespace Blazwind.Components.Pages
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@inject NavigationManager NavigationManager
+
+<div class="min-h-[80vh] flex flex-col items-center justify-center p-4 text-center @Class" style="@Style">
+    <!-- 404 Visual -->
+    <div class="relative mb-6">
+        <!-- Premium 404 Text -->
+        <h1 class="text-9xl font-black text-gray-200 dark:text-gray-800 select-none drop-shadow-sm tracking-tighter">
+            404
+        </h1>
+    </div>
+
+    <!-- Content -->
+    <div class="max-w-md relative z-10">
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+            @Title
+        </h2>
+
+        @if (CustomContent != null)
+        {
+            @CustomContent
+        }
+        else
+        {
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                @Description
+            </p>
+        }
+
+        <!-- Actions -->
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            @if (CustomAction != null)
+            {
+                @CustomAction
+            }
+            else
+            {
+                <BwButton OnClick="@(() => NavigationManager.NavigateTo(ActionHref))" Variant="BwVariant.Filled"
+                    Color="BwColor.Primary" Size="BwSize.Large" Icon="fa-solid fa-arrow-left" Class="px-8">
+                    @ActionText
+                </BwButton>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "Page Not Found";
+    [Parameter] public string Description { get; set; } = "Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.";
+    [Parameter] public string ActionText { get; set; } = "Go Back Home";
+    [Parameter] public string ActionHref { get; set; } = "/";
+    [Parameter] public RenderFragment? CustomContent { get; set; }
+    [Parameter] public RenderFragment? CustomAction { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string? Style { get; set; }
+}

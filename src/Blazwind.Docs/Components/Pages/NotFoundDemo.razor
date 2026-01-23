@@ -1,0 +1,57 @@
+@page "/pages/not-found"
+@using Blazwind.Components.Pages
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Card
+@using Blazwind.Components.Button
+@using Blazwind.Components.Input
+
+<PageTitle>Not Found Page - Blazwind</PageTitle>
+
+<BwColumn Spacing="BwSpacing.Lg">
+    <BwHero Title="Page Not Found"
+            Description="A specialized page component for handling 404 errors with style."
+            Icon="fa-solid fa-triangle-exclamation" Color="BwColor.Danger"/>
+
+    @* Default Preview *@
+    <BwCard Title="Default Preview" Subtitle="The default look and feel." Icon="fa-solid fa-eye">
+        <div class="border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-white dark:bg-black/50">
+             <BwNotFound Style="min-height: 400px;" />
+        </div>
+    </BwCard>
+
+    @* Customization *@
+    <BwCard Title="Localized & Customized" Subtitle="Custom properties for text and actions." Icon="fa-solid fa-language">
+        <div class="border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-white dark:bg-black/50">
+             <BwNotFound Title="Sayfa Bulunamadı" 
+                         Description="Üzgünüz, aradığınız sayfaya ulaşılamıyor. Lütfen adresi kontrol edin." 
+                         ActionText="Ana Sayfaya Dön"
+                         Style="min-height: 400px;" />
+        </div>
+    </BwCard>
+    
+    @* Advanced Customization *@
+    <BwCard Title="Advanced Content" Subtitle="Inject custom content or actions using RenderFragments." Icon="fa-solid fa-code">
+        <div class="border border-gray-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-white dark:bg-black/50">
+             <BwNotFound Style="min-height: 450px;">
+                 <CustomContent>
+                     <p class="mb-4 text-gray-500">We couldn't find exactly what you were looking for, but maybe you can search for it?</p>
+                     <div class="max-w-xs mx-auto mb-8">
+                         <BwInput Placeholder="Search documentation..." IconLeft="fa-solid fa-search" />
+                     </div>
+                 </CustomContent>
+                 <CustomAction>
+                      <BwButton Variant="BwVariant.Outline" Color="BwColor.Secondary">Report Issue</BwButton>
+                      <BwButton Variant="BwVariant.Filled" Color="BwColor.Primary">Go Home</BwButton>
+                 </CustomAction>
+             </BwNotFound>
+        </div>
+    </BwCard>
+
+    <BwCard Title="Usage" Subtitle="How to use this component.">
+        <p class="text-gray-600 dark:text-gray-400 mb-4">
+            Since this component is designed to take up the full screen height (<code>min-h-[80vh]</code>), in the examples above we used inline style <code>min-height: 400px</code> to contain it within the demo cards. In a real application, you would just use <code>&lt;BwNotFound /&gt;</code> in your <code>App.razor</code> or layout file.
+        </p>
+    </BwCard>
+
+</BwColumn>
