@@ -1,9 +1,15 @@
 @namespace Blazwind.Components.Navigation
 
 <div class="h-14 border-b border-gray-200 dark:border-gray-800 flex items-center gap-3 px-4 @Class">
-    @if (!string.IsNullOrEmpty(Icon))
+    @if (!string.IsNullOrEmpty(Image))
     {
-        <div class="w-9 h-9 @IconBgClass rounded flex items-center justify-center">
+        <div class="w-9 h-9 rounded overflow-hidden flex-shrink-0">
+            <img src="@Image" alt="@Title" class="w-full h-full object-cover">
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(Icon))
+    {
+        <div class="w-9 h-9 @IconBgClass rounded flex items-center justify-center flex-shrink-0">
             <i class="@Icon @IconClass"></i>
         </div>
     }
@@ -25,6 +31,7 @@
 @code {
     [Parameter] public string Title { get; set; } = "";
     [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Image { get; set; }
     [Parameter] public string? Icon { get; set; }
     [Parameter] public string IconBgClass { get; set; } = "bg-gradient-to-br from-blue-600 to-blue-700";
     [Parameter] public string IconClass { get; set; } = "text-white";

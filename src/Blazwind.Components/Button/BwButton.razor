@@ -88,53 +88,82 @@
     var allClasses = $"{baseClasses} {sizeClasses} {variantClasses} {Class}";
 }
 
-<button type="@HtmlType" 
-        class="@allClasses" 
-        disabled="@Disabled"
-        @onclick="OnClick"
-        @attributes="AdditionalAttributes">
-    @if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Left)
-    {
-        <i class="@Icon @iconSize"></i>
-    }
-    
-    @if (IconPosition != BwIconPosition.Only)
-    {
-        @if (ChildContent != null)
-        {
-            @ChildContent
-        }
-        else if (!string.IsNullOrEmpty(Text))
-        {
-            <span>@Text</span>
-        }
-    }
-    
-    @if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Right)
-    {
-        <i class="@Icon @iconSize"></i>
-    }
-    
-    @if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Only)
-    {
-        <i class="@Icon @iconSize"></i>
-    }
-    
-    @if (IsLoading)
-    {
-        <i class="fa-solid fa-spinner animate-spin @iconSize"></i>
-    }
+@if (string.IsNullOrEmpty(Href))
+{
+    <button type="@HtmlType" 
+            class="@allClasses" 
+            disabled="@Disabled"
+            @onclick="OnClick"
+            @attributes="AdditionalAttributes">
+        @RenderContent()
+    </button>
+}
+else
+{
+    <a href="@Href" 
+       class="@allClasses" 
+       role="button"
+       @attributes="AdditionalAttributes"
+       @onclick="OnClick">
+        @RenderContent()
+    </a>
+}
 
-    @if (BadgeContent != null)
+@code {
+    private RenderFragment RenderContent() => __builder =>
     {
-        <div class="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4">
-            @BadgeContent
-        </div>
-    }
-</button>
+        // Icon size
+        var iconSize = Size switch
+        {
+            BwSize.Small => "text-xs",
+            BwSize.Large => "text-lg",
+            _ => "text-sm"
+        };
+        
+        if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Left)
+        {
+            <i class="@Icon @iconSize"></i>
+        }
+        
+        if (IconPosition != BwIconPosition.Only)
+        {
+            if (ChildContent != null)
+            {
+                @ChildContent
+            }
+            else if (!string.IsNullOrEmpty(Text))
+            {
+                <span>@Text</span>
+            }
+        }
+        
+        if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Right)
+        {
+            <i class="@Icon @iconSize"></i>
+        }
+        
+        if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Only)
+        {
+            <i class="@Icon @iconSize"></i>
+        }
+        
+        if (IsLoading)
+        {
+            <i class="fa-solid fa-spinner animate-spin @iconSize"></i>
+        }
+
+        if (BadgeContent != null)
+        {
+            <div class="absolute top-0 right-0 translate-x-1/4 -translate-y-1/4">
+                @BadgeContent
+            </div>
+        }
+    };
+}
 
 @code {
     [Parameter] public string? Text { get; set; }
+    [Parameter] public string? Href { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? BadgeContent { get; set; }
     [Parameter] public string? Icon { get; set; }
