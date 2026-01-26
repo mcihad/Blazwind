@@ -2,21 +2,33 @@
 @using Blazwind.Components.Shared
 
 @{
-    var marginClass = SidebarPosition == BwDirection.Right ? "mr-64" : "ml-64";
+    var hasSidebar = Sidebar != null;
+    var marginClass = "";
+    
+    if (hasSidebar)
+    {
+        marginClass = SidebarPosition == BwDirection.Right ? "mr-64" : "ml-64";
+    }
 }
 
 @* Sidebar (Fixed) *@
-<BwSidebar Position="@SidebarPosition">
-    @Sidebar
-</BwSidebar>
+@if (hasSidebar)
+{
+    <BwSidebar Position="@SidebarPosition">
+        @Sidebar
+    </BwSidebar>
+}
 
 @* Main Content - offset for fixed sidebar *@
 <div class="min-h-screen flex flex-col hidden lg:flex @marginClass @Class">
     @* Header *@
-    @if (Header != null)
+    @if (Header != null || hasSidebar)
     {
         <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-2 sticky top-0 z-40">
-            <BwSidebarToggle />
+            @if (hasSidebar)
+            {
+                <BwSidebarToggle />
+            }
             @Header
         </header>
     }
@@ -35,13 +47,16 @@
     }
 </div>
 
-@* Mobile Layout (no offset) *@
+@* Mobile Layout *@
 <div class="min-h-screen flex flex-col lg:hidden @Class">
     @* Header *@
-    @if (Header != null)
+    @if (Header != null || hasSidebar)
     {
         <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-3 sticky top-0 z-40">
-            <BwSidebarToggle />
+            @if (hasSidebar)
+            {
+                <BwSidebarToggle />
+            }
             @Header
         </header>
     }
