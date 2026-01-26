@@ -112,6 +112,14 @@ Tüm input bileşenlerinde bulunan standart parametreler:
 
 ---
 
+## Güvenlik ve Veri Doğrulama
+
+`BwBaseInput` bileşenleri HTML encode veya sanitizasyon uygulamaz. Bu nedenle:
+
+- Sunucu tarafında doğrulama/sanitizasyon uygulayın.
+- Kullanıcı girdisini HTML olarak render edecekseniz güvenli encode edin.
+- Blazor varsayılan olarak metinleri HTML-encode eder; `MarkupString` kullanıyorsanız güvenlik sorumluluğu sizdedir.
+
 ## Cascading Parameters
 
 `BwForm` aşağıdaki parametreleri cascade eder:

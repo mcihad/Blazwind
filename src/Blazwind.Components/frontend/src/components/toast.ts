@@ -32,6 +32,25 @@ interface ToastInstance {
 const toasts: Map<string, ToastInstance> = new Map();
 const containers: Map<string, HTMLElement> = new Map();
 
+function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, (char) => {
+        switch (char) {
+            case '&':
+                return '&amp;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '"':
+                return '&quot;';
+            case "'":
+                return '&#39;';
+            default:
+                return char;
+        }
+    });
+}
+
 const variantConfig: any = {
     success: {
         icon: 'fa-solid fa-circle-check',
@@ -189,20 +208,23 @@ export function showToast(options: ToastOptions, dotnetRef?: any): string {
 
             actionsHtml += `
                  <button type="button" class="bw-toast-action-${action.actionId} text-xs font-semibold px-2 py-1 rounded transition-colors ${btnClass}">
-                     ${action.text}
+                     ${escapeHtml(action.text)}
                  </button>
              `;
         });
         actionsHtml += `</div>`;
     }
 
+    const safeTitle = options.title ? escapeHtml(options.title) : '';
+    const safeMessage = escapeHtml(options.message);
+
     toast.innerHTML = `
         <div class="flex-shrink-0 mt-0.5">
             <i class="${config.icon} ${config.iconClass} text-lg"></i>
         </div>
         <div class="flex-1 min-w-0">
-            ${options.title ? `<h4 class="font-semibold text-sm mb-0.5 leading-5 ${config.contentTitle}">${options.title}</h4>` : ''}
-            <p class="text-sm leading-5 font-normal ${config.contentMessage}">${options.message}</p>
+            ${options.title ? `<h4 class="font-semibold text-sm mb-0.5 leading-5 ${config.contentTitle}">${safeTitle}</h4>` : ''}
+            <p class="text-sm leading-5 font-normal ${config.contentMessage}">${safeMessage}</p>
             ${actionsHtml}
         </div>
         ${showClose ? `

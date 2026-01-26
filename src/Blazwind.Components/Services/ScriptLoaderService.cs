@@ -13,6 +13,7 @@ public class ScriptLoaderService : IAsyncDisposable
     private readonly HashSet<string> _loadedStyles = new();
     private readonly SemaphoreSlim _lock = new(1, 1);
     private IJSObjectReference? _module;
+    private const string ModulePath = "./_content/Blazwind.Components/blazwind.loader.js";
 
     public ScriptLoaderService(IJSRuntime jsRuntime)
     {
@@ -26,75 +27,9 @@ public class ScriptLoaderService : IAsyncDisposable
     {
         if (_module is null)
         {
-            // We need to create the loader inline since this is a bootstrap module
             _module = await _jsRuntime.InvokeAsync<IJSObjectReference>(
-                "eval",
-                """
-                (function() {
-                    const loadedScripts = new Set();
-                    const loadedStyles = new Set();
-                    const loadingPromises = new Map();
-                    
-                    return {
-                        loadScript: function(src) {
-                            if (loadedScripts.has(src)) {
-                                return Promise.resolve(true);
-                            }
-                            
-                            if (loadingPromises.has(src)) {
-                                return loadingPromises.get(src);
-                            }
-                            
-                            const promise = new Promise((resolve, reject) => {
-                                const script = document.createElement('script');
-                                script.src = src;
-                                script.async = true;
-                                script.onload = () => {
-                                    loadedScripts.add(src);
-                                    loadingPromises.delete(src);
-                                    resolve(true);
-                                };
-                                script.onerror = () => {
-                                    loadingPromises.delete(src);
-                                    reject(new Error('Failed to load script: ' + src));
-                                };
-                                document.head.appendChild(script);
-                            });
-                            
-                            loadingPromises.set(src, promise);
-                            return promise;
-                        },
-                        
-                        loadStyle: function(href) {
-                            if (loadedStyles.has(href)) {
-                                return Promise.resolve(true);
-                            }
-                            
-                            return new Promise((resolve, reject) => {
-                                const link = document.createElement('link');
-                                link.rel = 'stylesheet';
-                                link.href = href;
-                                link.onload = () => {
-                                    loadedStyles.add(href);
-                                    resolve(true);
-                                };
-                                link.onerror = () => {
-                                    reject(new Error('Failed to load stylesheet: ' + href));
-                                };
-                                document.head.appendChild(link);
-                            });
-                        },
-                        
-                        isScriptLoaded: function(src) {
-                            return loadedScripts.has(src);
-                        },
-                        
-                        isStyleLoaded: function(href) {
-                            return loadedStyles.has(href);
-                        }
-                    };
-                })()
-                """);
+                "import",
+                ModulePath);
         }
 
         return _module;
@@ -107,6 +42,7 @@ public class ScriptLoaderService : IAsyncDisposable
     /// <returns>True if loaded successfully</returns>
     public async Task<bool> LoadScriptAsync(string src)
     {
+        EnsureSafeResourcePath(src, nameof(src));
         await _lock.WaitAsync();
         try
         {
@@ -134,6 +70,7 @@ public class ScriptLoaderService : IAsyncDisposable
     /// <returns>True if loaded successfully</returns>
     public async Task<bool> LoadStyleAsync(string href)
     {
+        EnsureSafeResourcePath(href, nameof(href));
         await _lock.WaitAsync();
         try
         {
@@ -159,6 +96,8 @@ public class ScriptLoaderService : IAsyncDisposable
     /// </summary>
     public async Task LoadScriptAndStyleAsync(string scriptSrc, string styleSrc)
     {
+        EnsureSafeResourcePath(scriptSrc, nameof(scriptSrc));
+        EnsureSafeResourcePath(styleSrc, nameof(styleSrc));
         await Task.WhenAll(
             LoadScriptAsync(scriptSrc),
             LoadStyleAsync(styleSrc)
@@ -174,6 +113,36 @@ public class ScriptLoaderService : IAsyncDisposable
     /// Checks if a style is already loaded
     /// </summary>
     public bool IsStyleLoaded(string href) => _loadedStyles.Contains(href);
+
+    private static void EnsureSafeResourcePath(string value, string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new ArgumentException("Resource path cannot be empty.", paramName);
+        }
+
+        if (value.Contains('\0', StringComparison.Ordinal))
+        {
+            throw new ArgumentException("Resource path contains invalid characters.", paramName);
+        }
+
+        if (Uri.TryCreate(value, UriKind.Absolute, out var uri))
+        {
+            if (!uri.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) &&
+                !uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException("Only http/https resources are supported.", paramName);
+            }
+            return;
+        }
+
+        if (value.StartsWith("javascript:", StringComparison.OrdinalIgnoreCase) ||
+            value.StartsWith("data:", StringComparison.OrdinalIgnoreCase) ||
+            value.StartsWith("vbscript:", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Unsafe resource scheme is not allowed.", paramName);
+        }
+    }
 
     public async ValueTask DisposeAsync()
     {

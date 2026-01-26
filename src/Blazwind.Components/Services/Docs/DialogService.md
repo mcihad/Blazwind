@@ -6,6 +6,14 @@
 
 The service exposes several methods to show common dialogs or custom components.
 
+## Registration
+
+`DialogService` is registered automatically when you call:
+
+```csharp
+builder.Services.AddBlazwind();
+```
+
 ### Usage
 
 Inject the service into your component:
@@ -97,3 +105,8 @@ var options = new DialogOptions
     CloseOnOverlayClick = false 
 };
 ```
+
+## Security Notes
+
+- Dialog content is rendered through Razor components, which HTML-encode user-supplied strings by default.
+- JS-based dialogs (loading/progress/preview) use DOM APIs instead of HTML strings to avoid injection.

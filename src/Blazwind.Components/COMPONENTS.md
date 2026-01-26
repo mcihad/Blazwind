@@ -118,6 +118,7 @@ Below is the list of all components available in the Blazwind library along with
 - [Toast](Toast/Docs/BwToast.md)
 - [Dialog](Dialog/Docs/BwDialog.md)
 - [DialogService](Services/Docs/DialogService.md) ⭐ Dialog usage & API
+- [ToastService](Services/Docs/ToastService.md) ⭐ Toast usage & API
 - [Popover](Popover/Docs/BwPopover.md)
 - [NotificationCenter](Notification/Docs/BwNotificationCenter.md)
 - [Confetti](Confetti/Docs/BwConfetti.md)

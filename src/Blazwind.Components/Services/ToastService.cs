@@ -10,6 +10,7 @@ using Blazwind.Components.Shared;
 public class ToastService
 {
     private readonly IJSRuntime _js;
+    private readonly List<DotNetObjectReference<ToastService>> _dotNetRefs = new();
 
     public ToastService(IJSRuntime js)
     {
@@ -87,8 +88,18 @@ public class ToastService
 
         // Pass DotNetObjectReference to handle callbacks
         var dotnetRef = DotNetObjectReference.Create(this);
+        _dotNetRefs.Add(dotnetRef);
 
-        return await _js.InvokeAsync<string>("Blazwind.Toast.showToast", jsOptions, dotnetRef);
+        try
+        {
+            return await _js.InvokeAsync<string>("Blazwind.Toast.showToast", jsOptions, dotnetRef);
+        }
+        catch
+        {
+            dotnetRef.Dispose();
+            _dotNetRefs.Remove(dotnetRef);
+            throw;
+        }
     }
 
     [JSInvokable]
@@ -112,6 +123,17 @@ public class ToastService
     {
         _actionCallbacks.Clear();
         await _js.InvokeVoidAsync("Blazwind.Toast.clearToasts");
+        DisposeDotNetRefs();
+    }
+
+    private void DisposeDotNetRefs()
+    {
+        foreach (var reference in _dotNetRefs)
+        {
+            reference.Dispose();
+        }
+
+        _dotNetRefs.Clear();
     }
 }
 

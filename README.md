@@ -158,6 +158,10 @@ Here is a simple example of a page using Blazwind components:
 }
 ```
 
+## 🔒 Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting and security practices.
+
 ## 🛠️ Development
 
 This project uses a `Makefile` for easy build and run commands.
@@ -188,3 +192,10 @@ If you don't have `make` installed:
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## 📚 Documentation Index
+
+- [Architecture](ARCHITECTURE.md)
+- [Roadmap](ROADMAP.md)
+- [Security Policy](SECURITY.md)
+- [Component List](src/Blazwind.Components/COMPONENTS.md)

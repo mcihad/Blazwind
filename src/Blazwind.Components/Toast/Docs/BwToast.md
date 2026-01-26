@@ -47,3 +47,7 @@ await ToastService.ShowAsync(new ToastOptions
 *   **Duration:** Display duration in milliseconds.
 *   **ShowProgress:** Show a progress bar.
 *   **ShowClose:** Show a close button.
+
+## Security Notes
+
+Toast titles/messages/actions are HTML-escaped in the JavaScript layer. Treat input as plain text to avoid markup injection.

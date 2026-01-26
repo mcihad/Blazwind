@@ -51,23 +51,45 @@ export function showProgress(options: any): any {
     const overlay = createOverlay(10000); // Higher than others
     const container = createContainer('380px', 'p-6');
 
-    container.innerHTML = `
-        <div class="mb-4 flex justify-between items-center">
-            <h4 class="font-bold text-gray-800 dark:text-gray-100" id="progress-title">${options.Title || 'İşlem Yapılıyor'}</h4>
-            <span class="text-sm font-semibold text-blue-600" id="progress-percent">0%</span>
-        </div>
-        <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 mb-3 overflow-hidden">
-            <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-300 ease-out shadow-inner" style="width: 0%" id="progress-bar"></div>
-        </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 text-center font-medium" id="progress-msg">${options.Message || 'Lütfen bekleyin...'}</p>
-    `;
+    const titleEl = document.createElement('h4');
+    titleEl.className = 'font-bold text-gray-800 dark:text-gray-100';
+    titleEl.id = 'progress-title';
+    titleEl.textContent = options.Title || 'İşlem Yapılıyor';
+
+    const percentEl = document.createElement('span');
+    percentEl.className = 'text-sm font-semibold text-blue-600';
+    percentEl.id = 'progress-percent';
+    percentEl.textContent = '0%';
+
+    const headerEl = document.createElement('div');
+    headerEl.className = 'mb-4 flex justify-between items-center';
+    headerEl.appendChild(titleEl);
+    headerEl.appendChild(percentEl);
+
+    const barWrapper = document.createElement('div');
+    barWrapper.className = 'w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3 mb-3 overflow-hidden';
+
+    const barEl = document.createElement('div');
+    barEl.className = 'bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-300 ease-out shadow-inner';
+    barEl.style.width = '0%';
+    barEl.id = 'progress-bar';
+    barWrapper.appendChild(barEl);
+
+    const messageEl = document.createElement('p');
+    messageEl.className = 'text-xs text-gray-500 dark:text-gray-400 text-center font-medium';
+    messageEl.id = 'progress-msg';
+    messageEl.textContent = options.Message || 'Lütfen bekleyin...';
+
+    container.appendChild(headerEl);
+    container.appendChild(barWrapper);
+    container.appendChild(messageEl);
 
     overlay.appendChild(container);
     document.body.appendChild(overlay);
 
-    const bar = container.querySelector('#progress-bar') as HTMLElement;
-    const txt = container.querySelector('#progress-percent') as HTMLElement;
-    const msg = container.querySelector('#progress-msg') as HTMLElement;
+    const bar = barEl;
+    const txt = percentEl;
+    const msg = messageEl;
 
     // Return object matching C# expectations
     return {
@@ -86,15 +108,24 @@ export function showLoading(options: any): any {
     const container = document.createElement('div');
     container.className = 'bg-white dark:bg-gray-800 rounded-2xl shadow-xl px-8 py-6 flex items-center gap-5 animate-scale-in border border-gray-200 dark:border-gray-700';
 
-    container.innerHTML = `
-        <div class="relative flex-shrink-0">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400"></div>
-        </div>
-        <div>
-            <h4 class="font-semibold text-gray-900 dark:text-gray-100 text-lg">Yükleniyor</h4>
-            <p class="text-gray-500 dark:text-gray-400 text-sm">${options.Message || 'Lütfen bekleyin...'}</p>
-        </div>
-    `;
+    const spinnerWrap = document.createElement('div');
+    spinnerWrap.className = 'relative flex-shrink-0';
+    const spinner = document.createElement('div');
+    spinner.className = 'animate-spin rounded-full h-12 w-12 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400';
+    spinnerWrap.appendChild(spinner);
+
+    const textWrap = document.createElement('div');
+    const title = document.createElement('h4');
+    title.className = 'font-semibold text-gray-900 dark:text-gray-100 text-lg';
+    title.textContent = 'Yükleniyor';
+    const message = document.createElement('p');
+    message.className = 'text-gray-500 dark:text-gray-400 text-sm';
+    message.textContent = options.Message || 'Lütfen bekleyin...';
+    textWrap.appendChild(title);
+    textWrap.appendChild(message);
+
+    container.appendChild(spinnerWrap);
+    container.appendChild(textWrap);
 
     overlay.appendChild(container);
     document.body.appendChild(overlay);
@@ -116,10 +147,13 @@ export function showSquareLoading(options: any): any {
     container.style.width = size;
     container.style.height = size;
 
-    container.innerHTML = `
-        <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-600 dark:text-blue-400"></i>
-        <span class="text-xs font-semibold tracking-wide opacity-90 text-center px-2">${options.Message || 'Yükleniyor'}</span>
-    `;
+    const icon = document.createElement('i');
+    icon.className = 'fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-blue-600 dark:text-blue-400';
+    const label = document.createElement('span');
+    label.className = 'text-xs font-semibold tracking-wide opacity-90 text-center px-2';
+    label.textContent = options.Message || 'Yükleniyor';
+    container.appendChild(icon);
+    container.appendChild(label);
 
     overlay.appendChild(container);
     document.body.appendChild(overlay);
@@ -134,16 +168,30 @@ export function showBusy(options: any): any {
     const overlay = createOverlay(11000, true);
 
     // Minimalist centered content
-    overlay.innerHTML = `
-        <div class="flex flex-col items-center justify-center text-white animate-fade-in text-center max-w-md p-6">
-            <div class="relative mb-6">
-                 <div class="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-                 <i class="fa-solid fa-arrows-rotate fa-spin text-5xl relative z-10"></i>
-            </div>
-            <h2 class="text-2xl font-bold mb-2 tracking-tight">İşlem Sürüyor</h2>
-            <p class="text-gray-300 font-light text-lg">${options.Message || 'Lütfen bekleyiniz, işlem tamamlanana kadar sayfayı kapatmayınız.'}</p>
-        </div>
-    `;
+    const busyWrap = document.createElement('div');
+    busyWrap.className = 'flex flex-col items-center justify-center text-white animate-fade-in text-center max-w-md p-6';
+
+    const busyIconWrap = document.createElement('div');
+    busyIconWrap.className = 'relative mb-6';
+    const busyPulse = document.createElement('div');
+    busyPulse.className = 'absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-20 animate-pulse';
+    const busyIcon = document.createElement('i');
+    busyIcon.className = 'fa-solid fa-arrows-rotate fa-spin text-5xl relative z-10';
+    busyIconWrap.appendChild(busyPulse);
+    busyIconWrap.appendChild(busyIcon);
+
+    const busyTitle = document.createElement('h2');
+    busyTitle.className = 'text-2xl font-bold mb-2 tracking-tight';
+    busyTitle.textContent = 'İşlem Sürüyor';
+
+    const busyMessage = document.createElement('p');
+    busyMessage.className = 'text-gray-300 font-light text-lg';
+    busyMessage.textContent = options.Message || 'Lütfen bekleyiniz, işlem tamamlanana kadar sayfayı kapatmayınız.';
+
+    busyWrap.appendChild(busyIconWrap);
+    busyWrap.appendChild(busyTitle);
+    busyWrap.appendChild(busyMessage);
+    overlay.appendChild(busyWrap);
 
     document.body.appendChild(overlay);
     return {
@@ -162,20 +210,59 @@ export function showCountdown(options: any): any {
 
     let seconds = options.Seconds || 5;
 
-    container.innerHTML = `
-        <div class="relative w-32 h-32 mx-auto mb-6 flex items-center justify-center">
-             <svg class="w-full h-full transform -rotate-90 drop-shadow-lg">
-                <circle cx="64" cy="64" r="56" stroke="CurrentColor" stroke-width="8" fill="transparent" class="text-gray-100 dark:text-gray-700" />
-                <circle cx="64" cy="64" r="56" stroke="CurrentColor" stroke-width="8" fill="transparent" class="text-blue-500 transition-all duration-1000 ease-linear" stroke-linecap="round" stroke-dasharray="351.8" stroke-dashoffset="0" id="countdown-circle" />
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center flex-col">
-                <span class="text-4xl font-black text-gray-800 dark:text-gray-100" id="countdown-text">${seconds}</span>
-                <span class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1">Saniye</span>
-            </div>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">${options.Title || 'Otomatik Kapanış'}</h3>
-        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">${options.Message || 'Pencere otomatik olarak kapanacak...'}</p>
-    `;
+    const countdownWrap = document.createElement('div');
+    countdownWrap.className = 'relative w-32 h-32 mx-auto mb-6 flex items-center justify-center';
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'w-full h-full transform -rotate-90 drop-shadow-lg');
+    const circleBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circleBg.setAttribute('cx', '64');
+    circleBg.setAttribute('cy', '64');
+    circleBg.setAttribute('r', '56');
+    circleBg.setAttribute('stroke', 'CurrentColor');
+    circleBg.setAttribute('stroke-width', '8');
+    circleBg.setAttribute('fill', 'transparent');
+    circleBg.setAttribute('class', 'text-gray-100 dark:text-gray-700');
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', '64');
+    circle.setAttribute('cy', '64');
+    circle.setAttribute('r', '56');
+    circle.setAttribute('stroke', 'CurrentColor');
+    circle.setAttribute('stroke-width', '8');
+    circle.setAttribute('fill', 'transparent');
+    circle.setAttribute('class', 'text-blue-500 transition-all duration-1000 ease-linear');
+    circle.setAttribute('stroke-linecap', 'round');
+    circle.setAttribute('stroke-dasharray', '351.8');
+    circle.setAttribute('stroke-dashoffset', '0');
+    circle.id = 'countdown-circle';
+    svg.appendChild(circleBg);
+    svg.appendChild(circle);
+
+    const countdownInner = document.createElement('div');
+    countdownInner.className = 'absolute inset-0 flex items-center justify-center flex-col';
+    const countdownText = document.createElement('span');
+    countdownText.className = 'text-4xl font-black text-gray-800 dark:text-gray-100';
+    countdownText.id = 'countdown-text';
+    countdownText.textContent = seconds.toString();
+    const countdownLabel = document.createElement('span');
+    countdownLabel.className = 'text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-1';
+    countdownLabel.textContent = 'Saniye';
+    countdownInner.appendChild(countdownText);
+    countdownInner.appendChild(countdownLabel);
+
+    countdownWrap.appendChild(svg);
+    countdownWrap.appendChild(countdownInner);
+
+    const countdownTitle = document.createElement('h3');
+    countdownTitle.className = 'text-xl font-bold text-gray-900 dark:text-gray-100 mb-2';
+    countdownTitle.textContent = options.Title || 'Otomatik Kapanış';
+
+    const countdownMessage = document.createElement('p');
+    countdownMessage.className = 'text-gray-500 dark:text-gray-400 text-sm leading-relaxed';
+    countdownMessage.textContent = options.Message || 'Pencere otomatik olarak kapanacak...';
+
+    container.appendChild(countdownWrap);
+    container.appendChild(countdownTitle);
+    container.appendChild(countdownMessage);
 
     overlay.appendChild(container);
     document.body.appendChild(overlay);
@@ -209,17 +296,57 @@ export function showSuccess(options: any): any {
     const autoClose = options.AutoClose ?? true;
     const duration = options.Duration || 2000;
 
-    container.innerHTML = `
-        <div class="relative w-24 h-24 mx-auto mb-6">
-            <svg class="w-full h-full" viewBox="0 0 52 52">
-                <circle class="text-emerald-100 dark:text-emerald-900" cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/>
-                <circle class="text-emerald-500 animate-[dash_0.6s_ease-in-out_forwards]" cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="157" stroke-dashoffset="157" stroke-linecap="round" style="animation: dash 0.6s ease-in-out forwards;"/>
-                <path class="text-emerald-500" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="32" stroke-dashoffset="32" d="M14 27l7 7 16-16" style="animation: checkmark 0.4s 0.4s ease-in-out forwards;"/>
-            </svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">${options.Title || 'Başarılı!'}</h3>
-        <p class="text-gray-500 dark:text-gray-400 text-sm">${options.Message || 'İşlem başarıyla tamamlandı.'}</p>
-    `;
+    const successIconWrap = document.createElement('div');
+    successIconWrap.className = 'relative w-24 h-24 mx-auto mb-6';
+    const successSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    successSvg.setAttribute('class', 'w-full h-full');
+    successSvg.setAttribute('viewBox', '0 0 52 52');
+    const successCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    successCircle.setAttribute('class', 'text-emerald-100 dark:text-emerald-900');
+    successCircle.setAttribute('cx', '26');
+    successCircle.setAttribute('cy', '26');
+    successCircle.setAttribute('r', '25');
+    successCircle.setAttribute('fill', 'none');
+    successCircle.setAttribute('stroke', 'currentColor');
+    successCircle.setAttribute('stroke-width', '2');
+    const successCircleAnim = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    successCircleAnim.setAttribute('class', 'text-emerald-500 animate-[dash_0.6s_ease-in-out_forwards]');
+    successCircleAnim.setAttribute('cx', '26');
+    successCircleAnim.setAttribute('cy', '26');
+    successCircleAnim.setAttribute('r', '25');
+    successCircleAnim.setAttribute('fill', 'none');
+    successCircleAnim.setAttribute('stroke', 'currentColor');
+    successCircleAnim.setAttribute('stroke-width', '2');
+    successCircleAnim.setAttribute('stroke-dasharray', '157');
+    successCircleAnim.setAttribute('stroke-dashoffset', '157');
+    successCircleAnim.setAttribute('stroke-linecap', 'round');
+    successCircleAnim.setAttribute('style', 'animation: dash 0.6s ease-in-out forwards;');
+    const successPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    successPath.setAttribute('class', 'text-emerald-500');
+    successPath.setAttribute('fill', 'none');
+    successPath.setAttribute('stroke', 'currentColor');
+    successPath.setAttribute('stroke-width', '3');
+    successPath.setAttribute('stroke-linecap', 'round');
+    successPath.setAttribute('stroke-linejoin', 'round');
+    successPath.setAttribute('stroke-dasharray', '32');
+    successPath.setAttribute('stroke-dashoffset', '32');
+    successPath.setAttribute('d', 'M14 27l7 7 16-16');
+    successPath.setAttribute('style', 'animation: checkmark 0.4s 0.4s ease-in-out forwards;');
+    successSvg.appendChild(successCircle);
+    successSvg.appendChild(successCircleAnim);
+    successSvg.appendChild(successPath);
+    successIconWrap.appendChild(successSvg);
+
+    const successTitle = document.createElement('h3');
+    successTitle.className = 'text-xl font-bold text-gray-900 dark:text-gray-100 mb-2';
+    successTitle.textContent = options.Title || 'Başarılı!';
+    const successMessage = document.createElement('p');
+    successMessage.className = 'text-gray-500 dark:text-gray-400 text-sm';
+    successMessage.textContent = options.Message || 'İşlem başarıyla tamamlandı.';
+
+    container.appendChild(successIconWrap);
+    container.appendChild(successTitle);
+    container.appendChild(successMessage);
 
     // Add keyframes
     const style = document.createElement('style');
@@ -249,17 +376,57 @@ export function showError(options: any): any {
     const autoClose = options.AutoClose ?? true;
     const duration = options.Duration || 2500;
 
-    container.innerHTML = `
-        <div class="relative w-24 h-24 mx-auto mb-6">
-            <svg class="w-full h-full" viewBox="0 0 52 52">
-                <circle class="text-red-100 dark:text-red-900" cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2"/>
-                <circle class="text-red-500 animate-[dash_0.6s_ease-in-out_forwards]" cx="26" cy="26" r="25" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="157" stroke-dashoffset="157" stroke-linecap="round" style="animation: dash 0.6s ease-in-out forwards;"/>
-                <path class="text-red-500" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="32" stroke-dashoffset="32" d="M16 16 36 36 M36 16 16 36" style="animation: checkmark 0.4s 0.4s ease-in-out forwards;"/>
-            </svg>
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">${options.Title || 'Hata!'}</h3>
-        <p class="text-gray-500 dark:text-gray-400 text-sm">${options.Message || 'Bir hata oluştu.'}</p>
-    `;
+    const errorIconWrap = document.createElement('div');
+    errorIconWrap.className = 'relative w-24 h-24 mx-auto mb-6';
+    const errorSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    errorSvg.setAttribute('class', 'w-full h-full');
+    errorSvg.setAttribute('viewBox', '0 0 52 52');
+    const errorCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    errorCircle.setAttribute('class', 'text-red-100 dark:text-red-900');
+    errorCircle.setAttribute('cx', '26');
+    errorCircle.setAttribute('cy', '26');
+    errorCircle.setAttribute('r', '25');
+    errorCircle.setAttribute('fill', 'none');
+    errorCircle.setAttribute('stroke', 'currentColor');
+    errorCircle.setAttribute('stroke-width', '2');
+    const errorCircleAnim = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    errorCircleAnim.setAttribute('class', 'text-red-500 animate-[dash_0.6s_ease-in-out_forwards]');
+    errorCircleAnim.setAttribute('cx', '26');
+    errorCircleAnim.setAttribute('cy', '26');
+    errorCircleAnim.setAttribute('r', '25');
+    errorCircleAnim.setAttribute('fill', 'none');
+    errorCircleAnim.setAttribute('stroke', 'currentColor');
+    errorCircleAnim.setAttribute('stroke-width', '2');
+    errorCircleAnim.setAttribute('stroke-dasharray', '157');
+    errorCircleAnim.setAttribute('stroke-dashoffset', '157');
+    errorCircleAnim.setAttribute('stroke-linecap', 'round');
+    errorCircleAnim.setAttribute('style', 'animation: dash 0.6s ease-in-out forwards;');
+    const errorPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    errorPath.setAttribute('class', 'text-red-500');
+    errorPath.setAttribute('fill', 'none');
+    errorPath.setAttribute('stroke', 'currentColor');
+    errorPath.setAttribute('stroke-width', '3');
+    errorPath.setAttribute('stroke-linecap', 'round');
+    errorPath.setAttribute('stroke-linejoin', 'round');
+    errorPath.setAttribute('stroke-dasharray', '32');
+    errorPath.setAttribute('stroke-dashoffset', '32');
+    errorPath.setAttribute('d', 'M16 16 36 36 M36 16 16 36');
+    errorPath.setAttribute('style', 'animation: checkmark 0.4s 0.4s ease-in-out forwards;');
+    errorSvg.appendChild(errorCircle);
+    errorSvg.appendChild(errorCircleAnim);
+    errorSvg.appendChild(errorPath);
+    errorIconWrap.appendChild(errorSvg);
+
+    const errorTitle = document.createElement('h3');
+    errorTitle.className = 'text-xl font-bold text-gray-900 dark:text-gray-100 mb-2';
+    errorTitle.textContent = options.Title || 'Hata!';
+    const errorMessage = document.createElement('p');
+    errorMessage.className = 'text-gray-500 dark:text-gray-400 text-sm';
+    errorMessage.textContent = options.Message || 'Bir hata oluştu.';
+
+    container.appendChild(errorIconWrap);
+    container.appendChild(errorTitle);
+    container.appendChild(errorMessage);
 
     // Add keyframes regarding if they don't exist, but they likely exist from success. 
     // Safest is to add them again scoped or check. 
@@ -294,13 +461,32 @@ export function showImagePreview(options: any): any {
     container.className = 'relative max-w-[90vw] max-h-[90vh] animate-scale-in';
     container.onclick = (e) => e.stopPropagation();
 
-    container.innerHTML = `
-        <img src="${options.Src}" alt="${options.Alt || 'Görsel'}" class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain" />
-        ${options.Caption ? `<p class="text-white text-center mt-4 text-sm font-medium drop-shadow-lg">${options.Caption}</p>` : ''}
-        <button class="absolute -top-3 -right-3 w-8 h-8 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" onclick="this.closest('.fixed').remove()">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-    `;
+    const image = document.createElement('img');
+    image.src = options.Src;
+    image.alt = options.Alt || 'Görsel';
+    image.className = 'max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain';
+
+    const closeButton = document.createElement('button');
+    closeButton.className = 'absolute -top-3 -right-3 w-8 h-8 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors';
+    closeButton.type = 'button';
+    closeButton.addEventListener('click', () => {
+        const overlayEl = closeButton.closest('.fixed');
+        if (overlayEl) {
+            overlayEl.remove();
+        }
+    });
+    const closeIcon = document.createElement('i');
+    closeIcon.className = 'fa-solid fa-xmark';
+    closeButton.appendChild(closeIcon);
+
+    container.appendChild(image);
+    if (options.Caption) {
+        const caption = document.createElement('p');
+        caption.className = 'text-white text-center mt-4 text-sm font-medium drop-shadow-lg';
+        caption.textContent = options.Caption;
+        container.appendChild(caption);
+    }
+    container.appendChild(closeButton);
 
     overlay.appendChild(container);
     document.body.appendChild(overlay);
@@ -316,15 +502,25 @@ export function showPulseLoading(options: any): any {
     const container = document.createElement('div');
     container.className = 'flex flex-col items-center justify-center animate-scale-in';
 
-    container.innerHTML = `
-        <div class="relative mb-4">
-            <div class="w-16 h-16 bg-blue-500 rounded-full animate-ping opacity-75"></div>
-            <div class="absolute inset-0 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
-                <i class="fa-solid fa-${options.Icon || 'sync'} text-white text-xl"></i>
-            </div>
-        </div>
-        <p class="text-white font-medium text-lg drop-shadow-lg">${options.Message || 'İşlem devam ediyor...'}</p>
-    `;
+    const pulseWrap = document.createElement('div');
+    pulseWrap.className = 'relative mb-4';
+    const pulseOuter = document.createElement('div');
+    pulseOuter.className = 'w-16 h-16 bg-blue-500 rounded-full animate-ping opacity-75';
+    const pulseInner = document.createElement('div');
+    pulseInner.className = 'absolute inset-0 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center';
+    const pulseIcon = document.createElement('i');
+    const iconName = options.Icon || 'sync';
+    pulseIcon.className = `fa-solid fa-${iconName} text-white text-xl`;
+    pulseInner.appendChild(pulseIcon);
+    pulseWrap.appendChild(pulseOuter);
+    pulseWrap.appendChild(pulseInner);
+
+    const pulseText = document.createElement('p');
+    pulseText.className = 'text-white font-medium text-lg drop-shadow-lg';
+    pulseText.textContent = options.Message || 'İşlem devam ediyor...';
+
+    container.appendChild(pulseWrap);
+    container.appendChild(pulseText);
 
     overlay.appendChild(container);
     document.body.appendChild(overlay);

@@ -6,6 +6,14 @@ A service for dynamically loading (lazy loading) JavaScript and CSS files.
 
 Useful for loading large JavaScript libraries (like MapLibre, ECharts, PDF.js, etc.) only when they are needed by a specific component, rather than loading them globally on every page load.
 
+## Registration
+
+`ScriptLoaderService` is registered automatically when you call:
+
+```csharp
+builder.Services.AddBlazwind();
+```
+
 ## Examples
 
 ### Basic Usage
@@ -89,6 +97,7 @@ public partial class BwMapLibre : IAsyncDisposable
 - **Thread-Safe:** Uses SemaphoreSlim for concurrency safety.
 - **Parallel Loading:** `LoadScriptAndStyleAsync` loads resources simultaneously.
 - **Error Handling:** Throws exceptions on loading failures.
+- **URL Guardrails:** Blocks unsafe schemes (javascript/data/vbscript) for script/style paths.
 
 ## When to Use?
 
