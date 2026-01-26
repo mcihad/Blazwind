@@ -9,7 +9,7 @@
     var previewStyle = $"background-color: {Value};";
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     @if (HasLabel)
     {
         <div class="flex items-center gap-1 @labelSpacingClass">
@@ -38,7 +38,8 @@
                        disabled="@IsDisabled"
                        @onchange="HandleColorChange"
                        @onfocus="HandleFocusEvent"
-                       @onblur="HandleBlurEvent" />
+                       @onblur="HandleBlurEvent"
+                       @attributes="AdditionalAttributes" />
             </div>
         </div>
         

@@ -4,12 +4,12 @@
 @using Blazwind.Components.Button
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Linq.Expressions
+@inherits BwBaseInput<List<string>>
 
 @{
-    var hasError = !IsValid || !string.IsNullOrEmpty(ErrorMessage) || _validationMessages.Any();
+    var hasError = !IsValid || !string.IsNullOrEmpty(ErrorMessage);
     var hasLabel = !string.IsNullOrEmpty(Label);
     var hasHelper = !string.IsNullOrEmpty(HelperText);
-    var displayError = ErrorMessage ?? _validationMessages.FirstOrDefault();
     
     var sizeClass = Size switch
     {
@@ -44,7 +44,7 @@
         : "border-gray-300 dark:border-gray-700 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20";
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (hasLabel)
     {
         <div class="flex items-center gap-1 @labelSpacingClass">
@@ -99,7 +99,7 @@
         {
             <p class="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
                 <i class="fa-solid fa-circle-exclamation"></i>
-                @displayError
+                @DisplayError
             </p>
         }
         else if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
@@ -121,106 +121,48 @@
 </div>
 
 @code {
-    #region Cascading Parameters
-    
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
-    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
-    [CascadingParameter] private BwHelpTextMode? CascadedHelpTextMode { get; set; }
-    
-    #endregion
-
-    #region Parameters
-    
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Placeholder { get; set; } = "Etiket ekle...";
-    [Parameter] public string? HelperText { get; set; }
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
-    
-    /// <summary>Validation state</summary>
-    [Parameter] public bool IsValid { get; set; } = true;
-    
-    /// <summary>Error message</summary>
-    [Parameter] public string? ErrorMessage { get; set; }
-    
-    /// <summary>Help text display mode</summary>
-    [Parameter] public BwHelpTextMode? HelpTextMode { get; set; }
-    
-    /// <summary>Form density</summary>
-    [Parameter] public BwFormDensity? Density { get; set; }
-    
-    /// <summary>Required field indicator</summary>
-    [Parameter] public bool IsRequired { get; set; }
+    private string _inputValue = "";
     
     /// <summary>List of tags</summary>
-    [Parameter] public List<string> Tags { get; set; } = new();
-    [Parameter] public EventCallback<List<string>> TagsChanged { get; set; }
+    [Parameter] public List<string> Tags 
+    { 
+        get => Value ?? new List<string>(); 
+        set => Value = value;
+    }
     
+    [Parameter] public EventCallback<List<string>> TagsChanged { get; set; }
+
     /// <summary>Maximum number of tags</summary>
     [Parameter] public int? MaxTags { get; set; }
     
     /// <summary>Allow duplicate tags</summary>
     [Parameter] public bool AllowDuplicates { get; set; }
     
-    /// <summary>Disabled state</summary>
-    [Parameter] public bool IsDisabled { get; set; }
-    
-    /// <summary>Read-only state</summary>
-    [Parameter] public bool IsReadOnly { get; set; }
-    
     /// <summary>Keys that trigger tag addition</summary>
     [Parameter] public string[] TriggerKeys { get; set; } = new[] { "Enter", "Tab", "," };
-    
+
     [Parameter] public EventCallback<string> OnTagAdded { get; set; }
     [Parameter] public EventCallback<string> OnTagRemoved { get; set; }
-    
-    /// <summary>Fired when tags change</summary>
-    [Parameter] public EventCallback<List<string>> OnChange { get; set; }
-    
-    /// <summary>Expression for validation binding</summary>
-    [Parameter] public Expression<Func<List<string>>>? For { get; set; }
-    
-    #endregion
 
-    #region Private Fields
     
-    private FieldIdentifier _fieldIdentifier;
-    private IEnumerable<string> _validationMessages = Enumerable.Empty<string>();
-    private string _inputValue = "";
-    
-    #endregion
 
-    #region Computed Properties
     
-    private BwFormDensity EffectiveDensity => Density ?? CascadedDensity ?? BwFormDensity.Normal;
-    private BwHelpTextMode EffectiveHelpTextMode => HelpTextMode ?? CascadedHelpTextMode ?? BwHelpTextMode.Inline;
-    
-    #endregion
+
+
+
+
 
     #region Lifecycle
     
-    protected override void OnInitialized()
-    {
-        if (CascadedEditContext != null && For != null)
-        {
-            _fieldIdentifier = FieldIdentifier.Create(For);
-            CascadedEditContext.OnValidationStateChanged += HandleValidationStateChanged;
-        }
-    }
-    
-    private void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
-    {
-        _validationMessages = CascadedEditContext!.GetValidationMessages(_fieldIdentifier);
-        StateHasChanged();
-    }
+
     
     #endregion
 
     #region Event Handlers
     
-    private async Task HandleKeyDown(KeyboardEventArgs e)
+    protected override async Task HandleKeyDown(KeyboardEventArgs e)
     {
+        await base.HandleKeyDown(e);
         if (TriggerKeys.Contains(e.Key) && !string.IsNullOrWhiteSpace(_inputValue))
         {
             await AddTag(_inputValue.Trim().TrimEnd(','));
@@ -241,12 +183,13 @@
         _inputValue = "";
         
         await TagsChanged.InvokeAsync(Tags);
+        await ValueChanged.InvokeAsync(Tags);
         await OnTagAdded.InvokeAsync(tag);
         await OnChange.InvokeAsync(Tags);
         
         if (CascadedEditContext != null && For != null)
         {
-            CascadedEditContext.NotifyFieldChanged(_fieldIdentifier);
+            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
         }
     }
 
@@ -255,6 +198,7 @@
         if (Tags.Remove(tag))
         {
             await TagsChanged.InvokeAsync(Tags);
+            await ValueChanged.InvokeAsync(Tags);
             await OnTagRemoved.InvokeAsync(tag);
             await OnChange.InvokeAsync(Tags);
         }
@@ -262,11 +206,5 @@
     
     #endregion
     
-    public void Dispose()
-    {
-        if (CascadedEditContext != null)
-        {
-            CascadedEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
-        }
-    }
+
 }

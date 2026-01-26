@@ -2,7 +2,7 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@AllClasses" style="@Style" @attributes="AdditionalAttributes">
+<div class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (Label != null || !string.IsNullOrEmpty(Title))
     {
         <div class="absolute -top-3 @TitlePositionClass bg-white dark:bg-gray-900 px-2 text-sm font-medium @TitleColorClass @TitleClass">
@@ -30,7 +30,7 @@
     
     [Parameter] public string? TitleClass { get; set; }
 
-    private string AllClasses => $"relative {BorderClass} {RadiusClass} {StyleClass} {ShadowClass} {GetBorderColorClass(Color)} {Class}".Trim();
+    private string AllClasses => CombineClasses($"relative {BorderClass} {RadiusClass} {StyleClass} {ShadowClass} {GetBorderColorClass(Color)}");
     
     private string BorderClass => (Width, Color) switch
     {

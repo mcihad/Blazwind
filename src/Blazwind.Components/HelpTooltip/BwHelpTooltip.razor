@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.HelpTooltip
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="bw-help-tooltip relative inline-flex @Class" style="@Style">
+<div class="@CombineClasses($"bw-help-tooltip relative inline-flex")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Trigger Icon *@
     <button type="button" 
             class="@TriggerClass"
@@ -79,8 +80,7 @@
     [Parameter] public string? LinkHref { get; set; }
     [Parameter] public string LinkTarget { get; set; } = "_blank";
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     
     private bool _isOpen;
 

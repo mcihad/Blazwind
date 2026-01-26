@@ -74,7 +74,7 @@
         : $"--slider-track-height: {heightPx}; --slider-thumb-size: {thumbSizePx}; --slider-fill-color: {fillColor}; --slider-thumb-color: {thumbColor}; background: {trackGradient}; width: 100%;";
 }
 
-<div class="@outerClass" style="@Style">
+<div class="@CombineClasses(outerClass)" style="@Style" id="@Id">
     @if (HasLabel || (ShowValue && !IsVertical))
     {
         <div class="@labelRowClass">
@@ -104,7 +104,7 @@
     <div class="@(IsDisabled ? "opacity-50 cursor-not-allowed" : "") @sliderContainerClass" style="@sliderContainerStyle">
         <input type="range" class="@sliderClass" min="@Min" max="@Max" step="@Step" value="@Value"
             disabled="@IsDisabled" @oninput="HandleSliderInput" @onfocus="HandleFocusEvent" @onblur="HandleBlurEvent"
-            style="@sliderStyle" />
+            style="@sliderStyle" @attributes="AdditionalAttributes" />
             
         @* Marks for Vertical could go here, absolutely positioned if implemented *@
     </div>

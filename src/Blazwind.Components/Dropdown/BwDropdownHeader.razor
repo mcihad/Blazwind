@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Dropdown
 @inherits BwBase
 
-<div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700 mb-1 @Class" style="@Style">
+<div class="@CombineClasses($"px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700 mb-1")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Title))
     {
         <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">@Title</p>

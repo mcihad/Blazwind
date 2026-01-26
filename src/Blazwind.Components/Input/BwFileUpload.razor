@@ -1,13 +1,15 @@
 @namespace Blazwind.Components.Input
 @using Blazwind.Components.Shared
+@using Blazwind.Components.Shared
 @using Microsoft.AspNetCore.Components.Forms
+@inherits BwBaseInput<List<IBrowserFile>>
 
 @{
     var hasLabel = !string.IsNullOrEmpty(Label);
     var hasFiles = Files.Count > 0;
 }
 
-<div class="@Class">
+<div class="@CombineClasses(Class)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (hasLabel)
     {
         <label class="block text-sm font-medium text-gray-700 mb-1.5">@Label</label>
@@ -98,25 +100,23 @@
         <p class="mt-1.5 text-xs text-gray-500">@HelperText</p>
     }
     
-    @if (!string.IsNullOrEmpty(Error))
+    @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
             <i class="fa-solid fa-circle-exclamation"></i>
-            @Error
+            @ErrorMessage
         </p>
     }
 </div>
 
 @code {
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
-    
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? HelperText { get; set; }
-    [Parameter] public string? Error { get; set; }
-    [Parameter] public string? Class { get; set; }
-    
     /// <summary>Selected files</summary>
-    [Parameter] public List<IBrowserFile> Files { get; set; } = new();
+    [Parameter] public List<IBrowserFile> Files 
+    { 
+        get => Value ?? new List<IBrowserFile>(); 
+        set => Value = value;
+    }
+    
     [Parameter] public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
     
     /// <summary>Accepted file types (e.g., ".jpg,.png,.pdf")</summary>
@@ -134,8 +134,7 @@
     /// <summary>Show file preview list</summary>
     [Parameter] public bool ShowPreview { get; set; } = true;
     
-    /// <summary>Disabled state</summary>
-    [Parameter] public bool IsDisabled { get; set; }
+
     
     [Parameter] public EventCallback<IReadOnlyList<IBrowserFile>> OnFileSelected { get; set; }
 
@@ -161,6 +160,7 @@
         }
         
         await FilesChanged.InvokeAsync(Files);
+        await ValueChanged.InvokeAsync(Files);
         await OnFileSelected.InvokeAsync(selectedFiles);
     }
 
@@ -168,6 +168,7 @@
     {
         Files.Remove(file);
         await FilesChanged.InvokeAsync(Files);
+        await ValueChanged.InvokeAsync(Files);
     }
 
     private void OnDragEnter(DragEventArgs e) => _isDragging = true;

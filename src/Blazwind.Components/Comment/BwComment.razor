@@ -1,12 +1,13 @@
 @namespace Blazwind.Components.Comment
 @using Blazwind.Components.Shared
+@inherits BwBase
 @using Blazwind.Components.Avatar
 @using Blazwind.Components.Button
 @using Blazwind.Components.Input
 @using Blazwind.Components.Layout
 @using Blazwind.Components.Mentions
 
-<div class="bw-comments @Class" style="@Style">
+<div class="@CombineClasses($"bw-comments")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Header *@
     <div class="flex items-center justify-between mb-4">
         <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
@@ -89,8 +90,6 @@
     [Parameter] public bool AllowLike { get; set; } = true;
     [Parameter] public string? CurrentUserName { get; set; }
     [Parameter] public string? CurrentUserAvatar { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
     
     [Parameter] public EventCallback<string> OnAdd { get; set; }
     [Parameter] public EventCallback<(string CommentId, string Text)> OnReply { get; set; }

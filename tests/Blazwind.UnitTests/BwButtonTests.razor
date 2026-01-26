@@ -33,4 +33,26 @@
         // Danger Filled -> bg-red-600
         Assert.Contains("bg-red-600", cut.Markup);
     }
+    
+    [Fact]
+    public void RendersIdAndStyleCorrectly()
+    {
+        // Act
+        var cut = Render(@<BwButton Id="my-button" Style="color: red;" />);
+
+        // Assert
+        Assert.Contains("id=\"my-button\"", cut.Markup);
+        Assert.Contains("style=\"color: red;\"", cut.Markup);
+    }
+
+    [Fact]
+    public void RendersAdditionalAttributes()
+    {
+        // Act
+        var cut = Render(@<BwButton aria-label="custom-label" data-test="value" />);
+
+        // Assert
+        Assert.Contains("aria-label=\"custom-label\"", cut.Markup);
+        Assert.Contains("data-test=\"value\"", cut.Markup);
+    }
 }

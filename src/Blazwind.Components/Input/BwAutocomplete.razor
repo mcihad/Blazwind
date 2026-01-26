@@ -4,10 +4,12 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Linq.Expressions
+@using System.Linq.Expressions
+@inherits BwBaseInput<TItem>
 @typeparam TItem
 
 @{
-    var hasError = !string.IsNullOrEmpty(Error);
+    var hasError = !string.IsNullOrEmpty(ErrorMessage);
     var hasLabel = !string.IsNullOrEmpty(Label);
     var hasHelper = !string.IsNullOrEmpty(HelperText);
 
@@ -27,7 +29,7 @@
         : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-text";
 }
 
-<div class="relative @Class" @onclick:stopPropagation="true">
+<div class="relative @CombineClasses(Class)" @onclick:stopPropagation="true" id="@Id" @attributes="AdditionalAttributes">
     @if (hasLabel)
     {
         <label class="block @sizeClasses.Text font-medium text-gray-700 mb-1">
@@ -72,7 +74,7 @@
                    class="flex-1 min-w-[60px] p-0 bg-transparent @sizeClasses.Text text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border-none outline-none ring-0 focus:ring-0 shadow-none appearance-none"
                    style="outline: none !important; border: none !important; box-shadow: none !important;"
                    placeholder="@GetPlaceholder()" value="@_searchText" disabled="@IsDisabled" @oninput="OnSearchInput"
-                   @onfocus="OpenDropdown" @onblur="OnBlur" @onkeydown="OnKeyDown" />
+                   @onfocus="OpenDropdown" @onblur="HandleInputBlur" @onkeydown="HandleInputKeyDown" />
 
             @* Actions *@
             <div class="flex items-center gap-1 ml-auto">
@@ -213,7 +215,7 @@
     @if (hasError)
     {
         <p class="mt-1 @sizeClasses.Text text-red-600">
-            <i class="fa-solid fa-circle-exclamation mr-1"></i>@Error
+            <i class="fa-solid fa-circle-exclamation mr-1"></i>@ErrorMessage
         </p>
     }
     else if (hasHelper)
@@ -223,18 +225,12 @@
 </div>
 
 @code {
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+
     
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Placeholder { get; set; } = "Seçin veya arayın...";
-    [Parameter] public string? HelperText { get; set; }
-    [Parameter] public string? Error { get; set; }
-    [Parameter] public bool IsDisabled { get; set; }
-    [Parameter] public bool IsRequired { get; set; }
     [Parameter] public bool Multiple { get; set; }
     [Parameter] public int MaxTags { get; set; } = 3;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Static items list (for non-async usage)</summary>
 
     /// <summary>Static items list (for non-async usage)</summary>
     [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
@@ -272,15 +268,23 @@
     [Parameter] public EventCallback<string> OnCreateNew { get; set; }
 
     // Single Selection
-    [Parameter] public TItem? SelectedItem { get; set; }
-    [Parameter] public EventCallback<TItem?> SelectedItemChanged { get; set; }
+    [Parameter] public TItem? SelectedItem 
+    { 
+        get => Value; 
+        set => Value = value;
+    }
+    
+    [Parameter] public EventCallback<TItem?> SelectedItemChanged 
+    { 
+        get => ValueChanged; 
+        set => ValueChanged = value; 
+    }
 
     // Multiple Selection
     [Parameter] public List<TItem> SelectedItems { get; set; } = new();
     [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
-    
-    /// <summary>Expression for validation binding (single selection)</summary>
-    [Parameter] public Expression<Func<TItem>>? For { get; set; }
+
+
     
     /// <summary>Expression for validation binding (multiple selection)</summary>
     [Parameter] public Expression<Func<List<TItem>>>? ForMultiple { get; set; }
@@ -480,7 +484,7 @@
         }
     }
 
-    private async Task OnBlur()
+    private async Task HandleInputBlur()
     {
         await Task.Delay(200);
         _isOpen = false;
@@ -569,7 +573,7 @@
         }
     }
 
-    private async Task OnKeyDown(KeyboardEventArgs e)
+    private async Task HandleInputKeyDown(KeyboardEventArgs e)
     {
         if (!_isOpen)
         {
@@ -663,8 +667,9 @@
 
     private string _elementId = "bw-ac-" + Guid.NewGuid().ToString("N");
 
-    public void Dispose()
+    public override void Dispose()
     {
+        base.Dispose();
         _searchCts?.Cancel();
         _searchCts?.Dispose();
     }

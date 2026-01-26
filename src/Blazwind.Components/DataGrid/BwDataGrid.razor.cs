@@ -7,7 +7,7 @@ using Microsoft.JSInterop;
 
 namespace Blazwind.Components.DataGrid;
 
-public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where TItem : notnull
+public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : notnull
 {
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
@@ -77,11 +77,7 @@ public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where T
 
     #region Appearance Parameters
 
-    /// <summary>
-    /// CSS class for the grid container
-    /// </summary>
-    [Parameter]
-    public string? Class { get; set; }
+
 
     /// <summary>
     /// Grid height (e.g., "400px", "100%")
@@ -388,7 +384,6 @@ public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where T
     private List<FilterDescriptor> _filters = new();
     private string _searchQuery = "";
     private string _columnSearchQuery = "";
-    private string _gridId = $"bw-datagrid-{Guid.NewGuid():N}";
     private bool _showColumnSelector = false;
     private DotNetObjectReference<BwDataGrid<TItem>>? _dotNetRef;
 
@@ -412,6 +407,11 @@ public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where T
 
     protected override void OnInitialized()
     {
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = $"bw-datagrid-{Guid.NewGuid():N}";
+        }
+        
         _selectedItems = new HashSet<TItem>(SelectedItems);
         _dotNetRef = DotNetObjectReference.Create(this);
     }
@@ -1290,7 +1290,7 @@ public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where T
             {
                 await JS.InvokeVoidAsync("Blazwind.ColumnResize.initColumnResize", _dotNetRef, new
                 {
-                    containerId = _gridId,
+                    containerId = Id,
                     minWidth = 50,
                     maxWidth = 500,
                     autoFit = AutoFit
@@ -1302,7 +1302,7 @@ public partial class BwDataGrid<TItem> : ComponentBase, IAsyncDisposable where T
             {
                 await JS.InvokeVoidAsync("Blazwind.ColumnDrag.initColumnDrag", _dotNetRef, new
                 {
-                    containerId = _gridId
+                    containerId = Id
                 });
             }
         }

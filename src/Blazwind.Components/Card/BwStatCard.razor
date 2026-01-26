@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Card
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var (bgClass, textClass, iconBgClass) = Color switch
@@ -28,7 +29,7 @@
     };
 }
 
-<div class="@bgClass rounded border border-gray-200 dark:border-gray-700 p-4 shadow-sm @Class">
+<div class="@CombineClasses($"{bgClass} rounded border border-gray-200 dark:border-gray-700 p-4 shadow-sm")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="flex items-start justify-between">
         <div class="flex-1">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@Title</p>
@@ -74,6 +75,5 @@
     [Parameter] public string? TrendDescription { get; set; }
     [Parameter] public BwTrend Trend { get; set; } = BwTrend.Neutral;
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }

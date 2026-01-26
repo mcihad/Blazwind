@@ -4,7 +4,7 @@
 @inherits BwBase
 @inject IJSRuntime JS
 
-<div @ref="_triggerRef" class="relative inline-block text-left @Class" style="@Style">
+<div @ref="_triggerRef" class="@CombineClasses("relative inline-block text-left")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div @onclick="Toggle">
         @TriggerContent
     </div>

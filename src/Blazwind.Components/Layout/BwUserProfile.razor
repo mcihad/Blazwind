@@ -3,7 +3,7 @@
 @using Blazwind.Components.Avatar
 @inherits BwBase
 
-<div class="flex items-center gap-3 cursor-pointer select-none group @Class" style="@Style" @onclick="OnClick">
+<div class="@CombineClasses("flex items-center gap-3 cursor-pointer select-none group")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="OnClick">
     <BwAvatar Name="@Name" Src="@Src" StatusColor="@StatusColor" Size="@Size" />
     
     <div class="flex flex-col min-w-0 hidden sm:block">

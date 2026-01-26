@@ -11,7 +11,7 @@ using System.Globalization;
 
 namespace Blazwind.Components.Gantt;
 
-public partial class BwGantt : ComponentBase, IAsyncDisposable
+public partial class BwGantt : BwBase, IAsyncDisposable
 {
     [Parameter] public List<GanttTask> Tasks { get; set; } = new();
     [Parameter] public string Title { get; set; } = "Proje Planı";
@@ -20,8 +20,7 @@ public partial class BwGantt : ComponentBase, IAsyncDisposable
     [Parameter] public EventCallback<GanttViewMode> ViewModeChanged { get; set; }
     [Parameter] public DateTime? StartDate { get; set; }
     [Parameter] public DateTime? EndDate { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     [Parameter] public bool Editable { get; set; } = false;
     [Parameter] public EventCallback<GanttTask> OnTaskClick { get; set; }
     [Parameter] public EventCallback<GanttTaskResizeEventArgs> OnTaskResize { get; set; }

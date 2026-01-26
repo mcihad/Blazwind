@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Calendar
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var wrapperClasses = "bw-calendar-wrapper";
@@ -28,7 +29,7 @@
         <div style="display: none;">@ChildContent</div>
     </CascadingValue>
     
-    <div id="@Id" class="@containerClasses @Class" style="@Style">
+    <div id="@Id" class="@CombineClasses($"{containerClasses}")" style="@Style" @attributes="AdditionalAttributes">
         @* Header - Navigation and View Switcher *@
         <BwCalendarHeader 
             SelectedDate="@SelectedDate"

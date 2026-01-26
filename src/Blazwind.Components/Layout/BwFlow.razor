@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
 
@@ -8,7 +9,7 @@
     var containerStyle = BuildContainerStyle();
 }
 
-<div class="bw-flow-container @(ShowArrows && !Wrap ? "bw-flow-with-arrows" : "") @Class">
+<div class="@CombineClasses("bw-flow-container", (ShowArrows && !Wrap ? "bw-flow-with-arrows" : ""))" id="@Id" @attributes="AdditionalAttributes">
     @if (ShowArrows && !Wrap)
     {
         <button type="button" 
@@ -120,8 +121,7 @@
     /// </summary>
     [Parameter] public string? MaxWidth { get; set; }
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     
     private ElementReference _scrollContainer;
     private bool CanScrollLeft { get; set; } = false;

@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Form
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var gapClass = Density switch
@@ -21,7 +22,7 @@
     };
 }
 
-<div class="grid @columnsClass @gapClass @Class">
+<div class="@CombineClasses($"grid {columnsClass} {gapClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -34,8 +35,7 @@
     /// <summary>Density override</summary>
     [Parameter] public BwFormDensity? DensityOverride { get; set; }
     
-    /// <summary>Additional CSS class</summary>
-    [Parameter] public string? Class { get; set; }
+
     
     /// <summary>Child content (form fields)</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }

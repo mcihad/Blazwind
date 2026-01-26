@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.Dialog
 @using Blazwind.Components.Button
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
@@ -38,8 +39,8 @@
     @if (IsRaw)
     {
          <div id="@dialogId" 
-             class="flex flex-col @AnimationClass @fullscreenClass @Class" 
-             style="@Style">
+             class="@CombineClasses($"flex flex-col {AnimationClass} {fullscreenClass}")" 
+             style="@Style" @attributes="AdditionalAttributes">
             @ChildContent
          </div>
     }
@@ -47,8 +48,8 @@
     {
         @* Dialog Frame *@
         <div id="@dialogId" 
-             class="bg-white dark:bg-gray-800 rounded shadow-xl flex flex-col w-full max-h-[90vh] @AnimationClass @fullscreenClass @Class"
-             style="@Style">
+             class="@CombineClasses($"bg-white dark:bg-gray-800 rounded shadow-xl flex flex-col w-full max-h-[90vh] {AnimationClass} {fullscreenClass}")"
+             style="@Style" @attributes="AdditionalAttributes">
             
             @* Header *@
             <div id="@handleId" 
@@ -87,7 +88,7 @@
 </div>
 
 @code {
-    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString("N");
+
     [Parameter] public string? Title { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool ShowClose { get; set; } = true;
@@ -95,7 +96,6 @@
     [Parameter] public string? Height { get; set; }
     [Parameter] public string? MaxWidth { get; set; }
     [Parameter] public string? AnimationClass { get; set; } = "animate-scale-in";
-    [Parameter] public string? Class { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
     
     /// <summary>Title text color. Default is Primary (gray-900).</summary>
@@ -112,6 +112,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = Guid.NewGuid().ToString("N");
+        }
+        
         if (firstRender)
         {
             if (Draggable && !FullScreen)
@@ -126,5 +131,5 @@
         }
     }
     
-    private string Style => FullScreen ? "" : $"width: {Width ?? "500px"}; max-width: {MaxWidth ?? "90vw"}; height: {Height ?? "auto"};";
+
 }

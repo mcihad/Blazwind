@@ -4,9 +4,10 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using System.Linq.Expressions
 @typeparam TItem
+@inherits BwBaseInput<IList<TItem>>
 @namespace Blazwind.Components.Input
 
-<div class="bw-transfer flex flex-col md:flex-row items-stretch gap-4 @Class">
+<div class="bw-transfer flex flex-col md:flex-row items-stretch gap-4 @CombineClasses(Class)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Source List *@
     @RenderList(GetSourceItems(), Titles.ElementAtOrDefault(0) ?? "Source", _sourceSearchText, (val) => _sourceSearchText = val, _checkedSourceKeys, "source")
 
@@ -31,10 +32,15 @@
 </div>
 
 @code {
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+
     
     [Parameter] public IEnumerable<TItem> DataSource { get; set; } = new List<TItem>();
-    [Parameter] public IList<TItem> TargetItems { get; set; } = new List<TItem>();
+    [Parameter] public IList<TItem> TargetItems 
+    { 
+        get => Value ?? new List<TItem>(); 
+        set => Value = value;
+    }
+    
     [Parameter] public EventCallback<IList<TItem>> TargetItemsChanged { get; set; }
     
     [Parameter] public Func<TItem, string> TextSelector { get; set; } = x => x?.ToString() ?? "";
@@ -44,10 +50,9 @@
     [Parameter] public bool ShowSearch { get; set; } = false;
     [Parameter] public string SearchPlaceholder { get; set; } = "Ara...";
     [Parameter] public string Height { get; set; } = "300px";
-    [Parameter] public string? Class { get; set; }
     
     /// <summary>Expression for validation binding</summary>
-    [Parameter] public Expression<Func<IList<TItem>>>? For { get; set; }
+
     
     private FieldIdentifier _fieldIdentifier;
 
@@ -179,6 +184,7 @@
         
         _checkedSourceKeys.Clear();
         await TargetItemsChanged.InvokeAsync(TargetItems);
+        await ValueChanged.InvokeAsync(TargetItems);
     }
 
     private async Task MoveToSource()
@@ -194,5 +200,6 @@
         
         _checkedTargetKeys.Clear();
         await TargetItemsChanged.InvokeAsync(TargetItems);
+        await ValueChanged.InvokeAsync(TargetItems);
     }
 }

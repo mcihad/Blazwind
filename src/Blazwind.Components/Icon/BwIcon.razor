@@ -2,7 +2,7 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<i class="@Name @SizeClass @ColorClass @(Spin ? "fa-spin" : "") @Class" style="@Style" @attributes="AdditionalAttributes"></i>
+<i class="@CombineClasses($"{Name} {SizeClass} {ColorClass} {(Spin ? "fa-spin" : "")}")" id="@Id" style="@Style" @attributes="AdditionalAttributes"></i>
 
 @code {
     [Parameter] public string? Name { get; set; }

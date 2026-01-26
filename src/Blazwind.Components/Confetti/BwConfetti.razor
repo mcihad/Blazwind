@@ -1,9 +1,12 @@
 @namespace Blazwind.Components.Confetti
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-@ChildContent
+<div id="@Id" class="@Class" style="display:contents; @Style" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }

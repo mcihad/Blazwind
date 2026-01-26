@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.ApprovalChain
 @using Blazwind.Components.Shared
 @using Blazwind.Components.Avatar
+@inherits BwBase
 
-<div class="bw-approval-chain-wrapper @Class" style="@Style">
+<div class="@CombineClasses("bw-approval-chain-wrapper")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Progress Header *@
     @if (ShowProgress && Steps.Count > 0)
     {
@@ -143,8 +144,6 @@
     [Parameter] public bool ShowActions { get; set; } = false;
     [Parameter] public bool ShowProgress { get; set; } = true;
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
     [Parameter] public EventCallback<ApprovalStep> OnStepClick { get; set; }
     [Parameter] public EventCallback<ApprovalStep> OnApprove { get; set; }
     [Parameter] public EventCallback<ApprovalStep> OnReject { get; set; }

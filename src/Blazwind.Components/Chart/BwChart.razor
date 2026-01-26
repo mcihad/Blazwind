@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Chart
 @using Blazwind.Components.Shared
+@inherits BwBase
 @using Blazwind.Components.Services
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.JSInterop
@@ -8,7 +9,7 @@
 @inject ScriptLoaderService ScriptLoader
 @implements IAsyncDisposable
 
-<div @ref="_container" class="bw-chart @Class" style="@_containerStyle"></div>
+<div @ref="_container" class="@CombineClasses("bw-chart")" style="@_containerStyle" id="@Id" @attributes="AdditionalAttributes"></div>
 
 @code {
     private const string ScriptPath = "_content/Blazwind.Components/blazwind.chart.js";
@@ -24,14 +25,9 @@
     #region Parameters
     
     /// <summary>
-    /// CSS class
+    /// CSS style - Inherited from BwBase but overriding for custom usage if needed, though BwBase handles it.
+    /// Actually, let's remove them to avoid hiding BwBase members.
     /// </summary>
-    [Parameter] public string? Class { get; set; }
-    
-    /// <summary>
-    /// CSS style
-    /// </summary>
-    [Parameter] public string? Style { get; set; }
     
     /// <summary>
     /// Chart width

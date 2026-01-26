@@ -27,7 +27,7 @@
     }
 }
 
-<div class="@GetDensityMarginClass() @Class" style="@Style">
+<div class="@CombineClasses(GetDensityMarginClass())" style="@Style" id="@Id">
     @switch (EffectiveLabelPosition)
     {
         case BwLabelPosition.Top:
@@ -130,7 +130,8 @@
                 disabled="@IsDisabled"
                 multiple="@IsMultiple"
                 size="@(IsMultiple ? VisibleRows : 1)"
-                @onchange="HandleSelectChange">
+                @onchange="HandleSelectChange"
+                @attributes="AdditionalAttributes">
             @if (!string.IsNullOrEmpty(Placeholder) && !IsMultiple)
             {
                 <option value="" disabled selected="@(Value == null)">@Placeholder</option>

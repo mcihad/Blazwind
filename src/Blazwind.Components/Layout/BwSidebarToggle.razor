@@ -1,11 +1,14 @@
 @namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@inherits BwBase
 
 <button type="button" 
-        class="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors @Class"
+        class="@CombineClasses("lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors")"
+        style="@Style" id="@Id" @attributes="AdditionalAttributes"
         onclick="Blazwind.Sidebar.toggle()">
     <i class="fa-solid fa-bars text-lg"></i>
 </button>
 
 @code {
-    [Parameter] public string? Class { get; set; }
+
 }

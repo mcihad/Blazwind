@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Card
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var gradientClasses = Color switch
@@ -27,7 +28,7 @@
     };
 }
 
-<div class="rounded p-6 @gradientClasses @Class">
+<div class="@CombineClasses($"rounded p-6 {gradientClasses}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="flex items-center gap-3 mb-2">
         @if (!string.IsNullOrEmpty(Icon))
         {
@@ -52,6 +53,5 @@
     [Parameter] public string? Description { get; set; }
     [Parameter] public string? Icon { get; set; }
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }

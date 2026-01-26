@@ -1,10 +1,10 @@
 @namespace Blazwind.Components.Layout
-
+@inherits BwBase
 @{
     var style = BuildStyle();
 }
 
-<div class="@Class" style="@style">
+<div class="@CombineClasses()" style="@style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -31,8 +31,7 @@
     /// </summary>
     [Parameter] public int ColumnSpan { get; set; } = 1;
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     
     private string BuildStyle()
     {

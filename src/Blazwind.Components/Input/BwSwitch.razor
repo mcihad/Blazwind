@@ -51,14 +51,15 @@
     var marginClass = GetDensityMarginClass();
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     <label class="inline-flex items-center gap-3 cursor-pointer @(IsDisabled ? "opacity-50 cursor-not-allowed" : "")">
         <button type="button"
                 role="switch"
                 aria-checked="@Value"
                 disabled="@IsDisabled"
                 class="@trackSize relative inline-flex items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 @ringColor @trackColor @errorRingClass"
-                @onclick="Toggle">
+                @onclick="Toggle"
+                @attributes="AdditionalAttributes">
             <span class="@thumbSize inline-block bg-white rounded-full shadow-sm transform transition-transform duration-200 @thumbPos"></span>
         </button>
         

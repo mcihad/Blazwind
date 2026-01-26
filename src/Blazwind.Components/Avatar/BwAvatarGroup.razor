@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.Avatar
 @using Blazwind.Components.Shared
-
+@inherits BwBase
 @{
     var sizeClass = Size switch
     {
@@ -20,7 +20,7 @@
     var remainingCount = MaxDisplay.HasValue ? Avatars.Count - MaxDisplay.Value : 0;
 }
 
-<div class="flex items-center @Class">
+<div class="@CombineClasses("flex items-center")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @foreach (var (avatar, index) in displayAvatars.Select((a, i) => (a, i)))
     {
         <div class="relative @(index > 0 ? overlapMargin : "") @sizeClass rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden"
@@ -49,7 +49,6 @@
     [Parameter] public List<AvatarItem> Avatars { get; set; } = new();
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
     [Parameter] public int? MaxDisplay { get; set; }
-    [Parameter] public string? Class { get; set; }
 
     private string GetInitials(string? name)
     {

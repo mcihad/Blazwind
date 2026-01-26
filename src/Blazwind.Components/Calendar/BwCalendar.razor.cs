@@ -13,9 +13,7 @@ public partial class BwCalendar : IAsyncDisposable, IDisposable
     [Inject]
     public CalendarStateService? StateService { get; set; }
 
-    /// <summary>Unique ID</summary>
-    [Parameter]
-    public string Id { get; set; } = $"bw-calendar-{Guid.NewGuid():N}";
+
 
     /// <summary>View mode</summary>
     [Parameter]
@@ -65,13 +63,7 @@ public partial class BwCalendar : IAsyncDisposable, IDisposable
     [Parameter]
     public bool AllowFullscreen { get; set; } = true;
 
-    /// <summary>Additional CSS classes</summary>
-    [Parameter]
-    public string? Class { get; set; }
 
-    /// <summary>Inline style</summary>
-    [Parameter]
-    public string? Style { get; set; }
 
     // EventCallbacks
     [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
@@ -163,6 +155,11 @@ public partial class BwCalendar : IAsyncDisposable, IDisposable
 
     protected override void OnInitialized()
     {
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = $"bw-calendar-{Guid.NewGuid():N}";
+        }
+
         if (StateService != null)
         {
             StateService.OnStateChanged += HandleStateChanged;

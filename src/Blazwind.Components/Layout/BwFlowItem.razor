@@ -1,10 +1,11 @@
 @namespace Blazwind.Components.Layout
+@inherits BwBase
 
 @{
     var style = BuildStyle();
 }
 
-<div class="bw-flow-item shrink-0 @Class" style="@style" @onclick="OnClick">
+<div class="@CombineClasses("bw-flow-item shrink-0")" style="@style" @onclick="OnClick" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -36,8 +37,7 @@
     /// </summary>
     [Parameter] public EventCallback OnClick { get; set; }
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     
     private string BuildStyle()
     {

@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.Form
 @using Blazwind.Components.Shared
 @using Microsoft.AspNetCore.Components.Forms
+@inherits BwBase
 
 @inject IServiceProvider ServiceProvider
 
@@ -9,7 +10,8 @@
         <CascadingValue Value="@Density" IsFixed="true">
             <CascadingValue Value="@HelpTextMode" IsFixed="true">
                 <form @ref="_formRef" 
-                      class="bw-form @FormClass" 
+                      class="@CombineClasses($"bw-form")" 
+                      style="@Style" id="@Id" @attributes="AdditionalAttributes"
                       @onsubmit="HandleSubmit"
                       @onsubmit:preventDefault>
                     @ChildContent
@@ -36,8 +38,7 @@
     /// <summary>Form density/spacing mode</summary>
     [Parameter] public BwFormDensity Density { get; set; } = BwFormDensity.Normal;
     
-    /// <summary>CSS class for the form element</summary>
-    [Parameter] public string? FormClass { get; set; }
+
     
     /// <summary>Child content (form fields)</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }

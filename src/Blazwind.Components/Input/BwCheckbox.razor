@@ -51,13 +51,16 @@
     var marginClass = GetDensityMarginClass();
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     <div class="inline-flex items-center gap-2.5" @onclick="Toggle">
         <div class="@checkboxBase @stateClass @ringClass @disabledClass @errorStateClass" 
              tabindex="@(IsDisabled ? -1 : 0)" 
              @onkeydown="OnKeyDownHandler"
              @onclick:stopPropagation="true"
-             @onclick="Toggle">
+             @onkeydown="OnKeyDownHandler"
+             @onclick:stopPropagation="true"
+             @onclick="Toggle"
+             @attributes="AdditionalAttributes">
             <i class="fa-solid fa-check @iconSizeClass transition-opacity duration-200 @(Value ? "opacity-100" : "opacity-0")"></i>
         </div>
         

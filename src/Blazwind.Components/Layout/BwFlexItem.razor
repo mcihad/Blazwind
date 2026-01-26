@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     // Flex Grow - sadece standart değerler, özel değerler inline style ile
@@ -106,7 +107,7 @@
     var inlineStyle = styleList.Count > 0 ? string.Join("; ", styleList) : null;
 }
 
-<div class="@growClass @shrinkClass @basisClass @alignSelfClass @orderClass @Class" style="@inlineStyle">
+<div class="@CombineClasses(growClass, shrinkClass, basisClass, alignSelfClass, orderClass)" style="@($"{inlineStyle} {Style}")" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -141,8 +142,5 @@
     /// </summary>
     [Parameter] public int? Order { get; set; }
     
-    /// <summary>
-    /// Additional CSS classes
-    /// </summary>
-    [Parameter] public string? Class { get; set; }
+
 }

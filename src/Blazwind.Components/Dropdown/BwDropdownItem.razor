@@ -10,10 +10,10 @@
 else
 {
     <button type="button" 
-            class="group flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white @Class"
+            class="@CombineClasses($"group flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white")"
             role="menuitem"
             @onclick="HandleClick"
-            style="@Style">
+            style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @if (!string.IsNullOrEmpty(Icon))
         {
             <i class="@Icon mr-3 h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300 @IconClass" aria-hidden="true"></i>

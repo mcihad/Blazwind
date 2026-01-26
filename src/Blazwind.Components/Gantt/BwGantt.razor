@@ -7,10 +7,11 @@
 @using Blazwind.Components.Layout
 @using Microsoft.JSInterop
 @using System.Globalization
+@inherits BwBase
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<BwCard Class="@($"bw-gantt overflow-hidden {(_isFullScreen ? "fixed inset-0 z-[9999] m-0 rounded-none w-screen h-screen shadow-none border-none bg-white dark:bg-gray-900" : Class)}")" Style="@(_isFullScreen ? "z-index: 9999;" : Style)" BodyClass="p-0">
+<BwCard Class="@CombineClasses($"bw-gantt overflow-hidden {(_isFullScreen ? "fixed inset-0 z-[9999] m-0 rounded-none w-screen h-screen shadow-none border-none bg-white dark:bg-gray-900" : "")}")" Style="@(_isFullScreen ? "z-index: 9999;" : Style)" BodyClass="p-0" Id="@Id" AdditionalAttributes="@AdditionalAttributes">
     @* Header - Modern Toolbar *@
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors duration-300">
         @* Title Section *@

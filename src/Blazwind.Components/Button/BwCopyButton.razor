@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.Button
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@inherits BwBase
 
 @inject IJSRuntime JS
 
@@ -12,8 +13,10 @@
 }
 
 <button type="button"
-        class="@buttonClasses @stateClasses @Class"
+        class="@CombineClasses($"{buttonClasses} {stateClasses}")"
         style="@Style"
+        id="@Id"
+        @attributes="AdditionalAttributes"
         title="@(_copied ? CopiedTooltip : Tooltip)"
         disabled="@(_copying)"
         @onclick="HandleCopy">
@@ -63,12 +66,6 @@
     
     /// <summary>Duration to show copied state (ms)</summary>
     [Parameter] public int CopiedDuration { get; set; } = 2000;
-    
-    /// <summary>Additional CSS classes</summary>
-    [Parameter] public string? Class { get; set; }
-    
-    /// <summary>Inline styles</summary>
-    [Parameter] public string? Style { get; set; }
     
     /// <summary>Callback when content is copied</summary>
     [Parameter] public EventCallback OnCopied { get; set; }

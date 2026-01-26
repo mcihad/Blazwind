@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.Form
 @using Blazwind.Components.Shared
 @using Blazwind.Components.Button
+@inherits BwBase
 
 @{
     var densityClass = Density switch
@@ -19,7 +20,7 @@
     };
 }
 
-<div class="flex flex-wrap @alignClass @densityClass @Class">
+<div class="@CombineClasses($"flex flex-wrap {alignClass} {densityClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -32,8 +33,7 @@
     /// <summary>Density override</summary>
     [Parameter] public BwFormDensity? DensityOverride { get; set; }
     
-    /// <summary>Additional CSS class</summary>
-    [Parameter] public string? Class { get; set; }
+
     
     /// <summary>Child content (buttons)</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }

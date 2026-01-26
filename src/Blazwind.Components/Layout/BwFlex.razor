@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     // Display
@@ -90,7 +91,7 @@
     }
 }
 
-<div class="@displayClass @directionClass @wrapClass @justifyClass @alignItemsClass @alignContentClass @gapClass @Class" style="@gapStyle">
+<div class="@CombineClasses(displayClass, directionClass, wrapClass, justifyClass, alignItemsClass, alignContentClass, gapClass)" style="@($"{gapStyle} {Style}")" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -145,8 +146,5 @@
     /// </summary>
     [Parameter] public bool Inline { get; set; } = false;
     
-    /// <summary>
-    /// Additional CSS classes
-    /// </summary>
-    [Parameter] public string? Class { get; set; }
+
 }

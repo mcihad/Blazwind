@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.Card
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 @Class" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     @if (Header != null || !string.IsNullOrEmpty(Title))
     {
         <div class="px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 dark:border-gray-700 @HeaderClass">
@@ -52,11 +53,9 @@
     [Parameter] public string? Icon { get; set; }
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary; // Using Primary as default (Blue)
     
-    [Parameter] public string? Class { get; set; }
     [Parameter] public string? HeaderClass { get; set; }
     [Parameter] public string BodyClass { get; set; } = "p-4 md:p-6";
     [Parameter] public string? FooterClass { get; set; }
-    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
     
     // Computed properties for styling
     private string IconBgClass => Color switch

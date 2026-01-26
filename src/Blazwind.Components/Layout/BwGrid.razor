@@ -1,12 +1,13 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var gapClass = BuildGapClasses();
     var style = BuildGridStyle();
 }
 
-<div class="@gapClass @Class" style="@style">
+<div class="@CombineClasses(gapClass)" style="@style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -51,8 +52,7 @@
     /// </summary>
     [Parameter] public BwSpacing? RowSpacing { get; set; }
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     
     private string BuildGapClasses()
     {

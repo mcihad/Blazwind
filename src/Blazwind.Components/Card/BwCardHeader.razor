@@ -1,6 +1,8 @@
 @namespace Blazwind.Components.Card
+@using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 @Class">
+<div class="@CombineClasses($"px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 dark:border-gray-700")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     @if (ChildContent != null)
     {
         @ChildContent
@@ -8,12 +10,6 @@
     else
     {
         <div class="flex items-center gap-3">
-            @if (!string.IsNullOrEmpty(Icon))
-            {
-                <div class="w-10 h-10 @IconBgClass rounded flex items-center justify-center">
-                    <i class="@Icon @IconClass"></i>
-                </div>
-            }
             <div>
                 <h3 class="font-semibold text-gray-900 dark:text-gray-100">@Title</h3>
                 @if (!string.IsNullOrEmpty(SubTitle))
@@ -28,9 +24,5 @@
 @code {
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? SubTitle { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string IconBgClass { get; set; } = "bg-blue-100 dark:bg-blue-900/30";
-    [Parameter] public string IconClass { get; set; } = "text-blue-600 dark:text-blue-400";
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }

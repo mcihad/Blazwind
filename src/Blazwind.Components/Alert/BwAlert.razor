@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.Alert
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
-    var alertId = $"bw-alert-{Guid.NewGuid():N}";
+    var alertId = Id ?? $"bw-alert-{Guid.NewGuid():N}";
     
     // Default Icon
     var defaultIcon = Color switch
@@ -67,7 +68,7 @@
 
 @if (_isVisible)
 {
-    <div id="@alertId" class="flex gap-2 md:gap-3 p-3 md:p-4 rounded @borderClass @bgClass @Class" role="alert">
+    <div id="@alertId" class="@CombineClasses($"flex gap-2 md:gap-3 p-3 md:p-4 rounded {borderClass} {bgClass}")" style="@Style" role="alert" @attributes="AdditionalAttributes">
         @if (ShowIcon && !string.IsNullOrEmpty(iconToUse))
         {
             <div class="flex-shrink-0">
@@ -122,7 +123,6 @@
     [Parameter] public string? Icon { get; set; }
     [Parameter] public bool ShowIcon { get; set; } = true;
     [Parameter] public bool Dismissible { get; set; } = false;
-    [Parameter] public string? Class { get; set; }
     
     private bool _isVisible = true;
 

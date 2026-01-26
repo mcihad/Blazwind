@@ -10,7 +10,7 @@ namespace Blazwind.Components.Input;
 /// Base class for all input components providing common parameters and functionality
 /// </summary>
 /// <typeparam name="TValue">The type of the input value</typeparam>
-public abstract class BwBaseInput<TValue> : ComponentBase, IDisposable
+public abstract class BwBaseInput<TValue> : BwBase, IDisposable
 {
     #region Cascading Parameters
 
@@ -71,13 +71,7 @@ public abstract class BwBaseInput<TValue> : ComponentBase, IDisposable
     [Parameter]
     public BwSize Size { get; set; } = BwSize.Medium;
 
-    /// <summary>Additional CSS classes</summary>
-    [Parameter]
-    public string? Class { get; set; }
 
-    /// <summary>Inline styles</summary>
-    [Parameter]
-    public string? Style { get; set; }
 
     /// <summary>Form density - overrides cascade if set</summary>
     [Parameter]

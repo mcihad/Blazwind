@@ -2,10 +2,14 @@
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @using Microsoft.AspNetCore.Components.Forms
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Forms
 @using System.Linq.Expressions
+@inherits BwBaseInput<string>
 
 @{
-    var hasError = !string.IsNullOrEmpty(Error);
+    var hasError = !string.IsNullOrEmpty(ErrorMessage);
     var hasLabel = !string.IsNullOrEmpty(Label);
     var hasHelper = !string.IsNullOrEmpty(HelperText);
     var hasPrefixIcon = !string.IsNullOrEmpty(PrefixIcon);
@@ -44,7 +48,7 @@
     : "border-gray-300 dark:border-gray-700 focus-within:border-blue-500 focus-within:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600";
 }
 
-<div class="@Class">
+<div class="@CombineClasses(Class)" style="@Style" id="@Id">
     @if (hasLabel)
     {
         <label class="block text-sm font-medium text-gray-700 mb-1.5">
@@ -78,7 +82,7 @@
             <input type="@actualType" @ref="_inputRef" class="@baseClass @inputPadding @stateClass @disabledClass"
                 style="outline: none !important; box-shadow: none !important;" placeholder="@Placeholder" value="@Value"
                 disabled="@IsDisabled" readonly="@IsReadOnly" @oninput="OnInput" @onclick="OnInputClick"
-                @onclick:stopPropagation="true" @onkeydown="OnKeyDown" />
+                @onclick:stopPropagation="true" @onkeydown="HandleKeyDown" @attributes="AdditionalAttributes" />
 
             @* Suffix buttons inside input area *@
             <div class="absolute right-2 flex items-center gap-1">
@@ -146,7 +150,7 @@
     {
         <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
             <i class="fa-solid fa-circle-exclamation"></i>
-            @Error
+            @ErrorMessage
         </p>
     }
     else if (hasHelper)
@@ -156,20 +160,11 @@
 </div>
 
 @code {
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
-    
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Placeholder { get; set; }
-    [Parameter] public string? Value { get; set; }
-    [Parameter] public string Type { get; set; } = "text";
-    [Parameter] public string? HelperText { get; set; }
-    [Parameter] public string? Error { get; set; }
-    [Parameter] public bool IsDisabled { get; set; }
-    [Parameter] public bool IsReadOnly { get; set; }
-    [Parameter] public bool IsRequired { get; set; }
     [Parameter] public bool IsLoading { get; set; }
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
+    
+    /// <summary>Input type (text, password, etc.)</summary>
+    [Parameter] public string Type { get; set; } = "text";
+
 
     /// <summary>Prefix icon class (e.g., "fa-solid fa-search")</summary>
     [Parameter] public string? PrefixIcon { get; set; }
@@ -195,13 +190,10 @@
     /// <summary>Buttons to append (no border, direct inline)</summary>
     [Parameter] public RenderFragment? Buttons { get; set; }
 
-    [Parameter] public EventCallback<string> ValueChanged { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
+
     [Parameter] public EventCallback OnEnterPressed { get; set; }
     [Parameter] public EventCallback OnClear { get; set; }
-    
-    /// <summary>Expression for validation binding</summary>
-    [Parameter] public Expression<Func<string>>? For { get; set; }
+
 
     [Inject] private IJSRuntime JS { get; set; } = default!;
 
@@ -230,13 +222,14 @@
         await ValueChanged.InvokeAsync(Value);
     }
 
-    private async Task OnInputClick()
+    private async Task OnInputClick(MouseEventArgs e)
     {
-        await OnClick.InvokeAsync();
+        await OnClick.InvokeAsync(e);
     }
 
-    private async Task OnKeyDown(KeyboardEventArgs e)
+    protected override async Task HandleKeyDown(KeyboardEventArgs e)
     {
+        await base.HandleKeyDown(e);
         if (e.Key == "Enter" && OnEnterPressed.HasDelegate)
         {
             await OnEnterPressed.InvokeAsync();

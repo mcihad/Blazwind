@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Button
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var baseClasses = "relative inline-flex items-center justify-center gap-2 font-medium rounded transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent";
@@ -85,13 +86,15 @@
         _ => "text-sm"
     };
     
-    var allClasses = $"{baseClasses} {sizeClasses} {variantClasses} {Class}";
+    var allClasses = CombineClasses($"{baseClasses} {sizeClasses} {variantClasses}");
 }
 
 @if (string.IsNullOrEmpty(Href))
 {
     <button type="@HtmlType" 
             class="@allClasses" 
+            id="@Id"
+            style="@Style"
             disabled="@Disabled"
             @onclick="OnClick"
             @attributes="AdditionalAttributes">
@@ -102,6 +105,8 @@ else
 {
     <a href="@Href" 
        class="@allClasses" 
+       id="@Id"
+       style="@Style"
        role="button"
        @attributes="AdditionalAttributes"
        @onclick="OnClick">
@@ -174,7 +179,5 @@ else
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public bool IsLoading { get; set; }
     [Parameter] public string HtmlType { get; set; } = "button";
-    [Parameter] public string? Class { get; set; }
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
 }

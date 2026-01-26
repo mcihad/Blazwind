@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="@LayoutClass @JustifyClass @AlignClass @GapClass @Class">
+<div class="@CombineClasses(LayoutClass, JustifyClass, AlignClass, GapClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -55,7 +56,6 @@
     [Parameter] public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
     [Parameter] public BwSpacing Spacing { get; set; } = BwSpacing.Md;
     [Parameter] public bool Wrap { get; set; } = true; // CHANGED DEFAULT TO TRUE for Grid behavior
-    [Parameter] public string? Class { get; set; }
     
     [Parameter] public int? GutterX { get; set; }
     [Parameter] public int? GutterY { get; set; }

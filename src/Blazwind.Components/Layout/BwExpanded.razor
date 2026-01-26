@@ -1,11 +1,13 @@
 @namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var flexClass = Expanded ? "flex-1" : "";
     var growClass = Flex > 0 ? $"grow-[{Flex}]" : "";
 }
 
-<div class="@flexClass @Class" style="@(Flex > 0 ? $"flex-grow: {Flex};" : "")">
+<div class="@CombineClasses(flexClass)" style="@(Flex > 0 ? $"flex-grow: {Flex}; {Style}" : Style)" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -13,5 +15,5 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool Expanded { get; set; } = false;
     [Parameter] public int Flex { get; set; } = 0;
-    [Parameter] public string? Class { get; set; }
+
 }

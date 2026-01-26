@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.Drawer
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
@@ -68,10 +69,10 @@
 
 @* Drawer Panel *@
 <div id="@Id"
-     class="fixed z-[1070] @positionClasses @bgColor @borderColor shadow-2xl flex flex-col @slideIn @Options.Class"
+     class="@CombineClasses($"fixed z-[1070] {positionClasses} {bgColor} {borderColor} shadow-2xl flex flex-col {slideIn} {Options.Class}")"
      style="@sizeStyle"
      @onkeydown="HandleKeyDown"
-     tabindex="-1">
+     tabindex="-1" @attributes="AdditionalAttributes">
     
     @* Resize Handle *@
     @if (Options.Resizable)
@@ -112,7 +113,7 @@
 </div>
 
 @code {
-    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString("N");
+
     [Parameter] public string? Title { get; set; }
     [Parameter] public DrawerOptions Options { get; set; } = DrawerOptions.Default;
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -123,6 +124,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = Guid.NewGuid().ToString("N");
+        }
+
         if (firstRender && Options.Resizable)
         {
             try

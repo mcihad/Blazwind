@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var isHorizontal = Orientation == BwOrientation.Horizontal;
@@ -12,7 +13,7 @@
         : $"height: {_size}px; min-height: 50px;";
 }
 
-<div class="@containerClass h-full w-full select-none @Class" style="@Style">
+<div class="@CombineClasses(containerClass, "h-full w-full select-none")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* First Panel *@
     <div class="overflow-auto flex-shrink-0" style="@firstPanelStyle">
         @FirstPanel
@@ -46,8 +47,7 @@
     [Parameter] public int DefaultSize { get; set; } = 250;
     [Parameter] public int MinSize { get; set; } = 100;
     [Parameter] public int MaxSize { get; set; } = 600;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     [Parameter] public EventCallback<int> OnResize { get; set; }
     
     private int _size;

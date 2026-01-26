@@ -2,7 +2,7 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="flex-1 flex items-center justify-between h-full relative z-50 @Class" style="@Style">
+<div class="@CombineClasses("flex-1 flex items-center justify-between h-full relative z-50")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <!-- Left Section -->
     <div class="flex items-center gap-4">
         @LeftContent

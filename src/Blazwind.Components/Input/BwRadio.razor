@@ -1,4 +1,6 @@
 @namespace Blazwind.Components.Input
+@using Blazwind.Components.Shared
+@inherits BwBase
 @typeparam TValue where TValue : notnull
 
 @{
@@ -7,7 +9,7 @@
     var ringClass = isSelected ? "border-blue-600 ring-1 ring-blue-600" : "border-gray-300 dark:border-gray-600 group-hover:border-blue-500 dark:group-hover:border-blue-400";
 }
 
-<div class="flex items-start @cursorClass @Class" @onclick="HandleClick">
+<div class="@CombineClasses($"flex items-start {cursorClass}")" id="@Id" @onclick="HandleClick" @attributes="AdditionalAttributes">
     <div class="flex items-center h-5">
         <input type="radio" 
                name="@Context?.GroupName" 
@@ -47,7 +49,7 @@
     [Parameter] public string? SubLabel { get; set; }
     [Parameter] public bool IsDisabled { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Class { get; set; }
+
 
     [Parameter] public bool? IsChecked { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }

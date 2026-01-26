@@ -1,11 +1,12 @@
 @namespace Blazwind.Components.DocumentViewer
 @using Blazwind.Components.Shared
+@inherits BwBase
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
 
-<div @ref="_viewerContainer" class="bw-document-viewer @Class" style="@_containerStyle">
+<div @ref="_viewerContainer" class="@CombineClasses("bw-document-viewer")" style="@_containerStyle" id="@Id" @attributes="AdditionalAttributes">
     @* Toolbar - for images *@
     @if (ShowToolbar && Type != DocumentType.Pdf)
     {
@@ -184,8 +185,7 @@
     
     #region Parameters
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     [Parameter] public string Height { get; set; } = "600px";
     [Parameter] public string? Url { get; set; }
     [Parameter] public string? Data { get; set; }

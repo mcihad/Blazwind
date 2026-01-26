@@ -13,7 +13,7 @@
     var labelSpacingClass = GetLabelSpacingClass();
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     @switch (EffectiveLabelPosition)
     {
         case BwLabelPosition.Top:
@@ -124,7 +124,8 @@
                    readonly="@IsReadOnly"
                    @onchange="HandleDateChange"
                    @onfocus="HandleFocusEvent"
-                   @onblur="HandleBlurEvent" />
+                   @onblur="HandleBlurEvent"
+                   @attributes="AdditionalAttributes" />
             break;
     }
     

@@ -2,6 +2,7 @@
 @using Blazwind.Components.Shared
 @using Blazwind.Components.HelpTooltip
 @using Microsoft.AspNetCore.Components.Forms
+@inherits BwBase
 
 @{
     var hasLabel = !string.IsNullOrEmpty(Label);
@@ -30,7 +31,7 @@
         : "";
 }
 
-<div class="bw-form-field @densityClass @Class">
+<div class="@CombineClasses($"bw-form-field {densityClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @switch (EffectiveLabelPosition)
     {
         case BwLabelPosition.Top:
@@ -131,7 +132,7 @@
     [Parameter] public string? HelperText { get; set; }
     [Parameter] public string? ErrorMessage { get; set; }
     [Parameter] public bool IsRequired { get; set; }
-    [Parameter] public string? Class { get; set; }
+
     [Parameter] public RenderFragment? ChildContent { get; set; }
     
     /// <summary>Label position - overrides cascade if set</summary>

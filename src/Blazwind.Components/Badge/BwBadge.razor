@@ -1,5 +1,6 @@
 @using Blazwind.Components.Shared
 @namespace Blazwind.Components.Badge
+@inherits BwBase
 
 @{
     var baseClass = "inline-flex items-center justify-center font-medium transition-colors";
@@ -69,7 +70,7 @@
     };
 }
 
-<span class="@baseClass @sizeClass @roundedClass @variantClass @Class">
+<span class="@CombineClasses($"{baseClass} {sizeClass} {roundedClass} {variantClass}")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     @if (ShowDot)
     {
         <span class="w-1.5 h-1.5 rounded-full @dotColorClass @(HasContent ? "mr-1.5" : "")"></span>
@@ -102,7 +103,6 @@
     [Parameter] public bool IsPill { get; set; }
     [Parameter] public bool ShowDot { get; set; }
     [Parameter] public bool Dismissible { get; set; }
-    [Parameter] public string? Class { get; set; }
     [Parameter] public string? Text { get; set; }
     [Parameter] public string? Icon { get; set; }
     [Parameter] public EventCallback OnDismiss { get; set; }

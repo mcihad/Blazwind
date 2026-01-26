@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.DataGrid
 @using Blazwind.Components.DataGrid.Models
 @using Blazwind.Components.Shared
+@inherits BwBase
 @using Blazwind.Components.Input
 @using Blazwind.Components.Pagination
 @using Blazwind.Components.Dropdown
@@ -24,7 +25,7 @@
     var heightStyle = !string.IsNullOrEmpty(Height) ? $"height: {Height};" : "";
 }
 
-<div class="relative bw-datagrid bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden @Class" id="@_gridId">
+<div class="@CombineClasses($"relative bw-datagrid bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     @* Toolbar *@
     @if (ToolbarContent != null || EnableSearch || EnableColumnToggle || EnableExport)
     {

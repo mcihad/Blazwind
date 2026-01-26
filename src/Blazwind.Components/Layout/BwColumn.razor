@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var justifyClass = MainAxisAlignment switch
@@ -57,7 +58,7 @@
     var xxlClass = GetSpanClass(Xxl, "2xl");
 }
 
-<div class="flex flex-col @spanClass @smClass @mdClass @lgClass @xlClass @xxlClass @justifyClass @alignClass @gapClass @Class">
+<div class="@CombineClasses("flex flex-col", spanClass, smClass, mdClass, lgClass, xlClass, xxlClass, justifyClass, alignClass, gapClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
@@ -66,7 +67,7 @@
     [Parameter] public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
     [Parameter] public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
     [Parameter] public BwSpacing Spacing { get; set; } = BwSpacing.Md;
-    [Parameter] public string? Class { get; set; }
+
     
     // Grid Props
     [Parameter] public int? Span { get; set; } // Default width (mobile)

@@ -1,14 +1,14 @@
 @namespace Blazwind.Components.Layout
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="@_classes @Class" style="@Style">
+<div class="@CombineClasses(_classes)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+
     [Parameter] public string TagName { get; set; } = "div";
 
     // EdgeInsets-like API

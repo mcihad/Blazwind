@@ -31,17 +31,25 @@
     /// <summary>
     /// Combines the base CSS classes with user-provided classes.
     /// </summary>
-    protected string CombineClasses(string? baseClasses)
+    protected string CombineClasses(params string?[] classes)
     {
-        if (string.IsNullOrWhiteSpace(baseClasses) && string.IsNullOrWhiteSpace(Class))
-            return string.Empty;
+        var builder = new System.Text.StringBuilder();
         
-        if (string.IsNullOrWhiteSpace(baseClasses))
-            return Class ?? string.Empty;
-        
-        if (string.IsNullOrWhiteSpace(Class))
-            return baseClasses;
-        
-        return $"{baseClasses} {Class}";
+        foreach (var c in classes)
+        {
+            if (!string.IsNullOrWhiteSpace(c))
+            {
+                if (builder.Length > 0) builder.Append(' ');
+                builder.Append(c);
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(Class))
+        {
+            if (builder.Length > 0) builder.Append(' ');
+            builder.Append(Class);
+        }
+
+        return builder.ToString();
     }
 }

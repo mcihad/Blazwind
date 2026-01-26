@@ -2,7 +2,7 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="relative inline-block @Class" style="@Style">
+<div class="@CombineClasses($"relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="@ContainerClass" aria-label="@Name">
         @if (!string.IsNullOrEmpty(Src))
         {

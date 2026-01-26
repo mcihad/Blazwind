@@ -12,7 +12,7 @@
     var labelSpacingClass = GetLabelSpacingClass();
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     @switch (EffectiveLabelPosition)
     {
         case BwLabelPosition.Top:
@@ -165,7 +165,10 @@
                @onblur="HandleBlurEvent"
                @onkeydown="HandleKeyDownEvent"
                @onkeyup="HandleKeyUpEvent"
-               @onclick="HandleClickEvent" />
+               @onkeydown="HandleKeyDownEvent"
+               @onkeyup="HandleKeyUpEvent"
+               @onclick="HandleClickEvent"
+               @attributes="AdditionalAttributes" />
         
         @if (!string.IsNullOrEmpty(IconRight))
         {

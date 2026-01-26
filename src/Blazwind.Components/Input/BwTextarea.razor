@@ -20,7 +20,7 @@
     var paddingClass = "p-3 text-sm";
 }
 
-<div class="@marginClass @Class" style="@Style">
+<div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     @switch (EffectiveLabelPosition)
     {
         case BwLabelPosition.Top:
@@ -53,7 +53,9 @@
                           @onfocus="HandleFocusEvent"
                           @onblur="HandleBlurEvent"
                           @onkeydown="HandleKeyDownEvent"
-                          @onkeyup="HandleKeyUpEvent">@Value</textarea>
+                          @onkeydown="HandleKeyDownEvent"
+                          @onkeyup="HandleKeyUpEvent"
+                          @attributes="AdditionalAttributes">@Value</textarea>
             </div>
             break;
             
