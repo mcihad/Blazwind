@@ -65,22 +65,22 @@
                 {
                     <div class="py-8 px-4 text-center text-gray-400 dark:text-gray-500">
                         <i class="fa-solid fa-search text-3xl mb-2"></i>
-                        <p class="m-0 text-sm">Sonuç bulunamadı</p>
+                        <p class="m-0 text-sm">No results found</p>
                     </div>
                 }
             </div>
             
             <div class="flex gap-4 px-4 py-2.5 border-t border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↑↓</kbd> Gezin</span>
-                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↵</kbd> Seç</span>
-                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">ESC</kbd> Kapat</span>
+                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↑↓</kbd> Browse</span>
+                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↵</kbd> Select</span>
+                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">ESC</kbd> Close</span>
             </div>
         </div>
     </div>
 }
 
 @code {
-    [Parameter] public string Placeholder { get; set; } = "Komut ara...";
+    [Parameter] public string Placeholder { get; set; } = "Search command...";
     
     private DotNetObjectReference<BwCommandPalette>? _dotNetRef;
     private string _inputId = $"cmd-input-{Guid.NewGuid():N}";
