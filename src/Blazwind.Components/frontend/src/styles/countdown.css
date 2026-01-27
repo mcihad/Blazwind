@@ -1,0 +1,195 @@
+/* ============================================
+   Countdown Component Styles
+   ============================================ */
+
+.bw-countdown {
+    @apply inline-flex items-center;
+}
+
+.bw-countdown-box {
+    @apply rounded-lg flex flex-col items-center justify-center min-w-[3rem] transition-all duration-300;
+}
+
+.bw-countdown-separator {
+    @apply text-2xl font-light opacity-60;
+    color: var(--bw-color-text);
+}
+
+.bw-countdown-number {
+    @apply font-bold tabular-nums tracking-tight;
+}
+
+.bw-countdown-label {
+    @apply uppercase tracking-wider opacity-70 mt-1;
+}
+
+/* SIZES */
+.bw-countdown-sm {
+    @apply gap-2;
+}
+
+.bw-countdown-md {
+    @apply gap-3;
+}
+
+.bw-countdown-lg {
+    @apply gap-4;
+}
+
+.bw-countdown-xl {
+    @apply gap-5;
+}
+
+.bw-countdown-box-sm {
+    @apply px-2 py-1.5;
+}
+
+.bw-countdown-box-md {
+    @apply px-4 py-3;
+}
+
+.bw-countdown-box-lg {
+    @apply px-5 py-4;
+}
+
+.bw-countdown-box-xl {
+    @apply px-6 py-5;
+}
+
+.bw-countdown-num-sm {
+    @apply text-xl;
+}
+
+.bw-countdown-num-md {
+    @apply text-3xl;
+}
+
+.bw-countdown-num-lg {
+    @apply text-5xl;
+}
+
+.bw-countdown-num-xl {
+    @apply text-7xl;
+}
+
+.bw-countdown-lbl-sm {
+    @apply text-[10px];
+}
+
+.bw-countdown-lbl-md {
+    @apply text-xs;
+}
+
+.bw-countdown-lbl-lg {
+    @apply text-sm;
+}
+
+.bw-countdown-lbl-xl {
+    @apply text-base;
+}
+
+
+/* VARIANTS */
+
+/* FILLED (Gradients) */
+.bw-countdown-filled {
+    color: white;
+}
+
+.bw-countdown-filled.bw-countdown-primary {
+    background: linear-gradient(to bottom right, var(--bw-color-primary), color-mix(in srgb, var(--bw-color-primary) 70%, black));
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--bw-color-primary) 30%, transparent);
+}
+
+.bw-countdown-filled.bw-countdown-success {
+    background: linear-gradient(to bottom right, var(--bw-color-success), color-mix(in srgb, var(--bw-color-success) 70%, black));
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--bw-color-success) 30%, transparent);
+}
+
+.bw-countdown-filled.bw-countdown-danger {
+    background: linear-gradient(to bottom right, var(--bw-color-danger), color-mix(in srgb, var(--bw-color-danger) 70%, black));
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--bw-color-danger) 30%, transparent);
+}
+
+.bw-countdown-filled.bw-countdown-warning {
+    background: linear-gradient(to bottom right, var(--bw-color-warning), color-mix(in srgb, var(--bw-color-warning) 70%, black));
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--bw-color-warning) 30%, transparent);
+}
+
+.bw-countdown-filled.bw-countdown-info {
+    background: linear-gradient(to bottom right, var(--bw-color-info), color-mix(in srgb, var(--bw-color-info) 70%, black));
+    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--bw-color-info) 30%, transparent);
+}
+
+.bw-countdown-filled.bw-countdown-dark {
+    background: linear-gradient(to bottom right, var(--bw-gray-700), var(--bw-gray-900));
+}
+
+/* OUTLINE */
+.bw-countdown-outline {
+    background-color: var(--bw-color-surface);
+    border: 2px solid currentColor;
+}
+
+.bw-countdown-outline.bw-countdown-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-countdown-outline.bw-countdown-success {
+    color: var(--bw-color-success);
+}
+
+.bw-countdown-outline.bw-countdown-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-countdown-outline.bw-countdown-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-countdown-outline.bw-countdown-dark {
+    color: var(--bw-color-text);
+    border-color: var(--bw-color-border);
+}
+
+/* SOFT */
+.bw-countdown-soft.bw-countdown-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary-soft-text);
+}
+
+.bw-countdown-soft.bw-countdown-success {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success-soft-text);
+}
+
+.bw-countdown-soft.bw-countdown-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    color: var(--bw-color-danger-soft-text);
+}
+
+.bw-countdown-soft.bw-countdown-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    color: var(--bw-color-warning-soft-text);
+}
+
+.bw-countdown-soft.bw-countdown-dark {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-800);
+}
+
+.dark .bw-countdown-soft.bw-countdown-dark {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-200);
+}
+
+/* GHOST (Default) */
+.bw-countdown-ghost {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-800);
+}
+
+.dark .bw-countdown-ghost {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-200);
+}

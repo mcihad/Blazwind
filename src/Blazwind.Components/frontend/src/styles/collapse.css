@@ -1,0 +1,129 @@
+/* ============================================
+   Collapse Component Styles
+   ============================================ */
+
+.bw-collapse {
+    @apply overflow-hidden transition-all duration-300 ease-in-out;
+}
+
+.bw-collapse-bordered {
+    @apply border rounded-lg;
+    border-color: var(--bw-color-border);
+}
+
+/* Header */
+.bw-collapse-header {
+    @apply w-full flex items-center justify-between cursor-pointer select-none transition-colors;
+}
+
+.bw-collapse-header:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-collapse-header:hover {
+    background-color: rgba(31, 41, 55, 0.5);
+    /* gray-800/50 */
+}
+
+.bw-collapse-disabled {
+    @apply opacity-50 cursor-not-allowed;
+}
+
+.bw-collapse-disabled:hover {
+    background-color: transparent !important;
+}
+
+/* Sizes */
+.bw-collapse-header-xs {
+    @apply px-2 py-1 text-xs;
+}
+
+.bw-collapse-header-sm {
+    @apply px-3 py-2 text-xs;
+}
+
+.bw-collapse-header-md {
+    @apply px-4 py-3 text-sm;
+}
+
+.bw-collapse-header-lg {
+    @apply px-5 py-4 text-base;
+}
+
+.bw-collapse-header-xl {
+    @apply px-6 py-5 text-lg;
+}
+
+.bw-collapse-content-xs {
+    @apply px-2 pb-2 pt-1;
+}
+
+.bw-collapse-content-sm {
+    @apply px-3 pb-3 pt-2;
+}
+
+.bw-collapse-content-md {
+    @apply px-4 pb-4 pt-2;
+}
+
+.bw-collapse-content-lg {
+    @apply px-5 pb-5 pt-3;
+}
+
+.bw-collapse-content-xl {
+    @apply px-6 pb-6 pt-4;
+}
+
+/* Colors (Icon mainly) */
+.bw-collapse-icon-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-collapse-icon-secondary {
+    color: var(--bw-color-secondary);
+}
+
+.bw-collapse-icon-success {
+    color: var(--bw-color-success);
+}
+
+.bw-collapse-icon-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-collapse-icon-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-collapse-icon-info {
+    color: var(--bw-color-info);
+}
+
+/* Content */
+.bw-collapse-content {
+    @apply border-t;
+    background-color: var(--bw-gray-50);
+    border-color: var(--bw-color-divider);
+    color: var(--bw-color-text-secondary);
+    /* Animation handled in Razor or here? Razor uses 'animate-in fade-in' utility */
+    /* We can standardize animation here */
+    animation: bw-fade-in-slide 0.2s ease-out forwards;
+}
+
+@keyframes bw-fade-in-slide {
+    from {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dark .bw-collapse-content {
+    background-color: rgba(31, 41, 55, 0.5);
+    /* gray-800/50 */
+    border-color: var(--bw-gray-700);
+}

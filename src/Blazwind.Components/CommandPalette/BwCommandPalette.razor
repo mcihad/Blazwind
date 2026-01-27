@@ -10,51 +10,51 @@
 
 @if (_isVisible)
 {
-    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1060] flex items-start justify-center pt-[15vh] animate-in fade-in duration-150" @onclick="Close" id="@Id" @attributes="AdditionalAttributes">
-        <div class="w-full max-w-[560px] bg-white dark:bg-gray-800 rounded shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200" @onclick:stopPropagation="true">
-            <div class="flex items-center px-4 py-3 border-b border-gray-200 dark:border-gray-700 gap-3">
-                <i class="fa-solid fa-search text-gray-400"></i>
+    <div class="bw-cp-overlay animate-in fade-in duration-150" @onclick="Close" id="@Id" @attributes="AdditionalAttributes">
+        <div class="bw-cp-modal animate-in zoom-in-95 fade-in duration-200" @onclick:stopPropagation="true">
+            <div class="bw-cp-header">
+                <i class="fa-solid fa-search bw-cp-icon"></i>
                 <input type="text" 
                        id="@_inputId"
-                       class="flex-1 border-none outline-none focus:outline-none focus:ring-0 text-base text-gray-900 dark:text-gray-100 bg-transparent placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                       class="bw-cp-input"
                        placeholder="@Placeholder"
                        @bind="_searchQuery"
                        @bind:event="oninput"
                        @bind:after="OnSearchChanged"
                        @onkeydown="HandleKeyDown"
                        @onkeydown:preventDefault="_preventKeyDefault" />
-                <kbd class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-[11px] font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">ESC</kbd>
+                <kbd class="bw-cp-esc-badge">ESC</kbd>
             </div>
             
-            <div class="max-h-[400px] overflow-y-auto py-2" id="@_resultsId">
+            <div class="bw-cp-results" id="@_resultsId">
                 @if (_filteredCommands.Any())
                 {
                     @foreach (var group in _groupedCommands)
                     {
-                        <div class="px-2">
-                            <div class="px-3 py-2 pt-2 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">@group.Key</div>
+                        <div class="bw-cp-group">
+                            <div class="bw-cp-group-title">@group.Key</div>
                             @foreach (var command in group.Value)
                             {
                                 var index = _filteredCommands.IndexOf(command);
-                                var activeClass = index == _activeIndex ? "bg-blue-100 dark:bg-blue-900/30" : "hover:bg-gray-50 dark:hover:bg-gray-700";
+                                var activeClass = index == _activeIndex ? "bw-cp-item-active" : "";
                                 
                                 <button type="button"
-                                        class="w-full flex items-center gap-3 px-3 py-2.5 my-0.5 border-none rounded cursor-pointer text-left transition-colors @activeClass"
+                                        class="bw-cp-item @activeClass"
                                         @onclick="() => ExecuteCommand(command)">
                                     @if (!string.IsNullOrEmpty(command.Icon))
                                     {
-                                        <i class="@command.Icon w-5 text-center text-sm @(index == _activeIndex ? "text-blue-600" : "text-gray-500")"></i>
+                                        <i class="@command.Icon bw-cp-item-icon"></i>
                                     }
                                     <div class="flex-1 flex flex-col gap-0.5 min-w-0">
-                                        <span class="text-sm font-medium @(index == _activeIndex ? "text-blue-900 dark:text-blue-100" : "text-gray-900 dark:text-gray-100")">@command.Label</span>
+                                        <span class="bw-cp-item-title">@command.Label</span>
                                         @if (!string.IsNullOrEmpty(command.Description))
                                         {
-                                            <span class="text-xs text-gray-500 dark:text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap">@command.Description</span>
+                                            <span class="bw-cp-item-desc">@command.Description</span>
                                         }
                                     </div>
                                     @if (!string.IsNullOrEmpty(command.Shortcut))
                                     {
-                                        <kbd class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-[10px] font-medium text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600">@command.Shortcut</kbd>
+                                        <kbd class="bw-cp-shortcut">@command.Shortcut</kbd>
                                     }
                                 </button>
                             }
@@ -63,17 +63,17 @@
                 }
                 else
                 {
-                    <div class="py-8 px-4 text-center text-gray-400 dark:text-gray-500">
+                    <div class="bw-cp-empty">
                         <i class="fa-solid fa-search text-3xl mb-2"></i>
                         <p class="m-0 text-sm">Sonuç bulunamadı</p>
                     </div>
                 }
             </div>
             
-            <div class="flex gap-4 px-4 py-2.5 border-t border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↑↓</kbd> Gezin</span>
-                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">↵</kbd> Seç</span>
-                <span><kbd class="px-1 py-0.5 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded text-[10px] mr-1">ESC</kbd> Kapat</span>
+            <div class="bw-cp-footer">
+                <span><kbd class="bw-cp-footer-key">↑↓</kbd> Gezin</span>
+                <span><kbd class="bw-cp-footer-key">↵</kbd> Seç</span>
+                <span><kbd class="bw-cp-footer-key">ESC</kbd> Kapat</span>
             </div>
         </div>
     </div>

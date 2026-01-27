@@ -1,0 +1,84 @@
+/* ============================================
+   Dropdown Component Styles (Theme-Aware)
+   ============================================ */
+
+/* Reuse keyframes if defined globally, or define locally to be safe */
+@keyframes bw-dropdown-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.bw-dropdown-menu {
+    @apply absolute z-[1010] w-56 rounded-md shadow-lg outline-none;
+    background-color: var(--bw-color-surface-elevated);
+    border: 1px solid var(--bw-color-border);
+    animation: bw-dropdown-enter 0.1s ease-out forwards;
+}
+
+.dark .bw-dropdown-menu {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-dropdown-header {
+    @apply px-4 py-3 mb-1 border-b;
+    background-color: var(--bw-color-primary-soft-bg);
+    border-color: var(--bw-color-divider);
+}
+
+.dark .bw-dropdown-header {
+    background-color: rgba(31, 41, 55, 0.5);
+    /* gray-800/50 */
+    border-color: var(--bw-gray-700);
+}
+
+.bw-dropdown-title {
+    @apply text-xs font-medium uppercase;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-dropdown-subtitle {
+    @apply text-sm font-semibold truncate;
+    color: var(--bw-color-text-emphasis);
+}
+
+.bw-dropdown-item {
+    @apply flex w-full items-center px-4 py-2 text-sm transition-colors text-left;
+    color: var(--bw-color-text);
+}
+
+.bw-dropdown-item:hover,
+.bw-dropdown-item:focus {
+    background-color: var(--bw-control-hover-bg, var(--bw-gray-100));
+    color: var(--bw-color-text-emphasis);
+}
+
+.dark .bw-dropdown-item:hover,
+.dark .bw-dropdown-item:focus {
+    background-color: var(--bw-control-hover-bg, var(--bw-gray-700));
+}
+
+.bw-dropdown-divider {
+    @apply h-px my-1;
+    background-color: var(--bw-color-divider);
+}
+
+.dark .bw-dropdown-divider {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-dropdown-icon {
+    @apply mr-3 h-5 w-5;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-dropdown-item:hover .bw-dropdown-icon {
+    color: var(--bw-color-text-secondary);
+}

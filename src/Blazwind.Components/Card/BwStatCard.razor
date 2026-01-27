@@ -3,22 +3,15 @@
 @inherits BwBase
 
 @{
-    var (bgClass, textClass, iconBgClass) = Color switch
-    {
-        BwColor.Primary => ("bg-white dark:bg-gray-900", "text-blue-600 dark:text-blue-400", "bg-blue-100 dark:bg-blue-900/30"),
-        BwColor.Success => ("bg-white dark:bg-gray-900", "text-green-600 dark:text-green-400", "bg-green-100 dark:bg-green-900/30"),
-        BwColor.Danger => ("bg-white dark:bg-gray-900", "text-red-600 dark:text-red-400", "bg-red-100 dark:bg-red-900/30"),
-        BwColor.Warning => ("bg-white dark:bg-gray-900", "text-amber-600 dark:text-amber-400", "bg-amber-100 dark:bg-amber-900/30"),
-        BwColor.Info => ("bg-white dark:bg-gray-900", "text-cyan-600 dark:text-cyan-400", "bg-cyan-100 dark:bg-cyan-900/30"),
-        BwColor.Dark => ("bg-gray-900 dark:bg-black", "text-white dark:text-gray-100", "bg-gray-700 dark:bg-gray-800"),
-        _ => ("bg-white dark:bg-gray-900", "text-gray-900 dark:text-gray-100", "bg-gray-100 dark:bg-gray-700/30")
-    };
+    var colorClass = $"bw-stat-card-{Color.ToString().ToLower()}";
+    var iconClass = $"bw-card-icon-{Color.ToString().ToLower()}";
+    var iconBgClass = $"bw-card-icon-bg-{Color.ToString().ToLower()}";
     
     var trendClass = Trend switch
     {
-        BwTrend.Up => "text-green-600 dark:text-green-400",
-        BwTrend.Down => "text-red-600 dark:text-red-400",
-        _ => "text-gray-500 dark:text-gray-400"
+        BwTrend.Up => "bw-stat-card-trend-up",
+        BwTrend.Down => "bw-stat-card-trend-down",
+        _ => "bw-stat-card-trend-neutral"
     };
     
     var trendIcon = Trend switch
@@ -29,15 +22,15 @@
     };
 }
 
-<div class="@CombineClasses($"{bgClass} rounded border border-gray-200 dark:border-gray-700 p-4 shadow-sm")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"bw-stat-card {colorClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="flex items-start justify-between">
         <div class="flex-1">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@Title</p>
-            <p class="mt-1 text-2xl font-bold @textClass">@Value</p>
+            <p class="bw-stat-card-value">@Value</p>
             
             @if (!string.IsNullOrEmpty(TrendValue))
             {
-                <div class="mt-2 flex items-center gap-1 @trendClass text-sm">
+                <div class="bw-stat-card-trend @trendClass">
                     @if (!string.IsNullOrEmpty(trendIcon))
                     {
                         <i class="@trendIcon text-xs"></i>
@@ -53,15 +46,15 @@
         
         @if (!string.IsNullOrEmpty(Icon))
         {
-            <div class="@iconBgClass w-10 h-10 rounded flex items-center justify-center shrink-0">
-                <i class="@Icon @textClass"></i>
+            <div class="bw-card-icon-wrapper @iconBgClass">
+                <i class="@Icon @iconClass"></i>
             </div>
         }
     </div>
     
     @if (ChildContent != null)
     {
-        <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+        <div class="bw-stat-card-footer">
             @ChildContent
         </div>
     }

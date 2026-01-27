@@ -3,7 +3,7 @@
 @inherits BwBase
 
 <nav aria-label="Breadcrumb" class="@CombineClasses("bw-breadcrumb")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
-    <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse [&>li:first-child_.bw-breadcrumb-separator]:hidden">
+    <ol class="bw-breadcrumb-list">
         <CascadingValue Value="SeparatorTemplate" Name="BreadcrumbSeparator">
              @ChildContent
         </CascadingValue>

@@ -6,7 +6,7 @@
 
 @if (IsDivider)
 {
-    <div class="h-px margin-y-1 bg-gray-200 dark:bg-gray-700" role="separator"></div>
+    <div class="bw-context-menu-separator" role="separator"></div>
 }
 else
 {
@@ -16,14 +16,14 @@ else
          @onmouseleave="HandleMouseLeave">
          
         <button type="button" 
-                class="flex w-full items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white @Class"
+                class="bw-context-menu-item @Class"
                 role="menuitem"
                 @onclick="HandleClick"
                 style="@Style"
                 @ref="_triggerElement">
             @if (!string.IsNullOrEmpty(Icon))
             {
-                <i class="@Icon mr-3 h-5 w-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-300 @IconClass" aria-hidden="true"></i>
+                <i class="@Icon bw-context-menu-icon @IconClass" aria-hidden="true"></i>
             }
             <span class="flex-grow text-left">@Text</span>
             
@@ -37,7 +37,7 @@ else
 
         @if (SubMenu != null && _isSubMenuOpen)
         {
-            <div class="absolute min-w-[160px] bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 dark:ring-white/10 py-1 z-50 animate-in fade-in zoom-in-95 duration-75"
+            <div class="bw-context-submenu"
                  style="top: 0; left: 100%; opacity: 0;"
                  @ref="_submenuElement">
                  <CascadingValue Value="ContextMenu">

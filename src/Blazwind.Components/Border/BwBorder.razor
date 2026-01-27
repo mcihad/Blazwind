@@ -5,7 +5,7 @@
 <div class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (Label != null || !string.IsNullOrEmpty(Title))
     {
-        <div class="absolute -top-3 @TitlePositionClass bg-white dark:bg-gray-900 px-2 text-sm font-medium @TitleColorClass @TitleClass">
+        <div class="absolute -top-3 @TitlePositionClass bw-border-title-bg px-2 text-sm font-medium @TitleColorClass @TitleClass">
             @(Label ?? (RenderFragment)(builder => builder.AddContent(0, Title)))
         </div>
     }
@@ -30,8 +30,10 @@
     
     [Parameter] public string? TitleClass { get; set; }
 
-    private string AllClasses => CombineClasses($"relative {BorderClass} {RadiusClass} {StyleClass} {ShadowClass} {GetBorderColorClass(Color)}");
+    private string AllClasses => CombineClasses($"relative {BorderClass} {RadiusClass} {StyleClass} {ShadowClass} {GetBorderColorClass(Color)} bw-border");
     
+    // Width handled by standard tailwind utility or custom if needed
+    // Keeping utility for width as it maps well
     private string BorderClass => (Width, Color) switch
     {
         (BwSize.Small, _) => "border",
@@ -42,12 +44,12 @@
 
     private string RadiusClass => Radius switch
     {
-        BwSize.Small => "rounded-sm",
-        BwSize.Medium => "rounded",
-        BwSize.Large => "rounded-lg",
-        BwSize.ExtraSmall => "rounded-none", 
-        BwSize.ExtraLarge => "rounded-xl",
-        _ => "rounded"
+        BwSize.Small => "bw-radius-sm",
+        BwSize.Medium => "bw-radius-md",
+        BwSize.Large => "bw-radius-lg",
+        BwSize.ExtraSmall => "bw-radius-none", 
+        BwSize.ExtraLarge => "bw-radius-xl",
+        _ => "bw-radius-md"
     };
 
     private string PaddingClass => Padding switch
@@ -73,26 +75,26 @@
 
     private string TitleColorClass => Color switch
     {
-        BwColor.Primary => "text-blue-600 dark:text-blue-400",
-        BwColor.Secondary => "text-gray-600 dark:text-gray-400",
-        BwColor.Success => "text-emerald-600 dark:text-emerald-400",
-        BwColor.Danger => "text-red-600 dark:text-red-400",
-        BwColor.Warning => "text-amber-600 dark:text-amber-400",
-        BwColor.Info => "text-sky-600 dark:text-sky-400",
-        _ => "text-gray-500 dark:text-gray-400"
+        BwColor.Primary => "bw-border-title-primary",
+        BwColor.Secondary => "bw-border-title-secondary",
+        BwColor.Success => "bw-border-title-success",
+        BwColor.Danger => "bw-border-title-danger",
+        BwColor.Warning => "bw-border-title-warning",
+        BwColor.Info => "bw-border-title-info",
+        _ => "bw-border-title-default"
     };
 
     private string GetBorderColorClass(BwColor color) => color switch
     {
-        BwColor.Primary => "border-blue-500 dark:border-blue-400",
-        BwColor.Secondary => "border-gray-400 dark:border-gray-500",
-        BwColor.Success => "border-emerald-500 dark:border-emerald-400",
-        BwColor.Danger => "border-red-500 dark:border-red-400",
-        BwColor.Warning => "border-amber-500 dark:border-amber-400",
-        BwColor.Info => "border-sky-500 dark:border-sky-400",
-        BwColor.Light => "border-gray-200 dark:border-gray-700",
-        BwColor.Dark => "border-gray-800 dark:border-gray-600",
-        _ => "border-gray-200 dark:border-gray-700"
+        BwColor.Primary => "bw-border-primary",
+        BwColor.Secondary => "bw-border-secondary",
+        BwColor.Success => "bw-border-success",
+        BwColor.Danger => "bw-border-danger",
+        BwColor.Warning => "bw-border-warning",
+        BwColor.Info => "bw-border-info",
+        BwColor.Light => "bw-border-light",
+        BwColor.Dark => "bw-border-dark",
+        _ => "bw-border-light"
     };
 }
 

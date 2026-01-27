@@ -3,52 +3,50 @@
 @using Blazwind.Components.Shared
 @using Blazwind.Components
 
+@using System.Text
+
 @{
-    var baseClasses = "overflow-hidden transition-all duration-300 ease-in-out";
-    var borderClasses = Bordered ? "border border-gray-200 dark:border-gray-700 rounded-lg" : "";
+    var borderClass = Bordered ? "bw-collapse-bordered" : "";
+    var stateClass = IsDisabled ? "bw-collapse-disabled" : "";
 
-    var headerBaseClasses = "w-full flex items-center justify-between cursor-pointer select-none transition-colors";
-    var headerHoverClasses = IsDisabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50 dark:hover:bg-gray-800/50";
-
-    var colorClasses = Color switch
+    var colorClass = Color switch
     {
-        BwColor.Success => "text-emerald-600",
-        BwColor.Danger => "text-red-600",
-        BwColor.Warning => "text-amber-600",
-        BwColor.Info => "text-sky-600",
-        BwColor.Secondary => "text-gray-600",
-        _ => "text-blue-600"
+        BwColor.Success => "bw-collapse-icon-success",
+        BwColor.Danger => "bw-collapse-icon-danger",
+        BwColor.Warning => "bw-collapse-icon-warning",
+        BwColor.Info => "bw-collapse-icon-info",
+        BwColor.Secondary => "bw-collapse-icon-secondary",
+        _ => "bw-collapse-icon-primary"
     };
 
-    // Accordion ile aynı boyutlar
-    var sizeClasses = Size switch
+    var headerSizeClass = Size switch
     {
-        BwSize.ExtraSmall => "px-2 py-1 text-xs",
-        BwSize.Small => "px-3 py-2 text-xs",
-        BwSize.Large => "px-5 py-4 text-base",
-        BwSize.ExtraLarge => "px-6 py-5 text-lg",
-        _ => "px-4 py-3 text-sm" // Medium - default
+        BwSize.ExtraSmall => "bw-collapse-header-xs",
+        BwSize.Small => "bw-collapse-header-sm",
+        BwSize.Large => "bw-collapse-header-lg",
+        BwSize.ExtraLarge => "bw-collapse-header-xl",
+        _ => "bw-collapse-header-md"
     };
 
-    var contentPadding = Size switch
+    var contentSizeClass = Size switch
     {
-        BwSize.ExtraSmall => "px-2 pb-2 pt-1",
-        BwSize.Small => "px-3 pb-3 pt-2",
-        BwSize.Large => "px-5 pb-5 pt-3",
-        BwSize.ExtraLarge => "px-6 pb-6 pt-4",
-        _ => "px-4 pb-4 pt-2" // Medium - default
+        BwSize.ExtraSmall => "bw-collapse-content-xs",
+        BwSize.Small => "bw-collapse-content-sm",
+        BwSize.Large => "bw-collapse-content-lg",
+        BwSize.ExtraLarge => "bw-collapse-content-xl",
+        _ => "bw-collapse-content-md"
     };
 
     var iconRotation = IsExpanded ? "rotate-180" : "";
 }
 
-<div class="@CombineClasses($"{baseClasses} {borderClasses}")" style="@Style" id="@Id"
+<div class="@CombineClasses($"bw-collapse {borderClass}")" style="@Style" id="@Id"
     @attributes="AdditionalAttributes">
-    <div class="@headerBaseClasses @headerHoverClasses @sizeClasses" @onclick="Toggle">
+    <div class="bw-collapse-header @headerSizeClass @stateClass" @onclick="Toggle">
         <div class="flex items-center gap-2">
             @if (!string.IsNullOrEmpty(Icon))
             {
-                <i class="@Icon @colorClasses opacity-70"></i>
+                <i class="@Icon @colorClass opacity-70"></i>
             }
             @if (HeaderTemplate != null)
             {
@@ -75,7 +73,7 @@
     @if (IsExpanded)
     {
         <div
-            class="@contentPadding text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 animate-in fade-in slide-in-from-top-2 duration-200">
+            class="bw-collapse-content @contentSizeClass">
             @ChildContent
         </div>
     }

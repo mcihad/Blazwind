@@ -14,7 +14,7 @@
     <div class="fixed inset-0 z-40 bg-transparent" @onclick="Close" @oncontextmenu="Close" @oncontextmenu:preventDefault="true"></div>
 
     @* Menu *@
-    <div class="fixed z-50 min-w-[160px] bg-white dark:bg-gray-800 rounded-md shadow-lg ring-1 ring-black/5 dark:ring-white/10 py-1 focus:outline-none animate-in fade-in zoom-in-95 duration-75"
+    <div class="bw-context-menu focus:outline-none"
          style="top: @(Y)px; left: @(X)px; opacity: @(Opacity);"
          role="menu"
          @ref="_menuElement">

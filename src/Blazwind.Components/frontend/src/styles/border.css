@@ -1,0 +1,103 @@
+/* ============================================
+   Border Component Styles
+   ============================================ */
+
+.bw-border {
+    @apply relative border-solid;
+}
+
+/* Colors */
+.bw-border-primary {
+    border-color: var(--bw-color-primary);
+}
+
+.bw-border-secondary {
+    border-color: var(--bw-color-secondary);
+}
+
+.bw-border-success {
+    border-color: var(--bw-color-success);
+}
+
+.bw-border-danger {
+    border-color: var(--bw-color-danger);
+}
+
+.bw-border-warning {
+    border-color: var(--bw-color-warning);
+}
+
+.bw-border-info {
+    border-color: var(--bw-color-info);
+}
+
+.bw-border-light {
+    border-color: var(--bw-color-border);
+}
+
+.bw-border-dark {
+    border-color: var(--bw-gray-800);
+}
+
+.dark .bw-border-dark {
+    border-color: var(--bw-gray-600);
+}
+
+/* Title Colors */
+.bw-border-title-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-border-title-secondary {
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-border-title-success {
+    color: var(--bw-color-success);
+}
+
+.bw-border-title-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-border-title-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-border-title-info {
+    color: var(--bw-color-info);
+}
+
+.bw-border-title-default {
+    color: var(--bw-color-text-muted);
+}
+
+/* Title Background */
+.bw-border-title-bg {
+    background-color: var(--bw-color-surface);
+}
+
+/* Radius Variants */
+.bw-radius-sm {
+    border-radius: var(--bw-radius-sm);
+}
+
+.bw-radius-md {
+    border-radius: var(--bw-radius-default);
+}
+
+.bw-radius-lg {
+    border-radius: var(--bw-radius-lg);
+}
+
+.bw-radius-xl {
+    border-radius: var(--bw-radius-xl);
+}
+
+.bw-radius-full {
+    border-radius: var(--bw-radius-full);
+}
+
+.bw-radius-none {
+    border-radius: 0;
+}

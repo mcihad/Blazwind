@@ -1,0 +1,80 @@
+/* ============================================
+   Context Menu Component Styles (Theme-Aware)
+   ============================================ */
+
+@keyframes bw-fade-in-zoom {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.bw-context-menu {
+    @apply fixed z-50 min-w-[160px] py-1 rounded-md shadow-lg outline-none cursor-default;
+    background-color: var(--bw-color-surface-elevated);
+    /* Elevated surface for popups */
+    border: 1px solid var(--bw-color-border);
+    /* Standard CSS Animation */
+    animation: bw-fade-in-zoom 0.1s ease-out forwards;
+}
+
+.dark .bw-context-menu {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-context-menu-item {
+    @apply flex w-full items-center px-4 py-2 text-sm transition-colors;
+    color: var(--bw-color-text);
+    /* Ensure relative for submenu positioning */
+    @apply relative;
+}
+
+.bw-context-menu-item:hover,
+.bw-context-menu-item:focus {
+    /* Use a theme-defined hover background or fallback */
+    background-color: var(--bw-control-hover-bg, var(--bw-gray-100));
+    color: var(--bw-color-text-emphasis);
+}
+
+.dark .bw-context-menu-item:hover,
+.dark .bw-context-menu-item:focus {
+    background-color: var(--bw-control-hover-bg, var(--bw-gray-700));
+    color: var(--bw-color-text-emphasis-dark);
+}
+
+.bw-context-menu-separator {
+    @apply h-px my-1;
+    background-color: var(--bw-color-divider);
+}
+
+.dark .bw-context-menu-separator {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-context-menu-icon {
+    @apply mr-3 h-5 w-5;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-context-menu-item:hover .bw-context-menu-icon {
+    color: var(--bw-color-text-secondary);
+}
+
+/* Submenu container styles */
+.bw-context-submenu {
+    @apply absolute min-w-[160px] rounded-md shadow-lg py-1 z-50;
+    background-color: var(--bw-color-surface-elevated);
+    border: 1px solid var(--bw-color-border);
+    animation: bw-fade-in-zoom 0.1s ease-out forwards;
+}
+
+.dark .bw-context-submenu {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}

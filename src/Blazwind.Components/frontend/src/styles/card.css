@@ -109,3 +109,73 @@
 .bw-card-icon-info {
     color: var(--bw-color-info);
 }
+
+/* ========================================
+   STAT CARD STYLES
+   ======================================== */
+
+.bw-stat-card {
+    @apply rounded border p-4 shadow-sm transition-all;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.bw-stat-card-value {
+    @apply mt-1 text-2xl font-bold;
+    color: var(--bw-color-text);
+}
+
+/* Variant Overrides */
+.bw-stat-card-primary .bw-stat-card-value {
+    color: var(--bw-color-primary);
+}
+
+.bw-stat-card-success .bw-stat-card-value {
+    color: var(--bw-color-success);
+}
+
+.bw-stat-card-danger .bw-stat-card-value {
+    color: var(--bw-color-danger);
+}
+
+.bw-stat-card-warning .bw-stat-card-value {
+    color: var(--bw-color-warning);
+}
+
+.bw-stat-card-info .bw-stat-card-value {
+    color: var(--bw-color-info);
+}
+
+.bw-stat-card-dark .bw-stat-card-value {
+    color: var(--bw-color-surface);
+}
+
+.bw-stat-card-dark {
+    background-color: var(--bw-color-inverse);
+    color: var(--bw-color-surface);
+}
+
+.bw-stat-card-trend {
+    @apply mt-2 flex items-center gap-1 text-sm;
+}
+
+.bw-stat-card-trend-up {
+    color: var(--bw-color-success);
+}
+
+.bw-stat-card-trend-down {
+    color: var(--bw-color-danger);
+}
+
+.bw-stat-card-trend-neutral {
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-stat-card-footer {
+    @apply mt-3 pt-3;
+    border-top: 1px solid var(--bw-color-border);
+}
+
+.dark .bw-stat-card-footer {
+    border-top-color: var(--bw-gray-700);
+}

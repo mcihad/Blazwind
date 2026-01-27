@@ -27,6 +27,17 @@
 @import "./styles/affix.css";
 @import "./styles/approvalchain.css";
 @import "./styles/hero.css";
+@import "./styles/border.css";
+@import "./styles/breadcrumb.css";
+@import "./styles/carousel.css";
+@import "./styles/chat.css";
+@import "./styles/contextmenu.css";
+@import "./styles/dropdown.css";
+@import "./styles/codeblock.css";
+@import "./styles/collapse.css";
+@import "./styles/commandpalette.css";
+@import "./styles/comment.css";
+@import "./styles/countdown.css";
 
 /* Component-specific styles */
 @import "./styles/timeline.css";

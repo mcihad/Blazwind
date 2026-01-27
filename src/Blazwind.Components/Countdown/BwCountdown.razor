@@ -5,80 +5,70 @@
 @implements IDisposable
 
 @{
-    var baseClasses = "inline-flex items-center";
-
-    var sizeClasses = Size switch
+    var sizeClass = Size switch
     {
-        BwSize.Small => "gap-2",
-        BwSize.Large => "gap-4",
-        BwSize.ExtraLarge => "gap-5",
-        _ => "gap-3"
+        BwSize.Small => "bw-countdown-sm",
+        BwSize.Large => "bw-countdown-lg",
+        BwSize.ExtraLarge => "bw-countdown-xl",
+        _ => "bw-countdown-md"
     };
 
-    var numberSize = Size switch
+    var boxSizeClass = Size switch
     {
-        BwSize.Small => "text-xl",
-        BwSize.Large => "text-5xl",
-        BwSize.ExtraLarge => "text-7xl",
-        _ => "text-3xl"
+        BwSize.Small => "bw-countdown-box-sm",
+        BwSize.Large => "bw-countdown-box-lg",
+        BwSize.ExtraLarge => "bw-countdown-box-xl",
+        _ => "bw-countdown-box-md"
     };
 
-    var labelSize = Size switch
+    var numSizeClass = Size switch
     {
-        BwSize.Small => "text-[10px]",
-        BwSize.Large => "text-sm",
-        BwSize.ExtraLarge => "text-base",
-        _ => "text-xs"
+        BwSize.Small => "bw-countdown-num-sm",
+        BwSize.Large => "bw-countdown-num-lg",
+        BwSize.ExtraLarge => "bw-countdown-num-xl",
+        _ => "bw-countdown-num-md"
     };
 
-    var boxPadding = Size switch
+    var lblSizeClass = Size switch
     {
-        BwSize.Small => "px-2 py-1.5",
-        BwSize.Large => "px-5 py-4",
-        BwSize.ExtraLarge => "px-6 py-5",
-        _ => "px-4 py-3"
+        BwSize.Small => "bw-countdown-lbl-sm",
+        BwSize.Large => "bw-countdown-lbl-lg",
+        BwSize.ExtraLarge => "bw-countdown-lbl-xl",
+        _ => "bw-countdown-lbl-md"
     };
 
-    var (bgClass, textClass, borderClass, shadowClass) = (Color, Variant) switch
+    var colorClass = Color switch
     {
-        // Filled variants with gradients
-        (BwColor.Primary, BwVariant.Filled) => ("bg-gradient-to-br from-blue-500 to-blue-700", "text-white", "", "shadow-lg shadow-blue-500/30"),
-        (BwColor.Success, BwVariant.Filled) => ("bg-gradient-to-br from-emerald-500 to-emerald-700", "text-white", "", "shadow-lg shadow-emerald-500/30"),
-        (BwColor.Danger, BwVariant.Filled) => ("bg-gradient-to-br from-red-500 to-red-700", "text-white", "", "shadow-lg shadow-red-500/30"),
-        (BwColor.Warning, BwVariant.Filled) => ("bg-gradient-to-br from-amber-400 to-amber-600", "text-white", "", "shadow-lg shadow-amber-500/30"),
-        (BwColor.Info, BwVariant.Filled) => ("bg-gradient-to-br from-sky-500 to-sky-700", "text-white", "", "shadow-lg shadow-sky-500/30"),
-        (BwColor.Dark, BwVariant.Filled) => ("bg-gradient-to-br from-gray-700 to-gray-900", "text-white", "", "shadow-lg shadow-gray-900/30"),
-        
-        // Outline variants
-        (BwColor.Primary, BwVariant.Outline) => ("bg-white dark:bg-gray-900", "text-blue-600 dark:text-blue-400", "border-2 border-blue-500 dark:border-blue-400", ""),
-        (BwColor.Success, BwVariant.Outline) => ("bg-white dark:bg-gray-900", "text-emerald-600 dark:text-emerald-400", "border-2 border-emerald-500 dark:border-emerald-400", ""),
-        (BwColor.Danger, BwVariant.Outline) => ("bg-white dark:bg-gray-900", "text-red-600 dark:text-red-400", "border-2 border-red-500 dark:border-red-400", ""),
-        (BwColor.Warning, BwVariant.Outline) => ("bg-white dark:bg-gray-900", "text-amber-600 dark:text-amber-400", "border-2 border-amber-500 dark:border-amber-400", ""),
-        (BwColor.Dark, BwVariant.Outline) => ("bg-white dark:bg-gray-900", "text-gray-800 dark:text-gray-200", "border-2 border-gray-700 dark:border-gray-500", ""),
-        
-        // Soft variants
-        (BwColor.Primary, BwVariant.Soft) => ("bg-blue-50 dark:bg-blue-900/40", "text-blue-700 dark:text-blue-300", "", ""),
-        (BwColor.Success, BwVariant.Soft) => ("bg-emerald-50 dark:bg-emerald-900/40", "text-emerald-700 dark:text-emerald-300", "", ""),
-        (BwColor.Danger, BwVariant.Soft) => ("bg-red-50 dark:bg-red-900/40", "text-red-700 dark:text-red-300", "", ""),
-        (BwColor.Warning, BwVariant.Soft) => ("bg-amber-50 dark:bg-amber-900/40", "text-amber-700 dark:text-amber-300", "", ""),
-        (BwColor.Dark, BwVariant.Soft) => ("bg-gray-100 dark:bg-gray-800", "text-gray-800 dark:text-gray-200", "", ""),
-        
-        // Ghost/default
-        _ => ("bg-gray-100 dark:bg-gray-800", "text-gray-800 dark:text-gray-200", "", "")
+        BwColor.Success => "bw-countdown-success",
+        BwColor.Danger => "bw-countdown-danger",
+        BwColor.Warning => "bw-countdown-warning",
+        BwColor.Info => "bw-countdown-info",
+        BwColor.Secondary => "bw-countdown-secondary",
+        BwColor.Dark => "bw-countdown-dark",
+        _ => "bw-countdown-primary"
     };
 
-    var boxClasses = $"{bgClass} {textClass} {borderClass} {shadowClass} {boxPadding} rounded-lg flex flex-col items-center justify-center min-w-[3rem] transition-all duration-300";
-    var separatorClasses = $"{textClass} text-2xl font-light opacity-60";
+    var variantClass = Variant switch
+    {
+        BwVariant.Filled => "bw-countdown-filled",
+        BwVariant.Outline => "bw-countdown-outline",
+        BwVariant.Soft => "bw-countdown-soft",
+        _ => "bw-countdown-ghost"
+    };
+    
+    // Combine classes
+    var boxClasses = CombineClasses($"bw-countdown-box {boxSizeClass} {variantClass} {colorClass}");
+    var separatorClasses = "bw-countdown-separator";
 }
 
-<div class="@CombineClasses($"{baseClasses} {sizeClasses}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"bw-countdown {sizeClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (ShowDays && _remaining.Days > 0)
     {
         <div class="@boxClasses">
-            <span class="@numberSize font-bold tabular-nums tracking-tight">@_remaining.Days.ToString("D2")</span>
+            <span class="bw-countdown-number @numSizeClass">@_remaining.Days.ToString("D2")</span>
             @if (ShowLabels)
             {
-                <span class="@labelSize uppercase tracking-wider opacity-70 mt-1">@DayLabel</span>
+                <span class="bw-countdown-label @lblSizeClass">@DayLabel</span>
             }
         </div>
         <span class="@separatorClasses">:</span>
@@ -87,10 +77,10 @@
     @if (ShowHours)
     {
         <div class="@boxClasses">
-            <span class="@numberSize font-bold tabular-nums tracking-tight">@_remaining.Hours.ToString("D2")</span>
+            <span class="bw-countdown-number @numSizeClass">@_remaining.Hours.ToString("D2")</span>
             @if (ShowLabels)
             {
-                <span class="@labelSize uppercase tracking-wider opacity-70 mt-1">@HourLabel</span>
+                <span class="bw-countdown-label @lblSizeClass">@HourLabel</span>
             }
         </div>
         @if (ShowMinutes || ShowSeconds)
@@ -102,10 +92,10 @@
     @if (ShowMinutes)
     {
         <div class="@boxClasses">
-            <span class="@numberSize font-bold tabular-nums tracking-tight">@_remaining.Minutes.ToString("D2")</span>
+            <span class="bw-countdown-number @numSizeClass">@_remaining.Minutes.ToString("D2")</span>
             @if (ShowLabels)
             {
-                <span class="@labelSize uppercase tracking-wider opacity-70 mt-1">@MinuteLabel</span>
+                <span class="bw-countdown-label @lblSizeClass">@MinuteLabel</span>
             }
         </div>
         @if (ShowSeconds)
@@ -117,10 +107,10 @@
     @if (ShowSeconds)
     {
         <div class="@boxClasses">
-            <span class="@numberSize font-bold tabular-nums tracking-tight">@_remaining.Seconds.ToString("D2")</span>
+            <span class="bw-countdown-number @numSizeClass">@_remaining.Seconds.ToString("D2")</span>
             @if (ShowLabels)
             {
-                <span class="@labelSize uppercase tracking-wider opacity-70 mt-1">@SecondLabel</span>
+                <span class="bw-countdown-label @lblSizeClass">@SecondLabel</span>
             }
         </div>
     }

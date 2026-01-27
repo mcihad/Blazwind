@@ -9,19 +9,19 @@
 
 <div class="@CombineClasses($"bw-comments")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Header *@
-    <div class="flex items-center justify-between mb-4">
-        <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-100">
+    <div class="bw-comment-header">
+        <h4 class="bw-comment-title">
             <i class="fa-regular fa-comment mr-2"></i>
             @Title
             @if (Comments.Count > 0)
             {
-                <span class="ml-1 text-gray-500 dark:text-gray-400">(@TotalCount)</span>
+                <span class="bw-comment-count">(@TotalCount)</span>
             }
         </h4>
     </div>
 
     @* Comment List *@
-    <div class="space-y-4">
+    <div class="bw-comment-container">
         @foreach (var comment in Comments.Where(c => string.IsNullOrEmpty(c.ParentId)))
         {
             <div class="bw-comment-item">
@@ -30,7 +30,7 @@
                 @* Replies *@
                 @if (comment.Replies.Count > 0)
                 {
-                    <div class="ml-10 mt-3 space-y-3 border-l-2 border-gray-100 dark:border-gray-700 pl-4">
+                    <div class="bw-comment-replies">
                         @foreach (var reply in comment.Replies)
                         {
                             @RenderComment(reply, 1)
@@ -44,7 +44,7 @@
     @* Empty State *@
     @if (Comments.Count == 0)
     {
-        <div class="text-center py-8 text-gray-400 dark:text-gray-500">
+        <div class="bw-comment-empty">
             <i class="fa-regular fa-comments text-3xl mb-2"></i>
             <p class="text-sm">Henüz yorum yok</p>
         </div>
@@ -53,7 +53,7 @@
     @* Add Comment *@
     @if (AllowAdd)
     {
-        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+        <div class="bw-comment-form-area">
             <BwRow Spacing="BwSpacing.Sm">
                 @if (!string.IsNullOrEmpty(CurrentUserAvatar))
                 {
@@ -107,18 +107,18 @@
 
     private RenderFragment RenderComment(CommentItem comment, int depth) => __builder =>
     {
-        <div class="flex gap-3">
+        <div class="bw-comment-inner">
             <BwAvatar Name="@comment.AuthorName" Src="@comment.AuthorAvatar" Size="BwSize.Small" />
             <div class="flex-1 min-w-0">
                 @* Header *@
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-medium text-sm text-gray-900 dark:text-gray-100">@comment.AuthorName</span>
+                <div class="bw-comment-meta">
+                    <span class="bw-comment-author">@comment.AuthorName</span>
                     @if (!string.IsNullOrEmpty(comment.AuthorRole))
                     {
-                        <span class="text-xs text-gray-400 dark:text-gray-500">@comment.AuthorRole</span>
+                        <span class="bw-comment-role">@comment.AuthorRole</span>
                     }
-                    <span class="text-xs text-gray-400 dark:text-gray-500">•</span>
-                    <span class="text-xs text-gray-400 dark:text-gray-500">@FormatDate(comment.CreatedAt)</span>
+                    <span class="bw-comment-role">•</span>
+                    <span class="bw-comment-role">@FormatDate(comment.CreatedAt)</span>
                     @if (comment.EditedAt.HasValue)
                     {
                         <span class="text-xs text-gray-400 italic">(düzenlendi)</span>
@@ -126,10 +126,10 @@
                 </div>
 
                 @* Content *@
-                <p class="text-sm text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap">@comment.Content</p>
+                <p class="bw-comment-content">@comment.Content</p>
 
                 @* Actions *@
-                <div class="flex items-center gap-2 mt-2">
+                <div class="bw-comment-actions">
                     @if (AllowLike)
                     {
                         <BwButton Variant="BwVariant.Link" 

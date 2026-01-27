@@ -1,0 +1,92 @@
+/* ============================================
+   CodeBlock Component Styles
+   ============================================ */
+
+.bw-code-block {
+    @apply rounded-lg overflow-hidden shadow-lg relative;
+    background-color: var(--bw-gray-900);
+    color: var(--bw-gray-100);
+}
+
+.bw-code-header {
+    @apply flex items-center justify-between px-4 py-2 border-b;
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* Light Theme Variant */
+.bw-code-block-light {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-900);
+}
+
+.bw-code-block-light .bw-code-header {
+    background-color: var(--bw-gray-100);
+    border-color: var(--bw-gray-200);
+}
+
+.dark .bw-code-block-light {
+    background-color: var(--bw-gray-900);
+    color: var(--bw-gray-100);
+}
+
+.dark .bw-code-block-light .bw-code-header {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* Content Area */
+.bw-code-content {
+    @apply font-mono text-sm overflow-x-auto p-4 m-0;
+}
+
+.bw-code-content-numbered {
+    @apply pl-12;
+}
+
+/* Line Numbers */
+.bw-code-line {
+    @apply flex;
+}
+
+.bw-code-line-number {
+    @apply absolute left-0 w-10 text-right pr-3 select-none;
+    color: var(--bw-gray-500);
+}
+
+.bw-code-line-highlight {
+    background-color: rgba(234, 179, 8, 0.3);
+    /* yellow-900/30 or similar */
+}
+
+.bw-code-block-light .bw-code-line-highlight {
+    background-color: var(--bw-warning-100);
+}
+
+.dark .bw-code-block-light .bw-code-line-highlight {
+    background-color: rgba(234, 179, 8, 0.3);
+}
+
+/* Badge/Language Tag */
+.bw-code-lang-tag {
+    @apply text-xs px-2 py-1 rounded;
+    background-color: var(--bw-gray-700);
+    color: var(--bw-gray-300);
+}
+
+/* Copy Button */
+.bw-code-copy-btn {
+    @apply text-gray-400 p-1 transition-colors;
+}
+
+.bw-code-copy-btn:hover {
+    @apply text-white;
+}
+
+.bw-code-block-light .bw-code-copy-btn:hover {
+    @apply text-gray-900;
+}
+
+.dark .bw-code-block-light .bw-code-copy-btn:hover {
+    @apply text-white;
+}

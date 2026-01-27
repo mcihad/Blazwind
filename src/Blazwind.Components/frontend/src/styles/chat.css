@@ -1,0 +1,43 @@
+/* ============================================
+   Chat Component Styles
+   ============================================ */
+
+.bw-chat {
+    @apply overflow-hidden rounded-lg border;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.bw-chat-header {
+    background-color: var(--bw-color-surface);
+    border-bottom: 1px solid var(--bw-color-divider);
+}
+
+.bw-chat-messages {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-chat-messages {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-chat-bubble-base {
+    @apply px-3 py-2 rounded-lg shadow-sm text-sm break-words whitespace-pre-wrap;
+}
+
+.bw-chat-bubble-own {
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-primary-text);
+    @apply rounded-br-sm;
+}
+
+.bw-chat-bubble-other {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+    @apply rounded-bl-sm;
+}
+
+.bw-chat-input-area {
+    background-color: var(--bw-color-surface);
+    border-top: 1px solid var(--bw-color-divider);
+}

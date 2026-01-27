@@ -2,7 +2,7 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses($"px-4 py-3 md:px-6 md:py-4 border-b border-gray-100 dark:border-gray-700")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-card-header")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     @if (ChildContent != null)
     {
         @ChildContent
@@ -11,10 +11,10 @@
     {
         <div class="flex items-center gap-3">
             <div>
-                <h3 class="font-semibold text-gray-900 dark:text-gray-100">@Title</h3>
+                <h3 class="bw-card-title">@Title</h3>
                 @if (!string.IsNullOrEmpty(SubTitle))
                 {
-                    <p class="text-sm text-gray-500 dark:text-gray-400">@SubTitle</p>
+                    <p class="bw-card-subtitle">@SubTitle</p>
                 }
             </div>
         </div>

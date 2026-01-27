@@ -15,8 +15,8 @@
         <div class="fixed inset-0 z-[1000] w-full h-full cursor-default" @onclick="Close"></div>
 
         @* Menu *@
-        <div class="absolute @AlignmentClass @ComputedVPositionClass z-[1010] w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 dark:ring-white/10 focus:outline-none animate-in fade-in zoom-in-95 duration-100">
-             <div class="py-1" role="menu" aria-orientation="vertical">
+        <div class="bw-dropdown-menu @AlignmentClass @ComputedVPositionClass">
+             <div role="menu" aria-orientation="vertical">
                  <CascadingValue Value="this">
                      @ChildContent
                  </CascadingValue>

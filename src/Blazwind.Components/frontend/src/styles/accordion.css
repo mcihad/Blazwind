@@ -16,11 +16,12 @@
 }
 
 .bw-accordion-header:hover {
-    background-color: var(--bw-gray-50);
+    background-color: var(--bw-control-hover-bg, var(--bw-primary-50));
 }
 
 .dark .bw-accordion-header:hover {
-    background-color: var(--bw-gray-800);
+    /* Use the dark mode token defined in themes */
+    background-color: var(--bw-control-hover-bg, rgba(59, 130, 246, 0.15));
 }
 
 .bw-accordion-header:disabled {

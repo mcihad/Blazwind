@@ -6,24 +6,18 @@
 @inject IJSRuntime JS
 
 @{
-    var themeClasses = Theme switch
+    var themeClass = Theme switch
     {
-        "light" => "bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100",
-        _ => "bg-gray-900 text-gray-100"
-    };
-
-    var headerTheme = Theme switch
-    {
-        "light" => "bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700",
-        _ => "bg-gray-800 border-gray-700"
+        "light" => "bw-code-block-light",
+        _ => ""
     };
 }
 
-<div class="@CombineClasses("rounded-lg overflow-hidden shadow-lg")" style="@Style" id="@Id"
+<div class="@CombineClasses($"bw-code-block {themeClass}")" style="@Style" id="@Id"
     @attributes="AdditionalAttributes">
     @if (ShowHeader)
     {
-        <div class="@headerTheme flex items-center justify-between px-4 py-2 border-b">
+        <div class="bw-code-header">
             <div class="flex items-center gap-2">
                 @if (ShowDots)
                 {
@@ -42,11 +36,11 @@
             <div class="flex items-center gap-2">
                 @if (!string.IsNullOrEmpty(Language))
                 {
-                    <span class="text-xs px-2 py-1 rounded bg-gray-700 text-gray-300">@Language</span>
+                    <span class="bw-code-lang-tag">@Language</span>
                 }
                 @if (ShowCopyButton)
                 {
-                    <button type="button" class="text-gray-400 hover:text-white transition-colors p-1" title="Kodu kopyala"
+                    <button type="button" class="bw-code-copy-btn" title="Kodu kopyala"
                         @onclick="CopyToClipboard">
                         <i class="@(_copied ? "fa-solid fa-check text-green-500" : "fa-solid fa-copy")"></i>
                     </button>
@@ -55,16 +49,16 @@
         </div>
     }
 
-    <div class="@themeClasses relative">
-        <pre class="overflow-x-auto p-4 m-0 @(ShowLineNumbers ? "pl-12" : "")"><code class="font-mono text-sm">@if (ShowLineNumbers)
+    <div class="relative">
+        <pre class="bw-code-content @(ShowLineNumbers ? "bw-code-content-numbered" : "")"><code>@if (ShowLineNumbers)
 {
         var lines = GetLines();
         for (int i = 0; i < lines.Length; i++)
         {
                 var lineNum = i + 1;
                 var isHighlighted = HighlightLines?.Contains(lineNum) == true;
-                var lineClass = isHighlighted ? (Theme == "light" ? "bg-yellow-100 dark:bg-yellow-900/30" : "bg-yellow-900/30") : "";
-                <div class="@lineClass flex"><span class="absolute left-0 w-10 text-right pr-3 text-gray-500 select-none">@lineNum</span><span>@lines[i]</span></div>
+                var lineClass = isHighlighted ? "bw-code-line-highlight" : "";
+                <div class="@lineClass bw-code-line"><span class="bw-code-line-number">@lineNum</span><span>@lines[i]</span></div>
         }
 }
 else

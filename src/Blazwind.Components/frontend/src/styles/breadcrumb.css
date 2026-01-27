@@ -1,0 +1,35 @@
+/* ============================================
+   Breadcrumb Component Styles
+   ============================================ */
+
+.bw-breadcrumb {
+    /* Container hooks */
+}
+
+.bw-breadcrumb-list {
+    @apply inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse;
+}
+
+/* Hide separator on first item */
+.bw-breadcrumb-list>li:first-child .bw-breadcrumb-separator {
+    display: none;
+}
+
+.bw-breadcrumb-link {
+    @apply inline-flex items-center text-sm font-medium transition-colors duration-200;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-breadcrumb-link:hover {
+    color: var(--bw-color-primary);
+}
+
+.bw-breadcrumb-item-active {
+    @apply inline-flex items-center text-sm font-medium cursor-default;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-breadcrumb-separator {
+    @apply mx-1;
+    color: var(--bw-color-text-muted);
+}

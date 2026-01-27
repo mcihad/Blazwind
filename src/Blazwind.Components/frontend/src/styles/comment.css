@@ -1,0 +1,84 @@
+/* ============================================
+   Comment Component Styles
+   ============================================ */
+
+.bw-comments {
+    @apply w-full;
+}
+
+.bw-comment-container {
+    @apply space-y-4;
+}
+
+.bw-comment-header {
+    @apply flex items-center justify-between mb-4;
+}
+
+.bw-comment-title {
+    @apply text-sm font-semibold;
+    color: var(--bw-color-text);
+}
+
+.bw-comment-count {
+    @apply ml-1;
+    color: var(--bw-color-text-muted);
+}
+
+/* Comment Item */
+.bw-comment-item {
+    @apply w-full;
+}
+
+.bw-comment-inner {
+    @apply flex gap-3;
+}
+
+.bw-comment-meta {
+    @apply flex items-center gap-2 flex-wrap;
+}
+
+.bw-comment-author {
+    @apply font-medium text-sm;
+    color: var(--bw-color-text);
+}
+
+.bw-comment-role {
+    @apply text-xs;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-comment-content {
+    @apply text-sm mt-1 whitespace-pre-wrap;
+    color: var(--bw-color-text-secondary);
+}
+
+/* Actions */
+.bw-comment-actions {
+    @apply flex items-center gap-2 mt-2;
+}
+
+/* Replies Indentation */
+.bw-comment-replies {
+    @apply ml-10 mt-3 space-y-3 border-l-2 pl-4;
+    border-color: var(--bw-color-divider);
+}
+
+.dark .bw-comment-replies {
+    border-color: var(--bw-gray-800);
+}
+
+/* Form Area */
+.bw-comment-form-area {
+    @apply mt-4 pt-4 border-t;
+    border-color: var(--bw-color-divider);
+}
+
+.dark .bw-comment-form-area {
+    border-color: var(--bw-gray-800);
+}
+
+/* Empty State */
+.bw-comment-empty {
+    @apply text-center py-8;
+    color: var(--bw-color-text-muted);
+}

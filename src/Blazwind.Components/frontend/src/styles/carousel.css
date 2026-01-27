@@ -1,0 +1,29 @@
+/* ============================================
+   Carousel Component Styles
+   ============================================ */
+
+.bw-carousel {
+    @apply relative w-full overflow-hidden;
+    background-color: var(--bw-color-surface);
+    border-radius: var(--bw-radius-lg);
+}
+
+.bw-carousel-control {
+    @apply absolute top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110;
+    background-color: var(--bw-color-surface-elevated);
+    color: var(--bw-color-text);
+    border: 1px solid var(--bw-color-divider);
+}
+
+.bw-carousel-control:hover {
+    background-color: var(--bw-color-surface);
+}
+
+.bw-carousel-indicator {
+    @apply h-2 rounded-full transition-all duration-300;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.bw-carousel-indicator-active {
+    background-color: rgba(255, 255, 255, 1);
+}

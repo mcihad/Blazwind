@@ -7,7 +7,7 @@
 @implements IDisposable
 
 @{
-    var baseClasses = "relative w-full overflow-hidden rounded-lg";
+    var baseClasses = "bw-carousel";
 }
 
 <div class="@CombineClasses(baseClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -36,15 +36,15 @@
     @if (ShowArrows && Items.Count > 1)
     {
         <button type="button"
-            class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 shadow-lg flex items-center justify-center transition-all hover:scale-110"
+            class="bw-carousel-control left-4"
             @onclick="Previous">
-            <i class="fa-solid fa-chevron-left text-gray-700 dark:text-gray-200"></i>
+            <i class="fa-solid fa-chevron-left"></i>
         </button>
 
         <button type="button"
-            class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 shadow-lg flex items-center justify-center transition-all hover:scale-110"
+            class="bw-carousel-control right-4"
             @onclick="Next">
-            <i class="fa-solid fa-chevron-right text-gray-700 dark:text-gray-200"></i>
+            <i class="fa-solid fa-chevron-right"></i>
         </button>
     }
 
@@ -55,11 +55,9 @@
             {
                 var index = i;
                 var isActive = index == _currentIndex;
-                var indicatorClasses = isActive
-                ? "w-8 bg-white"
-                : "w-2 bg-white/50 hover:bg-white/75";
+                var activeClass = isActive ? "bw-carousel-indicator-active w-8" : "w-2 hover:bg-white/75";
 
-                <button type="button" class="h-2 rounded-full transition-all duration-300 @indicatorClasses"
+                <button type="button" class="bw-carousel-indicator @activeClass"
                     @onclick="() => GoTo(index)">
                 </button>
             }

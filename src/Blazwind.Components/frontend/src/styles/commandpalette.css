@@ -1,0 +1,153 @@
+/* ============================================
+   Command Palette Component Styles
+   ============================================ */
+
+.bw-cp-overlay {
+    @apply fixed inset-0 z-[1060] flex items-start justify-center pt-[15vh];
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Overlay dim */
+    backdrop-filter: blur(4px);
+    /* Animations handled by utility classes in razor usually, or we can standardize here */
+}
+
+.bw-cp-modal {
+    @apply w-full max-w-[560px] rounded shadow-2xl overflow-hidden;
+    background-color: var(--bw-color-surface-elevated);
+    /* Modal content background */
+}
+
+/* Header & Input */
+.bw-cp-header {
+    @apply flex items-center px-4 py-3 border-b gap-3;
+    border-color: var(--bw-color-border);
+}
+
+.bw-cp-icon {
+    @apply text-lg;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-cp-input {
+    @apply flex-1 border-none outline-none text-base bg-transparent p-0;
+    color: var(--bw-color-text);
+}
+
+.bw-cp-input:focus {
+    @apply ring-0 outline-none;
+}
+
+.bw-cp-input::placeholder {
+    color: var(--bw-color-text-muted);
+}
+
+/* Results List */
+.bw-cp-results {
+    @apply max-h-[400px] overflow-y-auto py-2;
+}
+
+.bw-cp-group-title {
+    @apply px-3 py-2 pt-2 text-[11px] font-semibold uppercase tracking-wide;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-cp-group {
+    @apply px-2;
+}
+
+/* Items */
+.bw-cp-item {
+    @apply w-full flex items-center gap-3 px-3 py-2.5 my-0.5 border-none rounded cursor-pointer text-left transition-colors;
+    background-color: transparent;
+    color: var(--bw-color-text);
+}
+
+.bw-cp-item:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-cp-item:hover {
+    background-color: var(--bw-gray-800);
+}
+
+/* Active Item (Selected via Keyboard/Mouse) */
+.bw-cp-item-active {
+    background-color: var(--bw-color-primary-soft-bg) !important;
+}
+
+.bw-cp-item-icon {
+    @apply w-5 text-center text-sm;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-cp-item-active .bw-cp-item-icon {
+    color: var(--bw-color-primary);
+}
+
+.bw-cp-item-title {
+    @apply text-sm font-medium;
+    color: var(--bw-color-text);
+}
+
+.bw-cp-item-active .bw-cp-item-title {
+    color: var(--bw-color-primary-soft-text);
+}
+
+.bw-cp-item-desc {
+    @apply text-xs overflow-hidden text-ellipsis whitespace-nowrap;
+    color: var(--bw-color-text-secondary);
+}
+
+/* Shortcuts */
+.bw-cp-shortcut {
+    @apply px-1.5 py-0.5 rounded text-[10px] font-medium border;
+    background-color: var(--bw-gray-50);
+    color: var(--bw-color-text-secondary);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-cp-shortcut {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-cp-esc-badge {
+    @apply px-2 py-1 rounded text-[11px] font-medium border;
+    background-color: var(--bw-gray-100);
+    color: var(--bw-color-text-secondary);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-cp-esc-badge {
+    background-color: var(--bw-gray-700);
+    border-color: var(--bw-gray-600);
+}
+
+/* Empty State */
+.bw-cp-empty {
+    @apply py-8 px-4 text-center;
+    color: var(--bw-color-text-muted);
+}
+
+/* Footer */
+.bw-cp-footer {
+    @apply flex gap-4 px-4 py-2.5 border-t text-xs;
+    background-color: var(--bw-gray-50);
+    border-color: var(--bw-color-border);
+    color: var(--bw-color-text-secondary);
+}
+
+.dark .bw-cp-footer {
+    background-color: rgba(31, 41, 55, 0.5);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-cp-footer-key {
+    @apply px-1 py-0.5 rounded text-[10px] mr-1 border;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-cp-footer-key {
+    background-color: var(--bw-gray-700);
+    border-color: var(--bw-gray-600);
+}
