@@ -20,7 +20,7 @@
     var bodyCellClass = $"text-gray-600 dark:text-gray-400 text-sm {cellPadding}";
     var borderClass = Bordered ? "border border-gray-200 dark:border-gray-700" : "";
     var hoverClass = Hoverable ? "hover:bg-gray-50 dark:hover:bg-gray-800/50" : "";
-    
+
     var processedItems = GetProcessedItems();
     var visibleColumns = _columns.Where(c => c.Visible).ToList();
 }
@@ -37,7 +37,7 @@
             {
                 <div class="flex flex-col items-center gap-2">
                     <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600"></i>
-                    <span class="text-sm text-gray-500">Yükleniyor...</span>
+                    <span class="text-sm text-gray-500">Loading...</span>
                 </div>
             }
         </div>
@@ -45,22 +45,22 @@
     @if (ShowColumnSelector && _columns.Any())
     {
         <div class="flex justify-end mb-3 relative">
-            <button type="button" 
+            <button type="button"
                     class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
                     @onclick="ToggleColumnSelector">
                 <i class="fa-solid fa-table-columns"></i>
-                <span>Kolonlar</span>
+                <span>Columns</span>
                 <i class="fa-solid fa-chevron-down text-xs text-gray-400 ml-1 transition-transform @(_showColumnSelector ? "rotate-180" : "")"></i>
             </button>
-            
+
             @if (_showColumnSelector)
             {
                 <div class="absolute right-0 top-full mt-1 z-50 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
                     <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
                         <div class="relative">
                             <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                            <input type="text" 
-                                   placeholder="Kolon ara..." 
+                            <input type="text"
+                                   placeholder="Search columns..."
                                    class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                                    @bind="_columnSearchQuery"
                                    @bind:event="oninput" />
@@ -68,9 +68,9 @@
                     </div>
                     <div class="py-1 max-h-64 overflow-y-auto">
                         @{
-                            var filteredColumns = string.IsNullOrWhiteSpace(_columnSearchQuery) 
-                                ? _columns 
-                                : _columns.Where(c => c.Title?.Contains(_columnSearchQuery, StringComparison.OrdinalIgnoreCase) == true).ToList();
+                            var filteredColumns = string.IsNullOrWhiteSpace(_columnSearchQuery)
+                            ? _columns
+                            : _columns.Where(c => c.Title?.Contains(_columnSearchQuery, StringComparison.OrdinalIgnoreCase) == true).ToList();
                         }
                         @if (filteredColumns.Any())
                         {
@@ -78,8 +78,8 @@
                             {
                                 <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                                      @onclick="@(() => ToggleColumnVisibility(col))">
-                                    <BwCheckbox IsChecked="@col.Visible" 
-                                                IsCheckedChanged="@((e) => {/* Already handled by row click */})"
+                                    <BwCheckbox IsChecked="@col.Visible"
+                                                IsCheckedChanged="@((e) => { })"
                                                 Size="BwSize.Small"
                                                 Class="!m-0 pointer-events-none" />
                                     <span class="text-sm text-gray-700 dark:text-gray-300">@col.Title</span>
@@ -90,16 +90,18 @@
                         {
                             <div class="px-3 py-4 text-center text-sm text-gray-400 dark:text-gray-500">
                                 <i class="fa-solid fa-search mb-1"></i>
-                                <p>Kolon bulunamadı</p>
+                                <p>No columns found</p>
                             </div>
                         }
                     </div>
                     <div class="px-3 py-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 rounded-b flex justify-between items-center">
-                        <span class="text-xs text-gray-500 dark:text-gray-400">@_columns.Count(c => c.Visible) / @_columns.Count görünür</span>
-                        <button type="button" 
+                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                            @_columns.Count(c => c.Visible) / @_columns.Count visible
+                        </span>
+                        <button type="button"
                                 class="text-xs text-blue-600 hover:text-blue-800 font-medium"
                                 @onclick="ToggleColumnSelector">
-                            Kapat
+                            Close
                         </button>
                     </div>
                 </div>
@@ -127,7 +129,7 @@
                         var sortIcon = isSorted ? (_sortDescending ? "fa-sort-down" : "fa-sort-up") : "fa-sort";
                         var sortColor = isSorted ? "text-blue-600" : "text-gray-400";
                         var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
-                        
+
                         <th class="@headerCellClass" style="@widthStyle">
                             @if (column.HeaderTemplate != null)
                             {
@@ -135,7 +137,7 @@
                             }
                             else if (EnableSorting && column.Sortable)
                             {
-                                <button type="button" 
+                                <button type="button"
                                         class="flex items-center gap-2 hover:text-gray-900 transition-colors"
                                         @onclick="() => HandleSort(column)">
                                     <span>@column.Title</span>
@@ -160,7 +162,7 @@
                         var stripedClass = Striped && rowIndex % 2 == 1 ? "bg-gray-50/50 dark:bg-gray-800/30" : "";
                         var selectedClass = isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "";
                         var customRowClass = RowClass?.Invoke(item) ?? "";
-                        
+
                         <tr class="border-b border-gray-100 dark:border-gray-700 @stripedClass @selectedClass @hoverClass @customRowClass transition-colors">
                             @if (SelectionMode != BwSelectionMode.None)
                             {
@@ -174,7 +176,7 @@
                                     {
                                         <BwRadio TValue="TItem"
                                                  Value="@item"
-                                                 IsChecked="@isSelected" 
+                                                 IsChecked="@isSelected"
                                                  OnClick="@(() => ToggleSelection(item))" />
                                     }
                                 </td>
@@ -189,7 +191,7 @@
                                     }
                                     else if (column.Ellipsis)
                                     {
-                                        <div class="truncate" style="max-width: @(column.EllipsisMaxWidth ?? "200px");" 
+                                        <div class="truncate" style="max-width: @(column.EllipsisMaxWidth ?? "200px");"
                                              title="@(column.GetValue(item)?.ToString() ?? "")">
                                             @(column.GetValue(item)?.ToString() ?? "")
                                         </div>
@@ -207,10 +209,10 @@
                 else
                 {
                     <tr>
-                        <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0))" 
+                        <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0))"
                             class="@bodyCellClass text-center text-gray-400 py-8">
                             <i class="fa-solid fa-inbox text-3xl mb-2"></i>
-                            <p>Veri bulunamadı</p>
+                            <p>No data found</p>
                         </td>
                     </tr>
                 }
