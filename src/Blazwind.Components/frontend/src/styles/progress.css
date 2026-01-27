@@ -1,0 +1,105 @@
+/* Progress Bar */
+
+.bw-progress {
+    width: 100%;
+    background-color: var(--bw-gray-200);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.dark .bw-progress {
+    background-color: var(--bw-gray-700);
+}
+
+/* Sizes */
+.bw-progress.small {
+    height: 0.5rem;
+}
+
+.bw-progress.medium {
+    height: 1rem;
+}
+
+.bw-progress.large {
+    height: 1.5rem;
+}
+
+/* Bar */
+.bw-progress-bar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 500ms ease-out;
+    font-size: 0.75rem;
+}
+
+/* Colors */
+.bw-progress-primary .bw-progress-bar {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-progress-secondary .bw-progress-bar {
+    background-color: var(--bw-color-secondary);
+}
+
+.bw-progress-success .bw-progress-bar {
+    background-color: var(--bw-color-success);
+}
+
+.bw-progress-danger .bw-progress-bar {
+    background-color: var(--bw-color-danger);
+}
+
+.bw-progress-warning .bw-progress-bar {
+    background-color: var(--bw-color-warning);
+}
+
+.bw-progress-info .bw-progress-bar {
+    background-color: var(--bw-color-info);
+}
+
+.bw-progress-gray .bw-progress-bar {
+    background-color: var(--bw-gray-400);
+}
+
+/* Stripes & Animation */
+.bw-progress-striped .bw-progress-bar {
+    background-image: linear-gradient(45deg,
+            rgba(255, 255, 255, 0.15) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.15) 50%,
+            rgba(255, 255, 255, 0.15) 75%,
+            transparent 75%,
+            transparent);
+    background-size: 1rem 1rem;
+}
+
+@keyframes progress-stripes {
+    0% {
+        background-position: 1rem 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.bw-progress-animated .bw-progress-bar {
+    animation: progress-stripes 1s linear infinite;
+    /* Ensure stripes are applied if animated, even if striped param usually does it */
+    background-image: linear-gradient(45deg,
+            rgba(255, 255, 255, 0.15) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.15) 50%,
+            rgba(255, 255, 255, 0.15) 75%,
+            transparent 75%,
+            transparent);
+    background-size: 1rem 1rem;
+}

@@ -1,0 +1,143 @@
+/* List Component */
+
+.bw-list {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bw-color-surface);
+}
+
+.bw-list-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--bw-color-surface);
+    transition-property: all;
+    transition-duration: 200ms;
+    border-bottom: 1px solid var(--bw-color-border);
+}
+
+/* Remove border from last item */
+.bw-list-item:last-child {
+    border-bottom: none;
+}
+
+/* Hover state for interactive items */
+.bw-list-item.is-interactive:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-list-item.is-interactive:hover {
+    background-color: var(--bw-gray-800);
+}
+
+/* Selected State */
+.bw-list-item.is-selected {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary-soft-text);
+    z-index: 10;
+}
+
+.bw-list-item-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--bw-radius-default);
+    background-color: var(--bw-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bw-list-item-icon i {
+    color: var(--bw-gray-500);
+}
+
+.dark .bw-list-item-icon {
+    background-color: var(--bw-gray-700);
+}
+
+.dark .bw-list-item-icon i {
+    color: var(--bw-gray-400);
+}
+
+/* Drag Handle */
+.bw-list-handle {
+    margin-right: 0.75rem;
+    color: var(--bw-gray-400);
+    cursor: move;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+}
+
+.bw-list-item:hover .bw-list-handle {
+    opacity: 1;
+}
+
+/* Selection Checkbox/Radio */
+.bw-list-selection-indicator {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--bw-color-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.bw-list-selection-indicator.is-selected {
+    background-color: var(--bw-color-primary);
+    border-color: var(--bw-color-primary);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-list-selection-indicator.multiple {
+    border-radius: var(--bw-radius-sm);
+}
+
+.bw-list-selection-indicator.single {
+    border-radius: var(--bw-radius-full);
+}
+
+.bw-list-selection-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: var(--bw-color-text-inverse);
+}
+
+/* Content */
+.bw-list-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.bw-list-title {
+    display: block;
+    font-weight: 500;
+    color: var(--bw-color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bw-list-description {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--bw-color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-top: 0.125rem;
+}
+
+/* Actions */
+.bw-list-actions {
+    margin-left: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.bw-list-item:hover .bw-list-actions {
+    opacity: 1;
+}

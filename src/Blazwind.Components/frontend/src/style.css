@@ -65,6 +65,16 @@
 @import "./styles/helptooltip.css";
 @import "./styles/icon.css";
 @import "./styles/imagepreview.css";
+@import "./styles/list.css";
+@import "./styles/notification.css";
+@import "./styles/otp.css";
+@import "./styles/orgchart.css";
+@import "./styles/pages.css";
+@import "./styles/panel.css";
+@import "./styles/popover.css";
+@import "./styles/printable.css";
+@import "./styles/progress.css";
+@import "./styles/result.css";
 
 /* Tailwind CSS 4 - Content sources for class detection */
 @source "../../**/*.razor";

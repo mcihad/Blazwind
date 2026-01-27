@@ -6,54 +6,26 @@
 @inject IJSRuntime JS
 
 @{
-    var sizeClasses = Size switch
-    {
-        BwSize.Small => "w-8 h-10 text-lg",
-        BwSize.Large => "w-14 h-16 text-3xl",
-        _ => "w-12 h-14 text-2xl"
-    };
-
-    var gapClasses = Size switch
-    {
-        BwSize.Small => "gap-1.5",
-        BwSize.Large => "gap-4",
-        _ => "gap-2"
-    };
-
-    var colorClasses = Color switch
-    {
-        BwColor.Success => "focus:border-emerald-500 focus:ring-emerald-500",
-        BwColor.Danger => "focus:border-red-500 focus:ring-red-500",
-        BwColor.Warning => "focus:border-amber-500 focus:ring-amber-500",
-        BwColor.Info => "focus:border-sky-500 focus:ring-sky-500",
-        BwColor.Secondary => "focus:border-gray-500 focus:ring-gray-500",
-        _ => "focus:border-blue-500 focus:ring-blue-500"
-    };
-
-    var variantClasses = Variant switch
-    {
-        BwVariant.Filled => "bg-gray-100 border-gray-100 dark:bg-gray-900/50 dark:border-gray-800",
-        BwVariant.Outline => "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700",
-        _ => "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-700"
-    };
-
-    var inputClasses = $"{sizeClasses} {variantClasses} {colorClasses} text-center font-mono font-bold border-2 rounded-lg focus:outline-none focus:ring-2 transition-all dark:text-white";
-    var disabledClasses = IsDisabled ? "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800" : "";
-    var errorClasses = HasError ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "";
+    var sizeClass = Size.ToString().ToLower();
+    var variantClass = Variant.ToString().ToLower();
+    var colorClass = $"color-{Color.ToString().ToLower()}";
+    
+    var inputClass = CombineClasses("bw-otp-input", sizeClass, variantClass, colorClass, HasError ? "error" : "");
+    var groupClass = CombineClasses("bw-otp-group", sizeClass);
 }
 
-<div class="@CombineClasses("flex flex-col")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-otp-container")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
+        <label class="bw-otp-label">@Label</label>
     }
 
-    <div class="flex @gapClasses">
+    <div class="@groupClass">
         @for (int i = 0; i < Length; i++)
         {
             var index = i;
             <input type="@(IsMasked ? "password" : "text")" maxlength="1" inputmode="@(NumericOnly ? "numeric" : "text")"
-                pattern="@(NumericOnly ? "[0-9]" : null)" class="@inputClasses @disabledClasses @errorClasses"
+                pattern="@(NumericOnly ? "[0-9]" : null)" class="@inputClass"
                 value="@GetCharAt(index)" disabled="@IsDisabled" @oninput="e => HandleInput(index, e)"
                 @onkeydown="e => HandleKeyDown(index, e)" @onfocus="() => HandleFocus(index)" @ref="_inputRefs[index]" />
         }
@@ -61,12 +33,12 @@
 
     @if (HasError && !string.IsNullOrEmpty(ErrorMessage))
     {
-        <span class="text-sm text-red-500 mt-1">@ErrorMessage</span>
+        <span class="bw-otp-error-message">@ErrorMessage</span>
     }
 
     @if (!string.IsNullOrEmpty(HelperText) && !HasError)
     {
-        <span class="text-sm text-gray-500 mt-1">@HelperText</span>
+        <span class="bw-otp-helper-text">@HelperText</span>
     }
 </div>
 

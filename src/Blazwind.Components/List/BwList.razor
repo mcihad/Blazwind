@@ -5,7 +5,7 @@
 @inherits BwBase
 @implements IBwListParent
 
-<div class="@CombineClasses("flex flex-col", GapClass)" id="@Id" style="@Style" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-list", GapClass)" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     <CascadingValue Value="(IBwListParent)this">
         @if (Items != null && Items.Any())
         {
@@ -39,7 +39,7 @@
             }
             else
             {
-                <div class="p-8 text-center text-gray-500 dark:text-gray-400">
+                <div class="bw-list-empty p-8 text-center text-gray-500 dark:text-gray-400">
                     <i class="fa-solid fa-inbox text-3xl mb-2 opacity-50"></i>
                     <p class="text-sm">@EmptyText</p>
                 </div>

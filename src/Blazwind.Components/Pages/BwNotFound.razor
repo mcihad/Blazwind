@@ -4,18 +4,17 @@
 @inject NavigationManager NavigationManager
 @inherits BwBase
 
-<div class="@CombineClasses("min-h-[80vh] flex flex-col items-center justify-center p-4 text-center")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-not-found")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <!-- 404 Visual -->
-    <div class="relative mb-6">
-        <!-- Premium 404 Text -->
-        <h1 class="text-9xl font-black text-gray-200 dark:text-gray-800 select-none drop-shadow-sm tracking-tighter">
+    <div class="bw-not-found-visual">
+        <h1 class="bw-not-found-404">
             404
         </h1>
     </div>
 
     <!-- Content -->
-    <div class="max-w-md relative z-10">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
+    <div class="bw-not-found-content">
+        <h2 class="bw-not-found-title">
             @Title
         </h2>
 
@@ -25,13 +24,13 @@
         }
         else
         {
-            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+            <p class="bw-not-found-description">
                 @Description
             </p>
         }
 
         <!-- Actions -->
-        <div class="flex flex-wrap items-center justify-center gap-4">
+        <div class="bw-not-found-actions">
             @if (CustomAction != null)
             {
                 @CustomAction

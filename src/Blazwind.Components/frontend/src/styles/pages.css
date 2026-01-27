@@ -1,0 +1,65 @@
+/* Pages - Not Found */
+
+.bw-not-found {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    text-align: center;
+    background-color: var(--bw-color-background);
+}
+
+.bw-not-found-visual {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.bw-not-found-404 {
+    font-size: 8rem;
+    /* text-9xl approx is 8rem or 128px */
+    line-height: 1;
+    font-weight: 900;
+    color: var(--bw-gray-200);
+    user-select: none;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1));
+    letter-spacing: -0.05em;
+}
+
+.dark .bw-not-found-404 {
+    color: var(--bw-gray-800);
+}
+
+.bw-not-found-content {
+    max-width: 28rem;
+    position: relative;
+    z-index: 10;
+}
+
+.bw-not-found-title {
+    font-size: 1.875rem;
+    /* text-3xl */
+    line-height: 2.25rem;
+    font-weight: 700;
+    color: var(--bw-color-text);
+    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+}
+
+.bw-not-found-description {
+    font-size: 1.125rem;
+    /* text-lg */
+    line-height: 1.75rem;
+    color: var(--bw-color-text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.625;
+}
+
+.bw-not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}

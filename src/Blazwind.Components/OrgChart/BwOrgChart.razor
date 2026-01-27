@@ -8,7 +8,7 @@
 @inherits BwBase
 
 <div class="@CombineClasses("bw-orgchart")" style="@_containerStyle" id="@Id" @attributes="AdditionalAttributes">
-    <div @ref="_container" class="w-full h-full overflow-auto"></div>
+    <div @ref="_container" class="bw-orgchart-container"></div>
 </div>
 
 @code {
@@ -20,11 +20,6 @@
     private string _containerStyle => $"height: {Height}; {Style}";
     
     #region Parameters
-    
-    /// <summary>
-    /// CSS class
-    /// </summary>
-    // Removed Class and Style parameters (inherited)
     
     /// <summary>
     /// Chart height

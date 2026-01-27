@@ -5,11 +5,11 @@
 @inherits BwBase
 
 <div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
-    <button type="button" class="relative w-10 h-10 border-none bg-transparent rounded-full cursor-pointer flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg transition-all hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white" @onclick="TogglePanel">
+    <button type="button" class="bw-notification-btn" @onclick="TogglePanel">
         <i class="fa-solid fa-bell"></i>
         @if (_unreadCount > 0)
         {
-            <span class="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center">
+            <span class="bw-notification-badge">
                 @(_unreadCount > 99 ? "99+" : _unreadCount)
             </span>
         }
@@ -17,41 +17,41 @@
     
     @if (_isOpen)
     {
-        <div class="absolute top-full right-0 mt-2 w-[360px] max-h-[480px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg shadow-black/10 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                <span class="font-semibold text-sm text-gray-900 dark:text-white">Bildirimler</span>
+        <div class="bw-notification-panel animate-in fade-in slide-in-from-top-2 duration-150">
+            <div class="bw-notification-header">
+                <span class="bw-notification-title">Bildirimler</span>
                 @if (_notifications.Any())
                 {
-                    <button type="button" class="border-none bg-transparent text-blue-600 dark:text-blue-400 text-xs cursor-pointer px-2 py-1 rounded transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/20" @onclick="ClearAll">
+                    <button type="button" class="bw-notification-clear-btn" @onclick="ClearAll">
                         Tümünü Temizle
                     </button>
                 }
             </div>
             
-            <div class="max-h-[400px] overflow-y-auto">
+            <div class="bw-notification-list">
                 @if (_notifications.Any())
                 {
                     @foreach (var notification in _notifications)
                     {
-                        var bgClass = notification.IsRead ? "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" : "bg-blue-50 dark:bg-blue-900/10 hover:bg-blue-100 dark:hover:bg-blue-900/20";
-                        var iconBgClass = notification.Type switch
+                        var itemClass = notification.IsRead ? "" : "unread";
+                        var iconTypeClass = notification.Type switch
                         {
-                            NotificationType.Success => "bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400",
-                            NotificationType.Warning => "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400",
-                            NotificationType.Error => "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400",
-                            _ => "bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                            NotificationType.Success => "success",
+                            NotificationType.Warning => "warning",
+                            NotificationType.Error => "error",
+                            _ => "info"
                         };
                         
-                        <div class="flex items-start gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition-colors @bgClass group"
+                        <div class="bw-notification-item @itemClass group"
                              @onclick="() => MarkAsRead(notification)">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 @iconBgClass">
+                            <div class="bw-notification-icon @iconTypeClass">
                                 <i class="@GetIcon(notification.Type)"></i>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="m-0 text-[13px] text-gray-900 dark:text-gray-200 leading-snug">@notification.Message</p>
-                                <span class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 block">@GetTimeAgo(notification.CreatedAt)</span>
+                            <div class="bw-notification-content">
+                                <p class="bw-notification-message">@notification.Message</p>
+                                <span class="bw-notification-time">@GetTimeAgo(notification.CreatedAt)</span>
                             </div>
-                            <button type="button" class="w-6 h-6 border-none bg-transparent text-gray-400 dark:text-gray-500 cursor-pointer rounded flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white" @onclick:stopPropagation="true" @onclick="() => Dismiss(notification)">
+                            <button type="button" class="bw-notification-dismiss group-hover:opacity-100" @onclick:stopPropagation="true" @onclick="() => Dismiss(notification)">
                                 <i class="fa-solid fa-times text-xs"></i>
                             </button>
                         </div>
@@ -59,7 +59,7 @@
                 }
                 else
                 {
-                    <div class="py-12 px-4 text-center text-gray-400 dark:text-gray-500">
+                    <div class="bw-notification-empty">
                         <i class="fa-solid fa-bell-slash text-3xl mb-2"></i>
                         <p class="m-0 text-sm">Bildirim yok</p>
                     </div>

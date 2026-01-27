@@ -13,47 +13,47 @@
     
     var arrowClasses = Placement switch
     {
-        BwPlacement.Top => "bottom-[-6px] left-1/2 -translate-x-1/2 rotate-45 border-r border-b border-gray-200 dark:border-gray-700",
-        BwPlacement.Left => "right-[-6px] top-1/2 -translate-y-1/2 rotate-45 border-r border-t border-gray-200 dark:border-gray-700",
-        BwPlacement.Right => "left-[-6px] top-1/2 -translate-y-1/2 rotate-45 border-l border-b border-gray-200 dark:border-gray-700",
-        _ => "top-[-6px] left-1/2 -translate-x-1/2 rotate-45 border-l border-t border-gray-200 dark:border-gray-700" // Bottom
+        BwPlacement.Top => "bottom-[-6px] left-1/2 -translate-x-1/2 border-r border-b border-gray-200 dark:border-gray-700",
+        BwPlacement.Left => "right-[-6px] top-1/2 -translate-y-1/2 border-r border-t border-gray-200 dark:border-gray-700",
+        BwPlacement.Right => "left-[-6px] top-1/2 -translate-y-1/2 border-l border-b border-gray-200 dark:border-gray-700",
+        _ => "top-[-6px] left-1/2 -translate-x-1/2 border-l border-t border-gray-200 dark:border-gray-700" // Bottom
     };
 }
 
-<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+<div class="@CombineClasses("bw-popover-container")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
     <div class="inline-block cursor-pointer" @onclick="HandleTriggerClick">
         @ChildContent
     </div>
     
     @if (_isOpen)
     {
-        <div class="absolute z-[1070] min-w-[200px] max-w-xs bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg shadow-black/10 animate-in fade-in zoom-in-95 duration-150 @placementClasses">
+        <div class="bw-popover-content animate-in fade-in zoom-in-95 duration-150 @placementClasses">
             @if (ShowArrow)
             {
-                <div class="absolute w-3 h-3 bg-white dark:bg-gray-800 @arrowClasses"></div>
+                <div class="bw-popover-arrow @arrowClasses"></div>
             }
             
             @if (HeaderContent != null || !string.IsNullOrEmpty(Title))
             {
-                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-t">
+                <div class="bw-popover-header">
                     @if (HeaderContent != null)
                     {
                         @HeaderContent
                     }
                     else
                     {
-                        <span class="font-semibold text-sm text-gray-900 dark:text-white">@Title</span>
+                        <span class="bw-popover-title">@Title</span>
                     }
                     @if (Closable)
                     {
-                        <button type="button" class="w-6 h-6 flex items-center justify-center border-none bg-transparent cursor-pointer text-gray-500 dark:text-gray-400 rounded hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors" @onclick="Close">
+                        <button type="button" class="bw-popover-close-btn" @onclick="Close">
                             <i class="fa-solid fa-times text-xs"></i>
                         </button>
                     }
                 </div>
             }
             
-            <div class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+            <div class="bw-popover-body">
                 @if (BodyContent != null)
                 {
                     @BodyContent
@@ -66,7 +66,7 @@
             
             @if (FooterContent != null)
             {
-                <div class="flex items-center justify-end gap-2 px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 rounded-b">
+                <div class="bw-popover-footer">
                     @FooterContent
                 </div>
             }

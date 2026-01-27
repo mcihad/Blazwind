@@ -1,0 +1,72 @@
+/* OrgChart */
+
+.bw-orgchart {
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-orgchart {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-orgchart-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    padding: 2rem;
+}
+
+/* 
+ * Note: The actual OrgChart nodes are often rendered via JS or absolutely positioned.
+ * If they are HTML elements, we style them here. 
+ * Assuming standard tree structure with ul/li or similar, 
+ * or the JS library generates specific classes.
+ * Since the user pointed to BwOrgChart.razor which uses JS init,
+ * we should provide styles that the JS likely uses or expects, OR
+ * simply style the wrapper.
+ * 
+ * Based on the razor file, it seems the content is generated inside `_container`.
+ * We'll add some generic node styles that might be used by the implementation.
+ */
+
+.bw-orgchart-node {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-sm);
+    color: var(--bw-color-text);
+    transition: all 0.2s;
+}
+
+.bw-orgchart-node:hover {
+    box-shadow: var(--bw-shadow-md);
+    border-color: var(--bw-color-primary);
+}
+
+.bw-orgchart-line {
+    stroke: var(--bw-gray-300);
+}
+
+.dark .bw-orgchart-line {
+    stroke: var(--bw-gray-600);
+}
+
+.bw-orgchart-expand-btn {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-color-text-secondary);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.bw-orgchart-expand-btn:hover {
+    color: var(--bw-color-primary);
+    border-color: var(--bw-color-primary);
+}

@@ -2,55 +2,71 @@
 @namespace Blazwind.Components.Result
 @inherits BwBase
 
-<div class="@CombineClasses("flex flex-col items-center justify-center text-center p-8 lg:p-12")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+@{
+    var statusClass = Status switch
+    {
+        BwResultStatus.Success => "bw-result-success",
+        BwResultStatus.Error => "bw-result-error",
+        BwResultStatus.Info => "bw-result-info",
+        BwResultStatus.Warning => "bw-result-warning",
+        BwResultStatus.NotFound404 => "bw-result-notfound",
+        BwResultStatus.InternalError500 => "bw-result-internal",
+        BwResultStatus.Forbidden403 => "bw-result-forbidden",
+        _ => "bw-result-info"
+    };
+    
+    var containerClass = CombineClasses("bw-result", statusClass);
+}
+
+<div class="@containerClass" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Icon *@
     @if (Icon != null)
     {
-         <div class="mb-6 text-7xl">
+         <div class="bw-result-icon">
              @Icon
          </div>
     }
     else
     {
-        var (iconName, colorClass) = Status switch
+        var iconName = Status switch
         {
-            BwResultStatus.Success => ("fa-circle-check", "text-emerald-500"),
-            BwResultStatus.Error => ("fa-circle-xmark", "text-red-500"),
-            BwResultStatus.Info => ("fa-circle-info", "text-blue-500"),
-            BwResultStatus.Warning => ("fa-triangle-exclamation", "text-amber-500"),
-            BwResultStatus.NotFound404 => ("fa-file-circle-question", "text-gray-400 dark:text-gray-500"),
-            BwResultStatus.InternalError500 => ("fa-server", "text-red-500 dark:text-red-400"),
-            BwResultStatus.Forbidden403 => ("fa-shield-halved", "text-gray-500 dark:text-gray-400"),
-            _ => ("fa-circle-info", "text-blue-500 dark:text-blue-400")
+            BwResultStatus.Success => "fa-circle-check",
+            BwResultStatus.Error => "fa-circle-xmark",
+            BwResultStatus.Info => "fa-circle-info",
+            BwResultStatus.Warning => "fa-triangle-exclamation",
+            BwResultStatus.NotFound404 => "fa-file-circle-question",
+            BwResultStatus.InternalError500 => "fa-server",
+            BwResultStatus.Forbidden403 => "fa-shield-halved",
+            _ => "fa-circle-info"
         };
         
-        <div class="mb-6">
-            <i class="fa-solid @iconName @colorClass text-7xl"></i>
+        <div class="bw-result-icon">
+            <i class="fa-solid @iconName"></i>
         </div>
     }
 
     @* Content *@
-    <div class="max-w-md w-full">
+    <div class="bw-result-container">
         @if (!string.IsNullOrEmpty(Title))
         {
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2.5">@Title</h3>
+            <h3 class="bw-result-title">@Title</h3>
         }
         
         @if (!string.IsNullOrEmpty(Subtitle))
         {
-            <p class="text-gray-500 dark:text-gray-400 text-base leading-relaxed mb-8">@Subtitle</p>
+            <p class="bw-result-subtitle">@Subtitle</p>
         }
         
         @if (Extra != null)
         {
-            <div class="flex flex-wrap items-center justify-center gap-3">
+            <div class="bw-result-extra">
                 @Extra
             </div>
         }
         
         @if (ChildContent != null)
         {
-            <div class="mt-8 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg text-left text-sm border border-gray-100 dark:border-gray-700">
+            <div class="bw-result-content">
                 @ChildContent
             </div>
         }

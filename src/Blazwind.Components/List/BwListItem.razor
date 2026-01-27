@@ -5,35 +5,32 @@
 @{
     var isSelected = ParentList?.IsSelected(EffectiveIndex) ?? false;
     var isSelectable = ParentList?.SelectionMode != BwSelectionMode.None;
+    var isInteractive = isSelectable || ParentList?.EnableSorting == true;
+
+    // Use theme classes
+    var baseClass = "bw-list-item";
     
-    // Improved list group styling:
-    // - No default margin/rounding for individual items in a group context
-    // - Border collapsing logic handled via CSS (border-b on all, but need to handle container borders in parent)
-    // - Actually, best practice for flush lists: border-b last:border-b-0
-    
-    var baseClass = "relative flex items-center p-4 group transition-all duration-200 bg-white dark:bg-gray-800 hover:bg-gray-50/80 dark:hover:bg-gray-700/50";
-    
-    // Selection Styles
-    var selectionClass = isSelected 
-        ? "bg-blue-50/50 dark:bg-blue-900/20 hover:bg-blue-50 dark:hover:bg-blue-900/30 z-10" 
-        : "";
+    if (isInteractive)
+    {
+        baseClass += " is-interactive";
+    }
+
+    if (isSelected)
+    {
+        baseClass += " is-selected";
+    }
     
     var dragClass = ParentList?.EnableSorting == true ? "bw-draggable cursor-move" : (isSelectable ? "cursor-pointer" : "");
-    
-    // Border logic: explicit borders on items to avoid double borders if container has them
-    // We'll rely on the consumer (ListDemo) to wrap this in a border-rounded container for the "Card" look
-    // OR we put border-b here.
-    var borderClass = "border-b border-gray-100 dark:border-gray-700 last:border-0";
 }
 
-<div class="@CombineClasses(baseClass, selectionClass, dragClass, borderClass)" 
+<div class="@CombineClasses(baseClass, dragClass)" 
      id="@Id" style="@Style" @attributes="AdditionalAttributes"
      data-index="@EffectiveIndex" 
      @onclick="HandleClick">
      
     @if (ParentList?.EnableSorting == true)
     {
-        <div class="mr-3 text-gray-400 cursor-move opacity-40 group-hover:opacity-100 transition-opacity handle">
+        <div class="bw-list-handle handle">
             <i class="fa-solid fa-grip-vertical"></i>
         </div>
     }
@@ -43,20 +40,20 @@
         <div class="mr-3 flex items-center justify-center">
              @if (ParentList?.SelectionMode == BwSelectionMode.Multiple)
              {
-                 <div class="w-4 h-4 rounded border transition-colors flex items-center justify-center @(isSelected ? "bg-blue-600 border-blue-600" : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800")">
-                     @if (isSelected) { <i class="fa-solid fa-check text-white text-[10px]"></i> }
+                 <div class="bw-list-selection-indicator multiple @(isSelected ? "is-selected" : "")">
+                     @if (isSelected) { <i class="fa-solid fa-check text-[10px]"></i> }
                  </div>
              }
              else
              {
-                 <div class="w-4 h-4 rounded-full border transition-colors flex items-center justify-center @(isSelected ? "border-blue-600" : "border-gray-300 dark:border-gray-600")">
-                      @if (isSelected) { <div class="w-2 h-2 rounded-full bg-blue-600"></div> }
+                 <div class="bw-list-selection-indicator single @(isSelected ? "is-selected" : "")">
+                      @if (isSelected) { <div class="bw-list-selection-dot"></div> }
                  </div>
              }
         </div>
     }
     
-    <div class="flex-1 min-w-0">
+    <div class="bw-list-content">
         @if (ChildContent != null)
         {
             @ChildContent
@@ -72,19 +69,19 @@
                 }
                 else if (!string.IsNullOrEmpty(Icon))
                 {
-                    <div class="w-8 h-8 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                        <i class="@Icon text-gray-500 dark:text-gray-400"></i>
+                    <div class="bw-list-item-icon">
+                        <i class="@Icon"></i>
                     </div>
                 }
                 
                 <div class="flex flex-col min-w-0 flex-1">
                     @if (!string.IsNullOrEmpty(Title))
                     {
-                        <span class="font-medium text-gray-900 dark:text-gray-200 truncate">@Title</span>
+                        <span class="bw-list-title">@Title</span>
                     }
                     @if (!string.IsNullOrEmpty(Description))
                     {
-                        <span class="text-xs text-gray-500 dark:text-gray-400 truncate">@Description</span>
+                        <span class="bw-list-description">@Description</span>
                     }
                 </div>
                 
@@ -100,7 +97,7 @@
     
     @if (Actions != null)
     {
-        <div class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity" @onclick:stopPropagation>
+        <div class="bw-list-actions" @onclick:stopPropagation>
             @Actions
         </div>
     }
@@ -120,8 +117,6 @@
     [Parameter] public RenderFragment? EndContent { get; set; }
     
     [Parameter] public int Index { get; set; } // Required for sorting
-    
-    // Removed Class parameter (inherited)
     
     /// <summary>Effective index: uses cascaded if available, otherwise parameter</summary>
     private int EffectiveIndex => CascadedIndex ?? Index;

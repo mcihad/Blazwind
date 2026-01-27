@@ -1,0 +1,47 @@
+/* Printable */
+
+.bw-printable {
+    /* Base styles if needed */
+}
+
+.bw-printable-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+@media print {
+    .bw-printable-toolbar {
+        display: none !important;
+    }
+}
+
+.bw-printable-area {
+    /* Default screen view */
+}
+
+.bw-printable-area.has-border {
+    border: 2px dashed var(--bw-gray-300);
+    padding: 1rem;
+    border-radius: var(--bw-radius-default);
+}
+
+.dark .bw-printable-area.has-border {
+    border-color: var(--bw-gray-700);
+}
+
+@media print {
+    .bw-printable-area.has-border {
+        border: none;
+        padding: 0;
+    }
+}
+
+.bw-printable-header {
+    margin-bottom: 1rem;
+}
+
+.bw-printable-footer {
+    margin-top: 1rem;
+}

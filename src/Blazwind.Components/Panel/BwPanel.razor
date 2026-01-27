@@ -3,34 +3,21 @@
 @inherits BwBase
 
 @{
-    var (borderColor, headerBg, titleColor, subTitleBorder) = Color switch
-    {
-        BwColor.Primary => ("border-blue-200 dark:border-blue-800/50", "bg-blue-50/50 dark:bg-blue-900/30", "text-blue-900 dark:text-blue-200", "border-blue-300 dark:border-blue-700"),
-        BwColor.Secondary => ("border-gray-200 dark:border-gray-600", "bg-gray-50/50 dark:bg-gray-700/50", "text-gray-900 dark:text-gray-100", "border-gray-300 dark:border-gray-500"),
-        BwColor.Success => ("border-emerald-200 dark:border-emerald-800/50", "bg-emerald-50/50 dark:bg-emerald-900/30", "text-emerald-900 dark:text-emerald-200", "border-emerald-300 dark:border-emerald-700"),
-        BwColor.Danger => ("border-red-200 dark:border-red-800/50", "bg-red-50/50 dark:bg-red-900/30", "text-red-900 dark:text-red-200", "border-red-300 dark:border-red-700"),
-        BwColor.Warning => ("border-amber-200 dark:border-amber-800/50", "bg-amber-50/50 dark:bg-amber-900/30", "text-amber-900 dark:text-amber-200", "border-amber-300 dark:border-amber-700"),
-        BwColor.Info => ("border-sky-200 dark:border-sky-800/50", "bg-sky-50/50 dark:bg-sky-900/30", "text-sky-900 dark:text-sky-200", "border-sky-300 dark:border-sky-700"),
-        BwColor.Dark => ("border-gray-700 dark:border-gray-500", "bg-gray-800 dark:bg-gray-900", "text-white", "border-gray-600 dark:border-gray-400"),
-        _ => ("border-gray-200 dark:border-gray-600", "bg-gray-50/50 dark:bg-gray-700/50", "text-gray-900 dark:text-gray-100", "border-gray-300 dark:border-gray-500")
-    };
-    
-    var panelBg = Color == BwColor.Dark ? "bg-gray-900 text-gray-200" : "bg-white dark:bg-gray-800 dark:text-gray-200";
-    var footerBg = Color == BwColor.Dark ? "bg-gray-800 border-gray-700" : "bg-gray-50 dark:bg-gray-800/80 border-gray-100 dark:border-gray-600";
-    var separatorColor = Color == BwColor.Dark ? "border-gray-700" : "border-gray-100 dark:border-gray-600";
+    var colorClass = $"bw-panel-{Color.ToString().ToLower()}";
     
     // Fullscreen behavior classes
-    var containerClass = _isFullscreen 
-        ? "fixed inset-0 z-50 h-full w-full m-0 rounded-none overflow-y-auto" 
-        : "rounded-lg shadow-md"; // More distinct with shadow-md and rounded-lg
+    var containerClass = _isFullscreen ? "is-fullscreen" : "";
+    var collapsedClass = _isCollapsed ? "is-collapsed" : "";
+    
+    var finalClass = CombineClasses("bw-panel", colorClass, containerClass, collapsedClass);
 }
 
-<div class="@CombineClasses(panelBg, "border", borderColor, containerClass, "transition-all duration-200 ease-in-out")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@finalClass" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Header *@
     @if (Header != null || !string.IsNullOrEmpty(Title) || Toolbox != null || Collapsible || IsFullscreenable)
     {
-        <div class="px-3 py-2 md:px-4 md:py-3 border-b @separatorColor flex items-center justify-between rounded-t-lg @headerBg @HeaderClass">
-            <div class="flex items-center gap-3 overflow-hidden">
+        <div class="@CombineClasses("bw-panel-header", HeaderClass)">
+            <div class="bw-panel-title-group">
                 @if (Header != null)
                 {
                     @Header
@@ -39,33 +26,33 @@
                 {
                     @if (!string.IsNullOrEmpty(Icon))
                     {
-                        <i class="@Icon @titleColor mr-2"></i>
+                        <i class="@Icon bw-panel-icon"></i>
                     }
-                    <h3 class="font-semibold @titleColor text-base truncate">@Title</h3>
+                    <h3 class="bw-panel-title">@Title</h3>
                     @if (!string.IsNullOrEmpty(Subtitle))
                     {
-                        <span class="text-xs opacity-70 font-normal border-l @subTitleBorder pl-3 ml-1 truncate hidden sm:inline-block">@Subtitle</span>
+                        <span class="bw-panel-subtitle">@Subtitle</span>
                     }
                 }
             </div>
             
-            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+            <div class="bw-panel-tools">
                 @if (Toolbox != null)
                 {
-                    <div class="@ToolboxClass flex items-center gap-1 sm:gap-2">
+                    <div class="@CombineClasses("flex items-center gap-1 sm:gap-2", ToolboxClass)">
                         @Toolbox
                     </div>
                     
                     @if(Collapsible || IsFullscreenable)
                     {
-                        <div class="w-px h-4 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                        <div class="bw-panel-tool-separator"></div>
                     }
                 }
                 
                 @if (IsFullscreenable)
                 {
                     <button type="button" 
-                            class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/10 rounded p-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                            class="bw-panel-btn"
                             title="@(_isFullscreen ? "Küçült" : "Tam Ekran")"
                             @onclick="ToggleFullscreen">
                         <i class="fa-solid @(_isFullscreen ? "fa-compress" : "fa-expand") text-sm"></i>
@@ -75,7 +62,7 @@
                 @if (Collapsible)
                 {
                     <button type="button" 
-                            class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/10 rounded p-1.5 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                            class="bw-panel-btn"
                             title="@(_isCollapsed ? "Genişlet" : "Daralt")"
                             @onclick="ToggleCollapse">
                         <i class="fa-solid @(_isCollapsed ? "fa-chevron-down" : "fa-chevron-up") text-sm"></i>
@@ -88,14 +75,14 @@
     @* Body *@
     @if (!_isCollapsed)
     {
-        <div class="@BodyClass">
+        <div class="@CombineClasses("bw-panel-body", BodyClass)">
             @ChildContent
         </div>
         
         @* Footer *@
         @if (Footer != null)
         {
-            <div class="px-3 py-2 md:px-4 md:py-3 border-t @separatorColor rounded-b-lg flex items-center @footerBg @FooterClass">
+            <div class="@CombineClasses("bw-panel-footer", FooterClass)">
                 @Footer
             </div>
         }
@@ -123,8 +110,8 @@
     // Removed Class parameter (inherited)
     [Parameter] public string? HeaderClass { get; set; }
     [Parameter] public string? ToolboxClass { get; set; }
-    [Parameter] public string BodyClass { get; set; } = "p-3 md:p-5";
-    [Parameter] public string FooterClass { get; set; } = "justify-end gap-3"; // Default right aligned
+    [Parameter] public string? BodyClass { get; set; }
+    [Parameter] public string? FooterClass { get; set; } = "justify-end gap-3"; // Default right aligned
 
     private bool _isCollapsed;
     private bool _isFullscreen;

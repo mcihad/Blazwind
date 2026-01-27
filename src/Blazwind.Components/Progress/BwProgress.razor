@@ -2,10 +2,22 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses("w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden", ContainerHeightClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
-    <div class="@BarClass flex flex-col justify-center overflow-hidden text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-out h-full" 
+@{
+    var sizeClass = Size.ToString().ToLower();
+    var colorClass = $"bw-progress-{Color.ToString().ToLower()}";
+    
+    // Add conditional classes for stripes/animation
+    var stripedClass = Striped ? "bw-progress-striped" : "";
+    var animatedClass = Animated ? "bw-progress-animated" : "";
+    
+    var containerClass = CombineClasses("bw-progress", sizeClass, colorClass, stripedClass, animatedClass);
+    var barStyle = $"width: {Percentage}%;";
+}
+
+<div class="@containerClass" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    <div class="bw-progress-bar" 
          role="progressbar" 
-         style="width: @Percentage%; @(Striped || Animated ? BackgroundImageStyle : "")" 
+         style="@barStyle" 
          aria-valuenow="@Value" 
          aria-valuemin="0" 
          aria-valuemax="@Max">
@@ -25,57 +37,7 @@
     [Parameter] public string? LabelFormat { get; set; } // e.g. "{0}% Completed"
     [Parameter] public bool Striped { get; set; }
     [Parameter] public bool Animated { get; set; }
+    // Removed Class parameter (inherited)
 
     private double Percentage => Math.Clamp((Value / Max) * 100, 0, 100);
-
-    private string ContainerHeightClass => Size switch
-    {
-        BwSize.Small => "h-2",   // 0.5rem - Too small for text? Maybe hide text if small.
-        BwSize.Medium => "h-4",  // 1rem
-        BwSize.Large => "h-6",   // 1.5rem
-        _ => "h-4"
-    };
-
-    private string BarClass
-    {
-        get
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.Append(VariantColorClass);
-            
-            if (Animated)
-            {
-                sb.Append(" animate-progress-stripes"); // Need to ensure this animation exists or use custom css
-            }
-            
-            return sb.ToString();
-        }
-    }
-
-    private string VariantColorClass => Color switch
-    {
-        BwColor.Primary => "bg-blue-600",
-        BwColor.Secondary => "bg-gray-600",
-        BwColor.Success => "bg-emerald-500",
-        BwColor.Danger => "bg-red-500",
-        BwColor.Warning => "bg-amber-500",
-        BwColor.Info => "bg-cyan-500",
-        BwColor.Gray => "bg-gray-400",
-        _ => "bg-blue-600"
-    };
-    
-    // Tailwind doesn't have built-in stripes without plugin. 
-    // We can use a linear-gradient for stripes.
-    private string BackgroundImageStyle 
-    {
-        get
-        {
-            if (Striped || Animated)
-            {
-                // 45deg stripes
-                return "background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent); background-size: 1rem 1rem;";
-            }
-            return "";
-        }
-    }
 }

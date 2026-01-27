@@ -1,0 +1,300 @@
+/* Panel */
+
+.bw-panel {
+    border: 1px solid var(--bw-color-border);
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-md);
+    transition: all 200ms ease-in-out;
+}
+
+.bw-panel.is-fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    overflow-y: auto;
+}
+
+/* Header */
+.bw-panel-header {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--bw-color-border);
+    border-top-left-radius: var(--bw-radius-default);
+    border-top-right-radius: var(--bw-radius-default);
+    background-color: var(--bw-gray-50);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bw-panel.is-fullscreen .bw-panel-header {
+    border-radius: 0;
+}
+
+/* Header Content */
+.bw-panel-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    overflow: hidden;
+}
+
+.bw-panel-icon {
+    margin-right: 0.5rem;
+}
+
+.bw-panel-title {
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bw-panel-subtitle {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    font-weight: 400;
+    border-left: 1px solid var(--bw-color-border);
+    padding-left: 0.75rem;
+    margin-left: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tools */
+.bw-panel-tools {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    /* sm:gap-2 ~ 0.5rem */
+    flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+    .bw-panel-header {
+        padding: 0.75rem 1rem;
+    }
+
+    .bw-panel-tools {
+        gap: 0.5rem;
+    }
+}
+
+.bw-panel-tool-separator {
+    width: 1px;
+    height: 1rem;
+    background-color: var(--bw-gray-300);
+    margin: 0 0.25rem;
+}
+
+.dark .bw-panel-tool-separator {
+    background-color: var(--bw-gray-600);
+}
+
+.bw-panel-btn {
+    color: var(--bw-gray-500);
+    border-radius: var(--bw-radius-default);
+    padding: 0.375rem;
+    transition: color 0.15s, background-color 0.15s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bw-panel-btn:hover {
+    color: var(--bw-gray-800);
+    background-color: rgba(0, 0, 0, 0.05);
+    /* black/5 */
+}
+
+.dark .bw-panel-btn {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-panel-btn:hover {
+    color: var(--bw-gray-200);
+    background-color: rgba(255, 255, 255, 0.1);
+    /* white/10 */
+}
+
+/* Body */
+.bw-panel-body {
+    padding: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .bw-panel-body {
+        padding: 1.25rem;
+    }
+}
+
+/* Footer */
+.bw-panel-footer {
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid var(--bw-color-border);
+    border-bottom-left-radius: var(--bw-radius-lg);
+    border-bottom-right-radius: var(--bw-radius-lg);
+    background-color: var(--bw-gray-50);
+    display: flex;
+    align-items: center;
+}
+
+.bw-panel.is-fullscreen .bw-panel-footer {
+    border-radius: 0;
+}
+
+@media (min-width: 768px) {
+    .bw-panel-footer {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Color Variants */
+/* Primary */
+.bw-panel-primary {
+    border-color: var(--bw-primary-200);
+}
+
+.bw-panel-primary .bw-panel-header {
+    background-color: var(--bw-primary-50);
+    border-bottom-color: var(--bw-primary-200);
+    color: var(--bw-primary-900);
+}
+
+.bw-panel-primary .bw-panel-footer {
+    background-color: var(--bw-primary-50);
+    border-top-color: var(--bw-primary-200);
+}
+
+.dark .bw-panel-primary {
+    border-color: rgba(37, 99, 235, 0.5);
+    /* blue-800/50 */
+}
+
+.dark .bw-panel-primary .bw-panel-header {
+    background-color: rgba(30, 58, 138, 0.3);
+    /* blue-900/30 */
+    border-bottom-color: var(--bw-primary-800);
+    color: var(--bw-primary-200);
+}
+
+.dark .bw-panel-primary .bw-panel-footer {
+    background-color: rgba(30, 58, 138, 0.3);
+    border-top-color: var(--bw-primary-800);
+}
+
+/* Success */
+.bw-panel-success {
+    border-color: var(--bw-success-200);
+}
+
+.bw-panel-success .bw-panel-header {
+    background-color: var(--bw-success-50);
+    border-bottom-color: var(--bw-success-200);
+    color: var(--bw-success-900);
+}
+
+.dark .bw-panel-success {
+    border-color: rgba(6, 95, 70, 0.5);
+}
+
+.dark .bw-panel-success .bw-panel-header {
+    background-color: rgba(6, 78, 59, 0.3);
+    border-bottom-color: var(--bw-success-800);
+    color: var(--bw-success-200);
+}
+
+/* Danger */
+.bw-panel-danger {
+    border-color: var(--bw-danger-200);
+}
+
+.bw-panel-danger .bw-panel-header {
+    background-color: var(--bw-danger-50);
+    border-bottom-color: var(--bw-danger-200);
+    color: var(--bw-danger-900);
+}
+
+.dark .bw-panel-danger {
+    border-color: rgba(153, 27, 27, 0.5);
+}
+
+.dark .bw-panel-danger .bw-panel-header {
+    background-color: rgba(127, 29, 29, 0.3);
+    border-bottom-color: var(--bw-danger-800);
+    color: var(--bw-danger-200);
+}
+
+/* Warning */
+.bw-panel-warning {
+    border-color: var(--bw-warning-200);
+}
+
+.bw-panel-warning .bw-panel-header {
+    background-color: var(--bw-warning-50);
+    border-bottom-color: var(--bw-warning-200);
+    color: var(--bw-warning-900);
+}
+
+.dark .bw-panel-warning {
+    border-color: rgba(146, 64, 14, 0.5);
+}
+
+.dark .bw-panel-warning .bw-panel-header {
+    background-color: rgba(120, 53, 15, 0.3);
+    border-bottom-color: var(--bw-warning-800);
+    color: var(--bw-warning-200);
+}
+
+/* Info */
+.bw-panel-info {
+    border-color: var(--bw-info-200);
+}
+
+.bw-panel-info .bw-panel-header {
+    background-color: var(--bw-info-50);
+    border-bottom-color: var(--bw-info-200);
+    color: var(--bw-info-900);
+}
+
+.dark .bw-panel-info {
+    border-color: rgba(7, 89, 133, 0.5);
+}
+
+.dark .bw-panel-info .bw-panel-header {
+    background-color: rgba(12, 74, 110, 0.3);
+    border-bottom-color: var(--bw-info-800);
+    color: var(--bw-info-200);
+}
+
+/* Dark Variant */
+.bw-panel-dark {
+    background-color: var(--bw-gray-900);
+    color: var(--bw-gray-200);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-panel-dark .bw-panel-header {
+    background-color: var(--bw-gray-800);
+    border-bottom-color: var(--bw-gray-700);
+    color: var(--bw-white);
+}
+
+.bw-panel-dark .bw-panel-footer {
+    background-color: var(--bw-gray-800);
+    border-top-color: var(--bw-gray-700);
+}
+
+.dark .bw-panel-dark {
+    border-color: var(--bw-gray-500);
+}

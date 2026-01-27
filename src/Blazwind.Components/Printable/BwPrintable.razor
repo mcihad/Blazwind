@@ -9,7 +9,7 @@
 <div class="@CombineClasses("bw-printable")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (ShowToolbar)
     {
-        <div class="flex items-center gap-2 mb-4 print:hidden">
+        <div class="bw-printable-toolbar">
             <BwButton Color="BwColor.Primary" Variant="BwVariant.Filled" OnClick="PrintAsync" Icon="fa-solid fa-print">
                 @PrintButtonText
             </BwButton>
@@ -24,7 +24,7 @@
     <div @ref="_printArea" class="@_printAreaClass">
         @if (HeaderTemplate != null)
         {
-            <div class="print-header mb-4">
+            <div class="bw-printable-header">
                 @HeaderTemplate
             </div>
         }
@@ -33,7 +33,7 @@
         
         @if (FooterTemplate != null)
         {
-            <div class="print-footer mt-4">
+            <div class="bw-printable-footer">
                 @FooterTemplate
             </div>
         }
@@ -43,7 +43,7 @@
 @code {
     private ElementReference _printArea;
     
-    private string _printAreaClass => $"print-area {(ShowBorder ? "border-2 border-dashed border-gray-300 dark:border-gray-700 p-4 rounded print:border-0 print:p-0" : "")} {PrintAreaClass}";
+    private string _printAreaClass => $"bw-printable-area {(ShowBorder ? "has-border" : "")} {PrintAreaClass}";
     
     #region Parameters
     

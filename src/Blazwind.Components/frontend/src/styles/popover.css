@@ -1,0 +1,102 @@
+/* Popover */
+
+.bw-popover-container {
+    position: relative;
+    display: inline-block;
+}
+
+.bw-popover-content {
+    position: absolute;
+    z-index: 1070;
+    min-width: 200px;
+    max-width: 20rem;
+    /* max-w-xs */
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-lg);
+}
+
+/* Arrow */
+.bw-popover-arrow {
+    position: absolute;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: var(--bw-color-surface);
+    transform: rotate(45deg);
+}
+
+/* Header */
+.bw-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--bw-color-border);
+    background-color: var(--bw-gray-50);
+    border-top-left-radius: var(--bw-radius-default);
+    border-top-right-radius: var(--bw-radius-default);
+}
+
+.dark .bw-popover-header {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-popover-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--bw-color-text);
+}
+
+.bw-popover-close-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--bw-gray-500);
+    border-radius: var(--bw-radius-sm);
+    transition: all 0.2s;
+}
+
+.bw-popover-close-btn:hover {
+    background-color: var(--bw-gray-200);
+    color: var(--bw-color-text);
+}
+
+.dark .bw-popover-close-btn {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-popover-close-btn:hover {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-color-text-inverse);
+}
+
+/* Body */
+.bw-popover-body {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--bw-color-text-secondary);
+    line-height: 1.625;
+}
+
+/* Footer */
+.bw-popover-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--bw-color-border);
+    background-color: var(--bw-gray-50);
+    border-bottom-left-radius: var(--bw-radius-default);
+    border-bottom-right-radius: var(--bw-radius-default);
+}
+
+.dark .bw-popover-footer {
+    background-color: var(--bw-gray-900);
+}
