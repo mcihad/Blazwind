@@ -11,6 +11,8 @@
 .bw-tabs.vertical {
     flex-direction: row;
     gap: 1.5rem;
+    align-items: flex-start;
+    /* Fix: Prevent tablist from stretching to content height */
 }
 
 /* Tab List Container */
@@ -36,6 +38,11 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s, visibility 0.2s;
+}
+
+.bw-tabs-scroll-btn.visible {
+    visibility: visible;
+    opacity: 1;
 }
 
 .bw-tabs-scroll-btn:hover {

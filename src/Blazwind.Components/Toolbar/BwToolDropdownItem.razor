@@ -23,15 +23,15 @@ else
     [Parameter] public bool IsActive { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }
 
-    private string AllClasses => $"flex items-center gap-2.5 w-full px-2.5 py-2 rounded-md text-sm text-left transition-all duration-100 {(IsActive ? "bg-gray-100 dark:bg-white/10" : "hover:bg-gray-100 dark:hover:bg-white/10")} {(Disabled ? "opacity-40 cursor-not-allowed" : "")}";
+    private string AllClasses => $"bw-tool-dropdown-item {(IsActive ? "active" : "")}";
 
     private RenderFragment RenderContent => __builder =>
     {
         @if (!string.IsNullOrEmpty(Icon))
         {
-            <i class="@Icon text-sm text-gray-400 dark:text-gray-500 w-4"></i>
+            <i class="@Icon"></i>
         }
-        <span class="flex-1 text-gray-700 dark:text-gray-200 font-medium">@Label</span>
+        <span class="font-medium">@Label</span>
     };
 
     private async Task HandleClick()

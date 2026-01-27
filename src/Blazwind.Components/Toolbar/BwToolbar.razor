@@ -37,19 +37,18 @@
         {
             var classes = new List<string>
             {
-                "inline-flex items-center",
+                "bw-toolbar",
                 OrientationClass,
                 SizeClass,
                 Wrap ? "flex-wrap" : "",
-                Rounded ? "rounded-lg" : "",
-                Shadow ? "shadow-xl shadow-black/10 dark:shadow-black/50" : "",
-                Glass ? "backdrop-blur-xl bg-white/80 dark:bg-gray-900/80" : "bg-white dark:bg-gray-900",
-                "border border-gray-200/60 dark:border-gray-700/60"
+                Rounded ? "rounded" : "",
+                Shadow ? "shadow" : "",
+                Glass ? "glass" : ""
             };
 
             if (Position != ToolbarPosition.None)
             {
-                classes.Add("fixed z-50");
+                classes.Add("fixed");
                 classes.Add(PositionClass);
             }
 
@@ -73,14 +72,9 @@
         }
     }
 
-    private string OrientationClass => Orientation == ToolbarOrientation.Vertical ? "flex-col" : "flex-row";
+    private string OrientationClass => Orientation == ToolbarOrientation.Vertical ? "vertical" : "horizontal";
 
-    private string SizeClass => Size switch
-    {
-        BwSize.Small => "p-1 gap-0.5",
-        BwSize.Large => "p-2 gap-1",
-        _ => "p-1.5 gap-0.5"
-    };
+    private string SizeClass => Size.ToString().ToLower();
 
     private string PositionClass => Position switch
     {

@@ -30,22 +30,17 @@
         {
             var size = Toolbar?.Size ?? BwSize.Medium;
             var classes = new List<string>
-{
-"inline-flex items-center justify-center gap-1.5 rounded-md transition-all duration-150",
-SizeClasses(size),
-IsActive ? ActiveClasses : HoverClasses,
-Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
-};
+            {
+                "bw-tool-btn",
+                SizeClasses(size),
+                IsActive ? "active" : "",
+                IsActive ? ActiveClasses : ""
+            };
             return string.Join(" ", classes);
         }
     }
 
-    private string SizeClasses(BwSize size) => size switch
-    {
-        BwSize.Small => "min-w-7 h-7 px-1.5",
-        BwSize.Large => "min-w-11 h-11 px-2.5",
-        _ => "min-w-9 h-9 px-2"
-    };
+    private string SizeClasses(BwSize size) => size.ToString().ToLower();
 
     private string IconSizeClass => (Toolbar?.Size ?? BwSize.Medium) switch
     {
@@ -61,17 +56,7 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
         _ => "text-xs"
     };
 
-    private string HoverClasses => "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-white";
-
-    private string ActiveClasses => Color switch
-    {
-        BwColor.Primary => "bg-blue-500/15 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/20",
-        BwColor.Success => "bg-green-500/15 text-green-600 dark:text-green-400 ring-1 ring-green-500/20",
-        BwColor.Warning => "bg-amber-500/15 text-amber-600 dark:text-amber-400 ring-1 ring-amber-500/20",
-        BwColor.Danger => "bg-red-500/15 text-red-600 dark:text-red-400 ring-1 ring-red-500/20",
-        BwColor.Info => "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/20",
-        _ => "bg-gray-500/15 text-gray-700 dark:text-gray-200 ring-1 ring-gray-500/20"
-    };
+    private string ActiveClasses => $"variant-{Color.ToString().ToLower()}";
 
     private async Task HandleClick()
     {

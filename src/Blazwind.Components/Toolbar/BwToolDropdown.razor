@@ -55,22 +55,17 @@
         {
             var size = Toolbar?.Size ?? BwSize.Medium;
             var classes = new List<string>
-{
-"inline-flex items-center justify-center gap-1.5 rounded-md transition-all duration-150",
-SizeClasses(size),
-_isOpen ? ActiveClasses : HoverClasses,
-Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
-};
+            {
+                "bw-tool-btn",
+                SizeClasses(size),
+                _isOpen ? "active" : "",
+                _isOpen ? $"variant-{Color.ToString().ToLower()}" : ""
+            };
             return string.Join(" ", classes);
         }
     }
 
-    private string SizeClasses(BwSize size) => size switch
-    {
-        BwSize.Small => "h-7 px-2",
-        BwSize.Large => "h-11 px-3.5",
-        _ => "h-9 px-2.5"
-    };
+    private string SizeClasses(BwSize size) => size.ToString().ToLower();
 
     private string IconSizeClass => (Toolbar?.Size ?? BwSize.Medium) switch
     {
@@ -86,15 +81,12 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
         _ => "text-xs"
     };
 
-    private string HoverClasses => "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-white";
-
-    private string ActiveClasses => "bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-white";
-
     private string DropdownClasses
     {
         get
         {
-            var baseClasses = "absolute z-50 min-w-36 max-w-[calc(100vw-2rem)] p-1.5 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-lg shadow-xl shadow-black/10 dark:shadow-black/30 border border-gray-200/60 dark:border-gray-700/60";
+            // Base Class: bw-tool-dropdown-content
+            var baseClasses = "bw-tool-dropdown-content";
 
             if (IsVertical)
             {
@@ -114,6 +106,10 @@ Disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
                 var horizontalAlign = AlignRight ? "right-0" : "left-0";
                 return $"{baseClasses} {horizontalAlign} top-full mt-2";
             }
+            
+            // Note: The positioning classes (right-full, top-0, etc.) are standard Tailwind utilities 
+            // and don't need to be themed unless calculating positions dynamically becomes complex.
+            // Keeping layout utilities is generally fine as they are not theming (colors/shapes).
         }
     }
 
