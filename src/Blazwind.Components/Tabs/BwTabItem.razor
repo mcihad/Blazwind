@@ -4,7 +4,12 @@
 
 @if (ParentTabs?.IsActive(this) ?? false)
 {
-    <div class="@CombineClasses("py-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    // Keeping py-4 as standard padding class or moving to theme? 
+    // Usually tab content padding is utility. Let's stick with utility unless strict theming required.
+    // User requested "theme support", mostly colors. 
+    // But I will move py-4 to style if I want consistency.
+    // Let's use a class "bw-tab-panel"
+    <div class="@CombineClasses("bw-tab-panel", "py-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @ChildContent
     </div>
 }

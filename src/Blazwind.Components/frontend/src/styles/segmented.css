@@ -1,0 +1,146 @@
+/* Segmented Control */
+
+.bw-segmented {
+    display: inline-flex;
+    padding: 0.25rem;
+    border-radius: var(--bw-radius-default);
+    background-color: var(--bw-gray-100);
+    transition: all 200ms ease;
+}
+
+.dark .bw-segmented {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-segmented.is-outline {
+    background-color: transparent;
+    border: 1px solid var(--bw-color-border);
+}
+
+/* Items */
+.bw-segmented-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    border-radius: var(--bw-radius-default);
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-segmented-item:hover:not(:disabled) {
+    color: var(--bw-color-text);
+}
+
+.bw-segmented-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Selected State */
+.bw-segmented-item.is-selected {
+    box-shadow: var(--bw-shadow-sm);
+}
+
+/* Sizes */
+.bw-segmented-item.small {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+}
+
+.bw-segmented-item.medium {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.bw-segmented-item.large {
+    padding: 0.625rem 1.25rem;
+    font-size: 1rem;
+}
+
+.bw-segmented.small {
+    font-size: 0.75rem;
+}
+
+.bw-segmented.large {
+    font-size: 1rem;
+}
+
+/* Color Variants (Selected) */
+.bw-segmented-item.is-selected.variant-default {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+}
+
+.dark .bw-segmented-item.is-selected.variant-default {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-white);
+}
+
+.bw-segmented-item.is-selected.variant-primary {
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-segmented-item.is-selected.variant-secondary {
+    background-color: var(--bw-color-secondary);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-segmented-item.is-selected.variant-success {
+    background-color: var(--bw-color-success);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-segmented-item.is-selected.variant-danger {
+    background-color: var(--bw-color-danger);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-segmented-item.is-selected.variant-warning {
+    background-color: var(--bw-color-warning);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-segmented-item.is-selected.variant-info {
+    background-color: var(--bw-color-info);
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-segmented-item.is-selected.variant-dark {
+    background-color: var(--bw-gray-900);
+    color: white;
+}
+
+.dark .bw-segmented-item.is-selected.variant-dark {
+    background-color: white;
+    color: var(--bw-gray-900);
+}
+
+/* Hover Colors (Not Selected) */
+.bw-segmented-item:not(.is-selected):hover.variant-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-segmented-item:not(.is-selected):hover.variant-secondary {
+    color: var(--bw-color-secondary);
+}
+
+.bw-segmented-item:not(.is-selected):hover.variant-success {
+    color: var(--bw-color-success);
+}
+
+.bw-segmented-item:not(.is-selected):hover.variant-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-segmented-item:not(.is-selected):hover.variant-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-segmented-item:not(.is-selected):hover.variant-info {
+    color: var(--bw-color-info);
+}

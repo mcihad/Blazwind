@@ -10,7 +10,7 @@
         var isDragging = _dragIndex == index;
         var isOver = _overIndex == index && _dragIndex != index;
         
-        <div class="@(isDragging ? "opacity-50" : "") @(isOver ? "border-t-2 border-blue-500" : "") transition-all"
+        <div class="bw-sortable-item @(isDragging ? "is-dragging" : "") @(isOver ? "is-over" : "")"
              draggable="true"
              @ondragstart="() => HandleDragStart(index)"
              @ondragover="() => HandleDragOver(index)"
@@ -20,7 +20,7 @@
             <div class="flex items-center gap-2">
                 @if (ShowHandle)
                 {
-                    <div class="cursor-grab active:cursor-grabbing text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 px-1">
+                    <div class="bw-sortable-handle">
                         <i class="@HandleIcon"></i>
                     </div>
                 }

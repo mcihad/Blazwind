@@ -1,0 +1,44 @@
+/* Watermark */
+
+.bw-watermark-text {
+    font-weight: 500;
+    user-select: none;
+}
+
+.bw-watermark-text.primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-watermark-text.success {
+    color: var(--bw-color-success);
+}
+
+.bw-watermark-text.danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-watermark-text.warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-watermark-text.info {
+    color: var(--bw-color-info);
+}
+
+.bw-watermark-text.dark {
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-watermark-text.dark {
+    color: var(--bw-white);
+}
+
+.bw-watermark-text.secondary {
+    color: var(--bw-gray-500);
+}
+
+.dark .bw-watermark-text.secondary {
+    color: var(--bw-gray-400);
+}
+
+/* Opacity is handled inline via style as it is a parameter */

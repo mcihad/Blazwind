@@ -1,0 +1,35 @@
+/* Sortable */
+
+.bw-sortable-item {
+    transition: all 200ms;
+}
+
+.bw-sortable-item.is-dragging {
+    opacity: 0.5;
+}
+
+.bw-sortable-item.is-over {
+    border-top: 2px solid var(--bw-color-primary);
+}
+
+.bw-sortable-handle {
+    cursor: grab;
+    color: var(--bw-gray-400);
+    padding: 0 0.25rem;
+}
+
+.bw-sortable-handle:active {
+    cursor: grabbing;
+}
+
+.bw-sortable-handle:hover {
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-sortable-handle {
+    color: var(--bw-gray-500);
+}
+
+.dark .bw-sortable-handle:hover {
+    color: var(--bw-gray-300);
+}

@@ -11,7 +11,7 @@
 <div class="@CombineClasses("bw-signature-pad", _containerClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
-        <label class="block text-sm font-medium text-gray-700 mb-1">@Label</label>
+        <label class="bw-signature-label">@Label</label>
     }
     
     <div class="@_wrapperClass" style="width: @Width; height: @Height;">
@@ -19,11 +19,11 @@
         
         @if (ShowClearButton || ShowUndoButton)
         {
-            <div class="absolute top-2 right-2 flex gap-1">
+            <div class="bw-signature-tools">
                 @if (ShowUndoButton)
                 {
                     <button type="button" 
-                            class="p-1.5 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 rounded shadow-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+                            class="bw-signature-btn undo"
                             title="Geri Al"
                             @onclick="UndoAsync">
                         <i class="fa-solid fa-rotate-left text-sm"></i>
@@ -32,7 +32,7 @@
                 @if (ShowClearButton)
                 {
                     <button type="button" 
-                            class="p-1.5 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 rounded shadow-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                            class="bw-signature-btn clear"
                             title="Temizle"
                             @onclick="ClearAsync">
                         <i class="fa-solid fa-trash text-sm"></i>
@@ -44,12 +44,12 @@
     
     @if (!string.IsNullOrEmpty(HelperText))
     {
-        <p class="mt-1 text-xs text-gray-500">@HelperText</p>
+        <p class="bw-signature-helper">@HelperText</p>
     }
     
     @if (!string.IsNullOrEmpty(Error))
     {
-        <p class="mt-1 text-xs text-red-600">@Error</p>
+        <p class="bw-signature-error">@Error</p>
     }
 </div>
 
@@ -67,9 +67,9 @@
     // Wrapper class based on variant
     private string _wrapperClass => Variant switch
     {
-        BwVariant.Outline => "relative border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 overflow-hidden",
-        BwVariant.Filled => "relative border-2 border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-900 overflow-hidden",
-        _ => "relative border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 overflow-hidden"
+        BwVariant.Outline => "bw-signature-wrapper outline",
+        BwVariant.Filled => "bw-signature-wrapper filled",
+        _ => "bw-signature-wrapper outline"
     };
     
     #region Parameters

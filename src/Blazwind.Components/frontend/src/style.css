@@ -75,6 +75,16 @@
 @import "./styles/printable.css";
 @import "./styles/progress.css";
 @import "./styles/result.css";
+@import "./styles/segmented.css";
+@import "./styles/separator.css";
+@import "./styles/sidepanel.css";
+@import "./styles/signaturepad.css";
+@import "./styles/skeleton.css";
+@import "./styles/sortable.css";
+@import "./styles/tabs.css";
+@import "./styles/tooltip.css";
+@import "./styles/typography.css";
+@import "./styles/watermark.css";
 
 /* Tailwind CSS 4 - Content sources for class detection */
 @source "../../**/*.razor";

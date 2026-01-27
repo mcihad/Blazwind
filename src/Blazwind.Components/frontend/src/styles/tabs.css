@@ -1,0 +1,291 @@
+/* Tabs */
+
+.bw-tabs {
+    display: flex;
+}
+
+.bw-tabs.horizontal {
+    flex-direction: column;
+}
+
+.bw-tabs.vertical {
+    flex-direction: row;
+    gap: 1.5rem;
+}
+
+/* Tab List Container */
+.bw-tablists-container {
+    position: relative;
+    display: flex;
+}
+
+/* Scroll Buttons */
+.bw-tabs-scroll-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--bw-gray-500);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.bw-tabs-scroll-btn:hover {
+    color: var(--bw-color-text);
+}
+
+.bw-tabs-scroll-btn.prev {
+    left: 0;
+    background: linear-gradient(to right, var(--bw-color-surface) 50%, transparent);
+}
+
+.bw-tabs-scroll-btn.next {
+    right: 0;
+    background: linear-gradient(to left, var(--bw-color-surface) 50%, transparent);
+}
+
+.dark .bw-tabs-scroll-btn.prev {
+    background: linear-gradient(to right, var(--bw-color-background) 50%, transparent);
+    /* Using background normally, but tabs can be anywhere */
+}
+
+/* If tabs are on surface */
+.bw-tabs-scroll-btn.prev.on-surface {
+    background: linear-gradient(to right, var(--bw-color-surface) 50%, transparent);
+}
+
+/* List */
+.bw-tablist {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.bw-tablist.vertical {
+    flex-direction: column;
+    width: 12rem;
+    flex-shrink: 0;
+    border-right: 1px solid var(--bw-color-border);
+}
+
+.bw-tablist.scrollable {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.bw-tablist.scrollable::-webkit-scrollbar {
+    display: none;
+}
+
+/* Variants - List Container Styles */
+/* Ghost / Underline (Default) */
+.bw-tablist.variant-ghost {
+    border-bottom: 2px solid var(--bw-color-border-strong);
+    /* Using strong border for track */
+    border-bottom-color: var(--bw-gray-200);
+}
+
+.dark .bw-tablist.variant-ghost {
+    border-bottom-color: var(--bw-gray-700);
+}
+
+/* Boxed / Outline */
+.bw-tablist.variant-outline {
+    border-bottom: 1px solid var(--bw-color-border);
+    gap: 1px;
+}
+
+/* Soft / Filled */
+.bw-tablist.variant-soft,
+.bw-tablist.variant-filled {
+    background-color: var(--bw-gray-100);
+    padding: 0.25rem;
+    border-radius: var(--bw-radius-default);
+    gap: 0.25rem;
+}
+
+.dark .bw-tablist.variant-soft,
+.dark .bw-tablist.variant-filled {
+    background-color: var(--bw-gray-800);
+}
+
+/* TAB ITEM */
+.bw-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-tab:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bw-tab.justified {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Sizes */
+.bw-tab.small {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.bw-tab.medium {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+}
+
+.bw-tab.large {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+/* Variant Styles for Item */
+
+/* Ghost (Underline) */
+.bw-tab.variant-ghost {
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    /* Overlap border */
+}
+
+.bw-tab.variant-ghost:hover:not(:disabled) {
+    color: var(--bw-color-text);
+    border-bottom-color: var(--bw-gray-300);
+}
+
+.dark .bw-tab.variant-ghost:hover:not(:disabled) {
+    border-bottom-color: var(--bw-gray-600);
+}
+
+.bw-tab.variant-ghost.active {
+    color: var(--bw-color-primary);
+    border-bottom-color: var(--bw-color-primary);
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+/* Outline (Boxed) */
+.bw-tab.variant-outline {
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-top-left-radius: var(--bw-radius-default);
+    border-top-right-radius: var(--bw-radius-default);
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-tab.variant-outline {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-tab.variant-outline:hover:not(:disabled) {
+    color: var(--bw-color-text);
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-tab.variant-outline:hover:not(:disabled) {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-tab.variant-outline.active {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+    border-color: var(--bw-color-border);
+    border-bottom-color: var(--bw-color-surface);
+    /* Hide bottom border */
+    margin-bottom: -1px;
+}
+
+/* Soft / Filled (Pills) */
+.bw-tab.variant-soft,
+.bw-tab.variant-filled {
+    border-radius: var(--bw-radius-default);
+    justify-content: center;
+}
+
+.bw-tab.variant-soft:hover:not(:disabled),
+.bw-tab.variant-filled:hover:not(:disabled) {
+    color: var(--bw-color-text);
+}
+
+.bw-tab.variant-soft.active,
+.bw-tab.variant-filled.active {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-primary);
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.dark .bw-tab.variant-soft.active,
+.dark .bw-tab.variant-filled.active {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-color-primary);
+}
+
+/* Vertical Variant Override */
+.bw-tab.vertical {
+    border-left: 4px solid transparent;
+    border-bottom: none;
+    padding-left: 1rem;
+    justify-content: flex-start;
+}
+
+.bw-tab.vertical:hover:not(:disabled) {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-color-text);
+}
+
+.dark .bw-tab.vertical:hover:not(:disabled) {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-tab.vertical.active {
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-text-inverse);
+    border-left-color: var(--bw-primary-800);
+}
+
+/* Close Button */
+.bw-tab-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    margin-left: 0.5rem;
+    margin-right: -0.25rem;
+    transition: background-color 0.2s;
+}
+
+.bw-tab-close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .bw-tab-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Panel Content */
+.bw-tab-content {
+    flex: 1;
+    min-width: 0;
+}

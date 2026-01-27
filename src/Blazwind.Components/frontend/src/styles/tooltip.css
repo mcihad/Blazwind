@@ -1,0 +1,128 @@
+/* Tooltip */
+
+.bw-tooltip-trigger {
+    position: relative;
+    display: inline-block;
+}
+
+.bw-tooltip {
+    position: absolute;
+    z-index: 1080;
+    pointer-events: none;
+    font-weight: 500;
+    border-radius: var(--bw-radius-default);
+    white-space: nowrap;
+
+    /* Animation defaults (using Tailwind utility class names effectively requires them to be present or redefined, here we redefine minimal necessary) */
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
+}
+
+.bw-tooltip.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Colors */
+.bw-tooltip.default {
+    background-color: var(--bw-gray-900);
+    color: white;
+}
+
+.dark .bw-tooltip.default {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-tooltip.primary {
+    background-color: var(--bw-color-primary);
+    color: white;
+}
+
+.bw-tooltip.success {
+    background-color: var(--bw-color-success);
+    color: white;
+}
+
+.bw-tooltip.danger {
+    background-color: var(--bw-color-danger);
+    color: white;
+}
+
+.bw-tooltip.warning {
+    background-color: var(--bw-color-warning);
+    color: white;
+}
+
+.bw-tooltip.info {
+    background-color: var(--bw-color-info);
+    color: white;
+}
+
+.bw-tooltip.light {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+    border: 1px solid var(--bw-color-border);
+    box-shadow: var(--bw-shadow-lg);
+}
+
+/* Arrow */
+.bw-tooltip-arrow {
+    position: absolute;
+    width: 0.5rem;
+    /* 2 default tw size is 0.5rem */
+    height: 0.5rem;
+    transform: rotate(45deg);
+}
+
+.bw-tooltip.default .bw-tooltip-arrow {
+    background-color: var(--bw-gray-900);
+}
+
+.dark .bw-tooltip.default .bw-tooltip-arrow {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-tooltip.primary .bw-tooltip-arrow {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-tooltip.success .bw-tooltip-arrow {
+    background-color: var(--bw-color-success);
+}
+
+.bw-tooltip.danger .bw-tooltip-arrow {
+    background-color: var(--bw-color-danger);
+}
+
+.bw-tooltip.warning .bw-tooltip-arrow {
+    background-color: var(--bw-color-warning);
+}
+
+.bw-tooltip.info .bw-tooltip-arrow {
+    background-color: var(--bw-color-info);
+}
+
+.bw-tooltip.light .bw-tooltip-arrow {
+    background-color: var(--bw-color-surface);
+    border-width: 0;
+    /* Borders for arrow need specific handling based on position, handled by classes in razor or simplified here */
+}
+
+/* Simplification: If light, just bg matching */
+
+/* Sizes */
+.bw-tooltip.small {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.bw-tooltip.medium {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.625rem;
+}
+
+.bw-tooltip.large {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}

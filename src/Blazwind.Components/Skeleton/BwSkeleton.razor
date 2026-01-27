@@ -3,7 +3,7 @@
 @inherits BwBase
 
 @{
-    var baseClass = "bg-gray-200 dark:bg-gray-700 animate-pulse";
+    var baseClass = "bw-skeleton";
     
     var shapeClass = Shape switch
     {
@@ -19,7 +19,7 @@
 
 @if (Lines > 1)
 {
-    <div class="@CombineClasses("space-y-2")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    <div class="@CombineClasses("bw-skeleton-group")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @for (int i = 0; i < Lines; i++)
         {
             var lineWidth = i == Lines - 1 ? "60%" : "100%";

@@ -4,29 +4,23 @@
 @using Blazwind.Components
 
 @{
-    var baseClasses = "inline-flex p-1 rounded-lg";
+    var baseClasses = "bw-segmented";
 
-    var bgClasses = Variant switch
+    var variantClasses = Variant switch
     {
-        BwVariant.Filled => "bg-gray-100 dark:bg-gray-800",
-        BwVariant.Outline => "border border-gray-200 dark:border-gray-700",
-        _ => "bg-gray-100 dark:bg-gray-800"
+        BwVariant.Outline => "is-outline",
+        _ => "is-filled"
     };
 
-    var sizeClasses = Size switch
-    {
-        BwSize.Small => "text-xs",
-        BwSize.Large => "text-base",
-        _ => "text-sm"
-    };
+    var sizeClasses = Size.ToString().ToLower();
 }
 
-<div class="@CombineClasses($"{baseClasses} {bgClasses} {sizeClasses}")" style="@Style" id="@Id" role="group"
+<div class="@CombineClasses(baseClasses, variantClasses, sizeClasses)" style="@Style" id="@Id" role="group"
     @attributes="AdditionalAttributes">
     @foreach (var option in Options)
     {
         var isSelected = option.Value?.Equals(Value) == true;
-        var itemClasses = GetItemClasses(isSelected, option.Disabled);
+        var itemClasses = GetItemClasses(isSelected);
 
         <button type="button" class="@itemClasses" disabled="@(option.Disabled || IsDisabled)"
             @onclick="() => SelectOption(option)">
@@ -51,29 +45,23 @@
     [Parameter] public EventCallback<object?> ValueChanged { get; set; }
     [Parameter] public EventCallback<SegmentedOption> OnChange { get; set; }
 
-    private string GetItemClasses(bool isSelected, bool isDisabled)
+    private string GetItemClasses(bool isSelected)
     {
-        var paddingClasses = Size switch
+        var sizeClass = Size.ToString().ToLower();
+        var selectedClass = isSelected ? "is-selected" : "";
+        
+        var colorVariant = isSelected ? $"variant-{Color.ToString().ToLower()}" : "";
+        if (isSelected && (Color == BwColor.White || Color == BwColor.Gray))
         {
-            BwSize.Small => "px-2.5 py-1",
-            BwSize.Large => "px-5 py-2.5",
-            _ => "px-4 py-2"
-        };
+             // Default coloring for "default" or neutral types
+             colorVariant = "variant-default";
+        }
+        
+        // Handling specific non-selected hover variants if needed, but CSS handles standard hover. 
+        // We can pass color variant even if not selected to allow hover text color:
+        var hoverVariant = !isSelected ? $"variant-{Color.ToString().ToLower()}" : "";
 
-        var colorClasses = Color switch
-        {
-            BwColor.Success => isSelected ? "bg-emerald-500 text-white shadow-sm" : "text-gray-600 hover:text-emerald-600",
-            BwColor.Danger => isSelected ? "bg-red-500 text-white shadow-sm" : "text-gray-600 hover:text-red-600",
-            BwColor.Warning => isSelected ? "bg-amber-500 text-white shadow-sm" : "text-gray-600 hover:text-amber-600",
-            BwColor.Info => isSelected ? "bg-sky-500 text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-sky-600 dark:hover:text-sky-400",
-            BwColor.Secondary => isSelected ? "bg-gray-500 text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300",
-            BwColor.Dark => isSelected ? "bg-gray-900 text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white",
-            _ => isSelected ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm" : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-        };
-
-        var disabledClasses = isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer";
-
-        return $"flex items-center justify-center font-medium rounded-md transition-all duration-200 {paddingClasses} {colorClasses} {disabledClasses}";
+        return CombineClasses("bw-segmented-item", sizeClass, selectedClass, isSelected ? colorVariant : hoverVariant);
     }
 
     private async Task SelectOption(SegmentedOption option)

@@ -1,0 +1,57 @@
+/* Typography */
+
+.bw-text-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-text-secondary {
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-text-success {
+    color: var(--bw-color-success);
+}
+
+.bw-text-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-text-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-text-info {
+    color: var(--bw-color-info);
+}
+
+.bw-text-dark {
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-text-dark {
+    color: var(--bw-white);
+}
+
+.bw-text-gray {
+    color: var(--bw-gray-500);
+}
+
+.bw-text-white {
+    color: white;
+}
+
+/* In Dark mode adjustments */
+.dark .bw-text-primary {
+    color: var(--bw-primary-400);
+}
+
+/* Lighter for dark mode */
+.dark .bw-text-secondary {
+    color: var(--bw-gray-400);
+}
+
+/* Success/Danger/Warning/Info automatically handle via variables, but explicit overrides if needed: */
+/* The vars --bw-color-success etc are already 500/600 based. For text we might want 400. */
+/* Using semantic tokens --bw-color-primary is 600 in light, 500 in dark. */
+
+/* Explicit text color tokens if BwTypography used distinct values */

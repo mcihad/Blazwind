@@ -82,19 +82,7 @@
         }
     }
 
-    private string VariantClasses => Color switch
-    {
-        BwColor.Primary  => "text-blue-700 dark:text-blue-400",
-        BwColor.Secondary=> "text-gray-600 dark:text-gray-300",
-        BwColor.Success  => "text-green-600 dark:text-green-400",
-        BwColor.Danger   => "text-red-600 dark:text-red-400",
-        BwColor.Warning  => "text-amber-600 dark:text-amber-400",
-        BwColor.Info     => "text-sky-600 dark:text-sky-400",
-        BwColor.Dark     => "text-gray-900 dark:text-white",
-        BwColor.Gray     => "text-gray-400 dark:text-gray-500",
-        BwColor.White    => "text-white",
-        _                => "text-gray-900 dark:text-white"
-    };
+    private string VariantClasses => $"bw-text-{Color.ToString().ToLower()}";
 
     private string AlignmentClasses => Align switch
     {

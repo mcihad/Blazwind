@@ -64,17 +64,7 @@
 
     private string GetTextClasses()
     {
-        var colorClass = Color switch
-        {
-            BwColor.Primary => "text-blue-500 dark:text-blue-400",
-            BwColor.Success => "text-emerald-500 dark:text-emerald-400",
-            BwColor.Danger => "text-red-500 dark:text-red-400",
-            BwColor.Warning => "text-amber-500 dark:text-amber-400",
-            BwColor.Info => "text-sky-500 dark:text-sky-400",
-            BwColor.Dark => "text-gray-900 dark:text-white",
-            _ => "text-gray-500 dark:text-gray-400"
-        };
-
+        var colorClass = $"bw-watermark-text {Color.ToString().ToLower()}";
         return $"{colorClass} font-medium select-none";
     }
 }

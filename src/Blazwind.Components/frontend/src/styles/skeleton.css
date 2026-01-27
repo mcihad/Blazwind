@@ -1,0 +1,36 @@
+/* Skeleton */
+
+.bw-skeleton {
+    background-color: var(--bw-gray-200);
+    animation: animate-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dark .bw-skeleton {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-skeleton.rounded {
+    border-radius: var(--bw-radius-default);
+}
+
+.bw-skeleton.rounded-full {
+    border-radius: 9999px;
+}
+
+@keyframes animate-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}
+
+.bw-skeleton-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}

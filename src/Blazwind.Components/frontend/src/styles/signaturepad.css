@@ -1,0 +1,81 @@
+/* Signature Pad */
+
+.bw-signature-pad {
+    display: block;
+}
+
+.bw-signature-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--bw-color-text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.bw-signature-wrapper {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bw-color-surface);
+}
+
+.bw-signature-wrapper.filled {
+    border: 2px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-signature-wrapper.filled {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-signature-wrapper.outline {
+    border: 1px solid var(--bw-color-border-strong);
+    border-radius: var(--bw-radius-default);
+}
+
+/* Tools */
+.bw-signature-tools {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.bw-signature-btn {
+    padding: 0.375rem;
+    border-radius: var(--bw-radius-sm);
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--bw-shadow-sm);
+    color: var(--bw-gray-600);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dark .bw-signature-btn {
+    background-color: rgba(31, 41, 55, 0.9);
+    /* gray-800 */
+    color: var(--bw-gray-400);
+}
+
+.bw-signature-btn:hover {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+}
+
+.bw-signature-btn.clear:hover {
+    color: var(--bw-color-danger);
+}
+
+.bw-signature-helper {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-signature-error {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--bw-color-danger);
+}

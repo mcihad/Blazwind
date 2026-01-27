@@ -29,31 +29,17 @@
         "left-[-4px] top-1/2 -translate-y-1/2 rotate-45",
         _ => "top-[-4px] left-1/2 -translate-x-1/2 rotate-45" // Bottom
     };
-
-    var colorClasses = Color switch
-    {
-        BwColor.Primary => "bg-blue-600 text-white",
-        BwColor.Success => "bg-green-600 text-white",
-        BwColor.Warning => "bg-amber-500 text-white",
-        BwColor.Danger => "bg-red-600 text-white",
-        BwColor.Info => "bg-cyan-600 text-white",
-        BwColor.Light => "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 shadow-lg",
-        _ => "bg-gray-900 dark:bg-gray-700 text-white" // Dark (default)
-    };
-
-    var arrowColorClasses = Color switch
-    {
-        BwColor.Primary => "bg-blue-600",
-        BwColor.Success => "bg-green-600",
-        BwColor.Warning => "bg-amber-500",
-        BwColor.Danger => "bg-red-600",
-        BwColor.Info => "bg-cyan-600",
-        BwColor.Light => "bg-white dark:bg-gray-800 border-l border-t border-gray-200 dark:border-gray-700",
-        _ => "bg-gray-900 dark:bg-gray-700"
-    };
+    
+    // Using string matching with CSS
+    // The placement affects positioning (layout), which is fine to keep as Tailwind utilities if they are purely layout.
+    // However, user wants "Theme Support". Colors are the main thing.
+    
+    var colorClass = Color.ToString().ToLower();
+    if (Color == BwColor.Dark) colorClass = "default"; // Mapping 'Dark' (default enum) to 'default' class or 'dark' class
+    else if (Color == BwColor.Light) colorClass = "light";
 }
 
-<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
+<div class="bw-tooltip-trigger" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
     @onfocus="HandleFocus" @onblur="HandleBlur">
     <div class="inline-block">
         @ChildContent
@@ -61,12 +47,10 @@
 
     @if (_isVisible && !string.IsNullOrEmpty(Text))
     {
-        <div role="tooltip" class="absolute z-[1080] px-2.5 py-1.5 text-xs font-medium rounded whitespace-nowrap
-                        pointer-events-none animate-in fade-in zoom-in-95 duration-150
-                        @colorClasses @placementClasses @SizeClasses">
+        <div role="tooltip" class="bw-tooltip @(_isVisible ? "show" : "") @colorClass @placementClasses @SizeClasses">
             @if (ShowArrow)
             {
-                <div class="absolute w-2 h-2 @arrowColorClasses @arrowClasses"></div>
+                <div class="bw-tooltip-arrow @arrowClasses"></div>
             }
             @if (!string.IsNullOrEmpty(Icon))
             {
@@ -95,12 +79,7 @@
     private CancellationTokenSource? _showCts;
     private CancellationTokenSource? _hideCts;
 
-    private string SizeClasses => Size switch
-    {
-        BwSize.Small => "text-[10px] px-2 py-1",
-        BwSize.Large => "text-sm px-3 py-2",
-        _ => "text-xs px-2.5 py-1.5"
-    };
+    private string SizeClasses => Size.ToString().ToLower();
 
     private async Task HandleMouseEnter()
     {
