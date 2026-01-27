@@ -1,0 +1,492 @@
+/* ============================================
+   DataGrid Component Styles (Theme-Aware)
+   ============================================ */
+
+/* Base Container */
+.bw-datagrid {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    @apply relative overflow-hidden;
+}
+
+.dark .bw-datagrid {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-700);
+}
+
+/* Toolbar */
+.bw-datagrid-toolbar {
+    background-color: color-mix(in srgb, var(--bw-gray-50) 50%, transparent);
+    border-bottom: 1px solid var(--bw-color-border);
+    @apply flex items-center justify-between gap-4 px-4 py-3;
+}
+
+.dark .bw-datagrid-toolbar {
+    background-color: color-mix(in srgb, var(--bw-gray-800) 50%, transparent);
+    border-bottom-color: var(--bw-gray-700);
+}
+
+/* Header */
+.bw-datagrid-header {
+    background-color: var(--bw-gray-50);
+    @apply sticky top-0 z-30;
+}
+
+.dark .bw-datagrid-header {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-datagrid-header-row {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-header-row {
+    background-color: var(--bw-gray-800);
+}
+
+/* Header Cell */
+.bw-datagrid-header-cell {
+    color: var(--bw-gray-700);
+    background-color: var(--bw-gray-50);
+    border-bottom: 1px solid var(--bw-color-border);
+    border-right: 1px solid color-mix(in srgb, var(--bw-gray-200) 60%, transparent);
+    @apply font-semibold text-sm;
+}
+
+.bw-datagrid-header-cell:last-child {
+    border-right: 0;
+}
+
+.dark .bw-datagrid-header-cell {
+    color: var(--bw-gray-300);
+    background-color: var(--bw-gray-800);
+    border-bottom-color: var(--bw-gray-700);
+    border-right-color: color-mix(in srgb, var(--bw-gray-700) 60%, transparent);
+}
+
+/* Body Cell */
+.bw-datagrid-body-cell {
+    color: var(--bw-color-text-secondary);
+    @apply text-sm;
+}
+
+.dark .bw-datagrid-body-cell {
+    color: var(--bw-gray-400);
+}
+
+/* Row States */
+.bw-datagrid-row {
+    border-bottom: 1px solid color-mix(in srgb, var(--bw-gray-100) 100%, transparent);
+    @apply transition-colors cursor-pointer;
+}
+
+.dark .bw-datagrid-row {
+    border-bottom-color: var(--bw-gray-800);
+}
+
+.bw-datagrid-row-striped {
+    background-color: color-mix(in srgb, var(--bw-gray-50) 50%, transparent);
+}
+
+.dark .bw-datagrid-row-striped {
+    background-color: color-mix(in srgb, var(--bw-gray-800) 30%, transparent);
+}
+
+.bw-datagrid-row-hover:hover {
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-datagrid-row-hover:hover {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-datagrid-row-selected {
+    background-color: var(--bw-color-primary-soft-bg) !important;
+    color: var(--bw-primary-800);
+    @apply font-medium;
+}
+
+.dark .bw-datagrid-row-selected {
+    background-color: color-mix(in srgb, var(--bw-primary-900) 30%, transparent) !important;
+    color: var(--bw-primary-200);
+}
+
+.bw-datagrid-row-selected.bw-datagrid-row-hover:hover {
+    background-color: var(--bw-primary-100) !important;
+}
+
+.dark .bw-datagrid-row-selected.bw-datagrid-row-hover:hover {
+    background-color: color-mix(in srgb, var(--bw-primary-900) 50%, transparent) !important;
+}
+
+/* Selection Cell */
+.bw-datagrid-selection-cell {
+    background-color: var(--bw-color-surface);
+}
+
+.dark .bw-datagrid-selection-cell {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-datagrid-selection-cell.bw-datagrid-row-selected {
+    background-color: var(--bw-color-primary-soft-bg) !important;
+}
+
+.dark .bw-datagrid-selection-cell.bw-datagrid-row-selected {
+    background-color: color-mix(in srgb, var(--bw-primary-900) 30%, transparent) !important;
+}
+
+/* Frozen Columns */
+.bw-datagrid-frozen-cell {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-frozen-cell {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-datagrid-frozen-body-cell {
+    background-color: var(--bw-color-surface);
+}
+
+.dark .bw-datagrid-frozen-body-cell {
+    background-color: var(--bw-gray-900);
+}
+
+.bw-datagrid-frozen-body-cell.bw-datagrid-row-selected {
+    background-color: var(--bw-color-primary-soft-bg) !important;
+}
+
+.dark .bw-datagrid-frozen-body-cell.bw-datagrid-row-selected {
+    background-color: color-mix(in srgb, var(--bw-primary-900) 30%, transparent) !important;
+}
+
+/* Sort Icons */
+.bw-datagrid-sort-btn {
+    @apply flex items-center gap-2 transition-colors;
+}
+
+.bw-datagrid-sort-btn:hover {
+    color: var(--bw-color-text);
+}
+
+.dark .bw-datagrid-sort-btn:hover {
+    color: var(--bw-gray-100);
+}
+
+.bw-datagrid-sort-icon {
+    color: var(--bw-gray-400);
+    @apply text-xs;
+}
+
+.dark .bw-datagrid-sort-icon {
+    color: var(--bw-gray-500);
+}
+
+.bw-datagrid-sort-icon-active {
+    color: var(--bw-color-primary);
+}
+
+.dark .bw-datagrid-sort-icon-active {
+    color: var(--bw-primary-400);
+}
+
+.bw-datagrid-sort-priority {
+    color: var(--bw-color-primary);
+    @apply text-[10px] font-bold;
+}
+
+/* Resize Handle */
+.bw-datagrid-resize-handle {
+    @apply absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-10 flex justify-center transition-colors;
+}
+
+.bw-datagrid-resize-handle:hover {
+    background-color: color-mix(in srgb, var(--bw-color-primary) 10%, transparent);
+}
+
+.bw-datagrid-resize-handle-line {
+    background-color: var(--bw-color-primary);
+    @apply w-px h-full opacity-0 transition-opacity;
+}
+
+.bw-datagrid-resize-handle:hover .bw-datagrid-resize-handle-line {
+    @apply opacity-100;
+}
+
+/* Filter Row */
+.bw-datagrid-filter-row {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-filter-row {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-datagrid-filter-cell {
+    border-bottom: 1px solid var(--bw-color-border);
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-filter-cell {
+    border-bottom-color: var(--bw-gray-700);
+    background-color: var(--bw-gray-800);
+}
+
+/* Filter Inputs */
+.bw-datagrid-input {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-color-text);
+    border-radius: var(--bw-radius-default);
+    @apply text-sm focus:outline-none;
+}
+
+.bw-datagrid-input::placeholder {
+    color: var(--bw-color-text-muted);
+}
+
+.bw-datagrid-input:focus {
+    border-color: var(--bw-color-primary);
+    box-shadow: 0 0 0 1px var(--bw-color-primary);
+}
+
+.dark .bw-datagrid-input {
+    background-color: var(--bw-gray-700);
+    border-color: var(--bw-gray-600);
+    color: var(--bw-gray-100);
+}
+
+.dark .bw-datagrid-input::placeholder {
+    color: var(--bw-gray-500);
+}
+
+.bw-datagrid-select {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-color-text);
+    border-radius: var(--bw-radius-default);
+    @apply text-sm focus:outline-none;
+}
+
+.bw-datagrid-select:focus {
+    border-color: var(--bw-color-primary);
+    box-shadow: 0 0 0 1px var(--bw-color-primary);
+}
+
+.dark .bw-datagrid-select {
+    background-color: var(--bw-gray-700);
+    border-color: var(--bw-gray-600);
+    color: var(--bw-gray-100);
+}
+
+/* Toolbar Button */
+.bw-datagrid-toolbar-btn {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-color-text-secondary);
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded transition-colors;
+}
+
+.bw-datagrid-toolbar-btn:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-toolbar-btn {
+    background-color: var(--bw-gray-700);
+    border-color: var(--bw-gray-600);
+    color: var(--bw-gray-300);
+}
+
+.dark .bw-datagrid-toolbar-btn:hover {
+    background-color: var(--bw-gray-600);
+}
+
+/* Column Selector Dropdown */
+.bw-datagrid-column-selector {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply absolute right-0 top-full mt-1 z-50 w-72 rounded shadow-lg;
+}
+
+.dark .bw-datagrid-column-selector {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-datagrid-column-selector-header {
+    border-bottom: 1px solid var(--bw-color-divider);
+    @apply px-3 py-2;
+}
+
+.dark .bw-datagrid-column-selector-header {
+    border-bottom-color: var(--bw-gray-700);
+}
+
+.bw-datagrid-column-selector-item {
+    color: var(--bw-color-text);
+    @apply flex items-center gap-3 px-3 py-2 cursor-pointer;
+}
+
+.bw-datagrid-column-selector-item:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-column-selector-item {
+    color: var(--bw-gray-300);
+}
+
+.dark .bw-datagrid-column-selector-item:hover {
+    background-color: var(--bw-gray-700);
+}
+
+/* Filter Menu Button */
+.bw-datagrid-filter-btn {
+    color: var(--bw-gray-400);
+    @apply p-1 rounded transition-colors;
+}
+
+.bw-datagrid-filter-btn:hover {
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-datagrid-filter-btn {
+    color: var(--bw-gray-500);
+}
+
+.dark .bw-datagrid-filter-btn:hover {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-datagrid-filter-btn-active {
+    color: var(--bw-color-primary);
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+.dark .bw-datagrid-filter-btn-active {
+    color: var(--bw-primary-400);
+    background-color: color-mix(in srgb, var(--bw-primary-900) 30%, transparent);
+}
+
+/* Filter Menu Popover */
+.bw-datagrid-filter-popover {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply absolute right-0 top-full mt-1 z-50 w-64 rounded-lg shadow-xl p-3;
+}
+
+.dark .bw-datagrid-filter-popover {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-datagrid-filter-popover-footer {
+    border-top: 1px solid var(--bw-color-divider);
+    @apply flex justify-end gap-2 pt-2;
+}
+
+.dark .bw-datagrid-filter-popover-footer {
+    border-top-color: var(--bw-gray-700);
+}
+
+/* Loading Overlay */
+.bw-datagrid-loading {
+    background-color: color-mix(in srgb, var(--bw-color-surface) 75%, transparent);
+    @apply absolute inset-0 z-40 flex items-center justify-center;
+}
+
+.dark .bw-datagrid-loading {
+    background-color: color-mix(in srgb, var(--bw-gray-900) 75%, transparent);
+}
+
+.bw-datagrid-loading-spinner {
+    color: var(--bw-color-primary);
+    @apply text-2xl;
+}
+
+.bw-datagrid-loading-text {
+    color: var(--bw-gray-500);
+    @apply text-sm;
+}
+
+/* Empty State */
+.bw-datagrid-empty {
+    color: var(--bw-gray-400);
+    @apply text-center py-12;
+}
+
+.dark .bw-datagrid-empty {
+    color: var(--bw-gray-500);
+}
+
+.bw-datagrid-empty-icon {
+    @apply text-4xl mb-3;
+}
+
+.bw-datagrid-empty-text {
+    @apply text-sm;
+}
+
+/* Detail Row */
+.bw-datagrid-detail-row {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-datagrid-detail-row {
+    background-color: color-mix(in srgb, var(--bw-gray-800) 50%, transparent);
+}
+
+/* Expansion Button */
+.bw-datagrid-expand-btn {
+    color: var(--bw-gray-400);
+    @apply p-1 rounded transition-colors;
+}
+
+.bw-datagrid-expand-btn:hover {
+    background-color: var(--bw-gray-200);
+}
+
+.dark .bw-datagrid-expand-btn:hover {
+    background-color: var(--bw-gray-600);
+}
+
+/* Footer */
+.bw-datagrid-footer {
+    background-color: var(--bw-gray-50);
+    border-top: 1px solid var(--bw-color-border);
+    @apply flex items-center justify-between gap-4 px-4 py-3;
+}
+
+.dark .bw-datagrid-footer {
+    background-color: var(--bw-gray-800);
+    border-top-color: var(--bw-gray-700);
+}
+
+/* Export Button Divider */
+.bw-datagrid-export-divider {
+    border-left: 1px solid var(--bw-gray-300);
+    @apply pl-4;
+}
+
+.dark .bw-datagrid-export-divider {
+    border-left-color: var(--bw-gray-600);
+}
+
+/* Context Menu */
+.bw-datagrid-context-menu {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply rounded shadow-lg py-1 min-w-[160px];
+}
+
+.dark .bw-datagrid-context-menu {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* Search Input in Toolbar */
+.bw-datagrid-search-icon {
+    color: var(--bw-gray-400);
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-xs;
+}

@@ -6,7 +6,7 @@
     @switch (FilterType)
     {
         case FilterType.Boolean:
-            <select class="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            <select class="bw-datagrid-select w-full px-2 py-1"
                     @onchange="HandleBooleanChange">
                 <option value="">Tümü</option>
                 <option value="true" selected="@(CurrentValue?.ToString()?.ToLower() == "true")">Evet</option>
@@ -15,7 +15,7 @@
             break;
             
         case FilterType.Select:
-            <select class="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            <select class="bw-datagrid-select w-full px-2 py-1"
                     @onchange="HandleSelectChange">
                 <option value="">Tümü</option>
                 @if (FilterOptions != null)
@@ -30,7 +30,7 @@
             
         case FilterType.Number:
             <div class="flex gap-1">
-                <select class="w-20 px-1 py-1 text-xs border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                <select class="bw-datagrid-select w-20 px-1 py-1 text-xs"
                         @onchange="HandleOperatorChange">
                     <option value="@FilterOperator.Equals" selected="@(CurrentOperator == FilterOperator.Equals)">=</option>
                     <option value="@FilterOperator.NotEquals" selected="@(CurrentOperator == FilterOperator.NotEquals)">≠</option>
@@ -40,7 +40,7 @@
                     <option value="@FilterOperator.LessThanOrEqual" selected="@(CurrentOperator == FilterOperator.LessThanOrEqual)">≤</option>
                 </select>
                 <input type="number"
-                       class="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       class="bw-datagrid-input flex-1 min-w-0 px-2 py-1"
                        placeholder="Değer..."
                        value="@CurrentValue"
                        @onchange="HandleValueChange" />
@@ -50,7 +50,7 @@
         case FilterType.Date:
         case FilterType.DateTime:
             <div class="flex gap-1">
-                <select class="w-16 px-1 py-1 text-xs border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                <select class="bw-datagrid-select w-16 px-1 py-1 text-xs"
                         @onchange="HandleOperatorChange">
                     <option value="@FilterOperator.Equals" selected="@(CurrentOperator == FilterOperator.Equals)">=</option>
                     <option value="@FilterOperator.GreaterThan" selected="@(CurrentOperator == FilterOperator.GreaterThan)">&gt;</option>
@@ -59,7 +59,7 @@
                     <option value="@FilterOperator.LessThanOrEqual" selected="@(CurrentOperator == FilterOperator.LessThanOrEqual)">≤</option>
                 </select>
                 <input type="@(FilterType == FilterType.DateTime ? "datetime-local" : "date")"
-                       class="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       class="bw-datagrid-input flex-1 min-w-0 px-2 py-1"
                        value="@FormatDateValue()"
                        @onchange="HandleDateChange" />
             </div>
@@ -67,7 +67,7 @@
             
         default: // Text
             <div class="flex gap-1">
-                <select class="w-20 px-1 py-1 text-xs border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                <select class="bw-datagrid-select w-20 px-1 py-1 text-xs"
                         title="Filtre türü"
                         @onchange="HandleOperatorChange">
                     <option value="@FilterOperator.Contains" selected="@(CurrentOperator == FilterOperator.Contains)">İçerir</option>
@@ -77,7 +77,7 @@
                     <option value="@FilterOperator.NotContains" selected="@(CurrentOperator == FilterOperator.NotContains)">İçermez</option>
                 </select>
                 <input type="text"
-                       class="flex-1 min-w-0 px-2 py-1 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       class="bw-datagrid-input flex-1 min-w-0 px-2 py-1"
                        placeholder="Filtrele..."
                        value="@CurrentValue"
                        @onchange="HandleValueChange" />

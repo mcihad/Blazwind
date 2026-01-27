@@ -6,14 +6,14 @@
 
 <div class="relative inline-block ml-2" @onclick:stopPropagation="true">
     <button type="button" 
-            class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors @(IsActive ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30" : "text-gray-400 dark:text-gray-500")"
+            class="@(IsActive ? "bw-datagrid-filter-btn-active" : "bw-datagrid-filter-btn")"
             @onclick="TogglePopover">
         <i class="fa-solid fa-filter text-xs"></i>
     </button>
     
     @if (_isOpen)
     {
-        <div class="absolute right-0 top-full mt-1 z-50 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-3" @onclick:stopPropagation="true">
+        <div class="bw-datagrid-filter-popover" @onclick:stopPropagation="true">
             <div class="mb-3">
                 <BwDataGridFilter FilterType="@FilterType"
                                   CurrentFilter="@CurrentFilter"
@@ -21,7 +21,7 @@
                                   OnFilterChanged="HandleFilterChanged" />
             </div>
             
-            <div class="flex justify-end gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div class="bw-datagrid-filter-popover-footer">
                 <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" OnClick="ClearFilter">
                     Temizle
                 </BwButton>

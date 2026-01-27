@@ -271,6 +271,18 @@
     --bw-badge-info-bg: var(--bw-color-info);
     --bw-badge-info-text: var(--bw-color-text-inverse);
 
+    /* DataGrid */
+    --bw-datagrid-bg: var(--bw-color-surface);
+    --bw-datagrid-border: var(--bw-color-border);
+    --bw-datagrid-header-bg: var(--bw-gray-50);
+    --bw-datagrid-header-text: var(--bw-gray-700);
+    --bw-datagrid-row-striped-bg: var(--bw-gray-50);
+    --bw-datagrid-row-hover-bg: var(--bw-gray-100);
+    --bw-datagrid-row-selected-bg: var(--bw-primary-50);
+    --bw-datagrid-row-selected-text: var(--bw-primary-800);
+    --bw-datagrid-toolbar-bg: var(--bw-gray-50);
+    --bw-datagrid-footer-bg: var(--bw-gray-50);
+
     /* ========================================
      SECTION 4: Design Tokens
      ======================================== */

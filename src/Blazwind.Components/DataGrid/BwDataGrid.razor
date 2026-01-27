@@ -17,19 +17,17 @@
 
 @{
     var cellPadding = Compact ? "px-3 py-2" : "px-4 py-3";
-    var headerCellClass = $"font-semibold text-gray-700 dark:text-gray-300 text-sm {cellPadding} bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 border-r border-gray-200/60 dark:border-gray-700/60 last:border-r-0";
-    var bodyCellClass = $"text-gray-600 dark:text-gray-400 text-sm {cellPadding}";
     var processedItems = GetProcessedItems().ToList();
     var visibleColumns = GetVisibleColumns().ToList();
     var totalCount = GetTotalItemCount();
     var heightStyle = !string.IsNullOrEmpty(Height) ? $"height: {Height};" : "";
 }
 
-<div class="@CombineClasses($"relative bw-datagrid bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 overflow-hidden")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-datagrid")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     @* Toolbar *@
     @if (ToolbarContent != null || EnableSearch || EnableColumnToggle || EnableExport)
     {
-        <div class="flex items-center justify-between gap-4 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+        <div class="bw-datagrid-toolbar">
             <div class="flex items-center gap-3">
                 @ToolbarContent
             </div>
@@ -38,10 +36,10 @@
                 @if (EnableSearch)
                 {
                     <div class="relative">
-                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <i class="fa-solid fa-search bw-datagrid-search-icon"></i>
                         <input type="text" 
                                placeholder="Ara..." 
-                               class="pl-9 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:placeholder:text-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-48"
+                               class="bw-datagrid-input pl-9 pr-3 py-1.5 w-48"
                                value="@_searchQuery"
                                @oninput="@(e => HandleSearchChanged(e.Value?.ToString() ?? ""))" />
                     </div>
@@ -51,7 +49,7 @@
                 {
                     <div class="relative">
                         <button type="button" 
-                                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                                class="bw-datagrid-toolbar-btn"
                                 @onclick="ToggleColumnSelector">
                             <i class="fa-solid fa-table-columns"></i>
                             <span class="hidden sm:inline">Kolonlar</span>
@@ -59,13 +57,13 @@
                         
                         @if (_showColumnSelector)
                         {
-                            <div class="absolute right-0 top-full mt-1 z-50 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
-                                <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
+                            <div class="bw-datagrid-column-selector">
+                                <div class="bw-datagrid-column-selector-header">
                                     <div class="relative">
-                                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                                        <i class="fa-solid fa-search bw-datagrid-search-icon"></i>
                                         <input type="text" 
                                                placeholder="Kolon ara..." 
-                                               class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                               class="bw-datagrid-input w-full pl-8 pr-3 py-1.5"
                                                @bind="_columnSearchQuery"
                                                @bind:event="oninput" />
                                     </div>
@@ -78,13 +76,13 @@
                                     }
                                     @foreach (var col in filteredColumns)
                                     {
-                                        <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                                        <div class="bw-datagrid-column-selector-item"
                                              @onclick="@(() => ToggleColumnVisibility(col))">
                                             <BwCheckbox IsChecked="@col.Visible" 
                                                         IsCheckedChanged="@((_) => {/* Already handled */})"
                                                         Size="BwSize.Small"
                                                         Class="!m-0 pointer-events-none" />
-                                            <span class="text-sm text-gray-700 dark:text-gray-300">@col.Title</span>
+                                            <span class="text-sm">@col.Title</span>
                                         </div>
                                     }
                                 </div>
@@ -97,7 +95,7 @@
                 {
                     <div class="relative">
                         <button type="button" 
-                                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                                class="bw-datagrid-toolbar-btn">
                             <i class="fa-solid fa-download"></i>
                             <span class="hidden sm:inline">Dışa Aktar</span>
                         </button>
@@ -110,7 +108,7 @@
     @* Loading Overlay *@
     @if (IsLoading)
     {
-        <div class="absolute inset-0 bg-white/75 dark:bg-gray-900/75 z-40 flex items-center justify-center">
+        <div class="bw-datagrid-loading">
             @if (LoadingContent != null)
             {
                 @LoadingContent
@@ -118,8 +116,8 @@
             else
             {
                 <div class="flex flex-col items-center gap-2">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600"></i>
-                    <span class="text-sm text-gray-500">Yükleniyor...</span>
+                    <i class="fa-solid fa-spinner fa-spin bw-datagrid-loading-spinner"></i>
+                    <span class="bw-datagrid-loading-text">Yükleniyor...</span>
                 </div>
             }
         </div>
@@ -129,12 +127,12 @@
     <div class="relative overflow-auto" style="@heightStyle">
         <table class="w-full text-left border-collapse min-w-full" style="@(!string.IsNullOrEmpty(TableMinWidth) ? $"min-width: {TableMinWidth};" : (AutoFit ? "min-width: max-content;" : ""))">
             @* Header *@
-            <thead class="sticky top-0 z-30 bg-gray-50 dark:bg-gray-800 shadow-xs">
-                <tr class="bg-gray-50 dark:bg-gray-800">
+            <thead class="bw-datagrid-header shadow-xs">
+                <tr class="bw-datagrid-header-row">
                     @* Selection Column *@
                     @if (SelectionMode == BwSelectionMode.Single || SelectionMode == BwSelectionMode.Multiple)
                     {
-                        <th class="@headerCellClass w-12 text-center sticky left-0 z-30 bg-gray-50 dark:bg-gray-800">
+                        <th class="bw-datagrid-header-cell @cellPadding w-12 text-center sticky left-0 z-30">
                             @if (SelectionMode == BwSelectionMode.Multiple)
                             {
                                 <BwCheckbox IsChecked="@IsAllSelected()" 
@@ -147,7 +145,7 @@
                     @* Expansion Column *@
                     @if (EnableRowExpansion && DetailRowTemplate != null)
                     {
-                        <th class="@headerCellClass w-10 bg-gray-50 dark:bg-gray-800"></th>
+                        <th class="bw-datagrid-header-cell @cellPadding w-10"></th>
                     }
                     
                     @* Data Columns *@
@@ -158,7 +156,7 @@
                         var sortIcon = isSorted 
                             ? (sort!.Direction == SortDirection.Ascending ? "fa-sort-up" : "fa-sort-down") 
                             : "fa-sort";
-                        var sortColor = isSorted ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500";
+                        var sortIconClass = isSorted ? "bw-datagrid-sort-icon-active" : "bw-datagrid-sort-icon";
                         var widthStyle = column.CurrentWidth.HasValue 
                             ? $"width: {column.CurrentWidth}px;" 
                             : (!string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "");
@@ -170,14 +168,14 @@
                         };
                         var frozenClass = column.Frozen switch
                         {
-                            FrozenPosition.Left => "sticky left-0 z-30 !bg-gray-50 dark:!bg-gray-800",
-                            FrozenPosition.Right => "sticky right-0 z-30 !bg-gray-50 dark:!bg-gray-800",
+                            FrozenPosition.Left => "sticky left-0 z-30 bw-datagrid-frozen-cell",
+                            FrozenPosition.Right => "sticky right-0 z-30 bw-datagrid-frozen-cell",
                             _ => ""
                         };
                         
                         var thRelative = EnableColumnResize ? "relative" : "";
                         
-                        <th class="@headerCellClass @alignClass @frozenClass @column.HeaderClass @thRelative" 
+                        <th class="bw-datagrid-header-cell @cellPadding @alignClass @frozenClass @column.HeaderClass @thRelative" 
                             style="@widthStyle"
                             data-column-id="@column.GetId()">
                             <div class="flex items-center gap-2 @(column.Align == TextAlign.Right ? "justify-end" : column.Align == TextAlign.Center ? "justify-center" : "")">
@@ -188,13 +186,13 @@
                                 else if (EnableSorting && column.Sortable)
                                 {
                                     <button type="button" 
-                                            class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                                            class="bw-datagrid-sort-btn"
                                             @onclick="@(() => HandleSort(column))">
                                         <span>@column.Title</span>
-                                        <i class="fa-solid @sortIcon @sortColor text-xs"></i>
+                                        <i class="fa-solid @sortIcon @sortIconClass"></i>
                                         @if (EnableMultiSort && isSorted && _sorts.Count > 1)
                                         {
-                                            <span class="text-[10px] text-blue-600 font-bold">@(sort!.Priority + 1)</span>
+                                            <span class="bw-datagrid-sort-priority">@(sort!.Priority + 1)</span>
                                         }
                                     </button>
                                 }
@@ -205,9 +203,9 @@
                                 
                                 @if (EnableColumnResize && column.Resizable)
                                 {
-                                    <div class="absolute -right-2 top-0 bottom-0 w-4 cursor-col-resize z-10 flex justify-center hover:bg-blue-400/10 transition-colors group"
+                                    <div class="bw-datagrid-resize-handle group"
                                          data-resize-handle="@column.GetId()">
-                                        <div class="w-px h-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        <div class="bw-datagrid-resize-handle-line group-hover:opacity-100"></div>
                                     </div>
                                 }
                                 
@@ -226,15 +224,15 @@
                 @* Filter Row *@
                 @if (EnableFiltering && FilterMode == FilterMode.Row && visibleColumns.Any(c => c.Filterable))
                 {
-                    <tr class="bg-gray-50 dark:bg-gray-800">
+                    <tr class="bw-datagrid-filter-row">
                         @if (SelectionMode == BwSelectionMode.Single || SelectionMode == BwSelectionMode.Multiple)
                         {
-                            <th class="@cellPadding border-b border-gray-200 dark:border-gray-700 sticky left-0 z-30 bg-gray-50 dark:bg-gray-800"></th>
+                            <th class="bw-datagrid-filter-cell @cellPadding sticky left-0 z-30"></th>
                         }
                         
                         @if (EnableRowExpansion && DetailRowTemplate != null)
                         {
-                            <th class="@cellPadding border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800"></th>
+                            <th class="bw-datagrid-filter-cell @cellPadding"></th>
                         }
                         
                         @foreach (var column in visibleColumns)
@@ -242,12 +240,12 @@
                             var filter = GetFilterForColumn(column);
                             var frozenClass = column.Frozen switch
                             {
-                                FrozenPosition.Left => "sticky left-0 z-30 !bg-gray-50 dark:!bg-gray-800",
-                                FrozenPosition.Right => "sticky right-0 z-30 !bg-gray-50 dark:!bg-gray-800",
+                                FrozenPosition.Left => "sticky left-0 z-30 bw-datagrid-frozen-cell",
+                                FrozenPosition.Right => "sticky right-0 z-30 bw-datagrid-frozen-cell",
                                 _ => ""
                             };
                             
-                            <th class="@cellPadding border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 @frozenClass">
+                            <th class="bw-datagrid-filter-cell @cellPadding @frozenClass">
                                 @if (column.Filterable)
                                 {
                                     @if (column.FilterTemplate != null)
@@ -282,14 +280,13 @@
                     {
                         var isSelected = IsItemSelected(item);
                         var isExpanded = IsRowExpanded(item);
-                        var stripedClass = Striped && rowIndex % 2 == 1 && !isSelected ? "bg-gray-50/50 dark:bg-gray-800/30" : "";
-                        var defaultSelectedClass = "!bg-blue-50 dark:!bg-blue-900/30 !text-blue-800 dark:!text-blue-200 font-medium";
-                        var selectedClass = isSelected ? (SelectedRowClass ?? defaultSelectedClass) : "";
-                        var hoverClass = Hoverable && !isSelected ? "hover:bg-gray-100 dark:hover:bg-gray-800" : (Hoverable && isSelected ? "hover:bg-blue-100 dark:hover:bg-blue-900/50" : "");
+                        var stripedClass = Striped && rowIndex % 2 == 1 && !isSelected ? "bw-datagrid-row-striped" : "";
+                        var selectedClass = isSelected ? "bw-datagrid-row-selected" : "";
+                        var hoverClass = Hoverable ? "bw-datagrid-row-hover" : "";
                         var customRowClass = RowClass?.Invoke(item) ?? "";
                         var customRowStyle = RowStyle?.Invoke(item) ?? "";
                         
-                        <tr class="border-b border-gray-100 @stripedClass @selectedClass @hoverClass @customRowClass transition-colors cursor-pointer"
+                        <tr class="bw-datagrid-row @stripedClass @selectedClass @hoverClass @customRowClass"
                             style="@customRowStyle"
                             @onclick="@(() => HandleRowClick(item))"
                             @ondblclick="@(() => HandleRowDoubleClick(item))"
@@ -299,7 +296,7 @@
                             @* Selection Cell *@
                             @if (SelectionMode == BwSelectionMode.Single || SelectionMode == BwSelectionMode.Multiple)
                             {
-                                <td class="@bodyCellClass w-12 text-center sticky left-0 z-20 @(isSelected ? (SelectedRowClass ?? "!bg-blue-50 dark:!bg-blue-900/30") : "bg-white dark:bg-gray-900")" @onclick:stopPropagation="true">
+                                <td class="bw-datagrid-body-cell @cellPadding w-12 text-center sticky left-0 z-20 @(isSelected ? "bw-datagrid-selection-cell bw-datagrid-row-selected" : "bw-datagrid-selection-cell")" @onclick:stopPropagation="true">
                                     @if (SelectionMode == BwSelectionMode.Multiple)
                                     {
                                         <BwCheckbox IsChecked="@isSelected" 
@@ -319,12 +316,11 @@
                             @* Expansion Cell *@
                             @if (EnableRowExpansion && DetailRowTemplate != null)
                             {
-                                var expansionBgClass = isSelected ? (SelectedRowClass ?? "!bg-blue-50 dark:!bg-blue-900/30") : (Striped && rowIndex % 2 == 1 ? "bg-gray-50/50 dark:bg-gray-800/30" : "bg-white dark:bg-gray-900");
-                                <td class="@bodyCellClass w-10 text-center @expansionBgClass" @onclick:stopPropagation="true">
+                                <td class="bw-datagrid-body-cell @cellPadding w-10 text-center @(isSelected ? "bw-datagrid-row-selected" : (Striped && rowIndex % 2 == 1 ? "bw-datagrid-row-striped" : ""))" @onclick:stopPropagation="true">
                                     <button type="button" 
-                                            class="p-1 hover:bg-gray-200 rounded transition-colors"
+                                            class="bw-datagrid-expand-btn"
                                             @onclick="@(() => ToggleRowExpansion(item))">
-                                        <i class="fa-solid @(isExpanded ? "fa-chevron-down" : "fa-chevron-right") text-gray-400 text-xs"></i>
+                                        <i class="fa-solid @(isExpanded ? "fa-chevron-down" : "fa-chevron-right") text-xs"></i>
                                     </button>
                                 </td>
                             }
@@ -343,12 +339,12 @@
                                 };
                                 var frozenClass = column.Frozen switch
                                 {
-                                    FrozenPosition.Left => $"sticky left-0 z-20 {(isSelected ? "!bg-blue-50 dark:!bg-blue-900/30" : "!bg-white dark:!bg-gray-900")}",
-                                    FrozenPosition.Right => $"sticky right-0 z-20 {(isSelected ? "!bg-blue-50 dark:!bg-blue-900/30" : "!bg-white dark:!bg-gray-900")}",
+                                    FrozenPosition.Left => $"sticky left-0 z-20 {(isSelected ? "bw-datagrid-frozen-body-cell bw-datagrid-row-selected" : "bw-datagrid-frozen-body-cell")}",
+                                    FrozenPosition.Right => $"sticky right-0 z-20 {(isSelected ? "bw-datagrid-frozen-body-cell bw-datagrid-row-selected" : "bw-datagrid-frozen-body-cell")}",
                                     _ => ""
                                 };
                                 
-                                <td class="@bodyCellClass @alignClass @frozenClass @column.CellClass" style="@widthStyle">
+                                <td class="bw-datagrid-body-cell @cellPadding @alignClass @frozenClass @column.CellClass" style="@widthStyle">
                                     @if (column.Template != null)
                                     {
                                         @column.Template(item)
@@ -371,7 +367,7 @@
                         @* Detail Row *@
                         @if (EnableRowExpansion && DetailRowTemplate != null && isExpanded)
                         {
-                            <tr class="bg-gray-50 dark:bg-gray-800/50">
+                            <tr class="bw-datagrid-detail-row">
                                 <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0) + 1)">
                                     @DetailRowTemplate(item)
                                 </td>
@@ -385,16 +381,16 @@
                 {
                     <tr>
                         <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0) + (EnableRowExpansion && DetailRowTemplate != null ? 1 : 0))" 
-                            class="@bodyCellClass text-center py-12">
+                            class="bw-datagrid-body-cell @cellPadding text-center py-12">
                             @if (EmptyContent != null)
                             {
                                 @EmptyContent
                             }
                             else
                             {
-                                <div class="text-gray-400 dark:text-gray-500">
-                                    <i class="fa-solid fa-inbox text-4xl mb-3"></i>
-                                    <p class="text-sm">Gösterilecek veri bulunamadı</p>
+                                <div class="bw-datagrid-empty">
+                                    <i class="fa-solid fa-inbox bw-datagrid-empty-icon"></i>
+                                    <p class="bw-datagrid-empty-text">Gösterilecek veri bulunamadı</p>
                                 </div>
                             }
                         </td>
@@ -407,7 +403,7 @@
     @* Footer / Pagination / Export *@
     @if (FooterContent != null || EnablePagination || EnableExport)
     {
-        <div class="flex items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <div class="bw-datagrid-footer">
             <div class="flex items-center gap-4">
                 @FooterContent
             </div>
@@ -427,14 +423,14 @@
                 
                 @if (EnableExport)
                 {
-                    <div class="border-l border-gray-300 pl-4">
+                    <div class="bw-datagrid-export-divider">
                         <BwDropdown Alignment="BwDirection.Right" VPosition="BwDirection.Top">
                             <TriggerContent>
                                 <button type="button"
-                                        class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-400 shadow-sm transition-all">
-                                    <i class="fa-solid fa-download text-blue-600 dark:text-blue-400"></i>
+                                        class="bw-datagrid-toolbar-btn shadow-sm">
+                                    <i class="fa-solid fa-download" style="color: var(--bw-color-primary);"></i>
                                     <span>Dışa Aktar</span>
-                                    <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+                                    <i class="fa-solid fa-chevron-down text-xs" style="color: var(--bw-gray-500);"></i>
                                 </button>
                             </TriggerContent>
                             <ChildContent>
@@ -467,7 +463,7 @@
     @if (_showContextMenu && _contextMenuItem != null && ContextMenuContent != null)
     {
         <div class="fixed z-[1070]" style="left: @(_contextMenuX)px; top: @(_contextMenuY)px;">
-            <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg py-1 min-w-[160px]"
+            <div class="bw-datagrid-context-menu"
                  @onclick="HideContextMenu">
                 @ContextMenuContent(_contextMenuItem)
             </div>
