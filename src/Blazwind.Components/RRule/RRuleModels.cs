@@ -1,7 +1,7 @@
 namespace Blazwind.Components.RRule;
 
 /// <summary>
-/// Tekrarlama sıklığı
+/// Recurrence frequency
 /// </summary>
 public enum RRuleFrequency
 {
@@ -12,7 +12,7 @@ public enum RRuleFrequency
 }
 
 /// <summary>
-/// Bitiş tipi
+/// End type
 /// </summary>
 public enum RRuleEndType
 {
@@ -22,56 +22,56 @@ public enum RRuleEndType
 }
 
 /// <summary>
-/// Aylık tekrar tipi
+/// Monthly recurrence type
 /// </summary>
 public enum RRuleMonthlyType
 {
-    /// <summary>Ayın belirli günü (örn: her ayın 15'i)</summary>
+    /// <summary>Specific day of the month (e.g. the 15th of every month)</summary>
     DayOfMonth,
 
-    /// <summary>Ayın belirli haftasının belirli günü (örn: her ayın 2. Pazartesi)</summary>
+    /// <summary>Specific weekday of a specific week in the month (e.g. the 2nd Monday of every month)</summary>
     WeekdayOfMonth
 }
 
 /// <summary>
-/// RRULE seçenekleri - UI state ve RRULE arasında köprü
+/// RRULE options – bridge between UI state and RRULE
 /// </summary>
 public class RRuleOptions
 {
-    /// <summary>Tekrarlama sıklığı (günlük, haftalık, aylık, yıllık)</summary>
+    /// <summary>Recurrence frequency (daily, weekly, monthly, yearly)</summary>
     public RRuleFrequency Frequency { get; set; } = RRuleFrequency.Weekly;
 
-    /// <summary>Aralık (her X gün/hafta/ay/yıl)</summary>
+    /// <summary>Interval (every X days/weeks/months/years)</summary>
     public int Interval { get; set; } = 1;
 
-    /// <summary>Haftalık: Seçili günler</summary>
+    /// <summary>Weekly: selected days</summary>
     public HashSet<DayOfWeek> ByDays { get; set; } = new();
 
-    /// <summary>Aylık tip: Ayın günü mü, Hafta günü mü?</summary>
+    /// <summary>Monthly type: day of month or weekday?</summary>
     public RRuleMonthlyType MonthlyType { get; set; } = RRuleMonthlyType.DayOfMonth;
 
-    /// <summary>Aylık (DayOfMonth): Ayın hangi günü (1-31)</summary>
+    /// <summary>Monthly (DayOfMonth): which day of the month (1–31)</summary>
     public int ByMonthDay { get; set; } = 1;
 
-    /// <summary>Aylık (WeekdayOfMonth): Kaçıncı hafta (1=ilk, 2=ikinci, -1=son)</summary>
+    /// <summary>Monthly (WeekdayOfMonth): which week (1 = first, 2 = second, -1 = last)</summary>
     public int BySetPos { get; set; } = 1;
 
-    /// <summary>Aylık (WeekdayOfMonth): Hangi gün</summary>
+    /// <summary>Monthly (WeekdayOfMonth): which weekday</summary>
     public DayOfWeek ByWeekDay { get; set; } = DayOfWeek.Monday;
 
-    /// <summary>Yıllık: Hangi ay (1-12)</summary>
+    /// <summary>Yearly: which month (1–12)</summary>
     public int ByMonth { get; set; } = 1;
 
-    /// <summary>Bitiş tipi</summary>
+    /// <summary>End type</summary>
     public RRuleEndType EndType { get; set; } = RRuleEndType.Never;
 
-    /// <summary>Bitiş (AfterCount): Kaç tekrar sonra</summary>
+    /// <summary>End (AfterCount): after how many occurrences</summary>
     public int Count { get; set; } = 10;
 
-    /// <summary>Bitiş (UntilDate): Hangi tarihe kadar</summary>
+    /// <summary>End (UntilDate): until which date</summary>
     public DateTime? Until { get; set; }
 
-    /// <summary>Varsayılan ayarlarla yeni bir instance oluştur</summary>
+    /// <summary>Create a new instance with default settings</summary>
     public static RRuleOptions CreateDefault(DateTime? startDate = null)
     {
         var date = startDate ?? DateTime.Today;
@@ -88,7 +88,7 @@ public class RRuleOptions
 }
 
 /// <summary>
-/// Hafta günleri için yardımcı model
+/// Helper model for weekdays
 /// </summary>
 public class WeekDayInfo
 {

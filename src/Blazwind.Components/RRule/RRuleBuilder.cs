@@ -1,3 +1,4 @@
+```csharp
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -5,7 +6,7 @@ using System.Text.RegularExpressions;
 namespace Blazwind.Components.RRule;
 
 /// <summary>
-/// RRULE string builder ve parser (RFC 5545)
+/// RRULE string builder and parser (RFC 5545)
 /// Bidirectional: Options ↔ RRULE string
 /// </summary>
 public static class RRuleBuilder
@@ -25,7 +26,7 @@ public static class RRuleBuilder
         DayToRRule.ToDictionary(x => x.Value, x => x.Key);
 
     /// <summary>
-    /// RRuleOptions'ı RRULE string'e çevir
+    /// Convert RRuleOptions to RRULE string
     /// </summary>
     public static string Build(RRuleOptions options)
     {
@@ -34,42 +35,42 @@ public static class RRuleBuilder
         // FREQ
         parts.Add($"FREQ={options.Frequency.ToString().ToUpper()}");
 
-        // INTERVAL (1 ise genellikle yazılmaz ama biz yazalım netlik için)
+        // INTERVAL (usually omitted when 1, but we include it for clarity)
         if (options.Interval > 1)
         {
             parts.Add($"INTERVAL={options.Interval}");
         }
 
-        // BYDAY (Haftalık veya Aylık WeekdayOfMonth için)
+        // BYDAY (for Weekly or Monthly WeekdayOfMonth)
         if (options.Frequency == RRuleFrequency.Weekly && options.ByDays.Count > 0)
         {
             var days = options.ByDays
-                .OrderBy(d => ((int)d + 6) % 7) // Pazartesi'den başlat
+                .OrderBy(d => ((int)d + 6) % 7) // Start from Monday
                 .Select(d => DayToRRule[d]);
             parts.Add($"BYDAY={string.Join(",", days)}");
         }
         else if (options.Frequency == RRuleFrequency.Monthly && options.MonthlyType == RRuleMonthlyType.WeekdayOfMonth)
         {
-            // BYDAY=2MO (ikinci Pazartesi)
+            // BYDAY=2MO (second Monday)
             var pos = options.BySetPos;
             var day = DayToRRule[options.ByWeekDay];
             parts.Add($"BYDAY={pos}{day}");
         }
 
-        // BYMONTHDAY (Aylık DayOfMonth için)
+        // BYMONTHDAY (for Monthly DayOfMonth)
         if (options.Frequency == RRuleFrequency.Monthly && options.MonthlyType == RRuleMonthlyType.DayOfMonth)
         {
             parts.Add($"BYMONTHDAY={options.ByMonthDay}");
         }
 
-        // BYMONTH (Yıllık için)
+        // BYMONTH (for Yearly)
         if (options.Frequency == RRuleFrequency.Yearly)
         {
             parts.Add($"BYMONTH={options.ByMonth}");
             parts.Add($"BYMONTHDAY={options.ByMonthDay}");
         }
 
-        // Bitiş
+        // End
         switch (options.EndType)
         {
             case RRuleEndType.AfterCount:
@@ -84,7 +85,7 @@ public static class RRuleBuilder
     }
 
     /// <summary>
-    /// RRULE string'i RRuleOptions'a çevir (parse)
+    /// Convert RRULE string to RRuleOptions (parse)
     /// </summary>
     public static RRuleOptions Parse(string rrule)
     {
@@ -93,7 +94,7 @@ public static class RRuleBuilder
         if (string.IsNullOrWhiteSpace(rrule))
             return options;
 
-        // RRULE: prefix'i varsa kaldır
+        // Remove RRULE: prefix if present
         rrule = rrule.TrimStart();
         if (rrule.StartsWith("RRULE:", StringComparison.OrdinalIgnoreCase))
             rrule = rrule[6..];
@@ -146,7 +147,6 @@ public static class RRuleBuilder
                         options.EndType = RRuleEndType.AfterCount;
                         options.Count = count;
                     }
-
                     break;
 
                 case "UNTIL":
@@ -155,7 +155,6 @@ public static class RRuleBuilder
                         options.EndType = RRuleEndType.UntilDate;
                         options.Until = until;
                     }
-
                     break;
             }
         }
@@ -165,12 +164,12 @@ public static class RRuleBuilder
 
     private static void ParseByDay(string value, RRuleOptions options)
     {
-        // BYDAY=MO,WE,FR veya BYDAY=2MO (aylık için)
+        // BYDAY=MO,WE,FR or BYDAY=2MO (for monthly)
         var days = value.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var day in days)
         {
-            // Pozisyon varsa parse et (örn: 2MO, -1FR)
+            // Parse position if present (e.g. 2MO, -1FR)
             var match = Regex.Match(day, @"^(-?\d)?([A-Z]{2})$");
             if (match.Success)
             {
@@ -181,14 +180,14 @@ public static class RRuleBuilder
                 {
                     if (!string.IsNullOrEmpty(posStr) && int.TryParse(posStr, out var pos))
                     {
-                        // Aylık tip (örn: 2MO = ikinci Pazartesi)
+                        // Monthly type (e.g. 2MO = second Monday)
                         options.MonthlyType = RRuleMonthlyType.WeekdayOfMonth;
                         options.BySetPos = pos;
                         options.ByWeekDay = dayOfWeek;
                     }
                     else
                     {
-                        // Haftalık tip
+                        // Weekly type
                         options.ByDays.Add(dayOfWeek);
                     }
                 }
@@ -198,13 +197,17 @@ public static class RRuleBuilder
 
     private static bool TryParseUntil(string value, out DateTime result)
     {
-        // Format: YYYYMMDD veya YYYYMMDDTHHmmssZ
+        // Format: YYYYMMDD or YYYYMMDDTHHmmssZ
         result = default;
 
         if (value.Length >= 8)
         {
             var dateStr = value[..8];
-            if (DateTime.TryParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None,
+            if (DateTime.TryParseExact(
+                    dateStr,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
                     out result))
             {
                 return true;
@@ -215,114 +218,112 @@ public static class RRuleBuilder
     }
 
     /// <summary>
-    /// İnsan okunabilir önizleme metni oluştur (Türkçe)
+    /// Create a human-readable preview text (English)
     /// </summary>
     public static string GetHumanReadable(RRuleOptions options)
     {
         var sb = new StringBuilder();
 
-        // Interval ve Frequency
+        // Interval and Frequency
         var intervalText = options.Interval > 1 ? $"{options.Interval} " : "";
 
         switch (options.Frequency)
         {
             case RRuleFrequency.Daily:
-                sb.Append(options.Interval == 1 ? "Her gün" : $"Her {options.Interval} günde bir");
+                sb.Append(options.Interval == 1
+                    ? "Every day"
+                    : $"Every {options.Interval} days");
                 break;
 
             case RRuleFrequency.Weekly:
-                if (options.Interval == 1)
-                    sb.Append("Her hafta");
-                else
-                    sb.Append($"Her {options.Interval} haftada bir");
+                sb.Append(options.Interval == 1
+                    ? "Every week"
+                    : $"Every {options.Interval} weeks");
 
                 if (options.ByDays.Count > 0)
                 {
                     var dayNames = options.ByDays
                         .OrderBy(d => ((int)d + 6) % 7)
-                        .Select(GetTurkishDayName);
-                    sb.Append($" {string.Join(", ", dayNames)}");
+                        .Select(GetEnglishDayName);
+                    sb.Append($" on {string.Join(", ", dayNames)}");
                 }
-
                 break;
 
             case RRuleFrequency.Monthly:
-                if (options.Interval == 1)
-                    sb.Append("Her ay");
-                else
-                    sb.Append($"Her {options.Interval} ayda bir");
+                sb.Append(options.Interval == 1
+                    ? "Every month"
+                    : $"Every {options.Interval} months");
 
                 if (options.MonthlyType == RRuleMonthlyType.DayOfMonth)
                 {
-                    sb.Append($" {options.ByMonthDay}. gün");
+                    sb.Append($" on day {options.ByMonthDay}");
                 }
                 else
                 {
                     var posText = options.BySetPos switch
                     {
-                        1 => "ilk",
-                        2 => "ikinci",
-                        3 => "üçüncü",
-                        4 => "dördüncü",
-                        -1 => "son",
-                        _ => $"{options.BySetPos}."
+                        1 => "first",
+                        2 => "second",
+                        3 => "third",
+                        4 => "fourth",
+                        -1 => "last",
+                        _ => $"{options.BySetPos}th"
                     };
-                    sb.Append($" {posText} {GetTurkishDayName(options.ByWeekDay)}");
+                    sb.Append($" on the {posText} {GetEnglishDayName(options.ByWeekDay)}");
                 }
-
                 break;
 
             case RRuleFrequency.Yearly:
-                if (options.Interval == 1)
-                    sb.Append("Her yıl");
-                else
-                    sb.Append($"Her {options.Interval} yılda bir");
+                sb.Append(options.Interval == 1
+                    ? "Every year"
+                    : $"Every {options.Interval} years");
 
-                var monthName = GetTurkishMonthName(options.ByMonth);
-                sb.Append($" {options.ByMonthDay} {monthName}");
+                var monthName = GetEnglishMonthName(options.ByMonth);
+                sb.Append($" on {monthName} {options.ByMonthDay}");
                 break;
         }
 
-        // Bitiş
+        // End
         switch (options.EndType)
         {
             case RRuleEndType.AfterCount:
-                sb.Append($", {options.Count} kez");
+                sb.Append($", {options.Count} times");
                 break;
             case RRuleEndType.UntilDate when options.Until.HasValue:
-                sb.Append($", {options.Until.Value:dd MMMM yyyy} tarihine kadar");
+                sb.Append($", until {options.Until.Value:dd MMMM yyyy}");
                 break;
         }
 
         return sb.ToString();
     }
 
-    private static string GetTurkishDayName(DayOfWeek day) => day switch
+    private static string GetEnglishDayName(DayOfWeek day) => day switch
     {
-        DayOfWeek.Monday => "Pazartesi",
-        DayOfWeek.Tuesday => "Salı",
-        DayOfWeek.Wednesday => "Çarşamba",
-        DayOfWeek.Thursday => "Perşembe",
-        DayOfWeek.Friday => "Cuma",
-        DayOfWeek.Saturday => "Cumartesi",
-        DayOfWeek.Sunday => "Pazar",
+        DayOfWeek.Monday => "Monday",
+        DayOfWeek.Tuesday => "Tuesday",
+        DayOfWeek.Wednesday => "Wednesday",
+        DayOfWeek.Thursday => "Thursday",
+        DayOfWeek.Friday => "Friday",
+        DayOfWeek.Saturday => "Saturday",
+        DayOfWeek.Sunday => "Sunday",
         _ => day.ToString()
     };
 
-    private static string GetTurkishMonthName(int month) => month switch
+    private static string GetEnglishMonthName(int month) => month switch
     {
-        1 => "Ocak",
-        2 => "Şubat",
-        3 => "Mart",
-        4 => "Nisan",
-        5 => "Mayıs",
-        6 => "Haziran",
-        7 => "Temmuz",
-        8 => "Ağustos",
-        9 => "Eylül",
-        10 => "Ekim",
-        11 => "Kasım",
-        12 => "Aralık",
+        1 => "January",
+        2 => "February",
+        3 => "March",
+        4 => "April",
+        5 => "May",
+        6 => "June",
+        7 => "July",
+        8 => "August",
+        9 => "September",
+        10 => "October",
+        11 => "November",
+        12 => "December",
         _ => month.ToString()
     };
 }
+```
