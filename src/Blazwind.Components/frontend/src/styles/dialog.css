@@ -1,0 +1,345 @@
+/* =============================================================================
+   Blazwind Dialog System
+   Semantic Styling using Theme Tokens (blazwind.css)
+   ============================================================================= */
+
+/* --- Overlay --- */
+/* --- Overlay --- */
+.bw-dialog-overlay {
+    @apply fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300;
+    background-color: var(--bw-dialog-overlay, rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    /* Ensure it stays on top of Sidebar */
+}
+
+/* --- Dialog Container --- */
+.bw-dialog-container {
+    @apply flex flex-col shadow-2xl relative overflow-hidden transition-all duration-300 transform scale-100;
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+    border: 1px solid var(--bw-color-divider);
+    border-radius: var(--bw-radius-lg);
+    /* Reduced radius */
+    max-height: 90vh;
+}
+
+/* Helper for dragging/resizing performance */
+.bw-no-transition {
+    transition: none !important;
+}
+
+/* --- Fullscreen Variant --- */
+.bw-dialog-fullscreen {
+    @apply w-screen h-screen max-w-none max-h-none m-0 inset-0 rounded-none border-0;
+}
+
+/* --- Header --- */
+.bw-dialog-header {
+    @apply flex items-center justify-between border-b select-none rounded-t-[calc(var(--bw-radius-lg)-1px)];
+    background-color: var(--bw-dialog-header-bg, var(--bw-gray-50));
+    border-color: var(--bw-color-divider);
+    padding: var(--bw-spacing-3) var(--bw-spacing-4);
+    /* Reduced padding */
+}
+
+.bw-dialog-title {
+    @apply text-base font-semibold;
+    /* Reduced font size */
+    color: var(--bw-color-text);
+}
+
+/* Header Variants (Backgrounds) */
+.bw-dialog-header-success {
+    background-color: var(--bw-success-50);
+    border-color: var(--bw-success-100);
+}
+
+.dark .bw-dialog-header-success {
+    background-color: var(--bw-success-900);
+    border-color: var(--bw-success-800);
+}
+
+.bw-dialog-header-danger {
+    background-color: var(--bw-danger-50);
+    border-color: var(--bw-danger-100);
+}
+
+.dark .bw-dialog-header-danger {
+    background-color: var(--bw-danger-900);
+    border-color: var(--bw-danger-800);
+}
+
+.bw-dialog-header-warning {
+    background-color: var(--bw-warning-50);
+    border-color: var(--bw-warning-100);
+}
+
+.dark .bw-dialog-header-warning {
+    background-color: var(--bw-warning-900);
+    border-color: var(--bw-warning-800);
+}
+
+.bw-dialog-header-info {
+    background-color: var(--bw-info-50);
+    border-color: var(--bw-info-100);
+}
+
+.dark .bw-dialog-header-info {
+    background-color: var(--bw-info-900);
+    border-color: var(--bw-info-800);
+}
+
+/* Header Variants (Text) */
+.bw-dialog-title-success {
+    color: var(--bw-color-success);
+}
+
+.bw-dialog-title-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-dialog-title-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-dialog-title-info {
+    color: var(--bw-color-info);
+}
+
+/* --- Inner Content Variants (Input/Message Dialogs) --- */
+.bw-dialog-inner-default {
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-divider);
+}
+
+.bw-dialog-inner-success {
+    background-color: var(--bw-success-50);
+    border-color: var(--bw-success-100);
+}
+
+.dark .bw-dialog-inner-success {
+    background-color: var(--bw-success-900);
+    border-color: var(--bw-success-800);
+}
+
+.bw-dialog-inner-danger {
+    background-color: var(--bw-danger-50);
+    border-color: var(--bw-danger-100);
+}
+
+.dark .bw-dialog-inner-danger {
+    background-color: var(--bw-danger-900);
+    border-color: var(--bw-danger-800);
+}
+
+.bw-dialog-inner-warning {
+    background-color: var(--bw-warning-50);
+    border-color: var(--bw-warning-100);
+}
+
+.dark .bw-dialog-inner-warning {
+    background-color: var(--bw-warning-900);
+    border-color: var(--bw-warning-800);
+}
+
+.bw-dialog-inner-info {
+    background-color: var(--bw-info-50);
+    border-color: var(--bw-info-100);
+}
+
+.dark .bw-dialog-inner-info {
+    background-color: var(--bw-info-900);
+    border-color: var(--bw-info-800);
+}
+
+/* Icon Variants */
+.bw-icon-success {
+    color: var(--bw-color-success);
+}
+
+.bw-icon-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-icon-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-icon-info {
+    color: var(--bw-color-info);
+}
+
+
+/* --- Close Button --- */
+.bw-dialog-close {
+    @apply w-8 h-8 flex items-center justify-center rounded-full transition-colors cursor-pointer;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-dialog-close:hover {
+    background-color: var(--bw-control-hover-bg);
+    color: var(--bw-color-text);
+}
+
+/* --- Content --- */
+.bw-dialog-content {
+    @apply p-6 flex-1 relative overflow-y-auto;
+    color: var(--bw-color-text);
+}
+
+/* --- Resize Handle --- */
+.bw-dialog-resize-handle {
+    @apply absolute bottom-0 right-0 w-4 h-4 cursor-se-resize flex items-center justify-center select-none z-10;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-dialog-resize-handle:hover {
+    color: var(--bw-color-text);
+}
+
+/* --- Animations --- */
+.animate-scale-in {
+    animation: bw-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-fade-in {
+    animation: bw-fade-in 0.2s ease-out;
+}
+
+@keyframes bw-scale-in {
+    0% {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bw-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+
+/* =============================================================================
+   JS-Driven Dialog Components (Progress, Loading, etc.)
+   ============================================================================= */
+
+/* Pulse Loading */
+.bw-dialog-pulse {
+    @apply flex flex-col items-center justify-center;
+}
+
+.bw-dialog-pulse-icon-bg {
+    @apply w-16 h-16 rounded-full animate-ping opacity-75;
+    background-color: var(--bw-color-primary);
+}
+
+.bw-dialog-pulse-icon-wrapper {
+    @apply absolute inset-0 w-16 h-16 rounded-full flex items-center justify-center shadow-lg;
+    background-color: var(--bw-color-primary);
+}
+
+.bw-dialog-pulse-icon {
+    @apply text-xl;
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-dialog-pulse-message {
+    @apply font-medium text-lg drop-shadow-md mt-4;
+    color: white;
+    /* Specifically for overlay text */
+}
+
+/* Progress Dialog */
+.bw-dialog-progress-title {
+    @apply font-bold;
+    color: var(--bw-color-text);
+}
+
+.bw-dialog-progress-percent {
+    @apply text-sm font-semibold;
+    color: var(--bw-color-primary);
+}
+
+.bw-dialog-progress-track {
+    @apply w-full rounded-full h-3 mb-3 overflow-hidden shadow-inner;
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-dialog-progress-track {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-dialog-progress-fill {
+    @apply h-3 rounded-full transition-all duration-300 ease-out shadow-sm;
+    background-color: var(--bw-color-primary);
+}
+
+.bw-dialog-progress-message {
+    @apply text-xs text-center font-medium;
+    color: var(--bw-color-text-secondary);
+}
+
+/* Loading (Standard) */
+.bw-dialog-loading {
+    @apply flex items-center gap-5;
+}
+
+.bw-dialog-spinner {
+    @apply animate-spin rounded-full h-12 w-12 border-4;
+    border-color: var(--bw-primary-200);
+    border-top-color: var(--bw-color-primary);
+}
+
+.dark .bw-dialog-spinner {
+    border-color: var(--bw-primary-800);
+    border-top-color: var(--bw-primary-400);
+}
+
+/* Loading (Square) */
+.bw-dialog-loading-square {
+    @apply flex flex-col items-center justify-center;
+}
+
+.bw-dialog-icon-loading {
+    @apply text-4xl mb-4 animate-spin;
+    color: var(--bw-color-primary);
+}
+
+/* Countdown */
+.bw-dialog-countdown-circle-track {
+    color: var(--bw-gray-100);
+}
+
+.dark .bw-dialog-countdown-circle-track {
+    color: var(--bw-gray-700);
+}
+
+.bw-dialog-countdown-circle-fill {
+    @apply transition-all duration-1000 ease-linear;
+    color: var(--bw-color-primary);
+}
+
+.bw-dialog-countdown-text {
+    @apply text-4xl font-black;
+    color: var(--bw-color-text);
+}
+
+.bw-dialog-countdown-subtext {
+    @apply text-xs font-bold uppercase tracking-widest mt-1;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-dialog-glass {
+    @apply bg-gray-100/50 dark:bg-gray-900/50;
+}

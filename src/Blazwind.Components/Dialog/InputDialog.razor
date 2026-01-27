@@ -63,11 +63,11 @@
 
     private string ContainerClass => Color switch
     {
-        BwColor.Success => "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30",
-        BwColor.Warning => "bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800/30",
-        BwColor.Danger => "bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-800/30",
-        BwColor.Info => "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800/30",
-        _ => "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+        BwColor.Success => "bw-dialog-inner-success",
+        BwColor.Warning => "bw-dialog-inner-warning",
+        BwColor.Danger => "bw-dialog-inner-danger",
+        BwColor.Info => "bw-dialog-inner-info",
+        _ => "bw-dialog-inner-default"
     };
 
     private string GetIconHtml()
@@ -75,10 +75,10 @@
          var iconClass = "";
         return Color switch
         {
-            BwColor.Success => $"<i class=\"fa-solid fa-circle-check {iconClass} text-emerald-600\"></i>",
-            BwColor.Warning => $"<i class=\"fa-solid fa-triangle-exclamation {iconClass} text-amber-600\"></i>",
-            BwColor.Danger => $"<i class=\"fa-solid fa-circle-xmark {iconClass} text-red-600\"></i>",
-            _ => $"<i class=\"fa-solid fa-circle-info {iconClass} text-blue-600\"></i>"
+            BwColor.Success => $"<i class=\"fa-solid fa-circle-check {iconClass} bw-icon-success\"></i>",
+            BwColor.Warning => $"<i class=\"fa-solid fa-triangle-exclamation {iconClass} bw-icon-warning\"></i>",
+            BwColor.Danger => $"<i class=\"fa-solid fa-circle-xmark {iconClass} bw-icon-danger\"></i>",
+            _ => $"<i class=\"fa-solid fa-circle-info {iconClass} bw-icon-info\"></i>"
         };
     }
 

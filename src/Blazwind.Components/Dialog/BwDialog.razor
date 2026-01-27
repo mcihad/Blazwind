@@ -7,39 +7,39 @@
 @inject IJSRuntime JS
 
 @{
-    var fullscreenClass = FullScreen ? "!w-screen !h-screen !max-w-none !max-h-none !rounded-none !m-0 !inset-0" : "";
+    var fullscreenClass = FullScreen ? "bw-dialog-fullscreen" : "";
     var draggableClass = Draggable ? "cursor-move" : "";
     var dialogId = $"bw-dialog-{Id}";
     var handleId = $"bw-dialog-handle-{Id}";
     
-    // Header height (padding) based on TitleSize
-    var headerPaddingClass = TitleSize switch
+    // Header variant class
+    var headerVariantClass = TitleColor switch
     {
-        BwSize.ExtraSmall => "px-3 py-1.5",
-        BwSize.Small => "px-4 py-2",
-        BwSize.Large => "px-6 py-4",
-        BwSize.ExtraLarge => "px-6 py-4", // Same as Large
-        _ => "px-5 py-3" // Medium (default)
+        BwColor.Success => "bw-dialog-header-success",
+        BwColor.Danger => "bw-dialog-header-danger",
+        BwColor.Warning => "bw-dialog-header-warning",
+        BwColor.Info => "bw-dialog-header-info",
+        BwColor.Secondary => "bw-dialog-header-secondary", // Will need to define or map to gray
+        BwColor.Dark => "bw-dialog-header-dark", // Will need to define
+        _ => "" // Default handled in CSS
     };
-    
-    // Header background & text colors based on TitleColor
-    var (headerBgClass, headerTextClass, headerBorderClass, closeBtnClass) = TitleColor switch
+
+    // Text class (if needed for override)
+    var headerTextClass = TitleColor switch
     {
-        BwColor.Success => ("bg-green-600 dark:bg-green-700", "text-white", "border-green-700 dark:border-green-800", "w-6 h-6 flex items-center justify-center text-green-200 hover:text-white hover:bg-green-700 dark:hover:bg-green-800"),
-        BwColor.Danger => ("bg-red-600 dark:bg-red-700", "text-white", "border-red-700 dark:border-red-800", "w-6 h-6 flex items-center justify-center text-red-200 hover:text-white hover:bg-red-700 dark:hover:bg-red-800"),
-        BwColor.Warning => ("bg-amber-500 dark:bg-amber-600", "text-white", "border-amber-600 dark:border-amber-700", "w-6 h-6 flex items-center justify-center text-amber-100 hover:text-white hover:bg-amber-600 dark:hover:bg-amber-700"),
-        BwColor.Info => ("bg-blue-600 dark:bg-blue-700", "text-white", "border-blue-700 dark:border-blue-800", "w-6 h-6 flex items-center justify-center text-blue-200 hover:text-white hover:bg-blue-700 dark:hover:bg-blue-800"),
-        BwColor.Secondary => ("bg-gray-500 dark:bg-gray-600", "text-white", "border-gray-600 dark:border-gray-700", "w-6 h-6 flex items-center justify-center text-gray-200 hover:text-white hover:bg-gray-600 dark:hover:bg-gray-700"),
-        BwColor.Dark => ("bg-gray-800 dark:bg-gray-900", "text-white", "border-gray-900 dark:border-black", "w-6 h-6 flex items-center justify-center text-gray-300 hover:text-white hover:bg-gray-900 dark:hover:bg-black"),
-        _ => ("bg-gray-50 dark:bg-gray-800", "text-gray-900 dark:text-gray-100", "border-gray-200 dark:border-gray-700", "w-6 h-6 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700") // Primary (default - no color)
+        BwColor.Success => "bw-dialog-title-success",
+        BwColor.Danger => "bw-dialog-title-danger",
+        BwColor.Warning => "bw-dialog-title-warning",
+        BwColor.Info => "bw-dialog-title-info",
+        _ => ""
     };
 }
 
-<div class="fixed inset-0 z-[1050] flex items-center justify-center p-4 @(FullScreen ? "!p-0" : "")" style="background-color: rgba(0,0,0,0.5)">
+<div class="bw-dialog-overlay @(FullScreen ? "!p-0" : "")">
     @if (IsRaw)
     {
          <div id="@dialogId" 
-             class="@CombineClasses($"flex flex-col {AnimationClass} {fullscreenClass}")" 
+             class="@CombineClasses($"bw-dialog-container flex flex-col {AnimationClass} {fullscreenClass}")" 
              style="@ComputedStyle" @attributes="AdditionalAttributes">
             @ChildContent
          </div>
@@ -48,18 +48,18 @@
     {
         @* Dialog Frame *@
         <div id="@dialogId" 
-             class="@CombineClasses($"bg-white dark:bg-gray-800 rounded shadow-xl flex flex-col w-full max-h-[90vh] {AnimationClass} {fullscreenClass}")"
+             class="@CombineClasses($"bw-dialog-container w-full {AnimationClass} {fullscreenClass}")"
              style="@ComputedStyle" @attributes="AdditionalAttributes">
             
             @* Header *@
             <div id="@handleId" 
-                 class="flex items-center justify-between @headerPaddingClass border-b @headerBorderClass rounded-t select-none @headerBgClass @draggableClass">
-                <h3 class="text-lg font-semibold @headerTextClass">@Title</h3>
+                 class="bw-dialog-header @headerVariantClass @draggableClass">
+                <h3 class="bw-dialog-title @headerTextClass">@Title</h3>
                 
                 @if (ShowClose)
                 {
                     <button type="button" 
-                            class="@closeBtnClass transition-colors p-1 rounded-full"
+                            class="bw-dialog-close"
                             @onclick="OnClose">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -67,7 +67,7 @@
             </div>
             
             @* Content *@
-            <div class="overflow-y-auto p-6 flex-1 relative">
+            <div class="bw-dialog-content">
                 @ChildContent
             </div>
 
@@ -76,8 +76,7 @@
             {
                 @* Bottom Right Corner Handle *@
                 <div id="@dialogId-resize-handle" 
-                     class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize text-gray-400 dark:text-gray-500 hover:text-gray-600 flex items-center justify-center select-none z-10">
-                                    @* <i class="fa-solid fa-signal fa-rotate-270 text-xs opacity-50"></i> *@
+                     class="bw-dialog-resize-handle">
                         <svg class="w-3 h-3 opacity-50" viewBox="0 0 10 10" fill="currentColor">
                             <path d="M 10 10 L 10 2 L 2 10 Z" />
                         </svg>

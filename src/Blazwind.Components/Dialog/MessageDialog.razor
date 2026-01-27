@@ -39,21 +39,21 @@
 
     private string ContainerClass => Color switch
     {
-        BwColor.Success => "bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800",
-        BwColor.Warning => "bg-amber-50 dark:bg-amber-950 border-amber-200 dark:border-amber-800",
-        BwColor.Danger => "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800",
-        BwColor.Info => "bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800",
-        _ => "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700"
+        BwColor.Success => "bw-dialog-inner-success",
+        BwColor.Warning => "bw-dialog-inner-warning",
+        BwColor.Danger => "bw-dialog-inner-danger",
+        BwColor.Info => "bw-dialog-inner-info",
+        _ => "bw-dialog-inner-default"
     };
 
     private string GetIconHtml()
     {
         return Color switch
         {
-            BwColor.Success => "<i class=\"fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400\"></i>",
-            BwColor.Warning => "<i class=\"fa-solid fa-triangle-exclamation text-amber-600 dark:text-amber-400\"></i>",
-            BwColor.Danger => "<i class=\"fa-solid fa-circle-xmark text-red-600 dark:text-red-400\"></i>",
-            _ => "<i class=\"fa-solid fa-circle-info text-blue-600 dark:text-blue-400\"></i>"
+            BwColor.Success => "<i class=\"fa-solid fa-circle-check bw-icon-success\"></i>",
+            BwColor.Warning => "<i class=\"fa-solid fa-triangle-exclamation bw-icon-warning\"></i>",
+            BwColor.Danger => "<i class=\"fa-solid fa-circle-xmark bw-icon-danger\"></i>",
+            _ => "<i class=\"fa-solid fa-circle-info bw-icon-info\"></i>"
         };
     }
 

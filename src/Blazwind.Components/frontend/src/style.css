@@ -38,6 +38,7 @@
 @import "./styles/commandpalette.css";
 @import "./styles/comment.css";
 @import "./styles/countdown.css";
+@import "./styles/dialog.css";
 
 /* Component-specific styles */
 @import "./styles/timeline.css";
