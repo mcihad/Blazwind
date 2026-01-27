@@ -30,7 +30,7 @@
                 <i class="fa-solid fa-cloud-arrow-up text-blue-600 text-xl"></i>
             </div>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                <span class="font-semibold text-blue-600 dark:text-blue-400">Dosya seçin</span> veya buraya sürükleyin
+                <span class="font-semibold text-blue-600 dark:text-blue-400">Select file</span> or drag here
             </p>
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-500">
                 @if (!string.IsNullOrEmpty(Accept))
@@ -39,7 +39,7 @@
                 }
                 @if (MaxFileSize.HasValue)
                 {
-                    <span> • Maks. @FormatFileSize(MaxFileSize.Value)</span>
+                    <span> • Max. @FormatFileSize(MaxFileSize.Value)</span>
                 }
             </p>
         </div>

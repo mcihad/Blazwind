@@ -113,7 +113,7 @@
                     @if (ShowCopy && !string.IsNullOrEmpty(Value))
                     {
                         <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
-                            @onclick="CopyToClipboard" @onclick:stopPropagation="true" title="Kopyala">
+                            @onclick="CopyToClipboard" @onclick:stopPropagation="true" title="Copy">
                             <i class="@(_copied ? "fa-solid fa-check text-green-500" : "fa-solid fa-copy")"></i>
                         </button>
                     }

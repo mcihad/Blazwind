@@ -1,61 +1,61 @@
-# Input (Metin Girişi)
+# Input (Text Input)
 
-Kullanıcıdan metin tabanlı veri almak için kullanılan temel bileşendir. `BwBaseInput` altyapısını kullanır ve tüm standart form özelliklerini destekler.
+This is the basic component used to receive text-based data from the user. It uses the `BwBaseInput` infrastructure and supports all standard form features.
 
-## Özellikler
+## Features
 
-*   **Boyutlandırma:** `Small`, `Medium`, `Large`.
-*   **İkonlar:** Sol veya sağ tarafa ikon ekleme desteği.
-*   **Doğrulama:** `EditContext` entegrasyonu ve otomatik hata mesajları (`For` parametresi).
-*   **Label Pozisyonu:** `Top`, `Left`, `Floating` (Kayan etiket).
-*   **Yardım Metni:** `Inline` (satır altı) veya `Popup` (tooltip) modları.
+* **Sizing:** `Small`, `Medium`, `Large`.
+* **Icons:** Support for adding icons to the left or right.
+* **Validation:** `EditContext` integration and automatic error messages (`For` parameter).
+* **Label Position:** `Top`, `Left`, `Floating` (floating label).
+* **Helper Text:** `Inline` (below the field) or `Popup` (tooltip) modes.
 
-## Kullanım
+## Usage
 
-### Temel Kullanım
-
-```razor
-<BwInput Label="Adınız" Placeholder="Adınızı giriniz" @bind-Value="model.Name" />
-```
-
-### İkonlu Kullanım
+### Basic Usage
 
 ```razor
-<BwInput Label="Arama" IconLeft="fa-solid fa-search" Placeholder="Ara..." />
-<BwInput Label="E-posta" IconRight="fa-solid fa-envelope" Type="email" />
+<BwInput Label="Your Name" Placeholder="Enter your name" @bind-Value="model.Name" />
 ```
 
-### Otomatik Validasyon (For Parametresi)
+### Usage with Icons
 
-`For` parametresi verildiğinde `IsValid` ve `ErrorMessage` otomatik yönetilir.
+```razor
+<BwInput Label="Search" IconLeft="fa-solid fa-search" Placeholder="Search..." />
+<BwInput Label="Email" IconRight="fa-solid fa-envelope" Type="email" />
+```
+
+### Automatic Validation (For Parameter)
+
+When the `For` parameter is provided, `IsValid` and `ErrorMessage` are managed automatically.
 
 ```razor
 <BwInput @bind-Value="model.Email" 
          For="@(() => model.Email)" 
-         Label="E-posta" />
+         Label="Email" />
 ```
 
-### Label Pozisyonları
+### Label Positions
 
 ```razor
 <BwInput Label="Floating Label" LabelPosition="BwLabelPosition.Floating" />
-<BwInput Label="Sol Etiket" LabelPosition="BwLabelPosition.Left" LabelWidth="120px" />
+<BwInput Label="Left Label" LabelPosition="BwLabelPosition.Left" LabelWidth="120px" />
 ```
 
-### Yardımcı Metinler (Helper Text)
+### Helper Texts
 
-Yardımcı metinler, alanın altında (`Inline`) veya bir soru işareti ikonu ile (`Popup`) gösterilebilir.
+Helper texts can be displayed below the field (`Inline`) or with a question mark icon (`Popup`).
 
 ```razor
-<!-- Satır Altı (Varsayılan) -->
-<BwInput Label="Şifre" 
+<!-- Inline (Default) -->
+<BwInput Label="Password" 
          Type="password" 
-         HelperText="En az 8 karakter olmalıdır." 
+         HelperText="Must be at least 8 characters." 
          HelpTextMode="BwHelpTextMode.Inline" />
 
 <!-- Tooltip (Popup) -->
-<BwInput Label="Kullanıcı Adı" 
-         HelperText="Sistemdeki benzersiz adınız." 
+<BwInput Label="Username" 
+         HelperText="Your unique name in the system." 
          HelpTextMode="BwHelpTextMode.Popup" />
 ```
 
@@ -70,37 +70,37 @@ Yardımcı metinler, alanın altında (`Inline`) veya bir soru işareti ikonu il
          OnBlur="() => _isFocused = false" />
 ```
 
-## BwInput Parametreleri
+## BwInput Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `string` | `null` | Giriş değeri (Two-way binding destekler). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Placeholder` | `string` | `null` | Yer tutucu metin. |
-| `Type` | `string` | `"text"` | HTML input tipi (`text`, `password`, `email`, `number` vb.). |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `IconLeft` | `string` | `null` | Sol taraftaki ikon sınıfı (FontAwesome örn: `fa-solid fa-user`). |
-| `IconRight` | `string` | `null` | Sağ taraftaki ikon sınıfı. |
-| `LabelPosition` | `BwLabelPosition` | `Top` | Etiket konumu (`Top`, `Left`, `Floating`, `Hidden`). |
-| `LabelWidth` | `string` | `"140px"` | `LabelPosition.Left` modunda etiketin genişliği. |
-| `HelperText` | `string` | `null` | Yardımcı metin içeriği. |
-| `HelpTextMode` | `BwHelpTextMode` | `Inline` | Yardım metni gösterim modu (`Inline`, `Popup`). |
-| `IsRequired` | `bool` | `false` | Zorunlu alan işaretini (*) gösterir. |
-| `IsDisabled` | `bool` | `false` | Alanı devre dışı bırakır. |
-| `IsReadOnly` | `bool` | `false` | Sadece okunabilir yapar. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression<Func<string>>` | `null` | Otomatik validasyon için alan referansı. |
-| `Density` | `BwFormDensity` | `Normal` | Form yoğunluğu (`Compact`, `Normal`, `Relaxed`). |
-| `Class` | `string` | `null` | Ek CSS sınıfları. |
+| Parameter       | Type                       | Default   | Description                                                    |
+| :-------------- | :------------------------- | :-------- | :------------------------------------------------------------- |
+| `Value`         | `string`                   | `null`    | Input value (supports two-way binding).                        |
+| `Label`         | `string`                   | `null`    | Field label.                                                   |
+| `Placeholder`   | `string`                   | `null`    | Placeholder text.                                              |
+| `Type`          | `string`                   | `"text"`  | HTML input type (`text`, `password`, `email`, `number`, etc.). |
+| `Size`          | `BwSize`                   | `Medium`  | Size (`Small`, `Medium`, `Large`).                             |
+| `IconLeft`      | `string`                   | `null`    | Left icon CSS class (FontAwesome e.g. `fa-solid fa-user`).     |
+| `IconRight`     | `string`                   | `null`    | Right icon CSS class.                                          |
+| `LabelPosition` | `BwLabelPosition`          | `Top`     | Label position (`Top`, `Left`, `Floating`, `Hidden`).          |
+| `LabelWidth`    | `string`                   | `"140px"` | Label width in `LabelPosition.Left` mode.                      |
+| `HelperText`    | `string`                   | `null`    | Helper text content.                                           |
+| `HelpTextMode`  | `BwHelpTextMode`           | `Inline`  | Helper text display mode (`Inline`, `Popup`).                  |
+| `IsRequired`    | `bool`                     | `false`   | Shows the required field indicator (*).                        |
+| `IsDisabled`    | `bool`                     | `false`   | Disables the field.                                            |
+| `IsReadOnly`    | `bool`                     | `false`   | Makes the field read-only.                                     |
+| `IsValid`       | `bool`                     | `true`    | Manual validation state.                                       |
+| `ErrorMessage`  | `string`                   | `null`    | Manual error message.                                          |
+| `For`           | `Expression<Func<string>>` | `null`    | Field reference for automatic validation.                      |
+| `Density`       | `BwFormDensity`            | `Normal`  | Form density (`Compact`, `Normal`, `Relaxed`).                 |
+| `Class`         | `string`                   | `null`    | Additional CSS classes.                                        |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `string` | Değer her değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `string` | Değer değiştiğinde ve alan odaktan çıktığında (blur) tetiklenir. |
-| `OnInput` | `ChangeEventArgs` | Her tuş vuruşunda (native input event) tetiklenir. |
-| `OnEnter` | `void` | Enter tuşuna basıldığında tetiklenir. |
-| `OnFocus` | `FocusEventArgs` | Alan odaklandığında tetiklenir. |
-| `OnBlur` | `FocusEventArgs` | Alandan çıkıldığında tetiklenir. |
+| Event          | Payload           | Description                                                        |
+| :------------- | :---------------- | :----------------------------------------------------------------- |
+| `ValueChanged` | `string`          | Triggered whenever the value changes (two-way binding).            |
+| `OnChange`     | `string`          | Triggered when the value changes and the field loses focus (blur). |
+| `OnInput`      | `ChangeEventArgs` | Triggered on every keystroke (native input event).                 |
+| `OnEnter`      | `void`            | Triggered when the Enter key is pressed.                           |
+| `OnFocus`      | `FocusEventArgs`  | Triggered when the field gains focus.                              |
+| `OnBlur`       | `FocusEventArgs`  | Triggered when the field loses focus.                              |

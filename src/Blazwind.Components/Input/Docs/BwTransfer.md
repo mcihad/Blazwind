@@ -1,18 +1,21 @@
-# BwTransfer
+# Transfer
 
-İki liste arasında çoklu öğe taşıma işlemleri için kullanılan gelişmiş veri giriş bileşenidir. Genellikle yetki atama, personel seçimi veya kategori yönetimi gibi işlemlerde kullanılır.
+An advanced data input component used to transfer multiple items between two lists. Commonly used for permission assignment, staff selection, or category management.
 
-## Genel Özellikler
-- **Çift Yönlü Taşıma:** Kaynak listeden hedef listeye ve tersine öğe taşıma.
-- **Arama Desteği:** Her iki liste içinde anlık filtreleme.
-- **Toplu Seçim:** Tümünü seç/kaldır özelliği.
-- **Generic Yapı:** Herhangi bir model tipiyle (`TItem`) çalışabilir.
-- **Özelleştirilebilir:** Başlıklar, yükseklik ve görüntülenen metin alanı ayarlanabilir.
+## General Features
 
-## Kullanım Örnekleri
+* **Bidirectional Transfer:** Move items from source to target list and back.
+* **Search Support:** Real-time filtering within both lists.
+* **Bulk Selection:** Select all / deselect all functionality.
+* **Generic Structure:** Works with any model type (`TItem`).
+* **Customizable:** Titles, height, and displayed text field can be configured.
 
-### Temel Kullanım
-Basit string listesi ile kullanım.
+## Usage Examples
+
+### Basic Usage
+
+Using a simple string list.
+
 ```razor
 @code {
     List<string> AllItems = new() { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -23,8 +26,10 @@ Basit string listesi ile kullanım.
             @bind-TargetItems="@SelectedItems" />
 ```
 
-### Complex Object (Sınıf) ile Kullanım
-Gerçek dünya senaryosu: Kullanıcı listesi.
+### Usage with Complex Objects (Class)
+
+Real-world scenario: user list.
+
 ```razor
 @code {
     public class User { public int Id { get; set; } public string Name { get; set; } }
@@ -37,28 +42,28 @@ Gerçek dünya senaryosu: Kullanıcı listesi.
             @bind-TargetItems="@SelectedUsers"
             TextSelector="@(u => u.Name)"
             ValueSelector="@(u => u.Id)"
-            Titles="@(new[] { "Tüm Personel", "Seçilenler" })"
+            Titles="@(new[] { "All Staff", "Selected" })"
             ShowSearch="true" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `DataSource` | `IEnumerable<TItem>` | `null` | Tüm öğelerin listesi. |
-| `TargetItems` | `IList<TItem>` | `new List<TItem>()` | Seçilen (sağ taraftaki) öğelerin listesi (Two-way binding). |
-| `TextSelector` | `Func<TItem, string>` | - | Öğenin görünen metni için seçici. |
-| `ValueSelector` | `Func<TItem, object>` | - | Öğenin benzersiz değeri için seçici. |
-| `Titles` | `string[]` | `["Source", "Target"]` | Liste başlıkları. |
-| `ShowSearch` | `bool` | `false` | Arama alanını gösterir. |
-| `SearchPlaceholder` | `string` | `"Ara..."` | Arama alanı yer tutucusu. |
-| `Height` | `string` | `"300px"` | Listenin yüksekliği. |
-| `IsDisabled` | `bool` | `false` | Tüm bileşeni devre dışı bırakır. |
-| `For` | `Expression<Func<IList<TItem>>>` | `null` | Validasyon için alan referansı. |
+| Parameter           | Type                             | Default                | Description                                         |
+| :------------------ | :------------------------------- | :--------------------- | :-------------------------------------------------- |
+| `DataSource`        | `IEnumerable<TItem>`             | `null`                 | List of all items.                                  |
+| `TargetItems`       | `IList<TItem>`                   | `new List<TItem>()`    | Selected (right-side) items list (two-way binding). |
+| `TextSelector`      | `Func<TItem, string>`            | -                      | Selector for the item’s display text.               |
+| `ValueSelector`     | `Func<TItem, object>`            | -                      | Selector for the item’s unique value.               |
+| `Titles`            | `string[]`                       | `["Source", "Target"]` | List titles.                                        |
+| `ShowSearch`        | `bool`                           | `false`                | Shows the search input.                             |
+| `SearchPlaceholder` | `string`                         | `"Search..."`          | Search input placeholder.                           |
+| `Height`            | `string`                         | `"300px"`              | List height.                                        |
+| `IsDisabled`        | `bool`                           | `false`                | Disables the entire component.                      |
+| `For`               | `Expression<Func<IList<TItem>>>` | `null`                 | Field reference for validation.                     |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `TargetItemsChanged` | `List<TItem>` | Seçilen öğeler listesi değiştiğinde tetiklenir (Two-way binding). |
-| `OnTransfer` | `TransferEventArgs<TItem>` | Öğeler bir listeden diğerine geçtiğinde tetiklenir. |
+| Event                | Payload                    | Description                                                       |
+| :------------------- | :------------------------- | :---------------------------------------------------------------- |
+| `TargetItemsChanged` | `List<TItem>`              | Triggered when the selected items list changes (two-way binding). |
+| `OnTransfer`         | `TransferEventArgs<TItem>` | Triggered when items are transferred between lists.               |

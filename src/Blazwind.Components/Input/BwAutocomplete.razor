@@ -1,4 +1,4 @@
-@namespace Blazwind.Components.Input
+﻿@namespace Blazwind.Components.Input
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @using Microsoft.AspNetCore.Components.Web.Virtualization
@@ -106,7 +106,7 @@
                 {
                     <div class="@sizeClasses.Padding text-center text-gray-500">
                         <i class="fa-solid fa-spinner fa-spin mr-2"></i>
-                        Yükleniyor...
+                        Loading...
                     </div>
                 }
                 else if (_filteredItems.Any())
@@ -183,7 +183,7 @@
                                 class="w-full @sizeClasses.Padding text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-2"
                                 @onclick="CreateNewItem" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
                                 <i class="fa-solid fa-plus text-xs"></i>
-                                <span>"<strong>@_searchText</strong>" oluştur</span>
+                                <span>"<strong>@_searchText</strong>" Create</span>
                             </button>
                         </div>
                     }
@@ -195,7 +195,7 @@
                             class="w-full @sizeClasses.Padding text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-2"
                             @onclick="CreateNewItem" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
                             <i class="fa-solid fa-plus text-xs"></i>
-                            <span>"<strong>@_searchText</strong>" oluştur</span>
+                            <span>"<strong>@_searchText</strong>" create</span>
                         </button>
                     </div>
                 }
@@ -204,8 +204,8 @@
                     <div class="@sizeClasses.Padding text-center text-gray-500">
                         <i class="fa-solid fa-search mr-1"></i>
                         @(string.IsNullOrWhiteSpace(_searchText) && MinChars > 0
-                                    ? $"En az {MinChars} karakter girin"
-                                    : "Sonuç bulunamadı")
+                                    ? $"Enter at least {MinChars} characters"
+                                    : "No results found")
                     </div>
                 }
             </div>

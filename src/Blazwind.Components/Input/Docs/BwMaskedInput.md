@@ -1,59 +1,63 @@
-# MaskedInput (Maskeli Giriş)
+# Masked Input
 
-Telefon, Tarih, Kredi Kartı gibi formatlı veri girişi sağlayan bileşen. `BwBaseInput` özelliklerini taşır.
+A component that provides formatted data entry such as Phone, Date, and Credit Card. It inherits `BwBaseInput` features.
 
-## Özellikler
-*   **Hazır Maskeler:** `BwMaskPreset` ile yaygın formatlar (Phone, Date, CreditCard, IBAN).
-*   **Özel Maske:** `#` (sayı), `A` (harf), `*` (hepsi) karakterleri ile özel maske tanımlama.
+## Features
 
-## Kullanım
+* **Predefined Masks:** Common formats via `BwMaskPreset` (Phone, Date, CreditCard, IBAN).
+* **Custom Mask:** Define custom masks using `#` (digit), `A` (letter), `*` (any).
 
-### Hazır Maske (Telefon)
+## Usage
+
+### Predefined Mask (Phone)
+
 ```razor
-<BwMaskedInput Label="Telefon" Preset="BwMaskPreset.Phone" @bind-Value="phone" />
+<BwMaskedInput Label="Phone" Preset="BwMaskPreset.Phone" @bind-Value="phone" />
 ```
 
-### Özel Maske (Plaka)
+### Custom Mask (License Plate)
+
 ```razor
-<BwMaskedInput Label="Plaka" Mask="## AA ####" Placeholder="34 AB 1234" />
+<BwMaskedInput Label="License Plate" Mask="## AA ####" Placeholder="34 AB 1234" />
 ```
 
-### Otomatik Validasyon
+### Automatic Validation
+
 ```razor
 <BwMaskedInput @bind-Value="form.Phone" 
                For="@(() => form.Phone)"
-               Label="Telefon"
+               Label="Phone"
                Preset="BwMaskPreset.Phone" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `string` | `null` | Giriş değeri (Two-way binding). |
-| `Mask` | `string` | `""` | Maske şablonu (örn: `(###) ### ## ##`). |
-| `Preset` | `BwMaskPreset?` | `null` | Ön tanımlı maskeler (`Phone`, `CreditCard`, `Date`, `Time`, `Iban`). |
-| `MaskChar` | `char` | `'_'` | Boş kutular için gösterilecek karakter. |
-| `UnmaskValue` | `bool` | `true` | `true` ise `Value` sadece ham karakterleri döner; `false` ise maske sabitlerini de içerir. |
-| `Placeholder` | `string` | `null` | Yer tutucu (belirtilmezse maskeden üretilir). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Size` | `BwSize` | `Medium` | Boyut. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `For` | `Expression` | `null` | Validasyon için alan referansı. |
+| Parameter     | Type            | Default  | Description                                                                                 |
+| :------------ | :-------------- | :------- | :------------------------------------------------------------------------------------------ |
+| `Value`       | `string`        | `null`   | Input value (two-way binding).                                                              |
+| `Mask`        | `string`        | `""`     | Mask pattern (e.g. `(###) ### ## ##`).                                                      |
+| `Preset`      | `BwMaskPreset?` | `null`   | Predefined masks (`Phone`, `CreditCard`, `Date`, `Time`, `Iban`).                           |
+| `MaskChar`    | `char`          | `'_'`    | Character shown for empty slots.                                                            |
+| `UnmaskValue` | `bool`          | `true`   | If `true`, `Value` returns only raw characters; if `false`, it also includes mask literals. |
+| `Placeholder` | `string`        | `null`   | Placeholder (generated from the mask if not provided).                                      |
+| `Label`       | `string`        | `null`   | Field label.                                                                                |
+| `Size`        | `BwSize`        | `Medium` | Size.                                                                                       |
+| `IsDisabled`  | `bool`          | `false`  | Disables the field.                                                                         |
+| `For`         | `Expression`    | `null`   | Field reference for validation.                                                             |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `string` | Değer her değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `string` | Değişiklik sonrası tetiklenir. |
-| `OnEnter` | `null` | Enter tuşuna basıldığında tetiklenir. |
+| Event          | Payload  | Description                                             |
+| :------------- | :------- | :------------------------------------------------------ |
+| `ValueChanged` | `string` | Triggered whenever the value changes (two-way binding). |
+| `OnChange`     | `string` | Triggered after the value changes.                      |
+| `OnEnter`      | `null`   | Triggered when the Enter key is pressed.                |
 
-## Maske Karakterleri
+## Mask Characters
 
-| Karakter | Açıklama |
-| :--- | :--- |
-| `#` | Sadece rakam (0-9) |
-| `A` | Sadece harf (a-z, A-Z) |
-| `*` | Harf veya rakam |
-| Diğer | Sabit literatür karakterleri (boşluk, tire, parantez vb.) |
+| Character | Description                                               |
+| :-------- | :-------------------------------------------------------- |
+| `#`       | Digits only (0–9)                                         |
+| `A`       | Letters only (a–z, A–Z)                                   |
+| `*`       | Letter or digit                                           |
+| Other     | Fixed literal characters (space, dash, parentheses, etc.) |

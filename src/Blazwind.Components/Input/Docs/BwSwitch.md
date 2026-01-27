@@ -1,53 +1,53 @@
-# Switch (Anahtar)
+# Switch
 
-On/Off durum değiştirmek için kullanılan anahtar bileşeni.
+A toggle component used to switch between On/Off states.
 
-## Özellikler
+## Features
 
-*   **Görünüm:** Modern toggle switch tasarımı.
-*   **Boyutlar:** Small, Medium, Large.
-*   **Renk:** Aktif durum için renk seçeneği.
+* **Appearance:** Modern toggle switch design.
+* **Sizes:** Small, Medium, Large.
+* **Color:** Color option for the active state.
 
-## Kullanım
-
-```razor
-<BwSwitch Label="Bildirimleri Aç" @bind-Value="notificationsEnabled" />
-```
-
-### Renkli
+## Usage
 
 ```razor
-<BwSwitch Label="Karanlık Mod" Color="BwColor.Dark" @bind-Value="isDarkMode" />
+<BwSwitch Label="Enable Notifications" @bind-Value="notificationsEnabled" />
 ```
 
-### Validasyon
+### Colored
+
+```razor
+<BwSwitch Label="Dark Mode" Color="BwColor.Dark" @bind-Value="isDarkMode" />
+```
+
+### Validation
 
 ```razor
 <BwSwitch @bind-Value="model.IsActive" 
           For="@(() => model.IsActive)" 
-          Label="Hesap Aktif" />
+          Label="Account Active" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `bool` | `false` | Anahtar durumu (Two-way binding). |
-| `Label` | `string` | `null` | Kutunun yanındaki etiket metni. |
-| `ChildContent` | `RenderFragment` | `null` | Etiket yerine geçebilecek özel içerik. |
-| `Color` | `BwColor` | `Primary` | Aktif (On) durumdaki renk. |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `IsRequired` | `bool` | `false` | Zorunlu alan işaretini gösterir. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `HelperText` | `string` | `null` | Yardımcı metin. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression<Func<bool>>` | `null` | Otomatik validasyon için boolean alan referansı. |
+| Parameter      | Type                     | Default   | Description                                       |
+| :------------- | :----------------------- | :-------- | :------------------------------------------------ |
+| `Value`        | `bool`                   | `false`   | Switch state (two-way binding).                   |
+| `Label`        | `string`                 | `null`    | Label text next to the switch.                    |
+| `ChildContent` | `RenderFragment`         | `null`    | Custom content that can replace the label.        |
+| `Color`        | `BwColor`                | `Primary` | Color in the active (On) state.                   |
+| `Size`         | `BwSize`                 | `Medium`  | Size (`Small`, `Medium`, `Large`).                |
+| `IsRequired`   | `bool`                   | `false`   | Shows required field indicator.                   |
+| `IsDisabled`   | `bool`                   | `false`   | Disables the component.                           |
+| `HelperText`   | `string`                 | `null`    | Helper text.                                      |
+| `IsValid`      | `bool`                   | `true`    | Manual validation state.                          |
+| `ErrorMessage` | `string`                 | `null`    | Manual error message.                             |
+| `For`          | `Expression<Func<bool>>` | `null`    | Boolean field reference for automatic validation. |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `bool` | Durum değiştiğinde tetiklenir (Two-way binding). |
-| `IsCheckedChanged` | `bool` | `ValueChanged` ile aynı anda tetiklenir. |
-| `OnChange` | `bool` | Değişiklik sonrası tetiklenir. |
+| Event              | Payload | Description                                         |
+| :----------------- | :------ | :-------------------------------------------------- |
+| `ValueChanged`     | `bool`  | Triggered when the state changes (two-way binding). |
+| `IsCheckedChanged` | `bool`  | Triggered at the same time as `ValueChanged`.       |
+| `OnChange`         | `bool`  | Triggered after the change.                         |
