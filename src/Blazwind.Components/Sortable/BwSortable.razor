@@ -1,9 +1,10 @@
 @namespace Blazwind.Components.Sortable
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @typeparam TItem
 
-<div class="@Class" style="@Style">
+<div class="@CombineClasses(Class)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @foreach (var (item, index) in Items.Select((item, i) => (item, i)))
     {
         var isDragging = _dragIndex == index;
@@ -36,8 +37,7 @@
     [Parameter, EditorRequired] public RenderFragment<TItem> ItemTemplate { get; set; } = default!;
     [Parameter] public bool ShowHandle { get; set; } = true;
     [Parameter] public string HandleIcon { get; set; } = "fa-solid fa-grip-vertical";
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     [Parameter] public EventCallback<List<TItem>> OnReorder { get; set; }
     
     private int _dragIndex = -1;

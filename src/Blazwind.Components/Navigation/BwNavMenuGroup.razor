@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Navigation
 @using Microsoft.JSInterop
+@inherits BwBase
 
 @{
     var _context = new BwNavMenuGroupContext
@@ -8,12 +9,12 @@
         Icon = Icon,
         IsExpanded = _isExpanded,
         Level = Level,
-        GroupId = _groupId,
+        GroupId = Id!,
         Toggle = ToggleGroup
     };
 }
 
-<div id="@_groupId" class="@Class" data-nav-group>
+<div id="@Id" class="@Class" style="@Style" @attributes="AdditionalAttributes" data-nav-group>
     @if (HeaderTemplate != null || _cascadedHeaderTemplate != null)
     {
         var template = HeaderTemplate ?? _cascadedHeaderTemplate;
@@ -24,7 +25,7 @@
         <button type="button" 
                 class="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-left cursor-pointer"
                 style="padding-left: @(Level * 12 + 12)px"
-                onclick="Blazwind.Nav.toggleGroup('@_groupId')">
+                onclick="Blazwind.Nav.toggleGroup('@Id')">
             @if (!string.IsNullOrEmpty(Icon))
             {
                 <i class="@Icon w-4 text-gray-400 dark:text-gray-500 text-sm"></i>
@@ -37,7 +38,7 @@
     <div data-nav-items class="flex flex-col gap-0.5 mt-0.5" style="display: @(_isExpanded ? "flex" : "none");">
         <CascadingValue Value="this" Name="ParentGroup">
             <CascadingValue Value="Level + 1" Name="Level">
-                <CascadingValue Value="_groupId" Name="ParentGroupId">
+                <CascadingValue Value="Id" Name="ParentGroupId">
                     @ChildContent
                 </CascadingValue>
             </CascadingValue>
@@ -56,18 +57,23 @@
     [Parameter] public string? Icon { get; set; }
     [Parameter] public bool DefaultExpanded { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     /// <summary>Custom template for this group's header. Overrides cascaded template.</summary>
     [Parameter] public RenderFragment<BwNavMenuGroupContext>? HeaderTemplate { get; set; }
     
-    private string _groupId = $"nav-group-{Guid.NewGuid():N}";
+    // Removed _groupId, replaced with inherited Id logic
     private bool _isExpanded;
     
-    public string GroupId => _groupId;
+    public string GroupId => Id!;
     
     protected override void OnInitialized()
     {
+        base.OnInitialized();
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = $"nav-group-{Guid.NewGuid():N}";
+        }
         _isExpanded = DefaultExpanded;
     }
     

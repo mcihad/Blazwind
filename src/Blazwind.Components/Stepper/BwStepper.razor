@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Stepper
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var orientationClass = Orientation == BwOrientation.Vertical ? "vertical" : "";
@@ -28,7 +29,7 @@
 }
 
 <CascadingValue Value="this">
-    <div class="bw-stepper @orientationClass @sizeClass @variantClass @labelClass @Class">
+    <div class="@CombineClasses("bw-stepper", orientationClass, sizeClass, variantClass, labelClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @if (Orientation == BwOrientation.Horizontal && Variant == BwStepperVariant.Progress)
         {
             @* Progress Bar Header *@
@@ -114,7 +115,7 @@
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
     
     /// <summary>Custom CSS classes</summary>
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     /// <summary>Step items</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }

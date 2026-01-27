@@ -2,6 +2,7 @@
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @implements IAsyncDisposable
+@inherits BwBase
 
 @inject Blazwind.Components.Services.DialogService DialogService
 @inject IJSRuntime JS
@@ -17,7 +18,7 @@
         
         var showControls = !Vertical && Scrollable && ShowScrollControls;
     }
-    <div class="@containerClass @Class">
+    <div class="@CombineClasses(containerClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @* Tab Headers *@
         @if (showControls)
         {
@@ -63,7 +64,7 @@
     [Parameter] public int DefaultActiveIndex { get; set; } = 0;
     [Parameter] public bool Justified { get; set; } = false;
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     [Parameter] public bool Scrollable { get; set; }
     [Parameter] public bool ShowScrollControls { get; set; }
     [Parameter] public int? MaxTabs { get; set; }

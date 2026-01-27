@@ -2,8 +2,9 @@
 @using Blazwind.Components.Shared
 @using Blazwind.Components.Services
 @inject NotificationService NotificationService
+@inherits BwBase
 
-<div class="relative inline-block @Class">
+<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <button type="button" class="relative w-10 h-10 border-none bg-transparent rounded-full cursor-pointer flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg transition-all hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white" @onclick="TogglePanel">
         <i class="fa-solid fa-bell"></i>
         @if (_unreadCount > 0)
@@ -69,7 +70,7 @@
 </div>
 
 @code {
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     private bool _isOpen = false;
     private List<NotificationItem> _notifications = new();

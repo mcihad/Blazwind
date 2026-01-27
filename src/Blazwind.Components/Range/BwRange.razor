@@ -3,8 +3,9 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@inherits BwBase
 
-<div id="@_elementId" class="bw-range @Class" style="@Style">
+<div class="@CombineClasses("bw-range")" style="@Style" id="@_elementId" @attributes="AdditionalAttributes">
     <div class="flex items-center gap-4">
         @if (!string.IsNullOrEmpty(Label))
         {
@@ -86,8 +87,7 @@
     [Parameter] public bool ShowTooltip { get; set; } = true;
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
     [Parameter] public string? Format { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     [Parameter] public EventCallback<RangeChangedEventArgs<double>> OnRangeChanged { get; set; }
 
     private string _elementId = "";
@@ -110,7 +110,7 @@
 
     protected override void OnInitialized()
     {
-        _elementId = $"bw-range-{Guid.NewGuid():N}";
+        _elementId = Id ?? $"bw-range-{Guid.NewGuid():N}";
         InitializeState();
     }
     

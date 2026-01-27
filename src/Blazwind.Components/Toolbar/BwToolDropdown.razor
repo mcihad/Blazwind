@@ -2,8 +2,9 @@
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
+@inherits BwBase
 
-<div class="relative" @ref="_containerRef">
+<div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @ref="_containerRef">
     <button type="button" class="@ButtonClasses" disabled="@Disabled" title="@Tooltip" @onclick="Toggle"
         @onmouseenter="Open" @onmouseleave="StartCloseTimer">
         @if (!string.IsNullOrEmpty(Icon))

@@ -1,19 +1,12 @@
 @namespace Blazwind.Components.Map
+@inherits BwBase
 
-<div class="@ComputedClass" style="@ComputedStyle">
+<div class="@ComputedClass" style="@ComputedStyle" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
-    /// <summary>
-    /// CSS class for the layout container
-    /// </summary>
-    [Parameter] public string? Class { get; set; }
-
-    /// <summary>
-    /// Additional CSS styles
-    /// </summary>
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
 
     /// <summary>
     /// Whether to fill the entire viewport
@@ -35,16 +28,7 @@
     /// </summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    private string ComputedClass
-    {
-        get
-        {
-            var classes = new List<string> { "bw-map-layout" };
-            if (Fullscreen) classes.Add("bw-map-layout--fullscreen");
-            if (!string.IsNullOrEmpty(Class)) classes.Add(Class);
-            return string.Join(" ", classes);
-        }
-    }
+    private string ComputedClass => CombineClasses("bw-map-layout", Fullscreen ? "bw-map-layout--fullscreen" : null);
 
     private string ComputedStyle
     {

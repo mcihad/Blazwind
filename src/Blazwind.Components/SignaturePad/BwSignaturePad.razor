@@ -6,8 +6,9 @@
 @inject IJSRuntime JS
 @inject ScriptLoaderService ScriptLoader
 @implements IAsyncDisposable
+@inherits BwBase
 
-<div class="bw-signature-pad @(_containerClass) @Class" style="@Style">
+<div class="@CombineClasses("bw-signature-pad", _containerClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="block text-sm font-medium text-gray-700 mb-1">@Label</label>
@@ -73,15 +74,7 @@
     
     #region Parameters
     
-    /// <summary>
-    /// CSS class for the container
-    /// </summary>
-    [Parameter] public string? Class { get; set; }
-    
-    /// <summary>
-    /// CSS style for the container
-    /// </summary>
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     
     /// <summary>
     /// Label text

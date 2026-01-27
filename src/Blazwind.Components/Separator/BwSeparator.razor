@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.Separator
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="flex items-center @(Orientation == BwOrientation.Vertical ? "flex-col h-full mx-4" : "w-full my-4") @Class" style="@Style">
+<div class="@CombineClasses("flex items-center", Orientation == BwOrientation.Vertical ? "flex-col h-full mx-4" : "w-full my-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Text) && Orientation == BwOrientation.Horizontal)
     {
         <div class="@GetLineClass(true) border-t @GetBorderClass()"></div>
@@ -22,8 +23,7 @@
     [Parameter] public BwColor Color { get; set; } = BwColor.Gray;
     [Parameter] public BwAlignment TextAlignment { get; set; } = BwAlignment.Center;
     [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
 
     private string GetBaseClass()
     {

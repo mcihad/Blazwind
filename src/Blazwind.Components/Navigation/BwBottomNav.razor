@@ -1,7 +1,9 @@
 @namespace Blazwind.Components.Navigation
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<nav class="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] @Class">
+<nav class="@CombineClasses("fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex justify-around items-center z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]")"
+     style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <CascadingValue Value="this">
         @ChildContent
     </CascadingValue>
@@ -9,7 +11,7 @@
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     private string? _activeItemId;
     

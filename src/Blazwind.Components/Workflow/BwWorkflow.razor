@@ -4,9 +4,11 @@
 @using Blazwind.Components.Workflow.Models
 @using System.Text.Json
 @using Microsoft.JSInterop
+@using Blazwind.Components.Shared
 @inject IJSRuntime JS
+@inherits BwBase
 
-<div @ref="_container" class="@CombineClasses($"w-full bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700")" style="height: @Height; @Style">
+<div @ref="_container" class="@CombineClasses($"w-full bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700")" style="height: @Height; @Style" id="@Id" @attributes="AdditionalAttributes">
 </div>
 
 @code {
@@ -32,15 +34,7 @@
     /// </summary>
     [Parameter] public string Height { get; set; } = "400px";
     
-    /// <summary>
-    /// Additional inline styles
-    /// </summary>
-    [Parameter] public string? Style { get; set; }
-    
-    /// <summary>
-    /// Additional CSS classes
-    /// </summary>
-    [Parameter] public string? Class { get; set; }
+    // Removed Style and Class parameters (inherited)
     
     /// <summary>
     /// Node width
@@ -107,11 +101,7 @@
     /// </summary>
     [Parameter] public EventCallback<NodeStatusChangedEventArgs> OnNodeStatusChanged { get; set; }
     
-    /// <summary>
-    /// Additional attributes
-    /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    // Removed AdditionalAttributes (inherited)
     
     #endregion
     
@@ -299,10 +289,7 @@
     
     #endregion
     
-    private string CombineClasses(string baseClasses)
-    {
-        return string.IsNullOrEmpty(Class) ? baseClasses : $"{baseClasses} {Class}";
-    }
+    // Removed local CombineClasses method (inherited)
     
     public async ValueTask DisposeAsync()
     {

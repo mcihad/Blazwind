@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.Range
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="bw-number-range @Class" style="@Style">
+<div class="@CombineClasses("bw-number-range")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
@@ -89,8 +90,7 @@
     [Parameter] public string? EndPlaceholder { get; set; } = "Max";
     [Parameter] public bool ShowSlider { get; set; } = true;
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     [Parameter] public List<NumberRangePreset>? Presets { get; set; }
     [Parameter] public EventCallback<RangeChangedEventArgs<double>> OnRangeChanged { get; set; }
 

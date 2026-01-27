@@ -2,7 +2,7 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full @ContainerHeightClass overflow-hidden @Class" style="@Style">
+<div class="@CombineClasses("w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden", ContainerHeightClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="@BarClass flex flex-col justify-center overflow-hidden text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-out h-full" 
          role="progressbar" 
          style="width: @Percentage%; @(Striped || Animated ? BackgroundImageStyle : "")" 

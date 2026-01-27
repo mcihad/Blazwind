@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.MegaMenu
 @using Blazwind.Components.Shared
 @using Blazwind.Components.Button
+@inherits BwBase
 
-<div class="relative inline-block @Class" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave" @attributes="AdditionalAttributes">
     @* Trigger *@
     <div class="cursor-pointer" @onclick="HandleTriggerClick">
         @if (TriggerContent != null)
@@ -42,7 +43,9 @@
     [Parameter] public bool OpenUpward { get; set; }
     [Parameter] public int ShowDelay { get; set; } = 50;
     [Parameter] public int HideDelay { get; set; } = 150;
-    [Parameter] public string? Class { get; set; }
+    
+    // Removed Class parameter (inherited)
+    
     [Parameter] public EventCallback<bool> OnOpenChanged { get; set; }
 
     private bool _isOpen;

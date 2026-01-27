@@ -1,7 +1,9 @@
 @namespace Blazwind.Components.Navigation
 @using Microsoft.AspNetCore.Components
+@inherits BwBase
 
-<div class="border-t border-gray-200 dark:border-gray-800 p-3 flex items-center gap-3 @Class">
+<div class="@CombineClasses("border-t border-gray-200 dark:border-gray-800 p-3 flex items-center gap-3")" 
+     style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (AvatarContent != null)
     {
          @AvatarContent
@@ -43,5 +45,5 @@
     [Parameter] public string? AvatarUrl { get; set; }
     [Parameter] public RenderFragment? AvatarContent { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
 }

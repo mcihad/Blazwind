@@ -4,8 +4,9 @@
 @inject IJSRuntime JS
 @typeparam TValue
 @implements IAsyncDisposable
+@inherits BwBase
 
-<div id="@_elementId" class="bw-custom-range @Class" style="@Style">
+<div class="@CombineClasses("bw-custom-range")" style="@Style" id="@_elementId" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
@@ -112,8 +113,7 @@
     [Parameter] public RenderFragment<(double Start, double End)>? ValueTemplate { get; set; }
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     [Parameter] public EventCallback<(double StartPercent, double EndPercent)> OnBrushChanged { get; set; }
     [Parameter] public EventCallback<(TValue Start, TValue End)> OnValueChanged { get; set; }
     [Parameter] public Func<double, TValue>? ConvertFromPercent { get; set; }
@@ -132,7 +132,7 @@
 
     protected override void OnInitialized()
     {
-        _elementId = $"bw-custom-range-{Guid.NewGuid():N}";
+        _elementId = Id ?? $"bw-custom-range-{Guid.NewGuid():N}";
         InitializeState();
     }
     

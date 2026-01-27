@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.Map
 @using Blazwind.Components.Map.Models
+@inherits BwBase
 
 <CascadingValue Value="this" IsFixed="true">
-    <div @ref="_mapContainer" id="@_containerId" class="@ComputedClass" style="@ComputedStyle">
+    <div @ref="_mapContainer" id="@Id" class="@ComputedClass" style="@ComputedStyle" @attributes="AdditionalAttributes">
         @if (_isLoaded)
         {
             @ChildContent
@@ -11,8 +12,16 @@
 </CascadingValue>
 
 @code {
-    private string _containerId = $"bw-map-{Guid.NewGuid():N}";
-    private string ComputedClass => string.IsNullOrEmpty(Class) ? "bw-maplibre" : $"bw-maplibre {Class}";
+    private string ComputedClass => CombineClasses("bw-maplibre");
     private string ComputedStyle => string.IsNullOrEmpty(Style) ? "width: 100%; height: 100%; min-height: 300px;" : Style;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = $"bw-map-{Guid.NewGuid():N}";
+        }
+    }
 }
 

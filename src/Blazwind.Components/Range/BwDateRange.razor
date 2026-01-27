@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.Range
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="bw-date-range @Class" style="@Style">
+<div class="@CombineClasses("bw-date-range")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
@@ -77,8 +78,7 @@
     [Parameter] public bool ShowDuration { get; set; } = true;
     [Parameter] public bool ShowPresets { get; set; } = true;
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     [Parameter] public EventCallback<RangeChangedEventArgs<DateTime?>> OnRangeChanged { get; set; }
 
     private string _activePreset = "";

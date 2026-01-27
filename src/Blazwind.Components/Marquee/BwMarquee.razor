@@ -12,7 +12,7 @@
     var animationDirection = Reverse ? "reverse" : "normal";
 }
 
-<div class="@CombineClasses($"{baseClasses} {directionClasses} {pauseContainerClass}")"
+<div class="@CombineClasses(baseClasses, directionClasses, pauseContainerClass)"
     style="--marquee-duration: @animationDuration; --marquee-direction: @animationDirection; @Style" id="@Id"
     @attributes="AdditionalAttributes">
 

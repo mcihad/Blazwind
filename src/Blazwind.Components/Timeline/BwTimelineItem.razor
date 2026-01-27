@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Timeline
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var parent = ParentTimeline;
@@ -31,7 +32,7 @@
 @if (isAlternate)
 {
     @* Alternate (Zig-Zag) Layout *@
-    <div class="bw-timeline-item">
+    <div class="@CombineClasses("bw-timeline-item")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         <div class="bw-timeline-left">
             @if (isEven)
             {
@@ -125,7 +126,7 @@
 else
 {
     @* Default Vertical or Horizontal Layout *@
-    <div class="bw-timeline-item">
+    <div class="@CombineClasses("bw-timeline-item")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         <div class="@dotClass">
             @if (IsCompleted)
             {

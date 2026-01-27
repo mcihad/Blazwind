@@ -5,8 +5,9 @@
 @using System.Text.Json
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@inherits BwBase
 
-<div class="bw-orgchart @Class" style="@_containerStyle">
+<div class="@CombineClasses("bw-orgchart")" style="@_containerStyle" id="@Id" @attributes="AdditionalAttributes">
     <div @ref="_container" class="w-full h-full overflow-auto"></div>
 </div>
 
@@ -23,12 +24,7 @@
     /// <summary>
     /// CSS class
     /// </summary>
-    [Parameter] public string? Class { get; set; }
-    
-    /// <summary>
-    /// CSS style
-    /// </summary>
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     
     /// <summary>
     /// Chart height

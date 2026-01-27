@@ -1,9 +1,10 @@
 @namespace Blazwind.Components.Tabs
 @implements IDisposable
+@inherits BwBase
 
 @if (ParentTabs?.IsActive(this) ?? false)
 {
-    <div class="py-4">
+    <div class="@CombineClasses("py-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @ChildContent
     </div>
 }

@@ -1,6 +1,8 @@
 @namespace Blazwind.Components.Toolbar
+@using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="@SeparatorClass"></div>
+<div class="@CombineClasses(SeparatorClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes"></div>
 
 @code {
     [CascadingParameter] public BwToolbar? Toolbar { get; set; }

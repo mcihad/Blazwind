@@ -6,8 +6,9 @@
 @inject IJSRuntime JS
 @typeparam TItem
 @implements IAsyncDisposable
+@inherits BwBase
 
-<div class="bw-tree-select relative @Class" @ref="_containerRef" id="@_componentId">
+<div class="@CombineClasses("bw-tree-select relative")" style="@Style" @ref="_containerRef" id="@_componentId" @attributes="AdditionalAttributes">
     <div @onclick="ToggleDropdown" class="cursor-pointer">
         <BwInput Placeholder="@Placeholder"
                  Label="@Label"
@@ -42,18 +43,15 @@
     [Parameter] public bool CascadeSelection { get; set; } = false;
     [Parameter] public bool ShowSearch { get; set; } = true;
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
-    
-    [Parameter] public List<TreeNode<TItem>> SelectedNodes { get; set; } = new();
-    [Parameter] public EventCallback<List<TreeNode<TItem>>> SelectedNodesChanged { get; set; }
-    
-    [Parameter] public TreeNode<TItem>? ClickedNode { get; set; }
-    [Parameter] public EventCallback<TreeNode<TItem>> ClickedNodeChanged { get; set; }
-    
-    private bool _isOpen = false;
-    private ElementReference _containerRef;
-    private string _componentId = $"bw-treeselect-{Guid.NewGuid():N}";
+    private string _componentId; // Will be set in OnInitialized
     private DotNetObjectReference<BwTreeSelect<TItem>>? _dotNetRef;
+    
+    // Removed Class parameter (inherited)
+    
+    protected override void OnInitialized()
+    {
+        _componentId = Id ?? $"bw-treeselect-{Guid.NewGuid():N}";
+    }
     
     private string DisplayValue => SelectionMode == BwSelectionMode.None
         ? ClickedNode?.Title ?? ""

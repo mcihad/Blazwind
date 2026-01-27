@@ -1,10 +1,11 @@
 @namespace Blazwind.Components.Scroll
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@inherits BwBase
 
 @inject IJSRuntime JS
 
-<div @ref="_containerRef" class="@Class" style="@Style">
+<div @ref="_containerRef" class="@CombineClasses()" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
     
     @if (_isLoading)
@@ -42,8 +43,7 @@
     [Parameter] public bool HasMore { get; set; } = true;
     [Parameter] public string EndMessage { get; set; } = "Tüm içerik yüklendi";
     [Parameter] public int Threshold { get; set; } = 100;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     
     private ElementReference _containerRef;
     private ElementReference _sentinelRef;

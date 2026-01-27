@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.Toolbar
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<button type="button" class="@AllClasses" disabled="@Disabled" title="@Tooltip" @onclick="HandleClick">
+<button type="button" class="@CombineClasses(AllClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes" disabled="@Disabled" title="@Tooltip" @onclick="HandleClick">
     @if (!string.IsNullOrEmpty(Icon))
     {
         <i class="@Icon @IconSizeClass"></i>

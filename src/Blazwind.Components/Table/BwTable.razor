@@ -3,6 +3,7 @@
 @using Blazwind.Components.Pagination
 @using Blazwind.Components.Input
 @typeparam TItem where TItem : notnull
+@inherits BwBase
 
 <CascadingValue Value="this">
     @* Hidden column definitions collector *@
@@ -24,7 +25,7 @@
     var visibleColumns = _columns.Where(c => c.Visible).ToList();
 }
 
-<div class="relative @Class">
+<div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (IsLoading)
     {
         <div class="absolute inset-0 bg-white/75 dark:bg-gray-900/75 z-40 flex items-center justify-center rounded">
@@ -246,7 +247,7 @@
     [Parameter] public bool Compact { get; set; } = false;
     [Parameter] public bool CompactPagination { get; set; } = false;
     [Parameter] public bool ShowColumnSelector { get; set; } = false;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     // Pagination
     [Parameter] public bool EnablePagination { get; set; } = false;

@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.SidePanel
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @if (IsOpen)
 {
@@ -11,8 +12,10 @@
     }
 
     @* Panel *@
-    <div class="fixed z-[1050] bg-white dark:bg-gray-800 shadow-2xl flex flex-col transition-transform duration-300 ease-out
-                    @PositionClasses @SizeClasses @(IsOpen? OpenTransform : ClosedTransform)"
+    <div class="@CombineClasses("fixed z-[1050] bg-white dark:bg-gray-800 shadow-2xl flex flex-col transition-transform duration-300 ease-out", PositionClasses, SizeClasses, IsOpen ? OpenTransform : ClosedTransform)"
+        style="@Style"
+        id="@Id"
+        @attributes="AdditionalAttributes"
         @onclick:stopPropagation="true">
 
         @* Header *@

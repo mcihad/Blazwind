@@ -17,18 +17,6 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Parameters
 
     /// <summary>
-    /// CSS class for the map container
-    /// </summary>
-    [Parameter]
-    public string? Class { get; set; }
-
-    /// <summary>
-    /// CSS style for the map container
-    /// </summary>
-    [Parameter]
-    public string? Style { get; set; } = "width: 100%; height: 100%;";
-
-    /// <summary>
     /// Map style URL (MapLibre style JSON)
     /// </summary>
     [Parameter]

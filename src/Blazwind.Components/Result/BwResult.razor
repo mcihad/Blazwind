@@ -1,7 +1,8 @@
 @using Blazwind.Components.Shared
 @namespace Blazwind.Components.Result
+@inherits BwBase
 
-<div class="flex flex-col items-center justify-center text-center p-8 lg:p-12 @Class">
+<div class="@CombineClasses("flex flex-col items-center justify-center text-center p-8 lg:p-12")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Icon *@
     @if (Icon != null)
     {
@@ -63,7 +64,7 @@
     [Parameter] public RenderFragment? Icon { get; set; }
     [Parameter] public RenderFragment? Extra { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
 
     public enum BwResultStatus
     {

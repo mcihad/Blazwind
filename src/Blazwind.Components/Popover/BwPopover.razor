@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Popover
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var placementClasses = Placement switch
@@ -19,7 +20,7 @@
     };
 }
 
-<div class="relative inline-block @Class" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
     <div class="inline-block cursor-pointer" @onclick="HandleTriggerClick">
         @ChildContent
     </div>
@@ -85,7 +86,7 @@
     [Parameter] public bool ShowArrow { get; set; } = true;
     [Parameter] public bool Closable { get; set; } = false;
     [Parameter] public BwTrigger Trigger { get; set; } = BwTrigger.Click;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     [Parameter] public bool IsOpen { get; set; } = false;
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }

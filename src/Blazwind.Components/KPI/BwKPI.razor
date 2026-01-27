@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.KPI
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="bw-kpi @SizeClass @Class" style="@Style">
+<div class="@CombineClasses("bw-kpi", SizeClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-all hover:shadow-md @(Clickable ? "cursor-pointer hover:border-blue-300 dark:hover:border-blue-600" : "")" 
          @onclick="HandleClick">
         
@@ -102,8 +103,6 @@
     [Parameter] public bool Clickable { get; set; } = false;
     [Parameter] public EventCallback OnClick { get; set; }
     
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private string FormattedValue => Format switch

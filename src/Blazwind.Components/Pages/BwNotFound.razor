@@ -2,8 +2,9 @@
 @using Blazwind.Components.Button
 @using Blazwind.Components.Shared
 @inject NavigationManager NavigationManager
+@inherits BwBase
 
-<div class="min-h-[80vh] flex flex-col items-center justify-center p-4 text-center @Class" style="@Style">
+<div class="@CombineClasses("min-h-[80vh] flex flex-col items-center justify-center p-4 text-center")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <!-- 404 Visual -->
     <div class="relative mb-6">
         <!-- Premium 404 Text -->
@@ -53,6 +54,5 @@
     [Parameter] public string ActionHref { get; set; } = "/";
     [Parameter] public RenderFragment? CustomContent { get; set; }
     [Parameter] public RenderFragment? CustomAction { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
 }

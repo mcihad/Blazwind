@@ -1,6 +1,7 @@
 @namespace Blazwind.Components.Navigation
+@inherits BwBase
 
-<div class="flex flex-col h-full @Width @Class">
+<div class="@CombineClasses("flex flex-col h-full", Width)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Header Slot *@
     @if (Header != null)
     {
@@ -36,7 +37,8 @@
     [Parameter] public RenderFragment? Search { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Footer { get; set; }
-    [Parameter] public string? Class { get; set; }
+    
+    // Removed Class parameter (inherited)
     
     /// <summary>Width of the navigation menu. Default: w-64 (256px). Use Tailwind width classes.</summary>
     [Parameter] public string Width { get; set; } = "w-64";

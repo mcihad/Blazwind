@@ -1,6 +1,8 @@
 @namespace Blazwind.Components.Navigation
+@inherits BwBase
 
-<div class="h-14 border-b border-gray-200 dark:border-gray-800 flex items-center gap-3 px-4 @Class">
+<div class="@CombineClasses("h-14 border-b border-gray-200 dark:border-gray-800 flex items-center gap-3 px-4")" 
+     style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Image))
     {
         <div class="w-9 h-9 rounded overflow-hidden flex-shrink-0">
@@ -35,6 +37,6 @@
     [Parameter] public string? Icon { get; set; }
     [Parameter] public string IconBgClass { get; set; } = "bg-gradient-to-br from-blue-600 to-blue-700";
     [Parameter] public string IconClass { get; set; } = "text-white";
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }

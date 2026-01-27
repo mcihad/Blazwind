@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Skeleton
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var baseClass = "bg-gray-200 dark:bg-gray-700 animate-pulse";
@@ -18,7 +19,7 @@
 
 @if (Lines > 1)
 {
-    <div class="space-y-2 @Class">
+    <div class="@CombineClasses("space-y-2")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @for (int i = 0; i < Lines; i++)
         {
             var lineWidth = i == Lines - 1 ? "60%" : "100%";
@@ -28,7 +29,7 @@
 }
 else
 {
-    <div class="@baseClass @shapeClass @Class" style="@widthStyle @heightStyle"></div>
+    <div class="@CombineClasses(baseClass, shapeClass)" style="@widthStyle @heightStyle @Style" id="@Id" @attributes="AdditionalAttributes"></div>
 }
 
 @code {
@@ -36,5 +37,5 @@ else
     [Parameter] public string? Width { get; set; }
     [Parameter] public string? Height { get; set; }
     [Parameter] public int Lines { get; set; } = 1;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
 }

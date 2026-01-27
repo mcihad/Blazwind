@@ -2,6 +2,7 @@
 @using Blazwind.Components.Shared
 @using Blazwind.Components.Input
 @typeparam TItem
+@inherits BwBase
 
 @{
     var indentPx = Level * 20;
@@ -15,8 +16,10 @@
     var draggableAttr = Draggable && !Node.IsDisabled;
 }
 
-<div class="bw-tree-node @highlightClass" 
-     style="--indent: @(indentPx)px;"
+<div class="@CombineClasses("bw-tree-node", highlightClass)" 
+     style="@($"--indent: {indentPx}px;") @Style"
+     id="@Id"
+     @attributes="AdditionalAttributes"
      draggable="@draggableAttr">
     <div class="bw-tree-node-row hover:bg-gray-100 dark:hover:bg-gray-700 @(isSelected ? "bw-tree-node-selected" : "") @clickedClass @selectableClass @(Node.IsDisabled ? "opacity-50 cursor-not-allowed" : "")"
          @onclick="HandleRowClick"

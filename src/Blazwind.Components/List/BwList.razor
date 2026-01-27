@@ -2,9 +2,10 @@
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @typeparam TItem
+@inherits BwBase
 @implements IBwListParent
 
-<div class="flex flex-col @GapClass @Class" id="@Id">
+<div class="@CombineClasses("flex flex-col", GapClass)" id="@Id" style="@Style" @attributes="AdditionalAttributes">
     <CascadingValue Value="(IBwListParent)this">
         @if (Items != null && Items.Any())
         {
@@ -49,7 +50,8 @@
 </div>
 
 @code {
-    [Parameter] public string Id { get; set; } = $"bw-list-{Guid.NewGuid():N}";
+    // Removed Id parameter as it is inherited from BwBase
+    
     [Parameter] public RenderFragment? ChildContent { get; set; }
     
     /// <summary>Data source for the list</summary>
@@ -88,10 +90,19 @@
     /// <summary>Fired when item is clicked</summary>
     [Parameter] public EventCallback<TItem> OnItemClick { get; set; }
 
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     [Parameter] public string GapClass { get; set; } = "gap-0";
     
     [Inject] private IJSRuntime JS { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = $"bw-list-{Guid.NewGuid():N}";
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

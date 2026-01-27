@@ -4,8 +4,9 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
+@inherits BwBase
 
-<div class="bw-printable @Class" style="@Style">
+<div class="@CombineClasses("bw-printable")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (ShowToolbar)
     {
         <div class="flex items-center gap-2 mb-4 print:hidden">
@@ -49,12 +50,7 @@
     /// <summary>
     /// CSS class
     /// </summary>
-    [Parameter] public string? Class { get; set; }
-    
-    /// <summary>
-    /// CSS style
-    /// </summary>
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     
     /// <summary>
     /// Class for print area

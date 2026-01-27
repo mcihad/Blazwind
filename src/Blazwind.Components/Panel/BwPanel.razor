@@ -1,5 +1,6 @@
 @using Blazwind.Components.Shared
 @namespace Blazwind.Components.Panel
+@inherits BwBase
 
 @{
     var (borderColor, headerBg, titleColor, subTitleBorder) = Color switch
@@ -24,7 +25,7 @@
         : "rounded-lg shadow-md"; // More distinct with shadow-md and rounded-lg
 }
 
-<div class="@panelBg border @borderColor @containerClass transition-all duration-200 ease-in-out @Class">
+<div class="@CombineClasses(panelBg, "border", borderColor, containerClass, "transition-all duration-200 ease-in-out")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Header *@
     @if (Header != null || !string.IsNullOrEmpty(Title) || Toolbox != null || Collapsible || IsFullscreenable)
     {
@@ -119,7 +120,7 @@
     
     [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
     
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     [Parameter] public string? HeaderClass { get; set; }
     [Parameter] public string? ToolboxClass { get; set; }
     [Parameter] public string BodyClass { get; set; } = "p-3 md:p-5";

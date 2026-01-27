@@ -1,7 +1,8 @@
 @namespace Blazwind.Components.MegaMenu
 @using Blazwind.Components.Shared
+@inherits BwBase
 
-<div class="@Class">
+<div class="@CombineClasses(Class)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Title))
     {
         <div class="flex items-center gap-2 px-2 py-1.5 mb-1">
@@ -21,5 +22,5 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
 }

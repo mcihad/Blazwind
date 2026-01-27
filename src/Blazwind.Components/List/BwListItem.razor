@@ -1,5 +1,6 @@
 @using Blazwind.Components.Shared
 @namespace Blazwind.Components.List
+@inherits BwBase
 
 @{
     var isSelected = ParentList?.IsSelected(EffectiveIndex) ?? false;
@@ -25,7 +26,8 @@
     var borderClass = "border-b border-gray-100 dark:border-gray-700 last:border-0";
 }
 
-<div class="@baseClass @selectionClass @dragClass @borderClass @Class" 
+<div class="@CombineClasses(baseClass, selectionClass, dragClass, borderClass)" 
+     id="@Id" style="@Style" @attributes="AdditionalAttributes"
      data-index="@EffectiveIndex" 
      @onclick="HandleClick">
      
@@ -118,7 +120,8 @@
     [Parameter] public RenderFragment? EndContent { get; set; }
     
     [Parameter] public int Index { get; set; } // Required for sorting
-    [Parameter] public string? Class { get; set; }
+    
+    // Removed Class parameter (inherited)
     
     /// <summary>Effective index: uses cascaded if available, otherwise parameter</summary>
     private int EffectiveIndex => CascadedIndex ?? Index;

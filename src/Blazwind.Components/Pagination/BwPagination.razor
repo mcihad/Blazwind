@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Pagination
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var totalPages = PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
@@ -20,7 +21,7 @@
     var disabledClass = "bg-gray-50 text-gray-300 border border-gray-100 cursor-not-allowed dark:bg-gray-900 dark:text-gray-600 dark:border-gray-800";
 }
 
-<nav class="flex items-center gap-4 @Class" aria-label="Pagination">
+<nav class="@CombineClasses("flex items-center gap-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes" aria-label="Pagination">
     @* Info Display - Left side (Hide in Compact/Mobile if Responsive) *@
     @if (ShowInfo)
     {
@@ -177,7 +178,7 @@
     [Parameter] public bool ShowInfo { get; set; } = true;
     [Parameter] public int[] PageSizeOptions { get; set; } = new[] { 10, 25, 50, 100 };
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     [Parameter] public bool Compact { get; set; } = false;
     [Parameter] public bool Responsive { get; set; } = true;

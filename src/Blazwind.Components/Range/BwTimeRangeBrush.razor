@@ -3,8 +3,9 @@
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@inherits BwBase
 
-<div id="@_elementId" class="bw-time-range-brush @Class" style="@Style">
+<div class="@CombineClasses("bw-time-range-brush")" style="@Style" id="@_elementId" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
@@ -134,8 +135,7 @@
     [Parameter] public List<TimeActivityPoint>? Data { get; set; }
     [Parameter] public List<TimeBrushPreset>? Presets { get; set; }
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     [Parameter] public EventCallback<BrushChangedEventArgs<TimeSpan>> OnBrushChanged { get; set; }
 
     private string _elementId = "";
@@ -173,7 +173,7 @@
 
     protected override void OnInitialized()
     {
-        _elementId = $"bw-time-brush-{Guid.NewGuid():N}";
+        _elementId = Id ?? $"bw-time-brush-{Guid.NewGuid():N}";
         InitializeState();
     }
     

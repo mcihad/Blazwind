@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Tooltip
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var placementClasses = Placement switch
@@ -52,7 +53,7 @@
     };
 }
 
-<div class="relative inline-block @Class" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
+<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
     @onfocus="HandleFocus" @onblur="HandleBlur">
     <div class="inline-block">
         @ChildContent
@@ -88,7 +89,7 @@
     [Parameter] public int ShowDelay { get; set; } = 100;
     [Parameter] public int HideDelay { get; set; } = 0;
     [Parameter] public TooltipTrigger Trigger { get; set; } = TooltipTrigger.Hover;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
 
     private bool _isVisible;
     private CancellationTokenSource? _showCts;

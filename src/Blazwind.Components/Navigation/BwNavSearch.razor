@@ -1,7 +1,9 @@
 @namespace Blazwind.Components.Navigation
 @using Microsoft.JSInterop
+@inherits BwBase
 
-<div class="p-3 border-b border-gray-100 dark:border-gray-800 @Class">
+<div class="@CombineClasses("p-3 border-b border-gray-100 dark:border-gray-800")" 
+     style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="relative">
         <i class="@Icon absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-xs pointer-events-none"></i>
         <input type="text" 
@@ -25,7 +27,7 @@
 @code {
     [Parameter] public string Placeholder { get; set; } = "Ara...";
     [Parameter] public string Icon { get; set; } = "fa-solid fa-magnifying-glass";
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     [Parameter] public string SearchValue { get; set; } = "";
     [Parameter] public EventCallback<string> SearchValueChanged { get; set; }
     [Parameter] public EventCallback<string> OnSearch { get; set; }

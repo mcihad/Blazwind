@@ -1,8 +1,9 @@
 @using Blazwind.Components.Shared
 @using System.Threading
 @namespace Blazwind.Components.ImagePreview
+@inherits BwBase
 
-<div class="@Class">
+<div class="@CombineClasses("image-preview-container")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (Images == null || !Images.Any())
     {
         <div class="text-gray-400 dark:text-gray-500 text-sm">Görüntülenecek resim yok.</div>
@@ -95,7 +96,6 @@
     [Parameter] public string ThumbnailHeight { get; set; } = "100px";
     [Parameter] public string? ThumbnailClass { get; set; }
     [Parameter] public bool Loop { get; set; } = true;
-    [Parameter] public string? Class { get; set; }
 
     private bool _isOpen = false;
     private int _currentIndex = 0;

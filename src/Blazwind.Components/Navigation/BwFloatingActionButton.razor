@@ -1,5 +1,6 @@
 @namespace Blazwind.Components.Navigation
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @{
     var baseClasses = "fixed z-30 flex flex-col-reverse items-center gap-3";
@@ -35,7 +36,7 @@
     var iconRotation = _isOpen ? "rotate-45" : "";
 }
 
-<div class="@baseClasses @positionClasses @Class">
+<div class="@CombineClasses(baseClasses, positionClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (_isOpen && SpeedDialItems != null)
     {
         <div class="flex flex-col-reverse gap-3 animate-in fade-in slide-in-from-bottom-4 duration-200">
@@ -72,7 +73,7 @@
     [Parameter] public bool Extended { get; set; } = false;
     [Parameter] public bool Mini { get; set; } = false;
     [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     
     [Parameter] public RenderFragment? SpeedDialItems { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }

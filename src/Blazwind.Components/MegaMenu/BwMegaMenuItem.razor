@@ -1,16 +1,17 @@
 @namespace Blazwind.Components.MegaMenu
 @using Blazwind.Components.Shared
 @using Microsoft.AspNetCore.Components.Routing
+@inherits BwBase
 
 @if (!string.IsNullOrEmpty(Href))
 {
-    <NavLink href="@Href" class="@AllClasses" Match="NavLinkMatch.All">
+    <NavLink href="@Href" class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes" Match="NavLinkMatch.All">
         @RenderContent
     </NavLink>
 }
 else
 {
-    <div class="@AllClasses cursor-pointer" @onclick="HandleClick">
+    <div class="@AllClasses cursor-pointer" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="HandleClick">
         @RenderContent
     </div>
 }
@@ -24,10 +25,10 @@ else
     [Parameter] public BwColor BadgeColor { get; set; } = BwColor.Primary;
     [Parameter] public bool IsNew { get; set; }
     [Parameter] public bool Disabled { get; set; }
-    [Parameter] public string? Class { get; set; }
+    // Removed Class parameter (inherited)
     [Parameter] public EventCallback OnClick { get; set; }
 
-    private string AllClasses => $"flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors {HoverClass} {DisabledClass} {Class}".Trim();
+    private string AllClasses => CombineClasses("flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors", HoverClass, DisabledClass);
 
     private string HoverClass => Disabled ? "" : "hover:bg-gray-100 dark:hover:bg-gray-800";
     private string DisabledClass => Disabled ? "opacity-50 cursor-not-allowed" : "";

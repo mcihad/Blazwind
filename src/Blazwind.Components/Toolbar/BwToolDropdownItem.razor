@@ -1,15 +1,16 @@
 @namespace Blazwind.Components.Toolbar
 @using Blazwind.Components.Shared
+@inherits BwBase
 
 @if (!string.IsNullOrEmpty(Href))
 {
-    <a href="@Href" class="@AllClasses">
+    <a href="@Href" class="@CombineClasses(AllClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
         @RenderContent
     </a>
 }
 else
 {
-    <button type="button" class="@AllClasses" disabled="@Disabled" @onclick="HandleClick">
+    <button type="button" class="@CombineClasses(AllClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes" disabled="@Disabled" @onclick="HandleClick">
         @RenderContent
     </button>
 }

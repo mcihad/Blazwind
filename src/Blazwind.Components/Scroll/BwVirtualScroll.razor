@@ -1,14 +1,16 @@
 @namespace Blazwind.Components.Scroll
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@inherits BwBase
 
 @inject IJSRuntime JS
 
 @typeparam TItem
 
 <div @ref="_containerRef" 
-     class="overflow-auto relative @Class" 
+     class="@CombineClasses("overflow-auto relative")" 
      style="height: @(ContainerHeight)px; @Style"
+     id="@Id" @attributes="AdditionalAttributes"
      @onscroll="HandleScroll">
     
     @* Spacer for total height *@
@@ -31,8 +33,7 @@
     [Parameter] public int ItemHeight { get; set; } = 48;
     [Parameter] public int ContainerHeight { get; set; } = 400;
     [Parameter] public int BufferCount { get; set; } = 5;
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public string? Style { get; set; }
+    // Removed Class and Style parameters (inherited)
     
     private ElementReference _containerRef;
     private List<TItem> _visibleItems = new();
