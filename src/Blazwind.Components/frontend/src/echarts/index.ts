@@ -140,7 +140,7 @@ export function getDataURL(id: string, type: string = 'png'): string {
 /**
  * Show loading
  */
-export function showLoading(id: string, text: string = 'Yükleniyor...'): void {
+export function showLoading(id: string, text: string = 'Loading...'): void {
     const instance = instances.get(id);
     if (instance) {
         instance.chart.showLoading({ text });
