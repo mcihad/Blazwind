@@ -40,7 +40,7 @@
     {
          <div id="@dialogId" 
              class="@CombineClasses($"flex flex-col {AnimationClass} {fullscreenClass}")" 
-             style="@Style" @attributes="AdditionalAttributes">
+             style="@DialogStyle" @attributes="AdditionalAttributes">
             @ChildContent
          </div>
     }
@@ -49,7 +49,7 @@
         @* Dialog Frame *@
         <div id="@dialogId" 
              class="@CombineClasses($"bg-white dark:bg-gray-800 rounded shadow-xl flex flex-col w-full max-h-[90vh] {AnimationClass} {fullscreenClass}")"
-             style="@Style" @attributes="AdditionalAttributes">
+             style="@DialogStyle" @attributes="AdditionalAttributes">
             
             @* Header *@
             <div id="@handleId" 
@@ -109,6 +109,26 @@
     [Parameter] public bool Resizable { get; set; }
     [Parameter] public bool FullScreen { get; set; }
     [Parameter] public bool IsRaw { get; set; }
+
+    private string DialogStyle
+    {
+        get
+        {
+            if (FullScreen)
+            {
+                return Style ?? "";
+            }
+
+            var dimensionStyles = $"width: {Width ?? "500px"}; max-width: {MaxWidth ?? "90vw"}; height: {Height ?? "auto"};";
+            
+            if (!string.IsNullOrEmpty(Style))
+            {
+                return $"{dimensionStyles} {Style}";
+            }
+            
+            return dimensionStyles;
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
