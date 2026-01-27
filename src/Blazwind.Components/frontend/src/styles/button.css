@@ -136,7 +136,20 @@
 }
 
 .bw-btn-outline-secondary:hover:not(:disabled) {
-    background-color: var(--bw-color-secondary-soft-bg);
+    background-color: rgba(100, 116, 139, 0.1);
+    color: var(--bw-color-text);
+    border-color: var(--bw-color-text-secondary);
+}
+
+.dark .bw-btn-outline-secondary {
+    color: var(--bw-gray-400);
+    border-color: var(--bw-gray-600);
+}
+
+.dark .bw-btn-outline-secondary:hover:not(:disabled) {
+    background-color: rgba(148, 163, 184, 0.1);
+    color: var(--bw-gray-200);
+    border-color: var(--bw-gray-400);
 }
 
 .bw-btn-outline-success {
@@ -272,11 +285,21 @@
 
 .bw-btn-ghost-secondary {
     background: transparent;
-    color: var(--bw-color-secondary);
+    color: var(--bw-color-text-secondary);
 }
 
 .bw-btn-ghost-secondary:hover:not(:disabled) {
-    background-color: var(--bw-color-secondary-soft-bg);
+    background-color: rgba(100, 116, 139, 0.1);
+    color: var(--bw-color-text);
+}
+
+.dark .bw-btn-ghost-secondary {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-btn-ghost-secondary:hover:not(:disabled) {
+    background-color: rgba(148, 163, 184, 0.1);
+    color: var(--bw-gray-200);
 }
 
 .bw-btn-ghost-success {

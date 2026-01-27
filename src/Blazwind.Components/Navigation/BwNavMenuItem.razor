@@ -6,8 +6,7 @@
 
 @{
     UpdateActiveState();
-    var activeClass = _isActive ? "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium" : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200";
-    var iconClass = _isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-gray-500";
+    var itemClass = _isActive ? "bw-nav-item bw-nav-item-active" : "bw-nav-item";
     
     var _context = new BwNavMenuItemContext
     {
@@ -30,7 +29,7 @@
 else
 {
     <a href="@Href" 
-       class="@CombineClasses("flex items-center gap-2 px-3 py-2 text-sm rounded transition-colors", activeClass)"
+       class="@CombineClasses(itemClass)"
        style="padding-left: @(Level * 12 + 12)px; @Style"
        id="@Id" @attributes="AdditionalAttributes"
        data-active="@_isActive.ToString().ToLower()"
@@ -38,12 +37,12 @@ else
        @onclick="HandleClick">
         @if (!string.IsNullOrEmpty(Icon))
         {
-            <i class="@Icon w-4 text-sm @iconClass"></i>
+            <i class="@Icon bw-nav-item-icon"></i>
         }
         <span class="flex-1">@Label</span>
         @if (Badge != null)
         {
-            <span class="px-1.5 py-0.5 text-[10px] font-medium text-white bg-blue-600 rounded-full">@Badge</span>
+            <span class="bw-nav-item-badge">@Badge</span>
         }
     </a>
 }
@@ -60,7 +59,6 @@ else
     [Parameter] public string Href { get; set; } = "";
     [Parameter] public string? Icon { get; set; }
     [Parameter] public string? Badge { get; set; }
-    // Removed Class parameter (inherited)
     [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
     
     /// <summary>Custom template for this menu item. Overrides cascaded template.</summary>
@@ -85,14 +83,12 @@ else
 
     private async Task HandleClick()
     {
-        // Try to close sidebar on mobile (safe to call on desktop, JS checks logic or it's harmless)
         try 
         {
             await JS.InvokeVoidAsync("Blazwind.Sidebar.close");
         }
         catch
         {
-            // Ignore errors if JS is not ready or function missing
         }
     }
 
@@ -121,7 +117,6 @@ else
     {
         if (firstRender && _isActive)
         {
-             // Small delay to ensure DOM is ready
              await Task.Delay(50); 
              await JS.InvokeVoidAsync("Blazwind.Nav.expandParentsForActive");
         }

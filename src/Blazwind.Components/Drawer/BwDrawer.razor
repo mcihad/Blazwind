@@ -39,29 +39,19 @@
         _ => ""
     };
     
-    // Border for resize handle
-    var widthClass = Options.Size switch
+    // Color variant class
+    var colorClass = Options.Color switch
     {
-        BwSize.Small => "w-[300px]",
-        BwSize.Large => "w-[600px]",
-        BwSize.ExtraLarge => "w-[800px]",
-        BwSize.Full => "w-screen",
-        _ => "w-[400px]" // Medium
-    };
-
-    // Variant styles
-    var (bgColor, borderColor, headerBg, textColor) = Options.Color switch
-    {
-        BwColor.Primary => ("bg-white dark:bg-gray-900", "border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/10", "text-blue-900 dark:text-blue-100"),
-        BwColor.Dark => ("bg-gray-900", "border-gray-700", "bg-gray-800", "text-white"),
-        _ => ("bg-white dark:bg-gray-900", "border-gray-200 dark:border-gray-800", "bg-gray-50 dark:bg-gray-800", "text-gray-900 dark:text-gray-100")
+        BwColor.Primary => "bw-drawer-primary",
+        BwColor.Dark => "bw-drawer-dark",
+        _ => ""
     };
 }
 
 @* Overlay *@
 @if (Options.ShowOverlay)
 {
-    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1060] animate-fade-in"
+    <div class="bw-drawer-overlay"
          @onclick="HandleOverlayClick"
          @onclick:stopPropagation="true">
     </div>
@@ -69,7 +59,7 @@
 
 @* Drawer Panel *@
 <div id="@Id"
-     class="@CombineClasses($"fixed z-[1070] {positionClasses} {bgColor} {borderColor} shadow-2xl flex flex-col {slideIn} {Options.Class}")"
+     class="@CombineClasses($"bw-drawer {positionClasses} {slideIn} {colorClass} {Options.Class}")"
      style="@sizeStyle"
      @onkeydown="HandleKeyDown"
      tabindex="-1" @attributes="AdditionalAttributes">
@@ -85,12 +75,12 @@
     @* Header *@
     @if (!string.IsNullOrEmpty(Title) || Options.ShowClose)
     {
-        <div class="flex items-center justify-between px-4 py-3 border-b @borderColor @headerBg shrink-0">
-            <h3 class="font-semibold @textColor text-base truncate">@Title</h3>
+        <div class="bw-drawer-header">
+            <h3 class="bw-drawer-title">@Title</h3>
             @if (Options.ShowClose)
             {
                 <button type="button"
-                        class="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 rounded p-1.5 transition-colors"
+                        class="bw-drawer-close"
                         @onclick="HandleClose">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
@@ -99,14 +89,14 @@
     }
 
     @* Body *@
-    <div class="flex-1 overflow-y-auto p-4">
+    <div class="bw-drawer-body">
         @ChildContent
     </div>
 
     @* Footer *@
     @if (Footer != null)
     {
-        <div class="px-4 py-3 border-t @borderColor @headerBg shrink-0 flex items-center justify-end gap-3">
+        <div class="bw-drawer-footer">
             @Footer
         </div>
     }

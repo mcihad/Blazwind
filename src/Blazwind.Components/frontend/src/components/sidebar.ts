@@ -31,7 +31,7 @@ function updateSidebar(): void {
     if (!sidebar) return;
 
     // Detect if sidebar is on right side
-    const isRight = sidebar.classList.contains('right-0');
+    const isRight = sidebar.classList.contains('bw-sidebar-right');
 
     if (sidebarState) {
         // Open

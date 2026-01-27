@@ -3,21 +3,19 @@
 @inherits BwBase
 
 @{
-    var colorClasses = Color switch
+    var colorClass = Color switch
     {
-        BwColor.Success => "bg-emerald-500 hover:bg-emerald-600",
-        BwColor.Warning => "bg-amber-500 hover:bg-amber-600",
-        BwColor.Danger => "bg-red-500 hover:bg-red-600",
-        BwColor.Info => "bg-sky-500 hover:bg-sky-600",
-        BwColor.Primary => "bg-blue-500 hover:bg-blue-600",
-        _ => "bg-gray-500 hover:bg-gray-600"
+        BwColor.Success => "bw-fab-success",
+        BwColor.Warning => "bw-fab-warning",
+        BwColor.Danger => "bw-fab-danger",
+        BwColor.Info => "bw-fab-info",
+        BwColor.Primary => "bw-fab-primary",
+        _ => "bw-fab-secondary"
     };
-    
-    var baseClass = "w-12 h-12 rounded-full border-none cursor-pointer flex items-center justify-center text-lg text-white shadow-md transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed relative";
 }
 
 <button type="button" 
-        class="@CombineClasses(baseClass, colorClasses)"
+        class="@CombineClasses("bw-fab-item", colorClass)"
         style="@Style" id="@Id" @attributes="AdditionalAttributes"
         disabled="@IsDisabled"
         title="@Tooltip"
@@ -25,7 +23,7 @@
     <i class="@Icon"></i>
     @if (!string.IsNullOrEmpty(Label))
     {
-        <span class="absolute right-full mr-3 bg-gray-800 dark:bg-gray-700 text-white text-xs font-medium px-3 py-1.5 rounded whitespace-nowrap shadow-lg">@Label</span>
+        <span class="bw-fab-item-label">@Label</span>
     }
 </button>
 

@@ -7,13 +7,12 @@
 @{
     var isActive = ParentNav?.ActiveItemId == _itemId || 
                    (!string.IsNullOrEmpty(Href) && NavigationManager.Uri.EndsWith(Href));
-    var activeClasses = isActive ? "text-blue-600 dark:text-blue-500" : "text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30";
-    var disabledClasses = IsDisabled ? "opacity-40 cursor-not-allowed pointer-events-none" : "";
-    var baseClasses = "flex flex-col items-center justify-center flex-1 h-full py-2 no-underline transition-all relative";
+    var itemClass = isActive ? "bw-bottom-nav-item bw-bottom-nav-item-active" : "bw-bottom-nav-item";
+    var disabledClass = IsDisabled ? "bw-bottom-nav-item-disabled" : "";
 }
 
 <a href="@Href" 
-   class="@CombineClasses(baseClasses, activeClasses, disabledClasses)"
+   class="@CombineClasses(itemClass, disabledClass)"
    style="@Style" id="@Id" @attributes="AdditionalAttributes"
    @onclick="HandleClick"
    @onclick:preventDefault="@IsDisabled">
@@ -21,13 +20,13 @@
         <i class="@Icon text-xl transition-transform @(isActive ? "scale-110" : "")"></i>
         @if (BadgeCount > 0)
         {
-            <span class="absolute -top-1.5 -right-2.5 min-w-[18px] h-[18px] px-1.5 bg-red-500 text-white text-[10px] font-semibold rounded-full flex items-center justify-center">
+            <span class="bw-bottom-nav-badge">
                 @(BadgeCount > 99 ? "99+" : BadgeCount)
             </span>
         }
         @if (ShowDot)
         {
-            <span class="absolute -top-0.5 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+            <span class="bw-bottom-nav-dot"></span>
         }
     </div>
     @if (!string.IsNullOrEmpty(Label))
@@ -36,7 +35,7 @@
     }
     @if (isActive)
     {
-        <span class="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-blue-600 dark:bg-blue-500 rounded-b"></span>
+        <span class="bw-bottom-nav-indicator"></span>
     }
 </a>
 
@@ -52,8 +51,6 @@
     [Parameter] public EventCallback OnClick { get; set; }
     
     private string _itemId = Guid.NewGuid().ToString();
-    
-    // Removed Class parameter (inherited)
 
     private async Task HandleClick()
     {

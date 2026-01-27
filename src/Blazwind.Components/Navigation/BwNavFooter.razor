@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components
 @inherits BwBase
 
-<div class="@CombineClasses("border-t border-gray-200 dark:border-gray-800 p-3 flex items-center gap-3")" 
+<div class="@CombineClasses("bw-nav-footer")" 
      style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (AvatarContent != null)
     {
@@ -10,11 +10,11 @@
     }
     else if (!string.IsNullOrEmpty(AvatarUrl))
     {
-         <img src="@AvatarUrl" alt="@Title" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700" />
+         <img src="@AvatarUrl" alt="@Title" class="bw-nav-footer-avatar" />
     }
     else if (!string.IsNullOrEmpty(Icon))
     {
-         <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400">
+         <div class="bw-nav-footer-icon-container">
              <i class="@Icon"></i>
          </div>
     }
@@ -22,11 +22,11 @@
     <div class="flex-1 min-w-0">
          @if (!string.IsNullOrEmpty(Title))
          {
-             <div class="font-medium text-sm text-gray-900 dark:text-gray-200 truncate">@Title</div>
+             <div class="bw-nav-footer-title">@Title</div>
          }
          @if (!string.IsNullOrEmpty(Subtitle))
          {
-             <div class="text-xs text-gray-500 dark:text-gray-400 truncate">@Subtitle</div>
+             <div class="bw-nav-footer-subtitle">@Subtitle</div>
          }
     </div>
 
@@ -45,5 +45,4 @@
     [Parameter] public string? AvatarUrl { get; set; }
     [Parameter] public RenderFragment? AvatarContent { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    // Removed Class parameter (inherited)
 }

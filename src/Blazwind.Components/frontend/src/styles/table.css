@@ -1,0 +1,242 @@
+/* ============================================
+   Table Component Theme Styles
+   ============================================ */
+
+.bw-table {
+    @apply w-full text-left border-collapse;
+}
+
+.bw-table-bordered {
+    border: 1px solid var(--bw-color-border);
+}
+
+.dark .bw-table-bordered {
+    border-color: var(--bw-gray-700);
+}
+
+/* Table Header - FIXED for dark mode */
+.bw-table-header {
+    background-color: var(--bw-gray-100);
+    border-bottom: 1px solid var(--bw-color-border);
+}
+
+.dark .bw-table-header {
+    background-color: var(--bw-gray-800);
+    border-bottom-color: var(--bw-gray-700);
+}
+
+.bw-table-header-cell {
+    color: var(--bw-gray-700);
+    @apply font-semibold text-sm;
+}
+
+.dark .bw-table-header-cell {
+    color: var(--bw-gray-200);
+}
+
+/* Table Body */
+.bw-table-cell {
+    color: var(--bw-gray-600);
+    @apply text-sm;
+}
+
+.dark .bw-table-cell {
+    color: var(--bw-gray-300);
+}
+
+.bw-table-row {
+    border-bottom: 1px solid var(--bw-gray-100);
+    @apply transition-colors;
+}
+
+.dark .bw-table-row {
+    border-bottom-color: var(--bw-gray-800);
+}
+
+/* Striped rows */
+.bw-table-row-striped {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-table-row-striped {
+    background-color: rgba(var(--bw-gray-800-rgb, 31, 41, 55), 0.5);
+}
+
+/* Hover effect */
+.bw-table-row-hover:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-table-row-hover:hover {
+    background-color: var(--bw-gray-800);
+}
+
+/* Selected row */
+.bw-table-row-selected {
+    background-color: var(--bw-primary-50);
+}
+
+.dark .bw-table-row-selected {
+    background-color: rgba(var(--bw-primary-rgb, 59, 130, 246), 0.15);
+}
+
+/* Sort Indicator */
+.bw-table-sort-icon {
+    color: var(--bw-gray-400);
+}
+
+.bw-table-sort-icon-active {
+    color: var(--bw-color-primary);
+}
+
+/* Loading Overlay */
+.bw-table-loading {
+    background-color: rgba(255, 255, 255, 0.8);
+    @apply absolute inset-0 z-40 flex items-center justify-center rounded;
+}
+
+.dark .bw-table-loading {
+    background-color: rgba(17, 24, 39, 0.8);
+}
+
+.bw-table-loading-spinner {
+    color: var(--bw-color-primary);
+}
+
+/* Empty State */
+.bw-table-empty {
+    color: var(--bw-gray-400);
+    @apply text-center py-8;
+}
+
+.dark .bw-table-empty {
+    color: var(--bw-gray-500);
+}
+
+/* Column Selector Button */
+.bw-table-column-btn {
+    color: var(--bw-gray-600);
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded shadow-sm transition-colors;
+}
+
+.bw-table-column-btn:hover {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-table-column-btn {
+    color: var(--bw-gray-300);
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.dark .bw-table-column-btn:hover {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-color-text-inverse);
+}
+
+/* Column Dropdown */
+.bw-table-column-dropdown {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply absolute right-0 top-full mt-1 z-50 w-72 rounded shadow-lg;
+}
+
+.dark .bw-table-column-dropdown {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* ===========================================
+   Drawer
+   =========================================== */
+
+.bw-drawer-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fade-in 0.2s ease-out;
+    @apply fixed inset-0 z-[1060] backdrop-blur-sm;
+}
+
+.bw-drawer {
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+    @apply fixed z-[1070] shadow-2xl flex flex-col;
+}
+
+.dark .bw-drawer {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-800);
+}
+
+.bw-drawer-header {
+    background-color: var(--bw-gray-50);
+    border-bottom: 1px solid var(--bw-color-border);
+    @apply flex items-center justify-between px-4 py-3 shrink-0;
+}
+
+.dark .bw-drawer-header {
+    background-color: var(--bw-gray-800);
+    border-bottom-color: var(--bw-gray-700);
+}
+
+.bw-drawer-title {
+    color: var(--bw-gray-900);
+    @apply font-semibold text-base truncate;
+}
+
+.dark .bw-drawer-title {
+    color: var(--bw-gray-100);
+}
+
+.bw-drawer-close {
+    color: var(--bw-gray-500);
+    @apply rounded p-1.5 transition-colors;
+}
+
+.bw-drawer-close:hover {
+    color: var(--bw-gray-800);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .bw-drawer-close {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-drawer-close:hover {
+    color: var(--bw-color-text-inverse);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bw-drawer-body {
+    @apply flex-1 overflow-y-auto p-4;
+}
+
+.bw-drawer-footer {
+    background-color: var(--bw-gray-50);
+    border-top: 1px solid var(--bw-color-border);
+    @apply px-4 py-3 shrink-0 flex items-center justify-end gap-3;
+}
+
+.dark .bw-drawer-footer {
+    background-color: var(--bw-gray-800);
+    border-top-color: var(--bw-gray-700);
+}
+
+/* Drawer Color Variants */
+.bw-drawer-primary .bw-drawer-header {
+    background-color: var(--bw-primary-50);
+}
+
+.dark .bw-drawer-primary .bw-drawer-header {
+    background-color: rgba(var(--bw-primary-rgb, 59, 130, 246), 0.1);
+}
+
+.bw-drawer-primary .bw-drawer-title {
+    color: var(--bw-primary-900);
+}
+
+.dark .bw-drawer-primary .bw-drawer-title {
+    color: var(--bw-primary-100);
+}

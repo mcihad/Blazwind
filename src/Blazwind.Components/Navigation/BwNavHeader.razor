@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Navigation
 @inherits BwBase
 
-<div class="@CombineClasses("h-14 border-b border-gray-200 dark:border-gray-800 flex items-center gap-3 px-4")" 
+<div class="@CombineClasses("bw-nav-header")" 
      style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Image))
     {
@@ -11,15 +11,15 @@
     }
     else if (!string.IsNullOrEmpty(Icon))
     {
-        <div class="w-9 h-9 @IconBgClass rounded flex items-center justify-center flex-shrink-0">
-            <i class="@Icon @IconClass"></i>
+        <div class="bw-nav-header-icon">
+            <i class="@Icon"></i>
         </div>
     }
     <div>
-        <div class="font-semibold text-gray-900 dark:text-gray-100 text-sm">@Title</div>
+        <div class="bw-nav-header-title">@Title</div>
         @if (!string.IsNullOrEmpty(Subtitle))
         {
-            <div class="text-xs text-gray-500 dark:text-gray-400">@Subtitle</div>
+            <div class="bw-nav-header-subtitle">@Subtitle</div>
         }
     </div>
     @if (ChildContent != null)
@@ -35,8 +35,5 @@
     [Parameter] public string? Subtitle { get; set; }
     [Parameter] public string? Image { get; set; }
     [Parameter] public string? Icon { get; set; }
-    [Parameter] public string IconBgClass { get; set; } = "bg-gradient-to-br from-blue-600 to-blue-700";
-    [Parameter] public string IconClass { get; set; } = "text-white";
-    // Removed Class parameter (inherited)
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }

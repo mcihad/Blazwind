@@ -38,11 +38,11 @@
             @if (hasLabel)
             {
                 <div class="flex items-center gap-1 @labelSpacingClass">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label class="bw-form-label">
                         @Label
                         @if (IsRequired)
                         {
-                            <span class="text-red-500 ml-0.5">*</span>
+                            <span class="bw-form-required">*</span>
                         }
                     </label>
                     @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -61,11 +61,11 @@
                 @if (hasLabel)
                 {
                     <div class="flex items-center gap-1 pt-2.5" style="@labelWidthStyle">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                        <label class="bw-form-label text-right flex-1">
                             @Label
                             @if (IsRequired)
                             {
-                                <span class="text-red-500 ml-0.5">*</span>
+                                <span class="bw-form-required">*</span>
                             }
                         </label>
                         @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -87,14 +87,11 @@
                 </div>
                 @if (hasLabel)
                 {
-                    <label class="absolute left-3 transition-all duration-200 pointer-events-none
-                                  @(_hasValue || _isFocused 
-                                      ? "top-0 -translate-y-1/2 text-xs bg-white dark:bg-gray-800 px-1 text-blue-600 dark:text-blue-400" 
-                                      : "top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400")">
+                    <label class="@(_hasValue || _isFocused ? "bw-form-label-floating-active" : "bw-form-label-floating top-1/2 -translate-y-1/2 text-sm")">
                         @Label
                         @if (IsRequired)
                         {
-                            <span class="text-red-500 ml-0.5">*</span>
+                            <span class="bw-form-required">*</span>
                         }
                     </label>
                 }
@@ -111,14 +108,14 @@
     @* Error/Helper Messages *@
     @if (hasError)
     {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+        <p class="bw-form-error">
             <i class="fa-solid fa-circle-exclamation"></i>
             @displayError
         </p>
     }
     else if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
     {
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        <p class="bw-form-helper">@HelperText</p>
     }
 </div>
 

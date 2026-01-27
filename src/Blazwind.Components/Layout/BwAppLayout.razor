@@ -8,7 +8,7 @@
     
     if (hasSidebar)
     {
-        marginClass = SidebarPosition == BwDirection.Right ? "mr-64" : "ml-64";
+        marginClass = SidebarPosition == BwDirection.Right ? "mr-72" : "ml-72";
     }
 }
 
@@ -26,7 +26,7 @@
         @* Header *@
         @if (Header != null || hasSidebar)
         {
-            <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-2 sticky top-0 z-40">
+            <header class="bw-app-header px-2">
                 @if (hasSidebar)
                 {
                     <BwSidebarToggle />
@@ -36,14 +36,14 @@
         }
 
         @* Content *@
-        <main class="flex-1 p-3 bg-gray-50 dark:bg-black">
+        <main class="bw-app-main">
             @ChildContent
         </main>
 
         @* Footer *@
         @if (Footer != null)
         {
-            <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-2">
+            <footer class="bw-app-footer">
                 @Footer
             </footer>
         }
@@ -54,7 +54,7 @@
         @* Header *@
         @if (Header != null || hasSidebar)
         {
-            <header class="h-14 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center gap-4 px-3 sticky top-0 z-40">
+            <header class="bw-app-header px-3">
                 @if (hasSidebar)
                 {
                     <BwSidebarToggle />
@@ -64,14 +64,14 @@
         }
 
         @* Content *@
-        <main class="flex-1 p-3 bg-gray-50 dark:bg-black">
+        <main class="bw-app-main">
             @ChildContent
         </main>
 
         @* Footer *@
         @if (Footer != null)
         {
-            <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3">
+            <footer class="bw-app-footer p-3">
                 @Footer
             </footer>
         }

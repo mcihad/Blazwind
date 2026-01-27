@@ -1,0 +1,107 @@
+/* ============================================
+   Image Preview Component Theme Styles
+   ============================================ */
+
+.bw-image-preview {
+    @apply relative;
+}
+
+/* Empty state */
+.bw-image-preview-empty {
+    color: var(--bw-gray-400);
+    @apply text-sm;
+}
+
+:root.dark .bw-image-preview-empty,
+.dark .bw-image-preview-empty {
+    color: var(--bw-gray-500);
+}
+
+/* Thumbnail container */
+.bw-image-preview-thumb {
+    border: 1px solid var(--bw-color-border);
+    @apply relative cursor-pointer rounded-lg overflow-hidden shadow-sm transition-all;
+}
+
+.bw-image-preview-thumb:hover {
+    @apply shadow-md;
+}
+
+:root.dark .bw-image-preview-thumb,
+.dark .bw-image-preview-thumb {
+    border-color: var(--bw-gray-700);
+}
+
+/* More indicator */
+.bw-image-preview-more {
+    @apply absolute inset-0 flex items-center justify-center text-white font-semibold text-lg transition-colors;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.bw-image-preview-more:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Lightbox overlay */
+.bw-image-preview-lightbox {
+    background-color: rgba(0, 0, 0, 0.9);
+    @apply fixed inset-0 z-[1100] flex items-center justify-center transition-opacity duration-300 backdrop-blur-sm;
+}
+
+/* Close button */
+.bw-image-preview-close {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
+    @apply absolute top-4 right-4 rounded-full p-2 w-10 h-10 flex items-center justify-center transition-colors z-[1110];
+}
+
+.bw-image-preview-close:hover {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Counter */
+.bw-image-preview-counter {
+    color: rgba(255, 255, 255, 0.8);
+    @apply absolute top-6 left-6 font-medium z-[1110];
+}
+
+/* Navigation buttons */
+.bw-image-preview-nav {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.2);
+    @apply absolute top-1/2 -translate-y-1/2 rounded-full w-12 h-12 flex items-center justify-center transition-all z-[1110];
+}
+
+.bw-image-preview-nav:hover {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.bw-image-preview-nav:disabled {
+    @apply opacity-30 cursor-not-allowed;
+}
+
+.bw-image-preview-nav-prev {
+    left: 1rem;
+}
+
+.bw-image-preview-nav-next {
+    right: 1rem;
+}
+
+/* Hover overlay on thumbnail */
+.bw-image-preview-overlay {
+    @apply absolute inset-0 flex items-center justify-center opacity-0 transition-colors;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.bw-image-preview-thumb:hover .bw-image-preview-overlay {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.bw-image-preview-overlay-icon {
+    color: white;
+    @apply text-xl drop-shadow-md;
+}

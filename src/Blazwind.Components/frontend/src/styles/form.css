@@ -1,0 +1,91 @@
+/* ============================================
+   Form Component Theme Styles
+   ============================================ */
+
+/* Form container */
+.bw-form {
+    @apply relative;
+}
+
+/* Form Field */
+.bw-form-field {
+    @apply relative;
+}
+
+/* Label */
+.bw-form-label {
+    color: var(--bw-gray-700);
+    @apply block text-sm font-medium;
+}
+
+:root.dark .bw-form-label,
+.dark .bw-form-label {
+    color: var(--bw-gray-300);
+}
+
+/* Required asterisk */
+.bw-form-required {
+    color: var(--bw-danger-500);
+    @apply ml-0.5;
+}
+
+/* Floating label - normal state */
+.bw-form-label-floating {
+    color: var(--bw-gray-500);
+    @apply absolute left-3 transition-all duration-200 pointer-events-none;
+}
+
+:root.dark .bw-form-label-floating,
+.dark .bw-form-label-floating {
+    color: var(--bw-gray-400);
+}
+
+/* Floating label - active state */
+.bw-form-label-floating-active {
+    color: var(--bw-color-primary);
+    background-color: var(--bw-color-surface);
+    @apply absolute left-3 top-0 -translate-y-1/2 text-xs px-1;
+}
+
+:root.dark .bw-form-label-floating-active,
+.dark .bw-form-label-floating-active {
+    color: var(--bw-primary-400);
+    background-color: var(--bw-gray-800);
+}
+
+/* Helper text */
+.bw-form-helper {
+    color: var(--bw-gray-500);
+    @apply mt-1 text-xs;
+}
+
+:root.dark .bw-form-helper,
+.dark .bw-form-helper {
+    color: var(--bw-gray-400);
+}
+
+/* Error message */
+.bw-form-error {
+    color: var(--bw-danger-600);
+    @apply mt-1 text-xs flex items-center gap-1;
+}
+
+:root.dark .bw-form-error,
+.dark .bw-form-error {
+    color: var(--bw-danger-400);
+}
+
+/* Form Grid */
+.bw-form-grid {
+    @apply grid;
+}
+
+/* Form Row */
+.bw-form-row {
+    @apply flex flex-wrap;
+}
+
+/* Form Actions */
+.bw-form-actions {
+    @apply flex flex-wrap;
+}

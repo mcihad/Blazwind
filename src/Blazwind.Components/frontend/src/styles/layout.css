@@ -1,0 +1,219 @@
+/* ============================================
+   Layout Component Styles (Theme-Aware)
+   ============================================ */
+
+/* ===========================================
+   App Layout
+   =========================================== */
+
+.bw-app-header {
+    background-color: var(--bw-color-surface);
+    border-bottom: 1px solid var(--bw-color-border);
+    @apply h-14 flex items-center gap-4 sticky top-0 z-40;
+}
+
+.dark .bw-app-header {
+    background-color: var(--bw-gray-900);
+    border-bottom-color: var(--bw-gray-800);
+}
+
+.bw-app-main {
+    background-color: var(--bw-gray-50);
+    @apply flex-1 p-3;
+}
+
+.dark .bw-app-main {
+    background-color: var(--bw-gray-950);
+}
+
+.bw-app-footer {
+    background-color: var(--bw-color-surface);
+    border-top: 1px solid var(--bw-color-border);
+    @apply p-2;
+}
+
+.dark .bw-app-footer {
+    background-color: var(--bw-gray-900);
+    border-top-color: var(--bw-gray-800);
+}
+
+/* ===========================================
+   Sidebar
+   =========================================== */
+
+/* Sidebar Overlay */
+.bw-sidebar-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    @apply hidden fixed inset-0 z-40 lg:hidden transition-opacity;
+}
+
+/* Sidebar Container - Light Theme (default) */
+.bw-sidebar {
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+    color: var(--bw-gray-900);
+    @apply fixed top-0 z-40 h-screen transform lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto;
+}
+
+.dark .bw-sidebar {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-800);
+    color: var(--bw-gray-100);
+}
+
+/* Sidebar Position Variants */
+.bw-sidebar-left {
+    left: 0;
+    border-right-width: 1px;
+}
+
+.bw-sidebar-right {
+    right: 0;
+    border-left-width: 1px;
+}
+
+/* Mobile: Hidden by default */
+@media (max-width: 1023px) {
+    .bw-sidebar-left {
+        transform: translateX(-100%);
+    }
+
+    .bw-sidebar-right {
+        transform: translateX(100%);
+    }
+
+    /* When opened via JS */
+    .bw-sidebar-left.translate-x-0,
+    .bw-sidebar-right.translate-x-0 {
+        transform: translateX(0) !important;
+    }
+}
+
+/* Desktop: Always visible */
+@media (min-width: 1024px) {
+
+    .bw-sidebar-left,
+    .bw-sidebar-right {
+        transform: translateX(0);
+    }
+}
+
+/* Sidebar Color Variants - Dark */
+.bw-sidebar-dark {
+    background-color: var(--bw-gray-900);
+    color: var(--bw-gray-300);
+    border-color: var(--bw-gray-800);
+}
+
+/* Sidebar Color Variants - Primary */
+.bw-sidebar-primary {
+    background-color: var(--bw-primary-900);
+    color: var(--bw-primary-100);
+    border-color: var(--bw-primary-800);
+}
+
+/* Sidebar Toggle Button */
+.bw-sidebar-toggle {
+    color: var(--bw-gray-600);
+    @apply lg:hidden p-2 rounded transition-colors;
+}
+
+.bw-sidebar-toggle:hover {
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-sidebar-toggle {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-sidebar-toggle:hover {
+    background-color: var(--bw-gray-800);
+}
+
+/* ===========================================
+   User Profile
+   =========================================== */
+
+.bw-user-profile {
+    @apply flex items-center gap-3 cursor-pointer select-none;
+}
+
+.bw-user-profile-name {
+    color: var(--bw-gray-700);
+    @apply text-sm font-semibold truncate leading-tight;
+}
+
+.bw-user-profile:hover .bw-user-profile-name {
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-user-profile-name {
+    color: var(--bw-gray-200);
+}
+
+.dark .bw-user-profile:hover .bw-user-profile-name {
+    color: var(--bw-color-text-inverse);
+}
+
+.bw-user-profile-role {
+    color: var(--bw-gray-500);
+    @apply text-xs truncate leading-tight mt-0.5;
+}
+
+.bw-user-profile:hover .bw-user-profile-role {
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-user-profile-role {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-user-profile:hover .bw-user-profile-role {
+    color: var(--bw-gray-300);
+}
+
+.bw-user-profile-chevron {
+    color: var(--bw-gray-400);
+    @apply text-xs ml-0.5 transition-colors;
+}
+
+.bw-user-profile:hover .bw-user-profile-chevron {
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-user-profile-chevron {
+    color: var(--bw-gray-500);
+}
+
+.dark .bw-user-profile:hover .bw-user-profile-chevron {
+    color: var(--bw-gray-300);
+}
+
+/* ===========================================
+   Split Panel
+   =========================================== */
+
+.bw-split-divider {
+    background-color: var(--bw-gray-200);
+    @apply flex-shrink-0 transition-colors;
+}
+
+.bw-split-divider:hover {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-split-divider:active {
+    background-color: var(--bw-primary-600);
+}
+
+.dark .bw-split-divider {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-split-divider-horizontal {
+    @apply w-1.5 cursor-col-resize;
+}
+
+.bw-split-divider-vertical {
+    @apply h-1.5 cursor-row-resize;
+}

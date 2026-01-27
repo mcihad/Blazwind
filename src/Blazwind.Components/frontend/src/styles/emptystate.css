@@ -1,0 +1,67 @@
+/* ============================================
+   Empty State Component Theme Styles
+   ============================================ */
+
+.bw-empty-state {
+    background-color: transparent;
+    @apply flex flex-col items-center justify-center text-center p-8;
+}
+
+/* Icon container */
+.bw-empty-state-icon {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-400);
+    @apply w-16 h-16 rounded-full flex items-center justify-center mx-auto;
+}
+
+:root.dark .bw-empty-state-icon,
+.dark .bw-empty-state-icon {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-gray-400);
+}
+
+/* SVG illustration */
+.bw-empty-state-svg {
+    color: var(--bw-gray-300);
+}
+
+:root.dark .bw-empty-state-svg,
+.dark .bw-empty-state-svg {
+    color: var(--bw-gray-500);
+}
+
+/* Title */
+.bw-empty-state-title {
+    color: var(--bw-gray-800);
+    @apply mt-4 text-base font-semibold;
+}
+
+:root.dark .bw-empty-state-title,
+.dark .bw-empty-state-title {
+    color: var(--bw-gray-100);
+}
+
+/* Description */
+.bw-empty-state-description {
+    color: var(--bw-gray-500);
+    @apply mt-2 text-sm max-w-sm;
+}
+
+:root.dark .bw-empty-state-description,
+.dark .bw-empty-state-description {
+    color: var(--bw-gray-400);
+}
+
+/* Image container */
+.bw-empty-state-image {
+    @apply mb-4;
+}
+
+.bw-empty-state-image svg {
+    color: var(--bw-gray-300);
+}
+
+:root.dark .bw-empty-state-image svg,
+.dark .bw-empty-state-image svg {
+    color: var(--bw-gray-500);
+}

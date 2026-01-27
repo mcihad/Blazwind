@@ -13,8 +13,6 @@
         _ => "bottom-6 right-6"
     };
     
-    var fabBaseClasses = "rounded-full border-none cursor-pointer flex items-center justify-center text-white transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
-    
     var sizeClasses = Size switch
     {
         BwSize.Small => Mini ? "w-10 h-10 text-lg" : "w-10 h-10 text-lg",
@@ -22,14 +20,14 @@
         _ => Mini ? "w-10 h-10 text-lg" : "w-14 h-14 text-2xl"
     };
     
-    var colorClasses = Color switch
+    var colorClass = Color switch
     {
-        BwColor.Success => "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/30",
-        BwColor.Warning => "bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/30",
-        BwColor.Danger => "bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30",
-        BwColor.Info => "bg-gradient-to-br from-sky-500 to-sky-600 shadow-lg shadow-sky-500/30",
-        BwColor.Secondary => "bg-gradient-to-br from-gray-500 to-gray-600 shadow-lg shadow-gray-500/30",
-        _ => "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30"
+        BwColor.Success => "bw-fab-success",
+        BwColor.Warning => "bw-fab-warning",
+        BwColor.Danger => "bw-fab-danger",
+        BwColor.Info => "bw-fab-info",
+        BwColor.Secondary => "bw-fab-secondary",
+        _ => "bw-fab-primary"
     };
     
     var extendedClasses = Extended ? "w-auto px-5 gap-2 rounded-full" : "";
@@ -45,7 +43,7 @@
     }
     
     <button type="button" 
-            class="@fabBaseClasses @sizeClasses @colorClasses @extendedClasses"
+            class="@CombineClasses("bw-fab", colorClass, sizeClasses, extendedClasses)"
             disabled="@IsDisabled"
             @onclick="HandleClick">
         <i class="@Icon transition-transform duration-200 @iconRotation"></i>
@@ -73,7 +71,6 @@
     [Parameter] public bool Extended { get; set; } = false;
     [Parameter] public bool Mini { get; set; } = false;
     [Parameter] public bool IsDisabled { get; set; } = false;
-    // Removed Class parameter (inherited)
     
     [Parameter] public RenderFragment? SpeedDialItems { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }

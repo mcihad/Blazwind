@@ -1,0 +1,201 @@
+/* ============================================
+   Help Tooltip Component Theme Styles
+   ============================================ */
+
+.bw-help-tooltip {
+    @apply relative inline-flex;
+}
+
+/* Trigger button */
+.bw-help-tooltip-trigger {
+    @apply cursor-pointer transition-colors focus:outline-none;
+}
+
+/* Trigger color variants */
+.bw-help-tooltip-trigger-primary {
+    color: var(--bw-primary-400);
+}
+
+.bw-help-tooltip-trigger-primary:hover {
+    color: var(--bw-primary-600);
+}
+
+:root.dark .bw-help-tooltip-trigger-primary,
+.dark .bw-help-tooltip-trigger-primary {
+    color: var(--bw-primary-400);
+}
+
+:root.dark .bw-help-tooltip-trigger-primary:hover,
+.dark .bw-help-tooltip-trigger-primary:hover {
+    color: var(--bw-primary-300);
+}
+
+.bw-help-tooltip-trigger-secondary {
+    color: var(--bw-gray-400);
+}
+
+.bw-help-tooltip-trigger-secondary:hover {
+    color: var(--bw-gray-600);
+}
+
+:root.dark .bw-help-tooltip-trigger-secondary,
+.dark .bw-help-tooltip-trigger-secondary {
+    color: var(--bw-gray-500);
+}
+
+:root.dark .bw-help-tooltip-trigger-secondary:hover,
+.dark .bw-help-tooltip-trigger-secondary:hover {
+    color: var(--bw-gray-300);
+}
+
+.bw-help-tooltip-trigger-success {
+    color: var(--bw-success-400);
+}
+
+.bw-help-tooltip-trigger-success:hover {
+    color: var(--bw-success-600);
+}
+
+.bw-help-tooltip-trigger-warning {
+    color: var(--bw-warning-400);
+}
+
+.bw-help-tooltip-trigger-warning:hover {
+    color: var(--bw-warning-600);
+}
+
+.bw-help-tooltip-trigger-danger {
+    color: var(--bw-danger-400);
+}
+
+.bw-help-tooltip-trigger-danger:hover {
+    color: var(--bw-danger-600);
+}
+
+.bw-help-tooltip-trigger-info {
+    color: var(--bw-info-400);
+}
+
+.bw-help-tooltip-trigger-info:hover {
+    color: var(--bw-info-600);
+}
+
+:root.dark .bw-help-tooltip-trigger-info,
+.dark .bw-help-tooltip-trigger-info {
+    color: var(--bw-info-400);
+}
+
+:root.dark .bw-help-tooltip-trigger-info:hover,
+.dark .bw-help-tooltip-trigger-info:hover {
+    color: var(--bw-info-300);
+}
+
+/* Tooltip popup */
+.bw-help-tooltip-popup {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply absolute z-50 rounded-lg shadow-xl p-3;
+}
+
+:root.dark .bw-help-tooltip-popup,
+.dark .bw-help-tooltip-popup {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* Tooltip header */
+.bw-help-tooltip-header {
+    border-bottom: 1px solid var(--bw-gray-100);
+    @apply flex items-center justify-between mb-2 pb-2;
+}
+
+:root.dark .bw-help-tooltip-header,
+.dark .bw-help-tooltip-header {
+    border-bottom-color: var(--bw-gray-700);
+}
+
+/* Tooltip title */
+.bw-help-tooltip-title {
+    color: var(--bw-gray-900);
+    @apply font-semibold text-sm;
+}
+
+:root.dark .bw-help-tooltip-title,
+.dark .bw-help-tooltip-title {
+    color: var(--bw-gray-100);
+}
+
+/* Close button */
+.bw-help-tooltip-close {
+    color: var(--bw-gray-400);
+    @apply transition-colors -mr-1;
+}
+
+.bw-help-tooltip-close:hover {
+    color: var(--bw-gray-600);
+}
+
+:root.dark .bw-help-tooltip-close,
+.dark .bw-help-tooltip-close {
+    color: var(--bw-gray-500);
+}
+
+:root.dark .bw-help-tooltip-close:hover,
+.dark .bw-help-tooltip-close:hover {
+    color: var(--bw-gray-300);
+}
+
+/* Content */
+.bw-help-tooltip-content {
+    color: var(--bw-gray-600);
+    @apply text-sm;
+}
+
+:root.dark .bw-help-tooltip-content,
+.dark .bw-help-tooltip-content {
+    color: var(--bw-gray-300);
+}
+
+/* Link section */
+.bw-help-tooltip-link-section {
+    border-top: 1px solid var(--bw-gray-100);
+    @apply mt-3 pt-2;
+}
+
+:root.dark .bw-help-tooltip-link-section,
+.dark .bw-help-tooltip-link-section {
+    border-top-color: var(--bw-gray-700);
+}
+
+/* Link */
+.bw-help-tooltip-link {
+    color: var(--bw-color-primary);
+    @apply text-xs font-medium inline-flex items-center gap-1;
+}
+
+.bw-help-tooltip-link:hover {
+    color: var(--bw-primary-700);
+}
+
+:root.dark .bw-help-tooltip-link,
+.dark .bw-help-tooltip-link {
+    color: var(--bw-primary-400);
+}
+
+:root.dark .bw-help-tooltip-link:hover,
+.dark .bw-help-tooltip-link:hover {
+    color: var(--bw-primary-300);
+}
+
+/* Arrow */
+.bw-help-tooltip-arrow {
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+    @apply absolute w-2.5 h-2.5 transform rotate-45;
+}
+
+:root.dark .bw-help-tooltip-arrow,
+.dark .bw-help-tooltip-arrow {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}

@@ -1,0 +1,134 @@
+/* ============================================
+   Document Viewer Component Theme Styles
+   ============================================ */
+
+.bw-document-viewer {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    @apply rounded-lg overflow-hidden;
+}
+
+.dark .bw-document-viewer {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-800);
+}
+
+/* Toolbar */
+.bw-document-viewer-toolbar {
+    background-color: var(--bw-gray-100);
+    border-bottom: 1px solid var(--bw-color-border);
+    @apply flex flex-wrap items-center justify-between gap-2 p-2 sticky top-0 z-30;
+}
+
+.dark .bw-document-viewer-toolbar {
+    background-color: var(--bw-gray-800);
+    border-bottom-color: var(--bw-gray-700);
+}
+
+/* Toolbar buttons */
+.bw-document-viewer-btn {
+    color: var(--bw-gray-600);
+    @apply p-2 rounded transition-colors;
+}
+
+.bw-document-viewer-btn:hover {
+    color: var(--bw-gray-900);
+    background-color: var(--bw-gray-200);
+}
+
+.dark .bw-document-viewer-btn {
+    color: var(--bw-gray-300);
+}
+
+.dark .bw-document-viewer-btn:hover {
+    color: var(--bw-color-text-inverse);
+    background-color: var(--bw-gray-700);
+}
+
+/* Active button state */
+.bw-document-viewer-btn-active {
+    color: var(--bw-color-primary);
+    background-color: var(--bw-primary-100);
+}
+
+.dark .bw-document-viewer-btn-active {
+    color: var(--bw-primary-300);
+    background-color: rgba(var(--bw-primary-rgb, 59, 130, 246), 0.2);
+}
+
+/* Zoom text */
+.bw-document-viewer-zoom-text {
+    color: var(--bw-gray-600);
+    @apply text-xs min-w-[48px] text-center select-none;
+}
+
+.dark .bw-document-viewer-zoom-text {
+    color: var(--bw-gray-300);
+}
+
+/* Divider */
+.bw-document-viewer-divider {
+    background-color: var(--bw-gray-300);
+    @apply w-px h-6 mx-1;
+}
+
+.dark .bw-document-viewer-divider {
+    background-color: var(--bw-gray-600);
+}
+
+/* Content area */
+.bw-document-viewer-content {
+    background-color: var(--bw-gray-200);
+    @apply flex-1 overflow-auto relative;
+}
+
+.dark .bw-document-viewer-content {
+    background-color: var(--bw-gray-900);
+}
+
+/* Image container */
+.bw-document-viewer-image-container {
+    background-color: var(--bw-gray-600);
+    @apply w-full h-full flex items-center justify-center p-4 relative;
+}
+
+.dark .bw-document-viewer-image-container {
+    background-color: var(--bw-gray-900);
+}
+
+/* Error state */
+.bw-document-viewer-error {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-danger-500);
+    @apply w-full h-full flex items-center justify-center;
+}
+
+.dark .bw-document-viewer-error {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-danger-400);
+}
+
+/* Metadata overlay */
+.bw-document-viewer-metadata {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    @apply absolute bottom-2 right-2 px-3 py-1.5 flex items-center gap-3 rounded-md text-[11px] font-medium backdrop-blur-md shadow-lg pointer-events-none select-none z-10 border border-white/10;
+}
+
+/* Loading overlay */
+.bw-document-viewer-loading {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    @apply absolute inset-0 z-30 flex items-center justify-center backdrop-blur-sm;
+}
+
+/* Save button */
+.bw-document-viewer-save-btn {
+    background-color: var(--bw-color-primary);
+    color: white;
+    @apply flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded shadow-sm transition-colors;
+}
+
+.bw-document-viewer-save-btn:hover {
+    background-color: var(--bw-primary-700);
+}

@@ -3,7 +3,8 @@
    ============================================ */
 
 .bw-alert {
-    @apply flex gap-2 md:gap-3 p-3 md:p-4 rounded;
+    @apply flex gap-2 md:gap-3 p-3 md:p-4;
+    border-radius: var(--bw-radius-default);
 }
 
 .bw-alert-icon-wrapper {

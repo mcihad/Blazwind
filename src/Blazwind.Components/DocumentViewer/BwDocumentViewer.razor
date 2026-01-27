@@ -10,44 +10,44 @@
     @* Toolbar - for images *@
     @if (ShowToolbar && Type != DocumentType.Pdf)
     {
-        <div class="flex flex-wrap items-center justify-between gap-2 p-2 bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 print:hidden sticky top-0 z-30">
+        <div class="bw-document-viewer-toolbar print:hidden">
             <div class="flex items-center gap-1">
                 @* Zoom controls *@
                 <button type="button" 
-                        class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                        class="bw-document-viewer-btn"
                         title="Uzaklaştır"
                         @onclick="ZoomOutAsync">
                     <i class="fa-solid fa-minus text-sm"></i>
                 </button>
-                <span class="text-xs text-gray-600 dark:text-gray-300 min-w-[48px] text-center select-none">@($"{(int)(_zoom * 100)}%")</span>
+                <span class="bw-document-viewer-zoom-text">@($"{(int)(_zoom * 100)}%")</span>
                 <button type="button" 
-                        class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                        class="bw-document-viewer-btn"
                         title="Yakınlaştır"
                         @onclick="ZoomInAsync">
                     <i class="fa-solid fa-plus text-sm"></i>
                 </button>
                 
-                <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                <div class="bw-document-viewer-divider"></div>
 
                 @* Rotation *@
                 <button type="button" 
-                        class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                        class="bw-document-viewer-btn"
                         title="Sola Döndür"
                         @onclick="RotateLeft">
                     <i class="fa-solid fa-rotate-left text-sm"></i>
                 </button>
                 <button type="button" 
-                        class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                        class="bw-document-viewer-btn"
                         title="Sağa Döndür"
                         @onclick="RotateRight">
                     <i class="fa-solid fa-rotate-right text-sm"></i>
                 </button>
 
-                <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                <div class="bw-document-viewer-divider"></div>
 
                 @* Grayscale *@
                 <button type="button" 
-                        class="p-2 @(_isGrayscale ? "text-blue-600 bg-blue-100 dark:bg-blue-900 dark:text-blue-200" : "text-gray-600 dark:text-gray-300") hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                        class="bw-document-viewer-btn @(_isGrayscale ? "bw-document-viewer-btn-active" : "")"
                         title="Siyah/Beyaz"
                         @onclick="ToggleGrayscale">
                     <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
@@ -59,12 +59,12 @@
                 @if (OnSave.HasDelegate)
                 {
                     <button type="button" 
-                            class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded shadow-sm transition-colors"
+                            class="bw-document-viewer-save-btn"
                             @onclick="SaveAsync">
                         <i class="fa-solid fa-floppy-disk"></i>
                         <span class="hidden sm:inline">Kaydet</span>
                     </button>
-                    <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+                    <div class="bw-document-viewer-divider"></div>
                 }
 
                 @if (ShowDownloadButton && !string.IsNullOrEmpty(Url))
@@ -72,7 +72,7 @@
                     <a href="@Url" 
                        download
                        target="_blank"
-                       class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                       class="bw-document-viewer-btn"
                        title="İndir">
                         <i class="fa-solid fa-download text-sm"></i>
                     </a>
@@ -80,7 +80,7 @@
                 @if (ShowFullscreenButton)
                 {
                     <button type="button" 
-                            class="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded transition-colors"
+                            class="bw-document-viewer-btn"
                             title="Tam Ekran"
                             @onclick="ToggleFullscreenAsync">
                         <i class="fa-solid @(_isFullscreen ? "fa-compress" : "fa-expand") text-sm"></i>
@@ -91,10 +91,10 @@
     }
     
     @* Document container *@
-    <div class="flex-1 overflow-auto relative @(Type == DocumentType.Pdf ? "" : "bg-gray-200 dark:bg-gray-900 overflow-hidden")">
+    <div class="@(Type == DocumentType.Pdf ? "flex-1 overflow-auto relative" : "bw-document-viewer-content overflow-hidden")">
         @if (!string.IsNullOrEmpty(_error))
         {
-            <div class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-red-500">
+            <div class="bw-document-viewer-error">
                 <div class="text-center p-4">
                     <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
                     <p class="text-sm">@_error</p>
@@ -110,7 +110,7 @@
         }
         else
         {
-            <div class="w-full h-full flex items-center justify-center p-4 bg-gray-600 dark:bg-gray-900 relative" @ref="_imageContainer">
+            <div class="bw-document-viewer-image-container" @ref="_imageContainer">
                 @if (!string.IsNullOrEmpty(_documentSource))
                 {
                     <img @ref="_imageRef"
@@ -122,7 +122,7 @@
                          
                     @if (_metaData != null)
                     {
-                        <div class="absolute bottom-2 right-2 px-3 py-1.5 flex items-center gap-3 rounded-md bg-black/70 text-white text-[11px] font-medium backdrop-blur-md shadow-lg pointer-events-none select-none z-10 animate-fadeIn border border-white/10">
+                        <div class="bw-document-viewer-metadata">
                             
                             @* Dimensions *@
                             <div class="flex items-center gap-1.5">
@@ -152,7 +152,7 @@
 
         @if (_isLoading)
         {
-            <div class="absolute inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-sm text-white transition-opacity duration-200">
+            <div class="bw-document-viewer-loading">
                 <div class="text-center">
                     <i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i>
                     <p class="text-sm">İşlem yapılıyor...</p>

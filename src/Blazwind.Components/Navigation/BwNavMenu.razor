@@ -40,8 +40,8 @@
     
     // Removed Class parameter (inherited)
     
-    /// <summary>Width of the navigation menu. Default: w-64 (256px). Use Tailwind width classes.</summary>
-    [Parameter] public string Width { get; set; } = "w-64";
+    /// <summary>Width of the navigation menu. Default: w-full (fills container). Use Tailwind width classes.</summary>
+    [Parameter] public string Width { get; set; } = "w-full";
     
     /// <summary>Custom template for menu items. Cascaded to all BwNavMenuItem children.</summary>
     [Parameter] public RenderFragment<BwNavMenuItemContext>? ItemTemplate { get; set; }

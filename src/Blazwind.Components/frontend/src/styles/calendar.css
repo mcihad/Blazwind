@@ -351,7 +351,7 @@
 .bw-calendar-week-header-spacer {
     background-color: var(--bw-gray-50);
     border-right: 1px solid var(--bw-color-border);
-    @apply flex-shrink-0 w-14;
+    @apply flex-shrink-0 w-14 sm:w-16;
 }
 
 .dark .bw-calendar-week-header-spacer {
@@ -419,11 +419,11 @@
 }
 
 .bw-calendar-week-day-col-today {
-    background-color: var(--bw-color-primary-soft-bg);
+    background-color: color-mix(in srgb, var(--bw-color-primary) 3%, transparent);
 }
 
 .dark .bw-calendar-week-day-col-today {
-    background-color: color-mix(in srgb, var(--bw-primary-900) 10%, transparent);
+    background-color: color-mix(in srgb, var(--bw-primary-900) 5%, transparent);
 }
 
 /* Agenda View */

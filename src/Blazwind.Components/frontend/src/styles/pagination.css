@@ -1,0 +1,122 @@
+/* ============================================
+   Pagination Component Theme Styles
+   ============================================ */
+
+.bw-pagination-btn {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-gray-600);
+    border: 1px solid var(--bw-color-border);
+    @apply inline-flex items-center justify-center font-medium rounded transition-all duration-150;
+}
+
+.bw-pagination-btn:hover {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-pagination-btn {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-300);
+    border-color: var(--bw-gray-700);
+}
+
+.dark .bw-pagination-btn:hover {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-color-text-inverse);
+}
+
+/* Navigation buttons */
+.bw-pagination-btn-nav {
+    color: var(--bw-gray-500);
+}
+
+.dark .bw-pagination-btn-nav {
+    color: var(--bw-gray-400);
+}
+
+/* Active button - FIXED for dark mode visibility */
+.bw-pagination-btn-active {
+    background-color: var(--bw-color-primary) !important;
+    color: white !important;
+    border-color: var(--bw-color-primary) !important;
+    @apply shadow-sm;
+}
+
+.bw-pagination-btn-active:hover {
+    background-color: var(--bw-primary-700) !important;
+}
+
+.dark .bw-pagination-btn-active {
+    background-color: var(--bw-primary-500) !important;
+    border-color: var(--bw-primary-500) !important;
+    box-shadow: 0 0 0 2px rgba(var(--bw-primary-rgb, 59, 130, 246), 0.3);
+}
+
+.dark .bw-pagination-btn-active:hover {
+    background-color: var(--bw-primary-600) !important;
+}
+
+/* Disabled button */
+.bw-pagination-btn-disabled {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-300);
+    border-color: var(--bw-gray-100);
+    @apply cursor-not-allowed;
+}
+
+.dark .bw-pagination-btn-disabled {
+    background-color: var(--bw-gray-900);
+    color: var(--bw-gray-600);
+    border-color: var(--bw-gray-800);
+}
+
+/* Info text */
+.bw-pagination-info {
+    color: var(--bw-gray-500);
+    @apply text-sm;
+}
+
+.dark .bw-pagination-info {
+    color: var(--bw-gray-400);
+}
+
+.bw-pagination-info-value {
+    color: var(--bw-gray-700);
+    @apply font-medium;
+}
+
+.dark .bw-pagination-info-value {
+    color: var(--bw-gray-200);
+}
+
+/* Select dropdown */
+.bw-pagination-select {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-gray-600);
+    @apply h-9 px-3 pr-8 text-sm rounded cursor-pointer appearance-none;
+}
+
+.dark .bw-pagination-select {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+    color: var(--bw-gray-300);
+}
+
+/* Compact input */
+.bw-pagination-compact-input {
+    background-color: var(--bw-gray-50);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-gray-700);
+    @apply flex items-center gap-2 px-2 rounded h-9;
+}
+
+.dark .bw-pagination-compact-input {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+    color: var(--bw-gray-200);
+}
+
+.bw-pagination-compact-input input {
+    color: inherit;
+}

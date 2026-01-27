@@ -90,8 +90,8 @@
 
             @* Events Overlay - positioned over the grid *@
             <div class="absolute inset-0 flex pointer-events-none">
-                @* Time column spacer *@
-                <div class="flex-shrink-0 w-14"></div>
+                @* Time column spacer - must match bw-calendar-time-label width *@
+                <div class="flex-shrink-0 w-14 sm:w-16"></div>
 
                 @* Day columns for events *@
                 @foreach (var (day, dayIndex) in weekDays.Select((d, i) => (d, i)))
@@ -100,7 +100,7 @@
                     .Where(e => e.StartTime.Date == day.Date && !e.IsAllDay)
                     .ToList() ?? new();
 
-                    <div class="flex-1 relative">
+                    <div class="flex-1 relative" style="@(dayIndex > 0 ? "border-left: 1px solid transparent;" : "")">
                         @foreach (var calendarEvent in dayEvents)
                         {
                             var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);

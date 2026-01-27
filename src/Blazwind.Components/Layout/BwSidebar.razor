@@ -1,32 +1,27 @@
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Shared
 @namespace Blazwind.Components.Layout
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 @{
-    var positionClasses = Position == BwDirection.Left 
-        ? "left-0 border-r -translate-x-full lg:translate-x-0" 
-        : "right-0 border-l translate-x-full lg:translate-x-0";
+    var positionClass = Position == BwDirection.Left ? "bw-sidebar-left" : "bw-sidebar-right";
     
-    // We expect 3 values: bg, text, border
-    // We expect 3 values: bg, text, border
-    var (bgClass, textClass, borderClass) = Color switch
+    var colorClass = Color switch
     {
-        BwColor.Dark => ("bg-slate-900", "text-slate-300", "border-slate-800"),
-        BwColor.Primary => ("bg-blue-900", "text-blue-100", "border-blue-800"),
-        _ => ("bg-white dark:bg-gray-900", "text-gray-900 dark:text-gray-100", "border-gray-200 dark:border-gray-800") // Light/Default
+        BwColor.Dark => "bw-sidebar-dark",
+        BwColor.Primary => "bw-sidebar-primary",
+        _ => "" // Light/Default uses base .bw-sidebar styles
     };
 }
 
 @* Mobile Overlay *@
 <div id="bw-sidebar-overlay" 
-     class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity"
+     class="bw-sidebar-overlay"
      onclick="Blazwind.Sidebar.close()">
 </div>
 
-@* Sidebar - z-40 so dialogs (z-50) appear above *@
+@* Sidebar *@
 <aside id="bw-sidebar" 
-       class="@CombineClasses("fixed top-0 z-40 h-screen transform lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col overflow-y-auto", Width, bgClass, textClass, borderClass, positionClasses)"
+       class="@CombineClasses("bw-sidebar", positionClass, colorClass, Width)"
        @attributes="AdditionalAttributes">
     <CascadingValue Value="Color">
         @ChildContent
@@ -36,7 +31,7 @@
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public string Width { get; set; } = "w-64";
+    [Parameter] public string Width { get; set; } = "w-72";
     [Parameter] public BwDirection Position { get; set; } = BwDirection.Left;
     [Parameter] public BwColor Color { get; set; } = BwColor.Light;
 }

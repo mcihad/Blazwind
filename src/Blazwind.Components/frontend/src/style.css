@@ -41,6 +41,12 @@
 @import "./styles/dialog.css";
 @import "./styles/datagrid.css";
 @import "./styles/calendar.css";
+@import "./styles/navigation.css";
+@import "./styles/layout.css";
+@import "./styles/table.css";
+@import "./styles/pagination.css";
+@import "./styles/emptystate.css";
+@import "./styles/documentviewer.css";
 
 /* Component-specific styles */
 @import "./styles/timeline.css";
@@ -52,6 +58,10 @@
 @import "./styles/tree.css";
 @import "./styles/marquee.css";
 @import "./styles/flow.css";
+@import "./styles/form.css";
+@import "./styles/helptooltip.css";
+@import "./styles/icon.css";
+@import "./styles/imagepreview.css";
 
 /* Tailwind CSS 4 - Content sources for class detection */
 @source "../../**/*.razor";
@@ -83,10 +93,16 @@ body {
 }
 
 /* Dark mode body adjustments */
+html.dark,
 .dark body,
 body.dark {
     color: var(--bw-color-text);
     background-color: var(--bw-color-background);
+}
+
+/* Ensure min-height for dark mode */
+html.dark {
+    min-height: 100%;
 }
 
 /* ========================================

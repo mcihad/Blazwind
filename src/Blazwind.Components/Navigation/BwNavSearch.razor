@@ -2,12 +2,12 @@
 @using Microsoft.JSInterop
 @inherits BwBase
 
-<div class="@CombineClasses("p-3 border-b border-gray-100 dark:border-gray-800")" 
+<div class="@CombineClasses("bw-nav-search")" 
      style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="relative">
-        <i class="@Icon absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-xs pointer-events-none"></i>
+        <i class="@Icon bw-nav-search-icon"></i>
         <input type="text" 
-               class="w-full pl-8 @(HasValue ? "pr-8" : "pr-3") py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded placeholder-gray-400 dark:placeholder-gray-500 focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+               class="bw-nav-search-input pl-8 @(HasValue ? "pr-8" : "pr-3")" 
                placeholder="@Placeholder"
                @bind="SearchValue"
                @oninput="OnInput"/>
@@ -15,7 +15,7 @@
         @if (HasValue && Clearable)
         {
             <button type="button" 
-                    class="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    class="bw-nav-search-clear"
                     @onclick="ClearSearch"
                     title="Temizle">
                 <i class="fa-solid fa-xmark text-xs"></i>
@@ -27,7 +27,6 @@
 @code {
     [Parameter] public string Placeholder { get; set; } = "Ara...";
     [Parameter] public string Icon { get; set; } = "fa-solid fa-magnifying-glass";
-    // Removed Class parameter (inherited)
     [Parameter] public string SearchValue { get; set; } = "";
     [Parameter] public EventCallback<string> SearchValueChanged { get; set; }
     [Parameter] public EventCallback<string> OnSearch { get; set; }

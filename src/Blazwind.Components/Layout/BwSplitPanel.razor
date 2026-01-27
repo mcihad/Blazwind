@@ -5,9 +5,7 @@
 @{
     var isHorizontal = Orientation == BwOrientation.Horizontal;
     var containerClass = isHorizontal ? "flex flex-row" : "flex flex-col";
-    var dividerClass = isHorizontal 
-        ? "w-1.5 cursor-col-resize bg-gray-200 dark:bg-gray-700 hover:bg-blue-400 active:bg-blue-500 transition-colors"
-        : "h-1.5 cursor-row-resize bg-gray-200 dark:bg-gray-700 hover:bg-blue-400 active:bg-blue-500 transition-colors";
+    var dividerOrientationClass = isHorizontal ? "bw-split-divider-horizontal" : "bw-split-divider-vertical";
     var firstPanelStyle = isHorizontal 
         ? $"width: {_size}px; min-width: 50px;" 
         : $"height: {_size}px; min-height: 50px;";
@@ -20,7 +18,7 @@
     </div>
     
     @* Resizable Divider *@
-    <div class="flex-shrink-0 @dividerClass"
+    <div class="bw-split-divider @dividerOrientationClass"
          @onmousedown="OnDividerMouseDown"
          @onmousedown:preventDefault="true">
     </div>

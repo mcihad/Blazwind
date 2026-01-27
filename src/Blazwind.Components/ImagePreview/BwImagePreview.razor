@@ -3,10 +3,10 @@
 @namespace Blazwind.Components.ImagePreview
 @inherits BwBase
 
-<div class="@CombineClasses("image-preview-container")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-image-preview")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (Images == null || !Images.Any())
     {
-        <div class="text-gray-400 dark:text-gray-500 text-sm">Görüntülenecek resim yok.</div>
+        <div class="bw-image-preview-empty">Görüntülenecek resim yok.</div>
     }
     else
     {
@@ -21,11 +21,11 @@
                     if (index == MaxCount)
                     {
                         @* +N More indicator *@
-                        <div class="relative cursor-pointer group rounded-lg overflow-hidden @ThumbnailClass" 
+                        <div class="bw-image-preview-thumb @ThumbnailClass" 
                              style="width: @ThumbnailWidth; height: @ThumbnailHeight;"
                              @onclick="() => OpenLightbox(index)">
                             <img src="@image" class="w-full h-full object-cover opacity-50 transition-opacity" />
-                            <div class="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-semibold text-lg group-hover:bg-black/50 transition-colors">
+                            <div class="bw-image-preview-more">
                                 +@(Images.Count - MaxCount)
                             </div>
                         </div>
@@ -33,14 +33,14 @@
                     continue;
                 }
 
-                <div class="relative cursor-pointer group rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all @ThumbnailClass"
+                <div class="bw-image-preview-thumb @ThumbnailClass"
                      style="width: @ThumbnailWidth; height: @ThumbnailHeight;"
                      @onclick="() => OpenLightbox(index)">
-                    <img src="@image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="Preview @index" />
+                    <img src="@image" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" alt="Preview @index" />
                     
                     @* Overlay Icon on Hover *@
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <i class="fa-solid fa-expand text-white text-xl drop-shadow-md"></i>
+                    <div class="bw-image-preview-overlay">
+                        <i class="bw-image-preview-overlay-icon fa-solid fa-expand"></i>
                     </div>
                 </div>
             }
@@ -50,17 +50,17 @@
     @* Lightbox Modal *@
     @if (_isOpen)
     {
-        <div class="fixed inset-0 z-[1100] bg-black/90 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300"
+        <div class="bw-image-preview-lightbox"
              role="dialog" aria-modal="true" @onkeydown="@HandleKeyDown" tabindex="0" @ref="_lightboxRef">
             
             @* Close Button *@
-            <button class="absolute top-4 right-4 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-2 w-10 h-10 flex items-center justify-center transition-colors z-[1110]"
+            <button class="bw-image-preview-close"
                     @onclick="CloseLightbox">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
 
             @* Counter *@
-            <div class="absolute top-6 left-6 text-white/80 font-medium z-[1110]">
+            <div class="bw-image-preview-counter">
                 @(_currentIndex + 1) / @Images?.Count
             </div>
 
@@ -75,12 +75,12 @@
             @* Navigation Buttons *@
             @if (Images?.Count > 1)
             {
-                <button class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/20 hover:bg-black/60 rounded-full w-12 h-12 flex items-center justify-center transition-all z-[1110] disabled:opacity-30 disabled:cursor-not-allowed"
+                <button class="bw-image-preview-nav bw-image-preview-nav-prev"
                         @onclick="PrevImage" disabled="@(_currentIndex == 0 && !Loop)">
                     <i class="fa-solid fa-chevron-left text-xl"></i>
                 </button>
                 
-                <button class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/20 hover:bg-black/60 rounded-full w-12 h-12 flex items-center justify-center transition-all z-[1110] disabled:opacity-30 disabled:cursor-not-allowed"
+                <button class="bw-image-preview-nav bw-image-preview-nav-next"
                         @onclick="NextImage" disabled="@(_currentIndex == Images.Count - 1 && !Loop)">
                     <i class="fa-solid fa-chevron-right text-xl"></i>
                 </button>
@@ -105,7 +105,6 @@
     {
         _currentIndex = index;
         _isOpen = true;
-        // Ideally focus the lightbox for keyboard support, might need simple JS
     }
 
     private void CloseLightbox()
@@ -139,7 +138,6 @@
         }
     }
     
-    // Very simple keyboard support hack for native Blazor without Focus interop
     private void HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Escape") CloseLightbox();

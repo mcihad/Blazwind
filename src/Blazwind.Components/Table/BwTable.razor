@@ -13,14 +13,7 @@
 </CascadingValue>
 
 @{
-    var tableClass = "w-full text-left border-collapse";
-    var headerClass = "bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700";
     var cellPadding = Compact ? "px-3 py-2" : "px-4 py-3";
-    var headerCellClass = $"font-semibold text-gray-700 dark:text-gray-300 text-sm {cellPadding}";
-    var bodyCellClass = $"text-gray-600 dark:text-gray-400 text-sm {cellPadding}";
-    var borderClass = Bordered ? "border border-gray-200 dark:border-gray-700" : "";
-    var hoverClass = Hoverable ? "hover:bg-gray-50 dark:hover:bg-gray-800/50" : "";
-    
     var processedItems = GetProcessedItems();
     var visibleColumns = _columns.Where(c => c.Visible).ToList();
 }
@@ -28,7 +21,7 @@
 <div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (IsLoading)
     {
-        <div class="absolute inset-0 bg-white/75 dark:bg-gray-900/75 z-40 flex items-center justify-center rounded">
+        <div class="bw-table-loading">
             @if (LoadingContent != null)
             {
                 @LoadingContent
@@ -36,7 +29,7 @@
             else
             {
                 <div class="flex flex-col items-center gap-2">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl text-blue-600"></i>
+                    <i class="fa-solid fa-spinner fa-spin text-2xl bw-table-loading-spinner"></i>
                     <span class="text-sm text-gray-500">Yükleniyor...</span>
                 </div>
             }
@@ -46,7 +39,7 @@
     {
         <div class="flex justify-end mb-3 relative">
             <button type="button" 
-                    class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    class="bw-table-column-btn"
                     @onclick="ToggleColumnSelector">
                 <i class="fa-solid fa-table-columns"></i>
                 <span>Kolonlar</span>
@@ -55,7 +48,7 @@
             
             @if (_showColumnSelector)
             {
-                <div class="absolute right-0 top-full mt-1 z-50 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg">
+                <div class="bw-table-column-dropdown">
                     <div class="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
                         <div class="relative">
                             <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
@@ -108,12 +101,12 @@
     }
 
     <div class="overflow-x-auto">
-        <table class="@tableClass @borderClass">
-            <thead class="@headerClass">
+        <table class="bw-table @(Bordered ? "bw-table-bordered" : "")">
+            <thead class="bw-table-header">
                 <tr>
                     @if (SelectionMode != BwSelectionMode.None)
                     {
-                        <th class="@headerCellClass w-12">
+                        <th class="bw-table-header-cell @cellPadding w-12">
                             @if (SelectionMode == BwSelectionMode.Multiple)
                             {
                                 <BwCheckbox IsChecked="@IsAllSelected()" Size="BwSize.Small"
@@ -125,10 +118,9 @@
                     {
                         var isSorted = _sortColumn == column.GetFieldName();
                         var sortIcon = isSorted ? (_sortDescending ? "fa-sort-down" : "fa-sort-up") : "fa-sort";
-                        var sortColor = isSorted ? "text-blue-600" : "text-gray-400";
                         var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
                         
-                        <th class="@headerCellClass" style="@widthStyle">
+                        <th class="bw-table-header-cell @cellPadding" style="@widthStyle">
                             @if (column.HeaderTemplate != null)
                             {
                                 @column.HeaderTemplate
@@ -139,7 +131,7 @@
                                         class="flex items-center gap-2 hover:text-gray-900 transition-colors"
                                         @onclick="() => HandleSort(column)">
                                     <span>@column.Title</span>
-                                    <i class="fa-solid @sortIcon @sortColor text-xs"></i>
+                                    <i class="fa-solid @sortIcon text-xs @(isSorted ? "bw-table-sort-icon-active" : "bw-table-sort-icon")"></i>
                                 </button>
                             }
                             else
@@ -157,14 +149,15 @@
                     foreach (var item in processedItems)
                     {
                         var isSelected = _selectedItems.Contains(item);
-                        var stripedClass = Striped && rowIndex % 2 == 1 ? "bg-gray-50/50 dark:bg-gray-800/30" : "";
-                        var selectedClass = isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "";
+                        var stripedClass = Striped && rowIndex % 2 == 1 ? "bw-table-row-striped" : "";
+                        var selectedClass = isSelected ? "bw-table-row-selected" : "";
+                        var hoverClass = Hoverable ? "bw-table-row-hover" : "";
                         var customRowClass = RowClass?.Invoke(item) ?? "";
                         
-                        <tr class="border-b border-gray-100 dark:border-gray-700 @stripedClass @selectedClass @hoverClass @customRowClass transition-colors">
+                        <tr class="bw-table-row @stripedClass @selectedClass @hoverClass @customRowClass">
                             @if (SelectionMode != BwSelectionMode.None)
                             {
-                                <td class="@bodyCellClass w-12 text-center">
+                                <td class="bw-table-cell @cellPadding w-12 text-center">
                                     @if (SelectionMode == BwSelectionMode.Multiple)
                                     {
                                         <BwCheckbox IsChecked="@isSelected" Size="BwSize.Small"
@@ -182,7 +175,7 @@
                             @foreach (var column in visibleColumns)
                             {
                                 var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
-                                <td class="@bodyCellClass" style="@widthStyle">
+                                <td class="bw-table-cell @cellPadding" style="@widthStyle">
                                     @if (column.Template != null)
                                     {
                                         @column.Template(item)
@@ -208,7 +201,7 @@
                 {
                     <tr>
                         <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0))" 
-                            class="@bodyCellClass text-center text-gray-400 py-8">
+                            class="bw-table-cell bw-table-empty @cellPadding">
                             <i class="fa-solid fa-inbox text-3xl mb-2"></i>
                             <p>Veri bulunamadı</p>
                         </td>

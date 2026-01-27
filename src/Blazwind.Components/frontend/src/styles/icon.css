@@ -1,0 +1,64 @@
+/* ============================================
+   Icon Component Theme Styles
+   ============================================ */
+
+/* Icon color variants */
+.bw-icon-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-icon-secondary {
+    color: var(--bw-gray-500);
+}
+
+:root.dark .bw-icon-secondary,
+.dark .bw-icon-secondary {
+    color: var(--bw-gray-400);
+}
+
+.bw-icon-success {
+    color: var(--bw-color-success);
+}
+
+.bw-icon-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-icon-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-icon-info {
+    color: var(--bw-color-info);
+}
+
+.bw-icon-dark {
+    color: var(--bw-gray-900);
+}
+
+:root.dark .bw-icon-dark,
+.dark .bw-icon-dark {
+    color: var(--bw-gray-100);
+}
+
+.bw-icon-gray {
+    color: var(--bw-gray-400);
+}
+
+:root.dark .bw-icon-gray,
+.dark .bw-icon-gray {
+    color: var(--bw-gray-500);
+}
+
+.bw-icon-white {
+    color: white;
+}
+
+.bw-icon-light {
+    color: var(--bw-gray-300);
+}
+
+:root.dark .bw-icon-light,
+.dark .bw-icon-light {
+    color: var(--bw-gray-600);
+}

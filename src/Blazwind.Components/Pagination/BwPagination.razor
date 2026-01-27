@@ -6,7 +6,7 @@
     var totalPages = PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
     var pages = GetVisiblePages(totalPages);
     
-    // Modern pill-style buttons
+    // Size classes
     var sizeClass = Size switch
     {
         BwSize.Small => "h-7 min-w-7 px-2 text-xs",
@@ -14,28 +14,24 @@
         _ => "h-9 min-w-9 px-3 text-sm"
     };
     
-    var baseButtonClass = $"inline-flex items-center justify-center font-medium rounded transition-all duration-150 {sizeClass}";
-    var activeClass = "bg-blue-600 text-white shadow-sm hover:bg-blue-700 dark:bg-blue-600 dark:text-white";
-    var inactiveClass = "bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white";
-    var navButtonClass = "bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-gray-200";
-    var disabledClass = "bg-gray-50 text-gray-300 border border-gray-100 cursor-not-allowed dark:bg-gray-900 dark:text-gray-600 dark:border-gray-800";
+    var baseButtonClass = $"bw-pagination-btn {sizeClass}";
 }
 
 <nav class="@CombineClasses("flex items-center gap-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes" aria-label="Pagination">
     @* Info Display - Left side (Hide in Compact/Mobile if Responsive) *@
     @if (ShowInfo)
     {
-        <div class="text-sm text-gray-500 @(Compact ? "hidden" : (Responsive ? "hidden md:block" : ""))">
+        <div class="bw-pagination-info @(Compact ? "hidden" : (Responsive ? "hidden md:block" : ""))">
             @{
                 var start = TotalItems > 0 ? (CurrentPage - 1) * PageSize + 1 : 0;
                 var end = Math.Min(CurrentPage * PageSize, TotalItems);
             }
-            <span class="font-medium text-gray-700 dark:text-gray-300">@start</span>
+            <span class="bw-pagination-info-value">@start</span>
             <span class="mx-1">-</span>
-            <span class="font-medium text-gray-700 dark:text-gray-300">@end</span>
+            <span class="bw-pagination-info-value">@end</span>
             <span class="mx-1">/</span>
-            <span class="font-medium text-gray-700 dark:text-gray-300">@TotalItems</span>
-            <span class="ml-1 text-gray-400 dark:text-gray-500">kayıt</span>
+            <span class="bw-pagination-info-value">@TotalItems</span>
+            <span class="ml-1 opacity-70">kayıt</span>
         </div>
     }
 
@@ -43,7 +39,7 @@
     @if (ShowPageSizeSelector)
     {
         <div class="flex items-center gap-2 @(Compact ? "hidden" : (Responsive ? "hidden md:flex" : ""))">
-            <select class="h-9 px-3 pr-8 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer appearance-none"
+            <select class="bw-pagination-select"
                     @onchange="OnPageSizeChange">
                 @foreach (var size in PageSizeOptions)
                 {
@@ -59,7 +55,7 @@
         @if (ShowFirstLast)
         {
             <button type="button"
-                    class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                    class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                     disabled="@(CurrentPage <= 1)"
                     title="İlk sayfa"
                     @onclick="() => GoToPage(1)">
@@ -69,7 +65,7 @@
 
         @* Previous Button *@
         <button type="button"
-                    class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                    class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                     disabled="@(CurrentPage <= 1)"
                     title="Önceki sayfa"
                     @onclick="() => GoToPage(CurrentPage - 1)">
@@ -82,12 +78,12 @@
             {
                 @if (pageNum == -1)
                 {
-                    <span class="@baseButtonClass text-gray-400 cursor-default">…</span>
+                    <span class="@baseButtonClass opacity-50 cursor-default">…</span>
                 }
                 else
                 {
                     <button type="button"
-                            class="@baseButtonClass @(pageNum == CurrentPage ? activeClass : inactiveClass)"
+                            class="@baseButtonClass @(pageNum == CurrentPage ? "bw-pagination-btn-active" : "")"
                             @onclick="() => GoToPage(pageNum)">
                         @pageNum
                     </button>
@@ -97,7 +93,7 @@
 
         @* Next Button *@
         <button type="button"
-                    class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                    class="@baseButtonClass @(CurrentPage >= totalPages ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                     disabled="@(CurrentPage >= totalPages)"
                     title="Sonraki sayfa"
                     @onclick="() => GoToPage(CurrentPage + 1)">
@@ -108,7 +104,7 @@
         @if (ShowFirstLast)
         {
             <button type="button"
-                    class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                    class="@baseButtonClass @(CurrentPage >= totalPages ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                     disabled="@(CurrentPage >= totalPages)"
                     title="Son sayfa"
                     @onclick="() => GoToPage(totalPages)">
@@ -121,7 +117,7 @@
     <div class="items-center gap-2 @(Compact ? "flex" : (Responsive ? "flex md:hidden" : "hidden"))">
         @* First Button *@
         <button type="button"
-                class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                 disabled="@(CurrentPage <= 1)"
                 title="İlk sayfa"
                 @onclick="() => GoToPage(1)">
@@ -130,7 +126,7 @@
 
         @* Prev Button *@
         <button type="button"
-                class="@baseButtonClass @(CurrentPage <= 1 ? disabledClass : navButtonClass)"
+                class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                 disabled="@(CurrentPage <= 1)"
                 title="Önceki sayfa"
                 @onclick="() => GoToPage(CurrentPage - 1)">
@@ -138,19 +134,19 @@
         </button>
 
         @* Input / Total *@
-        <div class="flex items-center gap-2 px-2 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 h-9">
+        <div class="bw-pagination-compact-input">
             <input type="number" 
                    min="1" 
                    max="@totalPages"
                    value="@CurrentPage"
-                   class="w-8 text-center bg-transparent border-none p-0 text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-0 appearance-none [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
+                   class="w-8 text-center bg-transparent border-none p-0 text-sm font-medium focus:ring-0 appearance-none [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
                    @onchange="OnInputPageChange" />
-            <span class="text-sm text-gray-400 dark:text-gray-500">/ @totalPages</span>
+            <span class="text-sm opacity-60">/ @totalPages</span>
         </div>
 
         @* Next Button *@
         <button type="button"
-                class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                class="@baseButtonClass @(CurrentPage >= totalPages ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                 disabled="@(CurrentPage >= totalPages)"
                 title="Sonraki sayfa"
                 @onclick="() => GoToPage(CurrentPage + 1)">
@@ -159,7 +155,7 @@
 
         @* Last Button *@
         <button type="button"
-                class="@baseButtonClass @(CurrentPage >= totalPages ? disabledClass : navButtonClass)"
+                class="@baseButtonClass @(CurrentPage >= totalPages ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
                 disabled="@(CurrentPage >= totalPages)"
                 title="Son sayfa"
                 @onclick="() => GoToPage(totalPages)">
