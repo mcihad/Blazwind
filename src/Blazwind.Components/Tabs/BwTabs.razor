@@ -129,7 +129,7 @@
     {
         if (tab.ConfirmClose)
         {
-            var confirmed = await DialogService.ShowConfirmAsync("Sekmeyi Kapat", tab.ConfirmCloseMessage, BwColor.Warning);
+            var confirmed = await DialogService.ShowConfirmAsync("Close the tab", tab.ConfirmCloseMessage, BwColor.Warning);
             if (!confirmed) return;
         }
 
