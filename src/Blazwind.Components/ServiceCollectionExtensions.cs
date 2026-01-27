@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CalendarStateService>();
         services.AddScoped<ScriptLoaderService>();
         services.AddScoped<TourService>();
+        services.AddScoped<IThemeService, ThemeService>();
 
         return services;
     }

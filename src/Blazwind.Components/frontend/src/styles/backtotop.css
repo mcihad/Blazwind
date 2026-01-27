@@ -1,0 +1,199 @@
+/* ============================================
+   BackToTop Component Styles
+   ============================================ */
+
+.bw-backtotop {
+    @apply fixed z-30 flex items-center justify-center transition-all duration-300;
+    /* Default visibility state handled by inline styles or utility classes in Razer logic */
+    box-shadow: var(--bw-shadow-lg);
+}
+
+.bw-backtotop:hover {
+    transform: scale(1.1);
+}
+
+.bw-backtotop:active {
+    transform: scale(0.95);
+}
+
+/* POSITIONS */
+.bw-backtotop-bottom-right {
+    bottom: var(--bw-spacing-6);
+    right: var(--bw-spacing-6);
+}
+
+.bw-backtotop-bottom-left {
+    bottom: var(--bw-spacing-6);
+    left: var(--bw-spacing-6);
+}
+
+/* SIZES */
+.bw-backtotop-xs {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+}
+
+.bw-backtotop-sm {
+    width: 2.5rem;
+    /* w-10 */
+    height: 2.5rem;
+    /* h-10 */
+    font-size: 0.875rem;
+    /* text-sm */
+}
+
+.bw-backtotop-md {
+    width: 3rem;
+    /* w-12 */
+    height: 3rem;
+    /* h-12 */
+    font-size: 1.125rem;
+    /* text-lg */
+}
+
+.bw-backtotop-lg {
+    width: 3.5rem;
+    /* w-14 */
+    height: 3.5rem;
+    /* h-14 */
+    font-size: 1.25rem;
+    /* text-xl */
+}
+
+.bw-backtotop-xl {
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.5rem;
+}
+
+/* SHAPES */
+.bw-backtotop-circle {
+    border-radius: var(--bw-radius-full);
+}
+
+.bw-backtotop-rounded {
+    border-radius: var(--bw-radius-xl);
+}
+
+.bw-backtotop-square {
+    border-radius: var(--bw-radius-lg);
+}
+
+/* COLORS */
+/* Primary */
+.bw-backtotop-primary {
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-text-inverse);
+    box-shadow: var(--bw-shadow-primary);
+}
+
+.bw-backtotop-primary:hover {
+    background-color: var(--bw-color-primary-hover);
+}
+
+/* Secondary */
+.bw-backtotop-secondary {
+    background-color: var(--bw-color-secondary);
+    color: var(--bw-color-text-inverse);
+    /* box-shadow: var(--bw-shadow-secondary); -- undefined in base, use default shadow */
+}
+
+.bw-backtotop-secondary:hover {
+    background-color: var(--bw-color-secondary-hover);
+}
+
+/* Success */
+.bw-backtotop-success {
+    background-color: var(--bw-color-success);
+    color: var(--bw-color-text-inverse);
+    box-shadow: var(--bw-shadow-success);
+}
+
+.bw-backtotop-success:hover {
+    background-color: var(--bw-color-success-hover);
+}
+
+/* Danger */
+.bw-backtotop-danger {
+    background-color: var(--bw-color-danger);
+    color: var(--bw-color-text-inverse);
+    box-shadow: var(--bw-shadow-danger);
+}
+
+.bw-backtotop-danger:hover {
+    background-color: var(--bw-color-danger-hover);
+}
+
+/* Warning */
+.bw-backtotop-warning {
+    background-color: var(--bw-color-warning);
+    color: var(--bw-color-text-inverse);
+    box-shadow: var(--bw-shadow-warning);
+}
+
+.bw-backtotop-warning:hover {
+    background-color: var(--bw-color-warning-hover);
+}
+
+/* Info */
+.bw-backtotop-info {
+    background-color: var(--bw-color-info);
+    color: var(--bw-color-text-inverse);
+    box-shadow: var(--bw-shadow-info);
+}
+
+.bw-backtotop-info:hover {
+    background-color: var(--bw-color-info-hover);
+}
+
+/* Light */
+.bw-backtotop-light {
+    background-color: white;
+    color: var(--bw-gray-700);
+    box-shadow: var(--bw-shadow-default);
+}
+
+.bw-backtotop-light:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-backtotop-light {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-200);
+    box-shadow: var(--bw-shadow-md);
+    /* Dark helper shadow */
+}
+
+.dark .bw-backtotop-light:hover {
+    background-color: var(--bw-gray-700);
+}
+
+/* Dark */
+.bw-backtotop-dark {
+    background-color: var(--bw-gray-900);
+    color: white;
+    box-shadow: var(--bw-shadow-default);
+}
+
+.bw-backtotop-dark:hover {
+    background-color: var(--bw-gray-800);
+}
+
+.dark .bw-backtotop-dark {
+    background-color: var(--bw-gray-700);
+    box-shadow: var(--bw-shadow-md);
+}
+
+/* STATE */
+.bw-backtotop-hidden {
+    opacity: 0;
+    transform: translateY(1rem);
+    /* translate-y-4 */
+    pointer-events: none;
+}
+
+.bw-backtotop-visible {
+    opacity: 1;
+    transform: translateY(0);
+}

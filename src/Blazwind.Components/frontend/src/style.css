@@ -1,14 +1,32 @@
 /* ========================================
    Blazwind Design System
-   Kurumsal Modernizm Tasarım Dili
+   Theme-aware styles with CSS Custom Properties
    ======================================== */
 
 @import "tailwindcss";
 
-/* Enable dark mode with BOTH class AND system preference */
-/** @custom-variant dark (&:where(.dark, .dark *)), @media (prefers-color-scheme: dark); **/
+/* Enable dark mode with class selector for Tailwind 4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Font Awesome */
 @import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/* Theme System - Base tokens (blazwind is default) */
+@import "./themes/blazwind.css";
+
+/* Component Theming Classes */
+@import "./styles/button.css";
+@import "./styles/alert.css";
+@import "./styles/toast.css";
+@import "./styles/card.css";
+@import "./styles/input.css";
+@import "./styles/badge.css";
+@import "./styles/avatar.css";
+@import "./styles/accordion.css";
+@import "./styles/backtotop.css";
+@import "./styles/affix.css";
+@import "./styles/approvalchain.css";
+@import "./styles/hero.css";
 
 /* Component-specific styles */
 @import "./styles/timeline.css";
@@ -21,56 +39,14 @@
 @import "./styles/marquee.css";
 @import "./styles/flow.css";
 
-
-
-/* 
- * Tailwind CSS 4 - Content sources for class detection
- * Scan both Components and Examples projects
- */
+/* Tailwind CSS 4 - Content sources for class detection */
 @source "../../**/*.razor";
 @source "../../../Blazwind.Docs/**/*.razor";
 
+/* ========================================
+   Base Styles (using theme variables)
+   ======================================== */
 
-
-/* CSS Custom Properties for theming */
-@theme {
-    /* Ana Renkler */
-    --color-primary: #0055AA;
-    --color-primary-dark: #004488;
-    --color-primary-light: #0077CC;
-
-    --color-secondary: #64748B;
-    --color-secondary-dark: #475569;
-    --color-secondary-light: #94A3B8;
-
-    /* Durum Renkleri */
-    --color-success: #10B981;
-    --color-warning: #F59E0B;
-    --color-danger: #EF4444;
-    --color-info: #3B82F6;
-
-    /* Nötr Tonlar */
-    --color-background: #F9FAFB;
-    --color-surface: #FFFFFF;
-    --color-text: #111827;
-    --color-text-secondary: #6B7280;
-    --color-border: #E5E7EB;
-
-    /* Border Radius (max 4px) */
-    --radius-sm: 2px;
-    --radius-md: 4px;
-    --radius-lg: 4px;
-    /* Z-Index Hierarchy */
-    --z-dropdown: 1000;
-    --z-sticky: 1020;
-    --z-modal: 1050;
-    --z-tooltip: 1080;
-
-    /* Typography */
-    --font-sans: 'Inter', 'Roboto', system-ui, -apple-system, sans-serif;
-}
-
-/* Base Styles */
 *,
 *::before,
 *::after {
@@ -85,58 +61,87 @@ html {
 }
 
 body {
-    font-family: var(--font-sans);
-    color: var(--color-text);
-    background-color: var(--color-background);
-    margin: 0;
-    padding: 0;
+    font-family: 'Inter', 'Roboto', system-ui, -apple-system, sans-serif;
+    color: var(--bw-color-text);
+    background-color: var(--bw-color-background);
     margin: 0;
     padding: 0;
 }
 
-/* Custom Scrollbar for Dark Mode */
-.dark ::-webkit-scrollbar {
+/* Dark mode body adjustments */
+.dark body,
+body.dark {
+    color: var(--bw-color-text);
+    background-color: var(--bw-color-background);
+}
+
+/* ========================================
+   Scrollbar Styles
+   ======================================== */
+
+/* Light mode scrollbar */
+::-webkit-scrollbar {
     width: 10px;
     height: 10px;
 }
 
+::-webkit-scrollbar-track {
+    background: var(--bw-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bw-gray-300);
+    border-radius: 5px;
+    border: 2px solid var(--bw-gray-100);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bw-gray-400);
+}
+
+/* Dark mode scrollbar */
 .dark ::-webkit-scrollbar-track {
-    background: #1f2937;
-    /* gray-800 */
+    background: var(--bw-gray-800);
 }
 
 .dark ::-webkit-scrollbar-thumb {
-    background: #4b5563;
-    /* gray-600 */
-    border-radius: 5px;
-    border: 2px solid #1f2937;
-    /* Match track for padding effect */
+    background: var(--bw-gray-600);
+    border: 2px solid var(--bw-gray-800);
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-    /* gray-500 */
+    background: var(--bw-gray-500);
 }
 
-/* Firefox */
-.dark * {
+/* Firefox scrollbar */
+* {
     scrollbar-width: thin;
-    scrollbar-color: #4b5563 #1f2937;
+    scrollbar-color: var(--bw-gray-300) var(--bw-gray-100);
 }
 
-/* Focus Ring Styles - Fixed for inputs */
+.dark * {
+    scrollbar-color: var(--bw-gray-600) var(--bw-gray-800);
+}
+
+/* ========================================
+   Focus Styles
+   ======================================== */
+
 :focus-visible {
     outline: none;
 }
 
-/* Input Focus Style */
 input:focus,
 textarea:focus,
 select:focus {
     outline: none !important;
-    border-color: var(--color-primary) !important;
-    box-shadow: 0 0 0 3px rgba(0, 85, 170, 0.15);
+    border-color: var(--bw-color-primary) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--bw-color-primary) 15%, transparent);
 }
+
+/* ========================================
+   Animation Utilities
+   ======================================== */
 
 .animate-scale-in {
     animation: scaleIn 0.2s ease-out forwards;
@@ -146,14 +151,14 @@ select:focus {
     animation: fadeIn 0.2s ease-out forwards;
 }
 
-
-
 .animate-progress-stripes {
     animation: progress-stripes 1s linear infinite;
 }
 
+/* ========================================
+   Keyframes
+   ======================================== */
 
-/* Custom animations for Toast and Dialog */
 @keyframes slideIn {
     from {
         opacity: 0;

@@ -16,87 +16,100 @@
     
     var iconToUse = string.IsNullOrEmpty(Icon) ? defaultIcon : Icon;
 
-    // Style Generation
-    var (bgClass, borderClass, textClass, iconClass) = (Variant, Color) switch
+    // Base class
+    var baseClass = "bw-alert";
+    
+    // Variant class (theme-aware)
+    var variantClass = (Variant, Color) switch
     {
-        // FILLED
-        (BwVariant.Filled, BwColor.Success) => ("bg-emerald-600", "border-transparent", "text-white", "text-white"),
-        (BwVariant.Filled, BwColor.Warning) => ("bg-amber-500", "border-transparent", "text-white", "text-white"),
-        (BwVariant.Filled, BwColor.Danger) => ("bg-red-600", "border-transparent", "text-white", "text-white"),
-        (BwVariant.Filled, BwColor.Info) => ("bg-sky-600", "border-transparent", "text-white", "text-white"),
-        (BwVariant.Filled, BwColor.Primary) => ("bg-blue-600", "border-transparent", "text-white", "text-white"),
-        (BwVariant.Filled, BwColor.Secondary) => ("bg-slate-600", "border-transparent", "text-white", "text-white"),
-        (BwVariant.Filled, BwColor.Dark) => ("bg-gray-900 dark:bg-black", "border-transparent", "text-white", "text-white"),
+        // FILLED variants
+        (BwVariant.Filled, BwColor.Success) => "bw-alert-filled-success",
+        (BwVariant.Filled, BwColor.Warning) => "bw-alert-filled-warning",
+        (BwVariant.Filled, BwColor.Danger) => "bw-alert-filled-danger",
+        (BwVariant.Filled, BwColor.Info) => "bw-alert-filled-info",
+        (BwVariant.Filled, BwColor.Primary) => "bw-alert-filled-primary",
+        (BwVariant.Filled, BwColor.Secondary) => "bw-alert-filled-secondary",
+        (BwVariant.Filled, BwColor.Dark) => "bw-alert-filled-dark",
         
-        // OUTLINE
-        (BwVariant.Outline, BwColor.Success) => ("bg-transparent", "border border-emerald-600 dark:border-emerald-400", "text-emerald-700 dark:text-emerald-400", "text-emerald-600 dark:text-emerald-400"),
-        (BwVariant.Outline, BwColor.Warning) => ("bg-transparent", "border border-amber-500 dark:border-amber-400", "text-amber-700 dark:text-amber-400", "text-amber-500 dark:text-amber-400"),
-        (BwVariant.Outline, BwColor.Danger) => ("bg-transparent", "border border-red-600 dark:border-red-400", "text-red-700 dark:text-red-400", "text-red-600 dark:text-red-400"),
-        (BwVariant.Outline, BwColor.Info) => ("bg-transparent", "border border-sky-600 dark:border-sky-400", "text-sky-700 dark:text-sky-400", "text-sky-600 dark:text-sky-400"),
-        (BwVariant.Outline, BwColor.Primary) => ("bg-transparent", "border border-blue-600 dark:border-blue-400", "text-blue-700 dark:text-blue-400", "text-blue-600 dark:text-blue-400"),
-        (BwVariant.Outline, BwColor.Secondary) => ("bg-transparent", "border border-slate-400 dark:border-slate-500", "text-slate-700 dark:text-slate-400", "text-slate-600 dark:text-slate-400"),
-        (BwVariant.Outline, BwColor.Dark) => ("bg-transparent", "border border-gray-800 dark:border-gray-500", "text-gray-900 dark:text-gray-300", "text-gray-800 dark:text-gray-300"),
-
-        // SOFT (Default)
-        (BwVariant.Soft, BwColor.Success) => ("bg-emerald-50 dark:bg-emerald-900/30", "border border-emerald-200 dark:border-emerald-800", "text-emerald-800 dark:text-emerald-200", "text-emerald-600 dark:text-emerald-300"),
-        (BwVariant.Soft, BwColor.Warning) => ("bg-amber-50 dark:bg-amber-900/30", "border border-amber-200 dark:border-amber-800", "text-amber-800 dark:text-amber-200", "text-amber-600 dark:text-amber-300"),
-        (BwVariant.Soft, BwColor.Danger) => ("bg-red-50 dark:bg-red-900/30", "border border-red-200 dark:border-red-800", "text-red-800 dark:text-red-200", "text-red-600 dark:text-red-300"),
-        (BwVariant.Soft, BwColor.Info) => ("bg-sky-50 dark:bg-sky-900/30", "border border-sky-200 dark:border-sky-800", "text-sky-800 dark:text-sky-200", "text-sky-600 dark:text-sky-300"),
-        (BwVariant.Soft, BwColor.Primary) => ("bg-blue-50 dark:bg-blue-900/30", "border border-blue-200 dark:border-blue-800", "text-blue-800 dark:text-blue-200", "text-blue-600 dark:text-blue-300"),
-        (BwVariant.Soft, BwColor.Secondary) => ("bg-slate-100 dark:bg-slate-800/50", "border border-slate-200 dark:border-slate-700", "text-slate-800 dark:text-slate-200", "text-slate-600 dark:text-slate-300"),
-        (BwVariant.Soft, BwColor.Dark) => ("bg-gray-100 dark:bg-gray-800", "border border-gray-300 dark:border-gray-600", "text-gray-900 dark:text-gray-100", "text-gray-800 dark:text-gray-200"),
+        // OUTLINE variants
+        (BwVariant.Outline, BwColor.Success) => "bw-alert-outline-success",
+        (BwVariant.Outline, BwColor.Warning) => "bw-alert-outline-warning",
+        (BwVariant.Outline, BwColor.Danger) => "bw-alert-outline-danger",
+        (BwVariant.Outline, BwColor.Info) => "bw-alert-outline-info",
+        (BwVariant.Outline, BwColor.Primary) => "bw-alert-outline-primary",
+        (BwVariant.Outline, BwColor.Secondary) => "bw-alert-outline-secondary",
+        (BwVariant.Outline, BwColor.Dark) => "bw-alert-outline-dark",
         
-        // GHOST (No border, light bg)
-        (BwVariant.Ghost, BwColor.Success) => ("hover:bg-emerald-50 dark:hover:bg-emerald-900/30 bg-transparent", "border-transparent", "text-emerald-800 dark:text-emerald-400", "text-emerald-600 dark:text-emerald-400"),
-        (BwVariant.Ghost, BwColor.Warning) => ("hover:bg-amber-50 dark:hover:bg-amber-900/30 bg-transparent", "border-transparent", "text-amber-800 dark:text-amber-400", "text-amber-600 dark:text-amber-400"),
-        (BwVariant.Ghost, BwColor.Danger) => ("hover:bg-red-50 dark:hover:bg-red-900/30 bg-transparent", "border-transparent", "text-red-800 dark:text-red-400", "text-red-600 dark:text-red-400"),
-        (BwVariant.Ghost, BwColor.Info) => ("hover:bg-sky-50 dark:hover:bg-sky-900/30 bg-transparent", "border-transparent", "text-sky-800 dark:text-sky-400", "text-sky-600 dark:text-sky-400"),
-        (BwVariant.Ghost, BwColor.Primary) => ("hover:bg-blue-50 dark:hover:bg-blue-900/30 bg-transparent", "border-transparent", "text-blue-800 dark:text-blue-400", "text-blue-600 dark:text-blue-400"),
-        (BwVariant.Ghost, BwColor.Secondary) => ("hover:bg-slate-100 dark:hover:bg-slate-800/50 bg-transparent", "border-transparent", "text-slate-800 dark:text-slate-400", "text-slate-600 dark:text-slate-400"),
+        // SOFT variants (default)
+        (BwVariant.Soft, BwColor.Success) => "bw-alert-soft-success",
+        (BwVariant.Soft, BwColor.Warning) => "bw-alert-soft-warning",
+        (BwVariant.Soft, BwColor.Danger) => "bw-alert-soft-danger",
+        (BwVariant.Soft, BwColor.Info) => "bw-alert-soft-info",
+        (BwVariant.Soft, BwColor.Primary) => "bw-alert-soft-primary",
+        (BwVariant.Soft, BwColor.Secondary) => "bw-alert-soft-secondary",
+        (BwVariant.Soft, BwColor.Dark) => "bw-alert-soft-dark",
         
-        // Fallback (Soft Primary)
-        _ => ("bg-blue-50", "border border-blue-200", "text-blue-800", "text-blue-500")
+        // GHOST variants
+        (BwVariant.Ghost, BwColor.Success) => "bw-alert-ghost-success",
+        (BwVariant.Ghost, BwColor.Warning) => "bw-alert-ghost-warning",
+        (BwVariant.Ghost, BwColor.Danger) => "bw-alert-ghost-danger",
+        (BwVariant.Ghost, BwColor.Info) => "bw-alert-ghost-info",
+        (BwVariant.Ghost, BwColor.Primary) => "bw-alert-ghost-primary",
+        (BwVariant.Ghost, _) => "bw-alert-ghost-primary",
+        
+        _ => "bw-alert-soft-primary"
     };
     
-    // Accent modification (Border Left)
-    if (Variant == BwVariant.Glass) // Using Glass as "Accent" for now, or we can map it
+    // Icon class (theme-aware)
+    var iconClass = Color switch
     {
-        // Custom accent logic if needed, or stick to standard variants.
-        // For now let's stick to standard variants.
+        BwColor.Success => "bw-alert-icon-success",
+        BwColor.Warning => "bw-alert-icon-warning",
+        BwColor.Danger => "bw-alert-icon-danger",
+        BwColor.Info => "bw-alert-icon-info",
+        BwColor.Primary => "bw-alert-icon-primary",
+        BwColor.Secondary => "bw-alert-icon-secondary",
+        _ => "bw-alert-icon-primary"
+    };
+    
+    // For filled variant, icon should be white
+    if (Variant == BwVariant.Filled)
+    {
+        iconClass = "bw-alert-icon-filled";
     }
 }
 
 @if (_isVisible)
 {
-    <div id="@alertId" class="@CombineClasses($"flex gap-2 md:gap-3 p-3 md:p-4 rounded {borderClass} {bgClass}")" style="@Style" role="alert" @attributes="AdditionalAttributes">
+    <div id="@alertId" class="@CombineClasses($"{baseClass} {variantClass}")" style="@Style" role="alert" @attributes="AdditionalAttributes">
         @if (ShowIcon && !string.IsNullOrEmpty(iconToUse))
         {
-            <div class="flex-shrink-0">
+            <div class="bw-alert-icon-wrapper">
                 <i class="@iconToUse text-lg @iconClass"></i>
             </div>
         }
         
-        <div class="flex-1 min-w-0">
+        <div class="bw-alert-content">
             @if (!string.IsNullOrEmpty(Title))
             {
-                <h4 class="font-semibold @textClass mb-1">@Title</h4>
+                <h4 class="bw-alert-title">@Title</h4>
             }
             
             @if (!string.IsNullOrEmpty(Message))
             {
-                <p class="text-sm @textClass opacity-90">@Message</p>
+                <p class="bw-alert-message">@Message</p>
             }
             
             @if (ChildContent != null)
             {
-                <div class="text-sm @textClass opacity-90">
+                <div class="bw-alert-message">
                     @ChildContent
                 </div>
             }
             
             @if (Actions != null)
             {
-                <div class="mt-3">
+                <div class="bw-alert-actions">
                     @Actions
                 </div>
             }
@@ -104,9 +117,7 @@
         
         @if (Dismissible)
         {
-            <button type="button" 
-                    class="flex-shrink-0 p-1 rounded hover:bg-black/5 dark:hover:bg-white/10 transition-colors @textClass opacity-60 hover:opacity-100 cursor-pointer"
-                    @onclick="Close">
+            <button type="button" class="bw-alert-close" @onclick="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         }

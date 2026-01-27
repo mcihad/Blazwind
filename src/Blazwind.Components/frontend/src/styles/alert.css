@@ -1,0 +1,263 @@
+/* ============================================
+   Alert Component Styles (Theme-Aware)
+   ============================================ */
+
+.bw-alert {
+    @apply flex gap-2 md:gap-3 p-3 md:p-4 rounded;
+}
+
+.bw-alert-icon-wrapper {
+    @apply flex-shrink-0;
+}
+
+.bw-alert-content {
+    @apply flex-1 min-w-0;
+}
+
+.bw-alert-title {
+    @apply font-semibold mb-1;
+}
+
+.bw-alert-message {
+    @apply text-sm opacity-90;
+}
+
+.bw-alert-actions {
+    @apply mt-3;
+}
+
+.bw-alert-close {
+    @apply flex-shrink-0 p-1 rounded transition-colors cursor-pointer opacity-60;
+}
+
+.bw-alert-close:hover {
+    @apply opacity-100;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .bw-alert-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   SOFT VARIANTS
+   ======================================== */
+
+.bw-alert-soft-success {
+    background-color: var(--bw-color-success-soft-bg);
+    border: 1px solid var(--bw-success-200);
+    color: var(--bw-color-success-soft-text);
+}
+
+.bw-alert-soft-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    border: 1px solid var(--bw-danger-200);
+    color: var(--bw-color-danger-soft-text);
+}
+
+.bw-alert-soft-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    border: 1px solid var(--bw-warning-200);
+    color: var(--bw-color-warning-soft-text);
+}
+
+.bw-alert-soft-info {
+    background-color: var(--bw-color-info-soft-bg);
+    border: 1px solid var(--bw-info-200);
+    color: var(--bw-color-info-soft-text);
+}
+
+.bw-alert-soft-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    border: 1px solid var(--bw-primary-200);
+    color: var(--bw-color-primary-soft-text);
+}
+
+.bw-alert-soft-secondary {
+    background-color: var(--bw-color-secondary-soft-bg);
+    border: 1px solid var(--bw-secondary-200);
+    color: var(--bw-color-secondary-soft-text);
+}
+
+.bw-alert-soft-dark {
+    background-color: var(--bw-gray-100);
+    border: 1px solid var(--bw-gray-300);
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-alert-soft-dark {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-600);
+    color: var(--bw-gray-100);
+}
+
+/* ========================================
+   FILLED VARIANTS
+   ======================================== */
+
+.bw-alert-filled-success {
+    background-color: var(--bw-color-success);
+    color: white;
+}
+
+.bw-alert-filled-danger {
+    background-color: var(--bw-color-danger);
+    color: white;
+}
+
+.bw-alert-filled-warning {
+    background-color: var(--bw-color-warning);
+    color: white;
+}
+
+.bw-alert-filled-info {
+    background-color: var(--bw-color-info);
+    color: white;
+}
+
+.bw-alert-filled-primary {
+    background-color: var(--bw-color-primary);
+    color: white;
+}
+
+.bw-alert-filled-secondary {
+    background-color: var(--bw-color-secondary);
+    color: white;
+}
+
+.bw-alert-filled-dark {
+    background-color: var(--bw-gray-900);
+    color: white;
+}
+
+/* ========================================
+   OUTLINE VARIANTS
+   ======================================== */
+
+.bw-alert-outline-success {
+    background: transparent;
+    border: 1px solid var(--bw-color-success);
+    color: var(--bw-color-success);
+}
+
+.bw-alert-outline-danger {
+    background: transparent;
+    border: 1px solid var(--bw-color-danger);
+    color: var(--bw-color-danger);
+}
+
+.bw-alert-outline-warning {
+    background: transparent;
+    border: 1px solid var(--bw-color-warning);
+    color: var(--bw-color-warning);
+}
+
+.bw-alert-outline-info {
+    background: transparent;
+    border: 1px solid var(--bw-color-info);
+    color: var(--bw-color-info);
+}
+
+.bw-alert-outline-primary {
+    background: transparent;
+    border: 1px solid var(--bw-color-primary);
+    color: var(--bw-color-primary);
+}
+
+.bw-alert-outline-secondary {
+    background: transparent;
+    border: 1px solid var(--bw-color-secondary);
+    color: var(--bw-color-secondary);
+}
+
+.bw-alert-outline-dark {
+    background: transparent;
+    border: 1px solid var(--bw-gray-800);
+    color: var(--bw-gray-800);
+}
+
+.dark .bw-alert-outline-dark {
+    border-color: var(--bw-gray-500);
+    color: var(--bw-gray-300);
+}
+
+/* ========================================
+   GHOST VARIANTS
+   ======================================== */
+
+.bw-alert-ghost-success {
+    background: transparent;
+    color: var(--bw-color-success);
+}
+
+.bw-alert-ghost-success:hover {
+    background-color: var(--bw-color-success-soft-bg);
+}
+
+.bw-alert-ghost-danger {
+    background: transparent;
+    color: var(--bw-color-danger);
+}
+
+.bw-alert-ghost-danger:hover {
+    background-color: var(--bw-color-danger-soft-bg);
+}
+
+.bw-alert-ghost-warning {
+    background: transparent;
+    color: var(--bw-color-warning);
+}
+
+.bw-alert-ghost-warning:hover {
+    background-color: var(--bw-color-warning-soft-bg);
+}
+
+.bw-alert-ghost-info {
+    background: transparent;
+    color: var(--bw-color-info);
+}
+
+.bw-alert-ghost-info:hover {
+    background-color: var(--bw-color-info-soft-bg);
+}
+
+.bw-alert-ghost-primary {
+    background: transparent;
+    color: var(--bw-color-primary);
+}
+
+.bw-alert-ghost-primary:hover {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+/* ========================================
+   ICON COLORS
+   ======================================== */
+
+.bw-alert-icon-success {
+    color: var(--bw-color-success);
+}
+
+.bw-alert-icon-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-alert-icon-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-alert-icon-info {
+    color: var(--bw-color-info);
+}
+
+.bw-alert-icon-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-alert-icon-secondary {
+    color: var(--bw-color-secondary);
+}
+
+.bw-alert-icon-filled {
+    color: white;
+}

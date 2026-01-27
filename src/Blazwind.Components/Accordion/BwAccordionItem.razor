@@ -53,7 +53,7 @@
     [Parameter] public bool IsDisabled { get; set; } = false;
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    private string _itemClasses => CombineClasses("w-full bg-transparent"); // Parent handles borders via divide-y
+    private string _itemClasses => CombineClasses("bw-accordion-item"); // Parent handles borders via divide-y
 
     private string _headerClasses
     {
@@ -61,18 +61,18 @@
         {
             var classes = new List<string>
             {
-                "w-full flex items-center justify-between transition-colors duration-200 text-left"
+                "bw-accordion-header"
             };
 
             // Size
             var size = ParentAccordion?.Size ?? BwSize.Medium;
             switch (size)
             {
-                case BwSize.ExtraSmall: classes.Add("px-2 py-1 text-xs"); break;
-                case BwSize.Small: classes.Add("px-3 py-2 text-xs"); break;
-                case BwSize.Medium: classes.Add("px-4 py-3 text-sm"); break;
-                case BwSize.Large: classes.Add("px-5 py-4 text-base"); break;
-                case BwSize.ExtraLarge: classes.Add("px-6 py-5 text-lg"); break;
+                case BwSize.ExtraSmall: classes.Add("bw-accordion-header-xs"); break;
+                case BwSize.Small: classes.Add("bw-accordion-header-sm"); break;
+                case BwSize.Medium: classes.Add("bw-accordion-header-md"); break;
+                case BwSize.Large: classes.Add("bw-accordion-header-lg"); break;
+                case BwSize.ExtraLarge: classes.Add("bw-accordion-header-xl"); break;
             }
 
             // State & Color
@@ -80,23 +80,15 @@
             
             if (IsDisabled)
             {
-                classes.Add("cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500");
+                // Disabled styles handled by CSS :disabled selector
             }
             else
             {
-                classes.Add("cursor-pointer");
-                
                 if (isExpanded)
                 {
                     // Active Color
                     var color = ParentAccordion?.Color ?? BwColor.Primary;
                     classes.Add(GetColorClasses(color));
-                }
-                else
-                {
-                    // Default State
-                    // If Ghost, transparent. If Filled/Outline, hover effect.
-                    classes.Add("bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100");
                 }
             }
 
@@ -108,16 +100,16 @@
     {
         get
         {
-            var classes = new List<string> { "text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700" };
+            var classes = new List<string> { "bw-accordion-content" };
             // Padding based on size
              var size = ParentAccordion?.Size ?? BwSize.Medium;
              switch (size)
             {
-                case BwSize.ExtraSmall: classes.Add("px-2 pb-2 pt-1"); break;
-                case BwSize.Small: classes.Add("px-3 pb-3 pt-2"); break;
-                case BwSize.Medium: classes.Add("px-4 pb-4 pt-2"); break; // increased bottom padding usually looks good
-                case BwSize.Large: classes.Add("px-5 pb-5 pt-3"); break;
-                case BwSize.ExtraLarge: classes.Add("px-6 pb-6 pt-4"); break;
+                case BwSize.ExtraSmall: classes.Add("bw-accordion-content-xs"); break;
+                case BwSize.Small: classes.Add("bw-accordion-content-sm"); break;
+                case BwSize.Medium: classes.Add("bw-accordion-content-md"); break;
+                case BwSize.Large: classes.Add("bw-accordion-content-lg"); break;
+                case BwSize.ExtraLarge: classes.Add("bw-accordion-content-xl"); break;
             }
             return string.Join(" ", classes);
         }
@@ -125,22 +117,9 @@
 
     private string GetColorClasses(BwColor color)
     {
-        // Active header background and text
-        return color switch
-        {
-            BwColor.Primary => "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
-            BwColor.Secondary => "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300",
-            BwColor.Success => "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300",
-            BwColor.Danger => "bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-300",
-            BwColor.Warning => "bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
-            BwColor.Info => "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
-            BwColor.Light => "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200",
-            BwColor.Dark => "bg-gray-800 dark:bg-black text-white dark:text-gray-100",
-            BwColor.White => "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100",
-            BwColor.Black => "bg-black text-white",
-            BwColor.Transparent => "bg-transparent text-gray-900 dark:text-gray-100",
-             _ => "bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100" // Default/Gray
-        };
+        // Active header background and text mapped to theme classes
+        var colorName = color.ToString().ToLower();
+        return $"bw-accordion-header-active-{colorName}";
     }
 
     protected override void OnInitialized()

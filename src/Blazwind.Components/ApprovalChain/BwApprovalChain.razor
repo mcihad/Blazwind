@@ -7,12 +7,12 @@
     @* Progress Header *@
     @if (ShowProgress && Steps.Count > 0)
     {
-        <div class="mb-3 flex items-center gap-3">
-            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-emerald-500 to-green-400 rounded-full transition-all duration-500" 
+        <div class="bw-approval-progress-wrapper">
+            <div class="bw-approval-progress-track">
+                <div class="bw-approval-progress-fill" 
                      style="width: @ProgressPercent%"></div>
             </div>
-            <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
+            <span class="bw-approval-progress-text">
                 @CompletedCount / @TotalCount tamamlandı
             </span>
         </div>
@@ -154,28 +154,28 @@
     private double ProgressPercent => TotalCount > 0 ? (double)CompletedCount / TotalCount * 100 : 0;
 
     private string DirectionClass => Direction == ApprovalDirection.Horizontal 
-        ? "flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2" 
-        : "flex flex-col items-stretch gap-2";
+        ? "bw-approval-steps-horizontal" 
+        : "bw-approval-steps-vertical";
 
     private string GetStepCardClass(ApprovalStatus status, bool isActive)
     {
         var sizeClass = Size switch
         {
-            BwSize.Small => "p-2.5 min-w-[140px]",
-            BwSize.Large => "p-4 min-w-[220px]",
-            _ => "p-3 min-w-[180px]"
+            BwSize.Small => "bw-approval-step-card-sm",
+            BwSize.Large => "bw-approval-step-card-lg",
+            _ => "bw-approval-step-card-md"
         };
         
-        var baseClass = $"flex items-start gap-3 rounded-lg border transition-all duration-300 {sizeClass}";
-        var cursorClass = Interactive ? "cursor-pointer" : "";
+        var baseClass = $"bw-approval-step-card {sizeClass}";
+        var cursorClass = Interactive ? "bw-approval-step-card-interactive" : "";
         
         var statusClass = status switch
         {
-            ApprovalStatus.Approved => "bg-gradient-to-br from-emerald-50 to-green-50 border-emerald-200 shadow-sm shadow-emerald-100 hover:shadow-md hover:shadow-emerald-100",
-            ApprovalStatus.Rejected => "bg-gradient-to-br from-red-50 to-rose-50 border-red-200 shadow-sm shadow-red-100 hover:shadow-md hover:shadow-red-100",
-            ApprovalStatus.Skipped => "bg-gray-50 border-gray-200 opacity-60",
-            _ when isActive => "bg-gradient-to-br from-blue-50 to-sky-50 border-blue-300 shadow-md shadow-blue-100 ring-2 ring-blue-200/50",
-            _ => "bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm"
+            ApprovalStatus.Approved => "bw-approval-step-card-approved",
+            ApprovalStatus.Rejected => "bw-approval-step-card-rejected",
+            ApprovalStatus.Skipped => "bw-approval-step-card-skipped",
+            _ when isActive => "bw-approval-step-card-active",
+            _ => "bw-approval-step-card-pending"
         };
 
         return $"{baseClass} {statusClass} {cursorClass}";
@@ -185,61 +185,61 @@
     {
         var sizeClass = Size switch
         {
-            BwSize.Small => "w-6 h-6",
-            BwSize.Large => "w-9 h-9",
-            _ => "w-8 h-8"
+            BwSize.Small => "bw-approval-badge-sm",
+            BwSize.Large => "bw-approval-badge-lg",
+            _ => "bw-approval-badge-md"
         };
         
-        var baseClass = $"flex-shrink-0 {sizeClass} rounded-full flex items-center justify-center shadow-sm transition-all";
+        var baseClass = $"bw-approval-badge {sizeClass}";
         
-        return status switch
+        var statusClass = status switch
         {
-            ApprovalStatus.Approved => $"{baseClass} bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-emerald-200",
-            ApprovalStatus.Rejected => $"{baseClass} bg-gradient-to-br from-red-500 to-rose-500 text-white shadow-red-200",
-            ApprovalStatus.Skipped => $"{baseClass} bg-gray-400 text-white",
-            _ when isActive => $"{baseClass} bg-gradient-to-br from-blue-500 to-sky-500 text-white shadow-blue-200 animate-pulse",
-            _ => $"{baseClass} bg-gray-100 text-gray-500 border border-gray-200"
+            ApprovalStatus.Approved => "bw-approval-badge-approved",
+            ApprovalStatus.Rejected => "bw-approval-badge-rejected",
+            ApprovalStatus.Skipped => "bw-approval-badge-skipped",
+            _ when isActive => "bw-approval-badge-active",
+            _ => "bw-approval-badge-pending"
         };
+        
+        return $"{baseClass} {statusClass}";
     }
 
     private string GetTitleClass(ApprovalStatus status, bool isActive)
     {
         var sizeClass = Size switch
         {
-            BwSize.Small => "text-xs",
-            BwSize.Large => "text-base",
-            _ => "text-sm"
+            BwSize.Small => "bw-approval-title-sm",
+            BwSize.Large => "bw-approval-title-lg",
+            _ => "bw-approval-title-md"
         };
         
         var colorClass = status switch
         {
-            ApprovalStatus.Approved => "text-emerald-800",
-            ApprovalStatus.Rejected => "text-red-800",
-            ApprovalStatus.Skipped => "text-gray-500 line-through",
-            _ when isActive => "text-blue-800",
-            _ => "text-gray-800"
+            ApprovalStatus.Approved => "bw-approval-title-approved",
+            ApprovalStatus.Rejected => "bw-approval-title-rejected",
+            ApprovalStatus.Skipped => "bw-approval-title-skipped",
+            _ when isActive => "bw-approval-title-active",
+            _ => "bw-approval-title-pending"
         };
         
-        return $"font-semibold {sizeClass} {colorClass} truncate";
+        return $"bw-approval-title {sizeClass} {colorClass}";
     }
 
     private string GetCommentBorderClass(ApprovalStatus status)
     {
         return status switch
         {
-            ApprovalStatus.Approved => "border-emerald-400",
-            ApprovalStatus.Rejected => "border-red-400",
-            _ => "border-gray-300"
+            ApprovalStatus.Approved => "border-emerald-400 dark:border-emerald-600",
+            ApprovalStatus.Rejected => "border-red-400 dark:border-red-600",
+            _ => "border-gray-300 dark:border-gray-600"
         };
     }
 
     private string GetConnectorClass(ApprovalStatus status, bool isActive)
     {
-        var flexClass = Direction == ApprovalDirection.Horizontal 
-            ? "flex flex-col sm:flex-row items-center justify-center" 
-            : "flex flex-col items-center";
-        
-        return flexClass;
+        return Direction == ApprovalDirection.Horizontal 
+            ? "bw-approval-connector-horizontal" 
+            : "bw-approval-connector-vertical";
     }
 
     private async Task HandleStepClick(ApprovalStep step)

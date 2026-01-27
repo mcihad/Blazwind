@@ -1,0 +1,20 @@
+/* ============================================
+   Affix Component Styles
+   ============================================ */
+
+.bw-affix {
+    transition: none;
+}
+
+.bw-affixed {
+    position: fixed;
+    z-index: 40;
+    box-shadow: var(--bw-shadow-lg);
+    background-color: var(--bw-color-surface);
+    /* Ensure background when floating */
+    border-radius: var(--bw-radius-default);
+    padding: 0.5rem;
+    /* Optional: add some padding if needed when stuck, but might break layout */
+    /* Remove padding if it affects layout too much, keeping it minimal for now */
+    padding: 0;
+}

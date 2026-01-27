@@ -1,0 +1,120 @@
+/* ============================================
+   Hero Component Styles
+   ============================================ */
+
+.bw-hero {
+    @apply p-6 text-white;
+    border-radius: var(--bw-radius-default);
+}
+
+.bw-hero-icon-wrapper {
+    @apply w-10 h-10 flex items-center justify-center rounded;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Description Text */
+.bw-hero-text-muted {
+    @apply max-w-xl;
+    /* Usage: <p class="bw-hero-text-muted"> */
+}
+
+/* ========================================
+   VARIANTS
+   ======================================== */
+
+/* Primary */
+.bw-hero-primary {
+    background: linear-gradient(to right, var(--bw-primary-600), var(--bw-primary-700));
+}
+
+.dark .bw-hero-primary {
+    background: linear-gradient(to right, var(--bw-primary-800), var(--bw-primary-900));
+}
+
+.bw-hero-primary .bw-hero-text-muted {
+    color: var(--bw-primary-100);
+}
+
+
+/* Secondary */
+.bw-hero-secondary {
+    background: linear-gradient(to right, var(--bw-secondary-600), var(--bw-secondary-700));
+}
+
+.dark .bw-hero-secondary {
+    background: linear-gradient(to right, var(--bw-secondary-800), var(--bw-secondary-900));
+}
+
+.bw-hero-secondary .bw-hero-text-muted {
+    color: var(--bw-secondary-100);
+}
+
+
+/* Success */
+.bw-hero-success {
+    background: linear-gradient(to right, var(--bw-success-600), var(--bw-success-700));
+}
+
+.dark .bw-hero-success {
+    background: linear-gradient(to right, var(--bw-success-800), var(--bw-success-900));
+}
+
+.bw-hero-success .bw-hero-text-muted {
+    color: var(--bw-success-100);
+}
+
+
+/* Danger */
+.bw-hero-danger {
+    background: linear-gradient(to right, var(--bw-danger-600), var(--bw-danger-700));
+}
+
+.dark .bw-hero-danger {
+    background: linear-gradient(to right, var(--bw-danger-800), var(--bw-danger-900));
+}
+
+.bw-hero-danger .bw-hero-text-muted {
+    color: var(--bw-danger-100);
+}
+
+
+/* Warning */
+.bw-hero-warning {
+    background: linear-gradient(to right, var(--bw-warning-500), var(--bw-warning-600));
+}
+
+.dark .bw-hero-warning {
+    background: linear-gradient(to right, var(--bw-warning-700), var(--bw-warning-800));
+}
+
+.bw-hero-warning .bw-hero-text-muted {
+    color: var(--bw-warning-100);
+}
+
+
+/* Info */
+.bw-hero-info {
+    background: linear-gradient(to right, var(--bw-info-500), var(--bw-info-600));
+}
+
+.dark .bw-hero-info {
+    background: linear-gradient(to right, var(--bw-info-700), var(--bw-info-800));
+}
+
+.bw-hero-info .bw-hero-text-muted {
+    color: var(--bw-info-100);
+}
+
+
+/* Dark (Special variant) */
+.bw-hero-dark {
+    background: linear-gradient(to right, var(--bw-gray-800), var(--bw-gray-900));
+}
+
+.dark .bw-hero-dark {
+    background: linear-gradient(to right, #000000, var(--bw-gray-900));
+}
+
+.bw-hero-dark .bw-hero-text-muted {
+    color: var(--bw-gray-400);
+}

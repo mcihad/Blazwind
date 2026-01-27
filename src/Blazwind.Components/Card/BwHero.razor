@@ -3,36 +3,24 @@
 @inherits BwBase
 
 @{
-    var gradientClasses = Color switch
+    var colorClass = Color switch
     {
-        BwColor.Primary => "bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 text-white",
-        BwColor.Secondary => "bg-gradient-to-r from-gray-600 to-gray-700 dark:from-gray-800 dark:to-gray-900 text-white",
-        BwColor.Success => "bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-800 dark:to-emerald-900 text-white",
-        BwColor.Danger => "bg-gradient-to-r from-red-600 to-red-700 dark:from-red-800 dark:to-red-900 text-white",
-        BwColor.Warning => "bg-gradient-to-r from-amber-500 to-amber-600 dark:from-amber-700 dark:to-amber-800 text-white",
-        BwColor.Info => "bg-gradient-to-r from-sky-500 to-sky-600 dark:from-sky-700 dark:to-sky-800 text-white",
-        BwColor.Dark => "bg-gradient-to-r from-gray-800 to-gray-900 dark:from-black dark:to-gray-900 text-white",
-        _ => "bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 text-white"
-    };
-    
-    var textMutedClass = Color switch
-    {
-        BwColor.Primary => "text-blue-100",
-        BwColor.Secondary => "text-gray-200",
-        BwColor.Success => "text-emerald-100",
-        BwColor.Danger => "text-red-100",
-        BwColor.Warning => "text-amber-100",
-        BwColor.Info => "text-sky-100",
-        BwColor.Dark => "text-gray-400",
-        _ => "text-blue-100"
+        BwColor.Primary => "bw-hero-primary",
+        BwColor.Secondary => "bw-hero-secondary",
+        BwColor.Success => "bw-hero-success",
+        BwColor.Danger => "bw-hero-danger",
+        BwColor.Warning => "bw-hero-warning",
+        BwColor.Info => "bw-hero-info",
+        BwColor.Dark => "bw-hero-dark",
+        _ => "bw-hero-primary"
     };
 }
 
-<div class="@CombineClasses($"rounded p-6 {gradientClasses}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"bw-hero {colorClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <div class="flex items-center gap-3 mb-2">
         @if (!string.IsNullOrEmpty(Icon))
         {
-            <div class="w-10 h-10 bg-white/20 rounded flex items-center justify-center">
+            <div class="bw-hero-icon-wrapper">
                 <i class="@Icon text-xl"></i>
             </div>
         }
@@ -40,7 +28,7 @@
     </div>
     @if (!string.IsNullOrEmpty(Description))
     {
-        <p class="@textMutedClass max-w-xl">@Description</p>
+        <p class="bw-hero-text-muted">@Description</p>
     }
     @if (ChildContent != null)
     {

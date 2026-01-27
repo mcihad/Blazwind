@@ -1,0 +1,111 @@
+/* ============================================
+   Card Component Styles (Theme-Aware)
+   ============================================ */
+
+.bw-card {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+}
+
+.dark .bw-card {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-card-header {
+    border-bottom: 1px solid var(--bw-color-divider);
+    @apply px-4 py-3 md:px-6 md:py-4;
+}
+
+.dark .bw-card-header {
+    border-bottom-color: var(--bw-gray-700);
+}
+
+.bw-card-body {
+    @apply p-4 md:p-6;
+}
+
+.bw-card-footer {
+    background-color: var(--bw-gray-50);
+    border-top: 1px solid var(--bw-color-divider);
+    @apply px-4 py-3 md:px-6 md:py-4;
+    /* Ensure footer corners respect card radius if needed, or rely on overflow: hidden on card */
+}
+
+.dark .bw-card-footer {
+    background-color: rgba(31, 41, 55, 0.5);
+    border-top-color: var(--bw-gray-700);
+}
+
+.bw-card-title {
+    color: var(--bw-color-text);
+    @apply font-semibold;
+}
+
+.bw-card-subtitle {
+    color: var(--bw-color-text-secondary);
+    @apply text-sm;
+}
+
+/* Icon wrapper */
+.bw-card-icon-wrapper {
+    @apply w-10 h-10 flex items-center justify-center;
+    border-radius: var(--bw-radius-default);
+}
+
+/* ========================================
+   ICON BACKGROUNDS
+   ======================================== */
+
+.bw-card-icon-bg-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+.bw-card-icon-bg-secondary {
+    background-color: var(--bw-color-secondary-soft-bg);
+}
+
+.bw-card-icon-bg-success {
+    background-color: var(--bw-color-success-soft-bg);
+}
+
+.bw-card-icon-bg-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+}
+
+.bw-card-icon-bg-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+}
+
+.bw-card-icon-bg-info {
+    background-color: var(--bw-color-info-soft-bg);
+}
+
+/* ========================================
+   ICON COLORS
+   ======================================== */
+
+.bw-card-icon-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-card-icon-secondary {
+    color: var(--bw-color-secondary);
+}
+
+.bw-card-icon-success {
+    color: var(--bw-color-success);
+}
+
+.bw-card-icon-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-card-icon-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-card-icon-info {
+    color: var(--bw-color-info);
+}

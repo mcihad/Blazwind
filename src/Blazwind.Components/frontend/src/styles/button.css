@@ -1,0 +1,443 @@
+/* ============================================
+   Button Component Styles
+   ============================================ */
+
+/* Base Button */
+.bw-btn {
+    @apply inline-flex items-center justify-center gap-2 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent;
+    border-radius: var(--bw-radius-default);
+}
+
+/* Size Variants */
+.bw-btn-small {
+    @apply px-3 py-1.5 text-xs;
+}
+
+.bw-btn-medium {
+    @apply px-4 py-2 text-sm;
+}
+
+.bw-btn-large {
+    @apply px-6 py-3 text-base;
+}
+
+/* Icon-only sizes */
+.bw-btn-icon-small {
+    @apply p-1.5;
+}
+
+.bw-btn-icon-medium {
+    @apply p-2;
+}
+
+.bw-btn-icon-large {
+    @apply p-3;
+}
+
+/* ========================================
+   FILLED VARIANTS
+   ======================================== */
+
+.bw-btn-filled-primary {
+    background-color: var(--bw-btn-primary-bg);
+    color: var(--bw-btn-primary-text);
+}
+
+.bw-btn-filled-primary:hover:not(:disabled) {
+    background-color: var(--bw-btn-primary-hover-bg);
+}
+
+.bw-btn-filled-primary:focus {
+    --tw-ring-color: var(--bw-btn-primary-focus-ring);
+}
+
+.bw-btn-filled-secondary {
+    background-color: var(--bw-btn-secondary-bg);
+    color: var(--bw-btn-secondary-text);
+}
+
+.bw-btn-filled-secondary:hover:not(:disabled) {
+    background-color: var(--bw-btn-secondary-hover-bg);
+}
+
+.bw-btn-filled-success {
+    background-color: var(--bw-btn-success-bg);
+    color: var(--bw-btn-success-text);
+}
+
+.bw-btn-filled-success:hover:not(:disabled) {
+    background-color: var(--bw-btn-success-hover-bg);
+}
+
+.bw-btn-filled-danger {
+    background-color: var(--bw-btn-danger-bg);
+    color: var(--bw-btn-danger-text);
+}
+
+.bw-btn-filled-danger:hover:not(:disabled) {
+    background-color: var(--bw-btn-danger-hover-bg);
+}
+
+.bw-btn-filled-warning {
+    background-color: var(--bw-btn-warning-bg);
+    color: var(--bw-btn-warning-text);
+}
+
+.bw-btn-filled-warning:hover:not(:disabled) {
+    background-color: var(--bw-btn-warning-hover-bg);
+}
+
+.bw-btn-filled-info {
+    background-color: var(--bw-btn-info-bg);
+    color: var(--bw-btn-info-text);
+}
+
+.bw-btn-filled-info:hover:not(:disabled) {
+    background-color: var(--bw-btn-info-hover-bg);
+}
+
+.bw-btn-filled-light {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-color-text);
+    border-color: var(--bw-color-border);
+}
+
+.bw-btn-filled-light:hover:not(:disabled) {
+    background-color: var(--bw-gray-100);
+}
+
+.bw-btn-filled-dark {
+    background-color: var(--bw-gray-900);
+    color: white;
+}
+
+.bw-btn-filled-dark:hover:not(:disabled) {
+    background-color: var(--bw-gray-800);
+}
+
+/* ========================================
+   OUTLINE VARIANTS
+   ======================================== */
+
+.bw-btn-outline-primary {
+    background: transparent;
+    border-color: var(--bw-color-primary);
+    color: var(--bw-color-primary);
+}
+
+.bw-btn-outline-primary:hover:not(:disabled) {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+.bw-btn-outline-secondary {
+    background: transparent;
+    border-color: var(--bw-color-secondary);
+    color: var(--bw-color-secondary);
+}
+
+.bw-btn-outline-secondary:hover:not(:disabled) {
+    background-color: var(--bw-color-secondary-soft-bg);
+}
+
+.bw-btn-outline-success {
+    background: transparent;
+    border-color: var(--bw-color-success);
+    color: var(--bw-color-success);
+}
+
+.bw-btn-outline-success:hover:not(:disabled) {
+    background-color: var(--bw-color-success-soft-bg);
+}
+
+.bw-btn-outline-danger {
+    background: transparent;
+    border-color: var(--bw-color-danger);
+    color: var(--bw-color-danger);
+}
+
+.bw-btn-outline-danger:hover:not(:disabled) {
+    background-color: var(--bw-color-danger-soft-bg);
+}
+
+.bw-btn-outline-warning {
+    background: transparent;
+    border-color: var(--bw-color-warning);
+    color: var(--bw-color-warning);
+}
+
+.bw-btn-outline-warning:hover:not(:disabled) {
+    background-color: var(--bw-color-warning-soft-bg);
+}
+
+.bw-btn-outline-info {
+    background: transparent;
+    border-color: var(--bw-color-info);
+    color: var(--bw-color-info);
+}
+
+.bw-btn-outline-info:hover:not(:disabled) {
+    background-color: var(--bw-color-info-soft-bg);
+}
+
+.bw-btn-outline-light {
+    background: transparent;
+    border-color: var(--bw-color-border);
+    color: var(--bw-color-text);
+}
+
+.bw-btn-outline-light:hover:not(:disabled) {
+    background-color: var(--bw-gray-100);
+}
+
+.bw-btn-outline-dark {
+    background: transparent;
+    border-color: var(--bw-gray-800);
+    color: var(--bw-gray-800);
+}
+
+.bw-btn-outline-dark:hover:not(:disabled) {
+    background-color: var(--bw-gray-100);
+}
+
+/* ========================================
+   SOFT VARIANTS
+   ======================================== */
+
+.bw-btn-soft-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary-soft-text);
+}
+
+.bw-btn-soft-primary:hover:not(:disabled) {
+    background-color: var(--bw-primary-200);
+}
+
+.bw-btn-soft-secondary {
+    background-color: var(--bw-color-secondary-soft-bg);
+    color: var(--bw-color-secondary-soft-text);
+}
+
+.bw-btn-soft-secondary:hover:not(:disabled) {
+    background-color: var(--bw-secondary-200);
+}
+
+.bw-btn-soft-success {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success-soft-text);
+}
+
+.bw-btn-soft-success:hover:not(:disabled) {
+    background-color: var(--bw-success-200);
+}
+
+.bw-btn-soft-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    color: var(--bw-color-danger-soft-text);
+}
+
+.bw-btn-soft-danger:hover:not(:disabled) {
+    background-color: var(--bw-danger-200);
+}
+
+.bw-btn-soft-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    color: var(--bw-color-warning-soft-text);
+}
+
+.bw-btn-soft-warning:hover:not(:disabled) {
+    background-color: var(--bw-warning-200);
+}
+
+.bw-btn-soft-info {
+    background-color: var(--bw-color-info-soft-bg);
+    color: var(--bw-color-info-soft-text);
+}
+
+.bw-btn-soft-info:hover:not(:disabled) {
+    background-color: var(--bw-info-200);
+}
+
+/* ========================================
+   GHOST VARIANTS
+   ======================================== */
+
+.bw-btn-ghost-primary {
+    background: transparent;
+    color: var(--bw-color-primary);
+}
+
+.bw-btn-ghost-primary:hover:not(:disabled) {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+.bw-btn-ghost-secondary {
+    background: transparent;
+    color: var(--bw-color-secondary);
+}
+
+.bw-btn-ghost-secondary:hover:not(:disabled) {
+    background-color: var(--bw-color-secondary-soft-bg);
+}
+
+.bw-btn-ghost-success {
+    background: transparent;
+    color: var(--bw-color-success);
+}
+
+.bw-btn-ghost-success:hover:not(:disabled) {
+    background-color: var(--bw-color-success-soft-bg);
+}
+
+.bw-btn-ghost-danger {
+    background: transparent;
+    color: var(--bw-color-danger);
+}
+
+.bw-btn-ghost-danger:hover:not(:disabled) {
+    background-color: var(--bw-color-danger-soft-bg);
+}
+
+.bw-btn-ghost-warning {
+    background: transparent;
+    color: var(--bw-color-warning);
+}
+
+.bw-btn-ghost-warning:hover:not(:disabled) {
+    background-color: var(--bw-color-warning-soft-bg);
+}
+
+.bw-btn-ghost-info {
+    background: transparent;
+    color: var(--bw-color-info);
+}
+
+.bw-btn-ghost-info:hover:not(:disabled) {
+    background-color: var(--bw-color-info-soft-bg);
+}
+
+/* ========================================
+   LINK VARIANTS
+   ======================================== */
+
+.bw-btn-link-primary {
+    background: transparent;
+    color: var(--bw-color-primary);
+    padding: 0 !important;
+    height: auto !important;
+    border: none !important;
+}
+
+.bw-btn-link-primary:hover:not(:disabled) {
+    color: var(--bw-color-primary-hover);
+    text-decoration: underline;
+}
+
+.bw-btn-link-primary:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.bw-btn-link-secondary {
+    background: transparent;
+    color: var(--bw-color-secondary);
+    padding: 0 !important;
+    height: auto !important;
+    border: none !important;
+}
+
+.bw-btn-link-secondary:hover:not(:disabled) {
+    color: var(--bw-color-secondary-hover);
+    text-decoration: underline;
+}
+
+.bw-btn-link-secondary:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.bw-btn-link-success {
+    background: transparent;
+    color: var(--bw-color-success);
+    padding: 0 !important;
+    height: auto !important;
+    border: none !important;
+}
+
+.bw-btn-link-success:hover:not(:disabled) {
+    color: var(--bw-color-success-hover);
+    text-decoration: underline;
+}
+
+.bw-btn-link-success:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.bw-btn-link-danger {
+    background: transparent;
+    color: var(--bw-color-danger);
+    padding: 0 !important;
+    height: auto !important;
+    border: none !important;
+}
+
+.bw-btn-link-danger:hover:not(:disabled) {
+    color: var(--bw-color-danger-hover);
+    text-decoration: underline;
+}
+
+.bw-btn-link-danger:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Dark mode ring offset */
+.dark .bw-btn {
+    --tw-ring-offset-color: var(--bw-gray-900);
+}
+
+/* ========================================
+   BUTTON GROUP
+   ======================================== */
+
+.bw-btn-group {
+    @apply inline-flex relative;
+    box-shadow: var(--bw-shadow-sm);
+    border-radius: var(--bw-radius-default);
+}
+
+/* Ensure inner buttons stack correctly */
+.bw-btn-group .bw-btn {
+    @apply focus:z-10;
+    /* Prevent double shadows in group context */
+    box-shadow: none;
+}
+
+/* Horizontal (Default) */
+.bw-btn-group:not(.bw-btn-group-vertical) .bw-btn:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-left: -2px;
+    /* Collapsing borders */
+}
+
+.bw-btn-group:not(.bw-btn-group-vertical) .bw-btn:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Vertical */
+.bw-btn-group-vertical {
+    @apply flex-col;
+}
+
+.bw-btn-group-vertical .bw-btn:not(:first-child) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-top: -2px;
+}
+
+.bw-btn-group-vertical .bw-btn:not(:last-child) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}

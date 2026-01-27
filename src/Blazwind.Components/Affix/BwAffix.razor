@@ -8,7 +8,7 @@
 
 <div id="@($"{_elementId}-placeholder")" style="@(_isAffixed ? $"height: {_originalHeight}px;" : "display: none;")">
 </div>
-<div class="@CombineClasses(_isAffixed ? "fixed z-40 transition-none" : "transition-none")"
+<div class="@CombineClasses(_isAffixed ? "bw-affixed" : "bw-affix")"
     style="@(_isAffixed? GetAffixedStyle() : "") @Style" id="@_elementId" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
@@ -87,7 +87,7 @@ if (el && isAffixed !== lastAffixed) {{
 lastAffixed = isAffixed;
 
 if (isAffixed) {{
-el.classList.add('fixed', 'z-40');
+el.classList.add('bw-affixed');
 if (useBottom) {{
 el.style.bottom = offsetBottom + 'px';
 }} else {{
@@ -98,7 +98,7 @@ el.style.width = originalWidth + 'px';
 if (placeholder) placeholder.style.height = originalHeight + 'px';
 if (placeholder) placeholder.style.display = 'block';
 }} else {{
-el.classList.remove('fixed', 'z-40');
+el.classList.remove('bw-affixed');
 el.style.top = '';
 el.style.bottom = '';
 el.style.left = '';

@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && vite build -c vite.maplibre.config.ts && vite build -c vite.chart.config.ts",
+    "build": "tsc && vite build && vite build -c vite.maplibre.config.ts && vite build -c vite.chart.config.ts && vite build -c vite.themes.config.ts",
     "build:maplibre": "vite build -c vite.maplibre.config.ts",
     "build:chart": "vite build -c vite.chart.config.ts",
+    "build:themes": "vite build -c vite.themes.config.ts",
     "preview": "vite preview"
   },
   "devDependencies": {

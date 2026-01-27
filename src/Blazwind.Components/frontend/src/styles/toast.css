@@ -1,0 +1,217 @@
+/* ============================================
+   Toast Component Styles (Theme-Aware)
+   ============================================ */
+
+.bw-toast {
+    @apply flex items-start gap-3 p-4 rounded-sm relative overflow-hidden w-full;
+    background-color: var(--bw-color-surface);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+.dark .bw-toast {
+    background-color: var(--bw-gray-800);
+    @apply ring-1 ring-white/10;
+}
+
+.bw-toast-dark {
+    background-color: var(--bw-gray-900) !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.bw-toast-title {
+    color: var(--bw-color-text);
+    @apply font-semibold text-sm mb-0.5 leading-5;
+}
+
+.bw-toast-message {
+    color: var(--bw-color-text-secondary);
+    @apply text-sm leading-5 font-normal;
+}
+
+/* ========================================
+   BORDER VARIANTS
+   ======================================== */
+
+.bw-toast-border-success {
+    border-left-color: var(--bw-color-success);
+}
+
+.bw-toast-border-danger {
+    border-left-color: var(--bw-color-danger);
+}
+
+.bw-toast-border-warning {
+    border-left-color: var(--bw-color-warning);
+}
+
+.bw-toast-border-info {
+    border-left-color: var(--bw-color-info);
+}
+
+.bw-toast-border-primary {
+    border-left-color: var(--bw-color-primary);
+}
+
+.bw-toast-border-secondary {
+    border-left-color: var(--bw-color-secondary);
+}
+
+.bw-toast-border-dark {
+    border-left-color: var(--bw-gray-800);
+}
+
+/* ========================================
+   ICON VARIANTS
+   ======================================== */
+
+.bw-toast-icon-success {
+    color: var(--bw-color-success);
+}
+
+.bw-toast-icon-danger {
+    color: var(--bw-color-danger);
+}
+
+.bw-toast-icon-warning {
+    color: var(--bw-color-warning);
+}
+
+.bw-toast-icon-info {
+    color: var(--bw-color-info);
+}
+
+.bw-toast-icon-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-toast-icon-secondary {
+    color: var(--bw-color-secondary);
+}
+
+.bw-toast-icon-dark {
+    color: var(--bw-gray-100);
+}
+
+/* ========================================
+   PROGRESS VARIANTS
+   ======================================== */
+
+.bw-toast-progress-track {
+    @apply absolute bottom-0 left-0 right-0 h-[2px];
+    background-color: var(--bw-gray-100);
+    opacity: 0.5;
+}
+
+.dark .bw-toast-progress-track {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-toast-progress {
+    @apply h-full;
+    width: 100%;
+}
+
+.bw-toast-progress-success {
+    background-color: var(--bw-color-success);
+}
+
+.bw-toast-progress-danger {
+    background-color: var(--bw-color-danger);
+}
+
+.bw-toast-progress-warning {
+    background-color: var(--bw-color-warning);
+}
+
+.bw-toast-progress-info {
+    background-color: var(--bw-color-info);
+}
+
+.bw-toast-progress-primary {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-toast-progress-secondary {
+    background-color: var(--bw-color-secondary);
+}
+
+.bw-toast-progress-dark {
+    background-color: var(--bw-gray-400);
+}
+
+/* ========================================
+   CLOSE BUTTON
+   ======================================== */
+
+.bw-toast-close {
+    color: var(--bw-color-text-muted);
+    @apply rounded p-1 inline-flex items-center justify-center transition-colors cursor-pointer;
+}
+
+.bw-toast-close:hover {
+    color: var(--bw-color-text-secondary);
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-toast-close:hover {
+    background-color: var(--bw-gray-700);
+}
+
+/* ========================================
+   ACTION BUTTONS
+   ======================================== */
+
+.bw-toast-action {
+    @apply text-xs font-semibold px-2 py-1 rounded transition-colors;
+    color: white;
+}
+
+.bw-toast-action-success {
+    background-color: var(--bw-color-success);
+}
+
+.bw-toast-action-success:hover {
+    background-color: var(--bw-color-success-hover);
+}
+
+.bw-toast-action-danger {
+    background-color: var(--bw-color-danger);
+}
+
+.bw-toast-action-danger:hover {
+    background-color: var(--bw-color-danger-hover);
+}
+
+.bw-toast-action-warning {
+    background-color: var(--bw-color-warning);
+}
+
+.bw-toast-action-warning:hover {
+    background-color: var(--bw-color-warning-hover);
+}
+
+.bw-toast-action-info {
+    background-color: var(--bw-color-info);
+}
+
+.bw-toast-action-info:hover {
+    background-color: var(--bw-color-info-hover);
+}
+
+.bw-toast-action-primary {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-toast-action-primary:hover {
+    background-color: var(--bw-color-primary-hover);
+}
+
+.bw-toast-action-secondary {
+    background-color: var(--bw-color-secondary);
+}
+
+.bw-toast-action-secondary:hover {
+    background-color: var(--bw-color-secondary-hover);
+}

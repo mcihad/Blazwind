@@ -35,73 +35,45 @@ const containers: Map<string, HTMLElement> = new Map();
 const variantConfig: any = {
     success: {
         icon: 'fa-solid fa-circle-check',
-        borderColor: 'border-l-emerald-500',
-        contentTitle: 'text-gray-900 dark:text-gray-100',
-        contentMessage: 'text-gray-600 dark:text-gray-300',
-        iconClass: 'text-emerald-500',
-        progressClass: 'bg-emerald-500',
-        closeClass: 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-        btnClass: 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
+        borderClass: 'bw-toast-border-success',
+        iconClass: 'bw-toast-icon-success',
+        progressClass: 'bw-toast-progress-success',
     },
     danger: {
         icon: 'fa-solid fa-circle-xmark',
-        borderColor: 'border-l-red-500',
-        contentTitle: 'text-gray-900 dark:text-gray-100',
-        contentMessage: 'text-gray-600 dark:text-gray-300',
-        iconClass: 'text-red-500',
-        progressClass: 'bg-red-500',
-        closeClass: 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-        btnClass: 'bg-red-600 text-white hover:bg-red-700 shadow-sm'
+        borderClass: 'bw-toast-border-danger',
+        iconClass: 'bw-toast-icon-danger',
+        progressClass: 'bw-toast-progress-danger',
     },
     warning: {
         icon: 'fa-solid fa-triangle-exclamation',
-        borderColor: 'border-l-amber-500',
-        contentTitle: 'text-gray-900 dark:text-gray-100',
-        contentMessage: 'text-gray-600 dark:text-gray-300',
-        iconClass: 'text-amber-500',
-        progressClass: 'bg-amber-500',
-        closeClass: 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-        btnClass: 'bg-amber-500 text-white hover:bg-amber-600 shadow-sm'
+        borderClass: 'bw-toast-border-warning',
+        iconClass: 'bw-toast-icon-warning',
+        progressClass: 'bw-toast-progress-warning',
     },
     info: {
         icon: 'fa-solid fa-circle-info',
-        borderColor: 'border-l-blue-500',
-        contentTitle: 'text-gray-900 dark:text-gray-100',
-        contentMessage: 'text-gray-600 dark:text-gray-300',
-        iconClass: 'text-blue-500',
-        progressClass: 'bg-blue-500',
-        closeClass: 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-        btnClass: 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'
+        borderClass: 'bw-toast-border-info',
+        iconClass: 'bw-toast-icon-info',
+        progressClass: 'bw-toast-progress-info',
     },
     primary: {
         icon: 'fa-solid fa-bell',
-        borderColor: 'border-l-indigo-500',
-        contentTitle: 'text-gray-900 dark:text-gray-100',
-        contentMessage: 'text-gray-600 dark:text-gray-300',
-        iconClass: 'text-indigo-500',
-        progressClass: 'bg-indigo-500',
-        closeClass: 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-        btnClass: 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm'
+        borderClass: 'bw-toast-border-primary',
+        iconClass: 'bw-toast-icon-primary',
+        progressClass: 'bw-toast-progress-primary',
     },
     secondary: {
         icon: 'fa-solid fa-circle-info',
-        borderColor: 'border-l-gray-500',
-        contentTitle: 'text-gray-900 dark:text-gray-100',
-        contentMessage: 'text-gray-600 dark:text-gray-300',
-        iconClass: 'text-gray-500',
-        progressClass: 'bg-gray-500',
-        closeClass: 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700',
-        btnClass: 'bg-gray-600 text-white hover:bg-gray-700 shadow-sm'
+        borderClass: 'bw-toast-border-secondary',
+        iconClass: 'bw-toast-icon-secondary',
+        progressClass: 'bw-toast-progress-secondary',
     },
     dark: {
         icon: 'fa-solid fa-circle-info',
-        borderColor: 'border-l-gray-800',
-        contentTitle: 'text-gray-100',
-        contentMessage: 'text-gray-300',
-        iconClass: 'text-gray-100',
-        progressClass: 'bg-gray-400',
-        closeClass: 'text-gray-400 hover:text-white hover:bg-gray-700',
-        btnClass: 'bg-gray-700 text-white hover:bg-gray-600 shadow-sm',
+        borderClass: 'bw-toast-border-dark',
+        iconClass: 'bw-toast-icon-dark',
+        progressClass: 'bw-toast-progress-dark',
         isDark: true
     }
 };
@@ -161,17 +133,12 @@ export function showToast(options: ToastOptions, dotnetRef?: any): string {
     if (position.includes('left')) animateClass = 'animate-[slideInLeft_0.3s_cubic-bezier(0.16,1,0.3,1)]';
     if (position.includes('center')) animateClass = 'animate-[fadeIn_0.5s_ease-out]';
 
-    const bgClass = config.isDark ? 'bg-gray-900 shadow-gray-900/20' : 'bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 dark:ring-white/10';
-
     toast.className = `
+        bw-toast
         pointer-events-auto
-        flex items-start gap-3 p-4
-        ${bgClass}
-        border-l-4 ${config.borderColor}
-        rounded-sm
+        ${config.borderClass}
+        ${config.isDark ? 'bw-toast-dark' : ''}
         ${animateClass}
-        relative overflow-hidden
-        w-full transition-all duration-300
         group
     `.replace(/\s+/g, ' ').trim();
 
@@ -180,15 +147,9 @@ export function showToast(options: ToastOptions, dotnetRef?: any): string {
     if (options.actions && options.actions.length > 0) {
         actionsHtml = `<div class="mt-2 flex items-center gap-2">`;
         options.actions.forEach(action => {
-            // Determine button style based on action variant, fallback to current config btnClass if not specified
-            // Assuming action.variant maps to config keys
-            let btnClass = config.btnClass;
-            if (action.variant && variantConfig[action.variant]) {
-                btnClass = variantConfig[action.variant].btnClass;
-            }
-
+            const actionVariant = action.variant || variant;
             actionsHtml += `
-                 <button type="button" class="bw-toast-action-${action.actionId} text-xs font-semibold px-2 py-1 rounded transition-colors ${btnClass}">
+                 <button type="button" class="bw-toast-action-${action.actionId} bw-toast-action bw-toast-action-${actionVariant}">
                      ${action.text}
                  </button>
              `;
@@ -201,20 +162,20 @@ export function showToast(options: ToastOptions, dotnetRef?: any): string {
             <i class="${config.icon} ${config.iconClass} text-lg"></i>
         </div>
         <div class="flex-1 min-w-0">
-            ${options.title ? `<h4 class="font-semibold text-sm mb-0.5 leading-5 ${config.contentTitle}">${options.title}</h4>` : ''}
-            <p class="text-sm leading-5 font-normal ${config.contentMessage}">${options.message}</p>
+            ${options.title ? `<h4 class="bw-toast-title">${options.title}</h4>` : ''}
+            <p class="bw-toast-message">${options.message}</p>
             ${actionsHtml}
         </div>
         ${showClose ? `
             <div class="flex-shrink-0 -mr-1 -mt-1 ml-2">
-                <button type="button" class="bw-toast-close ${config.closeClass} rounded p-1 inline-flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300" aria-label="Kapat">
+                <button type="button" class="bw-toast-close" aria-label="Kapat">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
         ` : ''}
         ${showProgress && duration > 0 ? `
-            <div class="absolute bottom-0 left-0 right-0 h-[2px] bg-gray-100/50 dark:bg-gray-700/50">
-                <div class="bw-toast-progress h-full ${config.progressClass}" style="width: 100%; animation: shrink ${duration}ms linear forwards;"></div>
+            <div class="bw-toast-progress-track">
+                <div class="bw-toast-progress ${config.progressClass}" style="animation: shrink ${duration}ms linear forwards;"></div>
             </div>
         ` : ''}
     `;

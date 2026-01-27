@@ -181,6 +181,15 @@
 
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/Blazwind.Components/blazwind.js"></script>
+    <script>
+        // Initialize theme system immediately after blazwind.js loads
+        if (window.Blazwind && window.Blazwind.Theme) {
+            console.log('[Blazwind] Theme module loaded, initializing...');
+            window.Blazwind.Theme.initialize();
+        } else {
+            console.error('[Blazwind] Theme module not found!');
+        }
+    </script>
 </body>
 
 </html>

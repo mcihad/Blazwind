@@ -1,0 +1,274 @@
+/* ============================================
+   ApprovalChain Component Styles
+   ============================================ */
+
+.bw-approval-chain-wrapper {
+    @apply w-full;
+}
+
+/* PROGRESS BAR */
+.bw-approval-progress-wrapper {
+    @apply mb-3 flex items-center gap-3;
+}
+
+.bw-approval-progress-track {
+    @apply flex-1 h-2 rounded-full overflow-hidden;
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-approval-progress-track {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-approval-progress-fill {
+    @apply h-full rounded-full transition-all duration-500;
+    background: linear-gradient(to right, var(--bw-color-success), var(--bw-success-400));
+}
+
+.bw-approval-progress-text {
+    @apply text-xs font-semibold whitespace-nowrap;
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-approval-progress-text {
+    color: var(--bw-gray-400);
+}
+
+/* STEPS CONTAINER */
+.bw-approval-steps-horizontal {
+    @apply flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2;
+}
+
+.bw-approval-steps-vertical {
+    @apply flex flex-col items-stretch gap-2;
+}
+
+/* STEP CARD */
+.bw-approval-step-card {
+    @apply flex items-start gap-3 rounded-lg border transition-all duration-300;
+}
+
+.bw-approval-step-card-interactive {
+    @apply cursor-pointer;
+}
+
+/* Card Sizes */
+.bw-approval-step-card-sm {
+    @apply p-2.5 min-w-[140px];
+}
+
+.bw-approval-step-card-md {
+    @apply p-3 min-w-[180px];
+}
+
+.bw-approval-step-card-lg {
+    @apply p-4 min-w-[220px];
+}
+
+/* Card Variants */
+.bw-approval-step-card-approved {
+    background: linear-gradient(to bottom right, var(--bw-success-50), #f0fdf4);
+    /* emerald-50 substitute */
+    border-color: var(--bw-success-200);
+    box-shadow: var(--bw-shadow-sm), 0 0 0 1px var(--bw-success-100);
+}
+
+.bw-approval-step-card-approved:hover {
+    box-shadow: var(--bw-shadow-md);
+}
+
+.dark .bw-approval-step-card-approved {
+    background: linear-gradient(to bottom right, rgba(20, 184, 166, 0.1), rgba(6, 78, 59, 0.2));
+    border-color: var(--bw-success-800);
+}
+
+.bw-approval-step-card-rejected {
+    background: linear-gradient(to bottom right, var(--bw-danger-50), #fff1f2);
+    border-color: var(--bw-danger-200);
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-approval-step-card-rejected:hover {
+    box-shadow: var(--bw-shadow-md);
+}
+
+.dark .bw-approval-step-card-rejected {
+    background: linear-gradient(to bottom right, rgba(244, 63, 94, 0.1), rgba(136, 19, 55, 0.2));
+    border-color: var(--bw-danger-800);
+}
+
+.bw-approval-step-card-skipped {
+    background-color: var(--bw-gray-50);
+    border-color: var(--bw-gray-200);
+    opacity: 0.6;
+}
+
+.dark .bw-approval-step-card-skipped {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-approval-step-card-active {
+    background: linear-gradient(to bottom right, var(--bw-primary-50), #eff6ff);
+    border-color: var(--bw-primary-300);
+    box-shadow: var(--bw-shadow-md);
+    --tw-ring-color: rgba(59, 130, 246, 0.5);
+    /* blue-200/50 approx */
+    box-shadow: var(--bw-shadow-md), 0 0 0 2px var(--tw-ring-color);
+}
+
+.dark .bw-approval-step-card-active {
+    background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.1), rgba(30, 58, 138, 0.2));
+    border-color: var(--bw-primary-700);
+    --tw-ring-color: rgba(29, 78, 216, 0.5);
+}
+
+.bw-approval-step-card-pending {
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-gray-200);
+}
+
+.bw-approval-step-card-pending:hover {
+    border-color: var(--bw-gray-300);
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.dark .bw-approval-step-card-pending {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-700);
+}
+
+.dark .bw-approval-step-card-pending:hover {
+    border-color: var(--bw-gray-600);
+}
+
+/* BADGE */
+.bw-approval-badge {
+    @apply flex-shrink-0 rounded-full flex items-center justify-center shadow-sm transition-all;
+}
+
+/* Badge Sizes */
+.bw-approval-badge-sm {
+    @apply w-6 h-6 text-[0.6rem];
+}
+
+.bw-approval-badge-md {
+    @apply w-8 h-8 text-xs;
+}
+
+.bw-approval-badge-lg {
+    @apply w-9 h-9 text-sm;
+}
+
+/* Badge Variants */
+.bw-approval-badge-approved {
+    background: linear-gradient(to bottom right, var(--bw-success-500), var(--bw-success-600));
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--bw-success-200);
+}
+
+.bw-approval-badge-rejected {
+    background: linear-gradient(to bottom right, var(--bw-danger-500), var(--bw-danger-600));
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--bw-danger-200);
+}
+
+.bw-approval-badge-skipped {
+    background-color: var(--bw-gray-400);
+    color: white;
+}
+
+.bw-approval-badge-active {
+    background: linear-gradient(to bottom right, var(--bw-primary-500), var(--bw-primary-600));
+    color: white;
+    animation: bw-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.bw-approval-badge-pending {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-500);
+    border: 1px solid var(--bw-gray-200);
+}
+
+.dark .bw-approval-badge-pending {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-400);
+    border-color: var(--bw-gray-700);
+}
+
+/* TITLE */
+.bw-approval-title {
+    @apply font-semibold truncate;
+}
+
+.bw-approval-title-sm {
+    @apply text-xs;
+}
+
+.bw-approval-title-md {
+    @apply text-sm;
+}
+
+.bw-approval-title-lg {
+    @apply text-base;
+}
+
+.bw-approval-title-approved {
+    color: var(--bw-color-success-800);
+}
+
+.dark .bw-approval-title-approved {
+    color: var(--bw-success-300);
+}
+
+.bw-approval-title-rejected {
+    color: var(--bw-color-danger-800);
+}
+
+.dark .bw-approval-title-rejected {
+    color: var(--bw-danger-300);
+}
+
+.bw-approval-title-skipped {
+    color: var(--bw-gray-500);
+    text-decoration: line-through;
+}
+
+.bw-approval-title-active {
+    color: var(--bw-color-primary-800);
+}
+
+.dark .bw-approval-title-active {
+    color: var(--bw-primary-300);
+}
+
+.bw-approval-title-pending {
+    color: var(--bw-gray-800);
+}
+
+.dark .bw-approval-title-pending {
+    color: var(--bw-gray-200);
+}
+
+
+/* CONNECTORS */
+.bw-approval-connector-horizontal {
+    @apply flex flex-col sm:flex-row items-center justify-center;
+}
+
+.bw-approval-connector-vertical {
+    @apply flex flex-col items-center;
+}
+
+/* Animations */
+@keyframes bw-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}

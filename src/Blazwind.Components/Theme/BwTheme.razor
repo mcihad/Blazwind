@@ -1,0 +1,78 @@
+@namespace Blazwind.Components.Theme
+@using Microsoft.JSInterop
+@inject Services.IThemeService ThemeService
+@inject IJSRuntime JS
+@implements IDisposable
+
+@* Theme wrapper - applies theme class based on ThemeService state *@
+<div id="@Id" class="@CombineClasses()" style="@Style" @attributes="AdditionalAttributes">
+    <CascadingValue Value="this" Name="BwTheme">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    /// <summary>
+    /// Content to render within theme scope.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Optional ID for the theme wrapper element.
+    /// </summary>
+    [Parameter]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// Additional CSS classes to apply.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Inline styles to apply.
+    /// </summary>
+    [Parameter]
+    public string? Style { get; set; }
+
+    /// <summary>
+    /// Additional HTML attributes.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Gets whether dark mode is active.
+    /// </summary>
+    public bool DarkModeActive => ThemeService.IsDarkMode;
+
+    /// <summary>
+    /// Gets the current theme name.
+    /// </summary>
+    public string CurrentTheme => ThemeService.CurrentTheme;
+
+    protected override void OnInitialized()
+    {
+        ThemeService.OnThemeChanged += HandleThemeChanged;
+    }
+
+    private string CombineClasses()
+    {
+        var themeClass = $"bw-theme-{CurrentTheme}";
+        var darkClass = DarkModeActive ? "dark" : "";
+        var classes = new[] { themeClass, darkClass, Class }
+            .Where(c => !string.IsNullOrWhiteSpace(c));
+        return string.Join(" ", classes);
+    }
+
+    private void HandleThemeChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= HandleThemeChanged;
+    }
+}

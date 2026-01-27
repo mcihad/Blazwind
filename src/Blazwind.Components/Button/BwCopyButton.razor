@@ -6,10 +6,10 @@
 @inject IJSRuntime JS
 
 @{
-    var buttonClasses = "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm font-medium rounded border transition-all";
+    var buttonClasses = "bw-btn bw-btn-small transition-all";
     var stateClasses = _copied 
-        ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
-        : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700";
+        ? "bw-btn-filled-success" // Copied state: success
+        : "bw-btn-outline-secondary hover:bg-gray-100 dark:hover:bg-gray-800"; // Default: secondary outline
 }
 
 <button type="button"

@@ -1,0 +1,369 @@
+/* ============================================
+   Blazwind Theme: forest
+   A natural green/earth-based theme
+   ============================================ */
+
+.bw-theme-forest,
+:root:has(.bw-theme-forest) {
+
+    /* ========================================
+     SECTION 1: Base Palette
+     ======================================== */
+
+    /* Primary (Green) */
+    --bw-primary-50: #f0fdf4;
+    --bw-primary-100: #dcfce7;
+    --bw-primary-200: #bbf7d0;
+    --bw-primary-300: #86efac;
+    --bw-primary-400: #4ade80;
+    --bw-primary-500: #22c55e;
+    --bw-primary-600: #16a34a;
+    --bw-primary-700: #15803d;
+    --bw-primary-800: #166534;
+    --bw-primary-900: #14532d;
+
+    /* Secondary (Stone) */
+    --bw-secondary-50: #fafaf9;
+    --bw-secondary-100: #f5f5f4;
+    --bw-secondary-200: #e7e5e4;
+    --bw-secondary-300: #d6d3d1;
+    --bw-secondary-400: #a8a29e;
+    --bw-secondary-500: #78716c;
+    --bw-secondary-600: #57534e;
+    --bw-secondary-700: #44403c;
+    --bw-secondary-800: #292524;
+    --bw-secondary-900: #1c1917;
+
+    /* Success (Lime) */
+    --bw-success-50: #f7fee7;
+    --bw-success-100: #ecfccb;
+    --bw-success-200: #d9f99d;
+    --bw-success-300: #bef264;
+    --bw-success-400: #a3e635;
+    --bw-success-500: #84cc16;
+    --bw-success-600: #65a30d;
+    --bw-success-700: #4d7c0f;
+    --bw-success-800: #3f6212;
+    --bw-success-900: #365314;
+
+    /* Danger (Red) */
+    --bw-danger-50: #fef2f2;
+    --bw-danger-100: #fee2e2;
+    --bw-danger-200: #fecaca;
+    --bw-danger-300: #fca5a5;
+    --bw-danger-400: #f87171;
+    --bw-danger-500: #ef4444;
+    --bw-danger-600: #dc2626;
+    --bw-danger-700: #b91c1c;
+    --bw-danger-800: #991b1b;
+    --bw-danger-900: #7f1d1d;
+
+    /* Warning (Yellow) */
+    --bw-warning-50: #fefce8;
+    --bw-warning-100: #fef9c3;
+    --bw-warning-200: #fef08a;
+    --bw-warning-300: #fde047;
+    --bw-warning-400: #facc15;
+    --bw-warning-500: #eab308;
+    --bw-warning-600: #ca8a04;
+    --bw-warning-700: #a16207;
+    --bw-warning-800: #854d0e;
+    --bw-warning-900: #713f12;
+
+    /* Info (Emerald) */
+    --bw-info-50: #ecfdf5;
+    --bw-info-100: #d1fae5;
+    --bw-info-200: #a7f3d0;
+    --bw-info-300: #6ee7b7;
+    --bw-info-400: #34d399;
+    --bw-info-500: #10b981;
+    --bw-info-600: #059669;
+    --bw-info-700: #047857;
+    --bw-info-800: #065f46;
+    --bw-info-900: #064e3b;
+
+    /* Gray (Warm Gray) */
+    --bw-gray-50: #fafaf9;
+    --bw-gray-100: #f5f5f4;
+    --bw-gray-200: #e7e5e4;
+    --bw-gray-300: #d6d3d1;
+    --bw-gray-400: #a8a29e;
+    --bw-gray-500: #78716c;
+    --bw-gray-600: #57534e;
+    --bw-gray-700: #44403c;
+    --bw-gray-800: #292524;
+    --bw-gray-900: #1c1917;
+
+    /* ========================================
+     SECTION 2: Semantic Tokens
+     ======================================== */
+
+    --bw-color-primary: var(--bw-primary-600);
+    --bw-color-primary-hover: var(--bw-primary-700);
+    --bw-color-primary-active: var(--bw-primary-800);
+    --bw-color-primary-soft-bg: var(--bw-primary-100);
+    --bw-color-primary-soft-text: var(--bw-primary-700);
+
+    --bw-color-secondary: var(--bw-secondary-600);
+    --bw-color-secondary-hover: var(--bw-secondary-700);
+    --bw-color-secondary-soft-bg: var(--bw-secondary-100);
+    --bw-color-secondary-soft-text: var(--bw-secondary-700);
+
+    --bw-color-success: var(--bw-success-600);
+    --bw-color-success-hover: var(--bw-success-700);
+    --bw-color-success-soft-bg: var(--bw-success-100);
+    --bw-color-success-soft-text: var(--bw-success-700);
+
+    --bw-color-danger: var(--bw-danger-600);
+    --bw-color-danger-hover: var(--bw-danger-700);
+    --bw-color-danger-soft-bg: var(--bw-danger-100);
+    --bw-color-danger-soft-text: var(--bw-danger-700);
+
+    --bw-color-warning: var(--bw-warning-500);
+    --bw-color-warning-hover: var(--bw-warning-600);
+    --bw-color-warning-soft-bg: var(--bw-warning-100);
+    --bw-color-warning-soft-text: var(--bw-warning-700);
+
+    --bw-color-info: var(--bw-info-600);
+    --bw-color-info-hover: var(--bw-info-700);
+    --bw-color-info-soft-bg: var(--bw-info-100);
+    --bw-color-info-soft-text: var(--bw-info-700);
+
+    --bw-color-background: #faf9f7;
+    --bw-color-surface: #ffffff;
+    --bw-color-surface-elevated: #ffffff;
+
+    --bw-color-text: var(--bw-gray-900);
+    --bw-color-text-secondary: var(--bw-gray-600);
+    --bw-color-text-muted: var(--bw-gray-400);
+    --bw-color-text-inverse: #ffffff;
+
+    --bw-color-border: var(--bw-gray-200);
+    --bw-color-border-strong: var(--bw-gray-300);
+    --bw-color-divider: var(--bw-gray-100);
+
+    --bw-color-focus-ring: var(--bw-primary-500);
+    --bw-focus-ring-width: 2px;
+    --bw-focus-ring-offset: 1px;
+
+    /* ========================================
+     SECTION 3: Component Tokens
+     ======================================== */
+
+    /* Button - Filled */
+    --bw-btn-primary-bg: var(--bw-color-primary);
+    --bw-btn-primary-text: var(--bw-color-text-inverse);
+    --bw-btn-primary-hover-bg: var(--bw-color-primary-hover);
+    --bw-btn-primary-active-bg: var(--bw-color-primary-active);
+    --bw-btn-primary-focus-ring: var(--bw-color-primary);
+
+    --bw-btn-secondary-bg: var(--bw-color-secondary);
+    --bw-btn-secondary-text: var(--bw-color-text-inverse);
+    --bw-btn-secondary-hover-bg: var(--bw-color-secondary-hover);
+
+    --bw-btn-success-bg: var(--bw-color-success);
+    --bw-btn-success-text: var(--bw-color-text-inverse);
+    --bw-btn-success-hover-bg: var(--bw-color-success-hover);
+
+    --bw-btn-danger-bg: var(--bw-color-danger);
+    --bw-btn-danger-text: var(--bw-color-text-inverse);
+    --bw-btn-danger-hover-bg: var(--bw-color-danger-hover);
+
+    --bw-btn-warning-bg: var(--bw-color-warning);
+    --bw-btn-warning-text: var(--bw-color-text-inverse);
+    --bw-btn-warning-hover-bg: var(--bw-color-warning-hover);
+
+    --bw-btn-info-bg: var(--bw-color-info);
+    --bw-btn-info-text: var(--bw-color-text-inverse);
+    --bw-btn-info-hover-bg: var(--bw-color-info-hover);
+
+    /* Input */
+    --bw-input-bg: var(--bw-color-surface);
+    --bw-input-border: var(--bw-color-border);
+    --bw-input-text: var(--bw-color-text);
+    --bw-input-placeholder: var(--bw-color-text-muted);
+    --bw-input-focus-border: var(--bw-color-primary);
+    --bw-input-focus-ring: rgba(34, 197, 94, 0.2);
+    /* Green ring */
+    --bw-input-error-border: var(--bw-color-danger);
+    --bw-input-error-ring: rgba(239, 68, 68, 0.2);
+
+    /* Alert */
+    --bw-alert-success-bg: var(--bw-color-success-soft-bg);
+    --bw-alert-success-border: var(--bw-success-200);
+    --bw-alert-success-text: var(--bw-color-success-soft-text);
+    --bw-alert-success-icon: var(--bw-color-success);
+
+    --bw-alert-danger-bg: var(--bw-color-danger-soft-bg);
+    --bw-alert-danger-border: var(--bw-danger-200);
+    --bw-alert-danger-text: var(--bw-color-danger-soft-text);
+    --bw-alert-danger-icon: var(--bw-color-danger);
+
+    --bw-alert-warning-bg: var(--bw-color-warning-soft-bg);
+    --bw-alert-warning-border: var(--bw-warning-200);
+    --bw-alert-warning-text: var(--bw-color-warning-soft-text);
+    --bw-alert-warning-icon: var(--bw-color-warning);
+
+    --bw-alert-info-bg: var(--bw-color-info-soft-bg);
+    --bw-alert-info-border: var(--bw-info-200);
+    --bw-alert-info-text: var(--bw-color-info-soft-text);
+    --bw-alert-info-icon: var(--bw-color-info);
+
+    /* Toast */
+    --bw-toast-bg: var(--bw-color-surface);
+    --bw-toast-text: var(--bw-color-text);
+    --bw-toast-text-secondary: var(--bw-color-text-secondary);
+    --bw-toast-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    --bw-toast-success-border: var(--bw-color-success);
+    --bw-toast-success-icon: var(--bw-color-success);
+    --bw-toast-success-progress: var(--bw-color-success);
+
+    --bw-toast-danger-border: var(--bw-color-danger);
+    --bw-toast-danger-icon: var(--bw-color-danger);
+    --bw-toast-danger-progress: var(--bw-color-danger);
+
+    --bw-toast-warning-border: var(--bw-color-warning);
+    --bw-toast-warning-icon: var(--bw-color-warning);
+    --bw-toast-warning-progress: var(--bw-color-warning);
+
+    --bw-toast-info-border: var(--bw-color-info);
+    --bw-toast-info-icon: var(--bw-color-info);
+    --bw-toast-info-progress: var(--bw-color-info);
+
+    /* Card */
+    --bw-card-bg: var(--bw-color-surface);
+    --bw-card-border: var(--bw-color-border);
+    --bw-card-header-bg: transparent;
+    --bw-card-header-border: var(--bw-color-divider);
+    --bw-card-footer-bg: var(--bw-gray-50);
+    --bw-card-title: var(--bw-color-text);
+    --bw-card-subtitle: var(--bw-color-text-secondary);
+
+    /* Dialog */
+    --bw-dialog-bg: var(--bw-color-surface);
+    --bw-dialog-overlay: rgba(0, 0, 0, 0.5);
+    --bw-dialog-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --bw-dialog-header-bg: var(--bw-gray-50);
+    --bw-dialog-header-border: var(--bw-color-border);
+    --bw-dialog-title: var(--bw-color-text);
+
+    /* Badge */
+    --bw-badge-primary-bg: var(--bw-color-primary);
+    --bw-badge-primary-text: var(--bw-color-text-inverse);
+    --bw-badge-success-bg: var(--bw-color-success);
+    --bw-badge-success-text: var(--bw-color-text-inverse);
+    --bw-badge-danger-bg: var(--bw-color-danger);
+    --bw-badge-danger-text: var(--bw-color-text-inverse);
+    --bw-badge-warning-bg: var(--bw-color-warning);
+    --bw-badge-warning-text: var(--bw-color-text-inverse);
+    --bw-badge-info-bg: var(--bw-color-info);
+    --bw-badge-info-text: var(--bw-color-text-inverse);
+
+    /* ========================================
+     SECTION 4: Design Tokens
+     ======================================== */
+
+    /* Radius - More organic/rounded for Forest */
+    --bw-radius-none: 0;
+    --bw-radius-sm: 0.25rem;
+    --bw-radius-default: 0.5rem;
+    --bw-radius-md: 0.75rem;
+    --bw-radius-lg: 1rem;
+    --bw-radius-xl: 1.5rem;
+    --bw-radius-2xl: 2rem;
+    --bw-radius-full: 9999px;
+
+    /* Shadows - Deeper and softer */
+    --bw-shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    --bw-shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --bw-shadow-default: 0 6px 12px -2px rgba(0, 0, 0, 0.12), 0 3px 6px -3px rgba(0, 0, 0, 0.1);
+    --bw-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -4px rgba(0, 0, 0, 0.07);
+    --bw-shadow-lg: 0 15px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --bw-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --bw-shadow-2xl: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+    --bw-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+    /* Colored Shadows - Forest (Green/Earth based) */
+    --bw-shadow-primary: 0 4px 14px 0 rgba(34, 197, 94, 0.3);
+    --bw-shadow-success: 0 4px 14px 0 rgba(132, 204, 22, 0.3);
+    --bw-shadow-danger: 0 4px 14px 0 rgba(239, 68, 68, 0.3);
+    --bw-shadow-warning: 0 4px 14px 0 rgba(234, 179, 8, 0.3);
+    --bw-shadow-info: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
+
+    /* Borders */
+    --bw-border-width-thin: 1px;
+    --bw-border-width-default: 1px;
+    --bw-border-width-thick: 2px;
+    --bw-border-width-heavy: 3px;
+
+    /* Transitions */
+    --bw-transition-fast: 150ms;
+    --bw-transition-default: 200ms;
+    --bw-transition-slow: 300ms;
+    --bw-transition-slower: 500ms;
+
+    /* Spacing */
+    --bw-spacing-0: 0;
+    --bw-spacing-px: 1px;
+    --bw-spacing-0-5: 0.125rem;
+    --bw-spacing-1: 0.25rem;
+    --bw-spacing-1-5: 0.375rem;
+    --bw-spacing-2: 0.5rem;
+    --bw-spacing-2-5: 0.625rem;
+    --bw-spacing-3: 0.75rem;
+    --bw-spacing-3-5: 0.875rem;
+    --bw-spacing-4: 1rem;
+    --bw-spacing-5: 1.25rem;
+    --bw-spacing-6: 1.5rem;
+    --bw-spacing-8: 2rem;
+    --bw-spacing-10: 2.5rem;
+    --bw-spacing-12: 3rem;
+}
+
+/* Dark Mode */
+.dark .bw-theme-forest,
+.bw-theme-forest.dark,
+:root.dark:has(.bw-theme-forest) {
+    --bw-color-primary: var(--bw-primary-500);
+    --bw-color-primary-hover: var(--bw-primary-600);
+    --bw-color-primary-soft-bg: rgba(34, 197, 94, 0.2);
+    --bw-color-primary-soft-text: var(--bw-primary-300);
+
+    --bw-color-success: var(--bw-success-500);
+    --bw-color-success-soft-bg: rgba(132, 204, 22, 0.2);
+    --bw-color-success-soft-text: var(--bw-success-300);
+
+    --bw-color-danger: var(--bw-danger-500);
+    --bw-color-danger-soft-bg: rgba(239, 68, 68, 0.2);
+    --bw-color-danger-soft-text: var(--bw-danger-300);
+
+    --bw-color-warning: var(--bw-warning-400);
+    --bw-color-warning-soft-bg: rgba(234, 179, 8, 0.2);
+    --bw-color-warning-soft-text: var(--bw-warning-300);
+
+    --bw-color-info: var(--bw-info-500);
+    --bw-color-info-soft-bg: rgba(16, 185, 129, 0.2);
+    --bw-color-info-soft-text: var(--bw-info-300);
+
+    --bw-color-background: #1a1916;
+    --bw-color-surface: #262420;
+    --bw-color-surface-elevated: #32302b;
+
+    --bw-color-text: var(--bw-gray-100);
+    --bw-color-text-secondary: var(--bw-gray-400);
+    --bw-color-text-muted: var(--bw-gray-500);
+
+    --bw-color-border: #3d3a33;
+    --bw-color-border-strong: #3e4c63;
+    --bw-color-divider: #292724;
+
+    /* Component overrides */
+    --bw-input-focus-ring: rgba(34, 197, 94, 0.3);
+    --bw-input-error-ring: rgba(239, 68, 68, 0.3);
+
+    --bw-card-footer-bg: rgba(0, 0, 0, 0.2);
+    --bw-dialog-header-bg: var(--bw-gray-800);
+
+    --bw-toast-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}

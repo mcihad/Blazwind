@@ -18,25 +18,13 @@
     private string AllClasses => $"{ContainerClasses} {GroupClasses} {Class}".Trim();
 
     private string ContainerClasses => Orientation == BwOrientation.Vertical
-        ? $"inline-flex flex-col {WidthClass} {ShadowClass}"
-        : $"inline-flex flex-row {WidthClass} {ShadowClass}";
+        ? $"inline-flex flex-col {WidthClass}"
+        : $"inline-flex flex-row {WidthClass}";
     
     private string WidthClass => IsFullWidth ? "w-full" : "w-fit";
-    
-    private string ShadowClass => IsAttached ? "shadow-sm rounded-md" : "";
 
+    // Use semantic class .bw-btn-group if attached, otherwise just gap
     private string GroupClasses => IsAttached 
-        ? (Orientation == BwOrientation.Vertical ? VerticalAttachedClasses : HorizontalAttachedClasses)
-        : (Orientation == BwOrientation.Vertical ? VerticalGapClasses : HorizontalGapClasses);
-    
-    // Attached mode - buttons touch each other
-    private string HorizontalAttachedClasses => 
-        "[&>*:not(:first-child)]:rounded-l-none [&>*:not(:last-child)]:rounded-r-none [&>*:not(:first-child)]:-ml-px [&>*]:shadow-none [&>*]:focus:ring-0";
-    
-    private string VerticalAttachedClasses => 
-        "[&>*:not(:first-child)]:rounded-t-none [&>*:not(:last-child)]:rounded-b-none [&>*:not(:first-child)]:-mt-px [&>*]:shadow-none [&>*]:focus:ring-0";
-    
-    // Gap mode - buttons have spacing between them
-    private string HorizontalGapClasses => "gap-1";
-    private string VerticalGapClasses => "gap-1";
+        ? "bw-btn-group" + (Orientation == BwOrientation.Vertical ? " bw-btn-group-vertical" : "")
+        : (Orientation == BwOrientation.Vertical ? "gap-1" : "gap-1");
 }

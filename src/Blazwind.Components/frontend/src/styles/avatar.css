@@ -1,0 +1,147 @@
+/* ============================================
+   Avatar Component Styles
+   ============================================ */
+
+.bw-avatar {
+    @apply relative inline-block;
+}
+
+.bw-avatar-container {
+    @apply flex items-center justify-center rounded-full ring-2 ring-white dark:ring-gray-900;
+    overflow: hidden;
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-avatar-container {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-avatar-img {
+    @apply w-full h-full object-cover rounded-full;
+}
+
+.bw-avatar-initials {
+    @apply font-medium;
+    color: var(--bw-color-text-secondary);
+}
+
+/* SIZES */
+.bw-avatar-xs {
+    width: 1.5rem;
+    /* 24px */
+    height: 1.5rem;
+}
+
+.bw-avatar-xs .bw-avatar-container {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.bw-avatar-xs .bw-avatar-initials {
+    font-size: 0.625rem;
+}
+
+.bw-avatar-sm {
+    width: 2rem;
+    /* 32px - w-8 */
+    height: 2rem;
+}
+
+.bw-avatar-sm .bw-avatar-container {
+    width: 2rem;
+    height: 2rem;
+}
+
+.bw-avatar-sm .bw-avatar-initials {
+    font-size: 0.75rem;
+    /* text-xs */
+}
+
+.bw-avatar-md {
+    width: 2.5rem;
+    /* 40px - w-10 */
+    height: 2.5rem;
+}
+
+.bw-avatar-md .bw-avatar-container {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.bw-avatar-md .bw-avatar-initials {
+    font-size: 0.875rem;
+    /* text-sm */
+}
+
+.bw-avatar-lg {
+    width: 3rem;
+    /* 48px - w-12 */
+    height: 3rem;
+}
+
+.bw-avatar-lg .bw-avatar-container {
+    width: 3rem;
+    height: 3rem;
+}
+
+.bw-avatar-lg .bw-avatar-initials {
+    font-size: 1.125rem;
+    /* text-lg */
+}
+
+.bw-avatar-xl {
+    width: 4rem;
+    /* 64px */
+    height: 4rem;
+}
+
+.bw-avatar-xl .bw-avatar-container {
+    width: 4rem;
+    height: 4rem;
+}
+
+.bw-avatar-xl .bw-avatar-initials {
+    font-size: 1.5rem;
+}
+
+/* STATUS */
+.bw-avatar-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: block;
+    width: 20%;
+    /* Relative size or fixed? Tailwind use fixed usually */
+    height: 20%;
+    min-width: 8px;
+    min-height: 8px;
+    max-width: 14px;
+    max-height: 14px;
+    border-radius: var(--bw-radius-full);
+    box-shadow: 0 0 0 2px var(--bw-color-surface);
+}
+
+/* Status variants */
+.bw-avatar-status-success {
+    background-color: var(--bw-color-success);
+}
+
+.bw-avatar-status-danger {
+    background-color: var(--bw-color-danger);
+}
+
+.bw-avatar-status-warning {
+    background-color: var(--bw-color-warning);
+}
+
+.bw-avatar-status-secondary {
+    background-color: var(--bw-color-secondary);
+}
+
+.bw-avatar-status-primary {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-avatar-status-info {
+    background-color: var(--bw-color-info);
+}

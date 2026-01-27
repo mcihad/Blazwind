@@ -1,0 +1,217 @@
+/* ============================================
+   Accordion Component Styles
+   ============================================ */
+
+.bw-accordion-item {
+    @apply w-full bg-transparent;
+    /* Border handling is usually done by parent divide-y, but we can add overrides if needed */
+}
+
+/* HEADER */
+.bw-accordion-header {
+    @apply w-full flex items-center justify-between transition-colors duration-200 text-left;
+    /* Default state */
+    background-color: transparent;
+    color: var(--bw-color-text);
+}
+
+.bw-accordion-header:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-accordion-header:hover {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-accordion-header:disabled {
+    @apply cursor-not-allowed opacity-50;
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-accordion-header:disabled {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-500);
+}
+
+.bw-accordion-header:not(:disabled) {
+    cursor: pointer;
+}
+
+/* SIZES */
+.bw-accordion-header-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.bw-accordion-header-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.bw-accordion-header-md {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+}
+
+.bw-accordion-header-lg {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+}
+
+.bw-accordion-header-xl {
+    padding: 1.25rem 1.5rem;
+    font-size: 1.125rem;
+}
+
+/* CONTENT */
+.bw-accordion-content {
+    @apply border-t;
+    border-color: var(--bw-color-divider);
+    background-color: var(--bw-gray-50);
+    color: var(--bw-color-text-secondary);
+}
+
+.dark .bw-accordion-content {
+    background-color: rgba(31, 41, 55, 0.5);
+    /* gray-800/50 */
+}
+
+.bw-accordion-content-xs {
+    padding: 0.25rem 0.5rem 0.5rem;
+}
+
+.bw-accordion-content-sm {
+    padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.bw-accordion-content-md {
+    padding: 0.5rem 1rem 1rem;
+}
+
+.bw-accordion-content-lg {
+    padding: 0.75rem 1.25rem 1.25rem;
+}
+
+.bw-accordion-content-xl {
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+/* ACTIVE STATES (Expanded) */
+.bw-accordion-header-active-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary-soft-text);
+}
+
+.bw-accordion-header-active-secondary {
+    background-color: var(--bw-color-secondary-soft-bg);
+    color: var(--bw-color-secondary-soft-text);
+}
+
+.bw-accordion-header-active-success {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success-soft-text);
+}
+
+.bw-accordion-header-active-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    color: var(--bw-color-danger-soft-text);
+}
+
+.bw-accordion-header-active-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    color: var(--bw-color-warning-soft-text);
+}
+
+.bw-accordion-header-active-info {
+    background-color: var(--bw-color-info-soft-bg);
+    color: var(--bw-color-info-soft-text);
+}
+
+.bw-accordion-header-active-light {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-700);
+}
+
+.dark .bw-accordion-header-active-light {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-200);
+}
+
+.bw-accordion-header-active-dark {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-100);
+}
+
+.dark .bw-accordion-header-active-dark {
+    background-color: black;
+    color: var(--bw-gray-100);
+}
+
+.bw-accordion-header-active-white {
+    background-color: white;
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-accordion-header-active-white {
+    background-color: var(--bw-gray-900);
+    color: var(--bw-gray-100);
+}
+
+.bw-accordion-header-active-black {
+    background-color: black;
+    color: white;
+}
+
+.bw-accordion-header-active-transparent {
+    background-color: transparent;
+    color: var(--bw-color-text);
+}
+
+/* ========================================
+   CONTAINER STYLES
+   ======================================== */
+
+.bw-accordion {
+    @apply w-full overflow-hidden;
+    border-radius: var(--bw-radius-default);
+}
+
+/* Outline Variant */
+.bw-accordion-outline {
+    border: 1px solid var(--bw-color-border);
+}
+
+.bw-accordion-outline .bw-accordion-item:not(:last-child) {
+    border-bottom: 1px solid var(--bw-color-divider);
+}
+
+.dark .bw-accordion-outline {
+    border-color: var(--bw-color-border);
+}
+
+/* Filled Variant */
+.bw-accordion-filled {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-accordion-filled .bw-accordion-item:not(:last-child) {
+    border-bottom: 1px solid var(--bw-color-divider);
+}
+
+.dark .bw-accordion-filled {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-color-border);
+}
+
+/* Ghost Variant */
+.bw-accordion-ghost {
+    background: transparent;
+    border: none;
+}
+
+.bw-accordion-ghost .bw-accordion-item:not(:last-child) {
+    border-bottom: 1px solid var(--bw-color-divider);
+}

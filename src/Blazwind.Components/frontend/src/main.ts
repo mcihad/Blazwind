@@ -33,6 +33,7 @@ import * as Tour from './components/tour';
 import * as Tabs from './components/tabs';
 import * as Dropdown from './components/dropdown';
 import * as Toolbar from './components/toolbar';
+import * as Theme from './theme';
 
 
 // Expose modules globally for JSInterop
@@ -68,6 +69,7 @@ declare global {
             Tabs: typeof Tabs;
             Dropdown: typeof Dropdown;
             Toolbar: typeof Toolbar;
+            Theme: typeof Theme;
         };
     }
 }
@@ -101,8 +103,9 @@ window.Blazwind = {
     Tour,
     Tabs,
     Dropdown,
-    Toolbar
+    Toolbar,
+    Theme
 };
 
-export { Toast, Dialog, Nav, Sidebar, List, Drawer, ContextMenu, CommandPalette as commandPalette, Confetti as confetti, Calendar, SplitPanel, VirtualScroll, InfiniteScroll, ColumnDrag, ColumnResize, QRCode, RangeBrush, RangeSlider, SignaturePad, Barcode, OrgChart, Printable, Workflow, Gantt, DocumentViewer, Tour, Tabs, Dropdown, Toolbar };
+export { Toast, Dialog, Nav, Sidebar, List, Drawer, ContextMenu, CommandPalette as commandPalette, Confetti as confetti, Calendar, SplitPanel, VirtualScroll, InfiniteScroll, ColumnDrag, ColumnResize, QRCode, RangeBrush, RangeSlider, SignaturePad, Barcode, OrgChart, Printable, Workflow, Gantt, DocumentViewer, Tour, Tabs, Dropdown, Toolbar, Theme };
 

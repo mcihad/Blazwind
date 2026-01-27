@@ -3,14 +3,15 @@
 @inherits BwBase
 
 @{
-    var baseClasses = "relative inline-flex items-center justify-center gap-2 font-medium rounded transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 dark:focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent";
+    // Base class with theme-aware styling
+    var baseClasses = "bw-btn";
     
-    // Size classes
+    // Size classes using theme-aware CSS
     var sizeClasses = Size switch
     {
-        BwSize.Small => "px-3 py-1.5 text-xs",
-        BwSize.Large => "px-6 py-3 text-base",
-        _ => "px-4 py-2 text-sm" // Medium
+        BwSize.Small => "bw-btn-small",
+        BwSize.Large => "bw-btn-large",
+        _ => "bw-btn-medium"
     };
     
     // Icon-only adjustments
@@ -18,64 +19,61 @@
     {
         sizeClasses = Size switch
         {
-            BwSize.Small => "p-1.5",
-            BwSize.Large => "p-3",
-            _ => "p-2"
+            BwSize.Small => "bw-btn-icon-small",
+            BwSize.Large => "bw-btn-icon-large",
+            _ => "bw-btn-icon-medium"
         };
     }
     
-    // Variant + Type classes
-    var variantClasses = (Color, Variant) switch
+    // Variant class (theme-aware)
+    var variantClass = (Variant, Color) switch
     {
-        // Primary - Filled with dark mode brightness
-        (BwColor.Primary, BwVariant.Filled) => "bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:ring-blue-500 active:bg-blue-800 dark:active:bg-blue-700",
-        (BwColor.Primary, BwVariant.Outline) => "border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 focus:ring-blue-500",
-        (BwColor.Primary, BwVariant.Ghost) => "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 focus:ring-blue-500",
-        (BwColor.Primary, BwVariant.Soft) => "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 focus:ring-blue-500",
-        (BwColor.Primary, BwVariant.Link) => "text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 !p-0 !h-auto outline-none border-none focus:outline-none focus:ring-0",
+        // Filled variants
+        (BwVariant.Filled, BwColor.Primary) => "bw-btn-filled-primary",
+        (BwVariant.Filled, BwColor.Secondary) => "bw-btn-filled-secondary",
+        (BwVariant.Filled, BwColor.Success) => "bw-btn-filled-success",
+        (BwVariant.Filled, BwColor.Danger) => "bw-btn-filled-danger",
+        (BwVariant.Filled, BwColor.Warning) => "bw-btn-filled-warning",
+        (BwVariant.Filled, BwColor.Info) => "bw-btn-filled-info",
+        (BwVariant.Filled, BwColor.Light) => "bw-btn-filled-light",
+        (BwVariant.Filled, BwColor.Dark) => "bw-btn-filled-dark",
         
-        // Secondary - Filled with dark mode brightness
-        (BwColor.Secondary, BwVariant.Filled) => "bg-gray-600 dark:bg-gray-500 text-white hover:bg-gray-700 dark:hover:bg-gray-600 focus:ring-gray-500 active:bg-gray-800 dark:active:bg-gray-700",
-        (BwColor.Secondary, BwVariant.Outline) => "border-2 border-gray-400 dark:border-gray-500 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 focus:ring-gray-400",
-        (BwColor.Secondary, BwVariant.Ghost) => "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-gray-400",
-        (BwColor.Secondary, BwVariant.Soft) => "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-gray-500",
-        (BwColor.Secondary, BwVariant.Link) => "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 !p-0 !h-auto outline-none border-none focus:outline-none focus:ring-0",
+        // Outline variants
+        (BwVariant.Outline, BwColor.Primary) => "bw-btn-outline-primary",
+        (BwVariant.Outline, BwColor.Secondary) => "bw-btn-outline-secondary",
+        (BwVariant.Outline, BwColor.Success) => "bw-btn-outline-success",
+        (BwVariant.Outline, BwColor.Danger) => "bw-btn-outline-danger",
+        (BwVariant.Outline, BwColor.Warning) => "bw-btn-outline-warning",
+        (BwVariant.Outline, BwColor.Info) => "bw-btn-outline-info",
+        (BwVariant.Outline, BwColor.Light) => "bw-btn-outline-light",
+        (BwVariant.Outline, BwColor.Dark) => "bw-btn-outline-dark",
         
-        // Success - Filled with dark mode brightness
-        (BwColor.Success, BwVariant.Filled) => "bg-emerald-600 dark:bg-emerald-500 text-white hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:ring-emerald-500 active:bg-emerald-800 dark:active:bg-emerald-700",
-        (BwColor.Success, BwVariant.Outline) => "border-2 border-emerald-600 dark:border-emerald-500 text-emerald-600 dark:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 focus:ring-emerald-500",
-        (BwColor.Success, BwVariant.Ghost) => "text-emerald-600 dark:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 focus:ring-emerald-500",
-        (BwColor.Success, BwVariant.Soft) => "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 focus:ring-emerald-500",
-        (BwColor.Success, BwVariant.Link) => "text-emerald-600 dark:text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-400 !p-0 !h-auto outline-none border-none focus:outline-none focus:ring-0",
+        // Ghost variants
+        (BwVariant.Ghost, BwColor.Primary) => "bw-btn-ghost-primary",
+        (BwVariant.Ghost, BwColor.Secondary) => "bw-btn-ghost-secondary",
+        (BwVariant.Ghost, BwColor.Success) => "bw-btn-ghost-success",
+        (BwVariant.Ghost, BwColor.Danger) => "bw-btn-ghost-danger",
+        (BwVariant.Ghost, BwColor.Warning) => "bw-btn-ghost-warning",
+        (BwVariant.Ghost, BwColor.Info) => "bw-btn-ghost-info",
+        (BwVariant.Ghost, _) => "bw-btn-ghost-secondary",
         
-        // Danger - Filled with dark mode brightness
-        (BwColor.Danger, BwVariant.Filled) => "bg-red-600 dark:bg-red-500 text-white hover:bg-red-700 dark:hover:bg-red-600 focus:ring-red-500 active:bg-red-800 dark:active:bg-red-700",
-        (BwColor.Danger, BwVariant.Outline) => "border-2 border-red-600 dark:border-red-500 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 focus:ring-red-500",
-        (BwColor.Danger, BwVariant.Ghost) => "text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 focus:ring-red-500",
-        (BwColor.Danger, BwVariant.Soft) => "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 focus:ring-red-500",
-        (BwColor.Danger, BwVariant.Link) => "text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 !p-0 !h-auto outline-none border-none focus:outline-none focus:ring-0",
+        // Soft variants
+        (BwVariant.Soft, BwColor.Primary) => "bw-btn-soft-primary",
+        (BwVariant.Soft, BwColor.Secondary) => "bw-btn-soft-secondary",
+        (BwVariant.Soft, BwColor.Success) => "bw-btn-soft-success",
+        (BwVariant.Soft, BwColor.Danger) => "bw-btn-soft-danger",
+        (BwVariant.Soft, BwColor.Warning) => "bw-btn-soft-warning",
+        (BwVariant.Soft, BwColor.Info) => "bw-btn-soft-info",
+        (BwVariant.Soft, _) => "bw-btn-soft-secondary",
         
-        // Warning - Filled with dark mode brightness
-        (BwColor.Warning, BwVariant.Filled) => "bg-amber-500 dark:bg-amber-400 text-white dark:text-gray-900 hover:bg-amber-600 dark:hover:bg-amber-500 focus:ring-amber-400 active:bg-amber-700 dark:active:bg-amber-600",
-        (BwColor.Warning, BwVariant.Outline) => "border-2 border-amber-500 dark:border-amber-400 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 focus:ring-amber-400",
-        (BwColor.Warning, BwVariant.Ghost) => "text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 focus:ring-amber-400",
-        (BwColor.Warning, BwVariant.Soft) => "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50 focus:ring-amber-400",
-        (BwColor.Warning, BwVariant.Link) => "text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 !p-0 !h-auto outline-none border-none focus:outline-none focus:ring-0",
+        // Link variants
+        (BwVariant.Link, BwColor.Primary) => "bw-btn-link-primary",
+        (BwVariant.Link, BwColor.Secondary) => "bw-btn-link-secondary",
+        (BwVariant.Link, BwColor.Success) => "bw-btn-link-success",
+        (BwVariant.Link, BwColor.Danger) => "bw-btn-link-danger",
+        (BwVariant.Link, _) => "bw-btn-link-primary",
         
-        // Info - Filled with dark mode brightness
-        (BwColor.Info, BwVariant.Filled) => "bg-sky-500 dark:bg-sky-400 text-white dark:text-gray-900 hover:bg-sky-600 dark:hover:bg-sky-500 focus:ring-sky-400 active:bg-sky-700 dark:active:bg-sky-600",
-        (BwColor.Info, BwVariant.Outline) => "border-2 border-sky-500 dark:border-sky-400 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/30 focus:ring-sky-400",
-        (BwColor.Info, BwVariant.Ghost) => "text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/30 focus:ring-sky-400",
-        (BwColor.Info, BwVariant.Soft) => "bg-sky-100 dark:bg-sky-900/30 text-sky-800 dark:text-sky-300 hover:bg-sky-200 dark:hover:bg-sky-900/50 focus:ring-sky-400",
-        (BwColor.Info, BwVariant.Link) => "text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 !p-0 !h-auto outline-none border-none focus:outline-none focus:ring-0",
-        
-        // Light
-        (BwColor.Light, _) => "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-200 dark:focus:ring-gray-600",
-        
-        // Dark
-        (BwColor.Dark, _) => "bg-gray-900 dark:bg-gray-700 text-white hover:bg-gray-800 dark:hover:bg-gray-600 focus:ring-gray-800 dark:focus:ring-gray-600",
-
-        _ => "bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:ring-blue-500"
+        _ => "bw-btn-filled-primary"
     };
     
     // Icon size
@@ -86,7 +84,7 @@
         _ => "text-sm"
     };
     
-    var allClasses = CombineClasses($"{baseClasses} {sizeClasses} {variantClasses}");
+    var allClasses = CombineClasses($"{baseClasses} {sizeClasses} {variantClass}");
 }
 
 @if (string.IsNullOrEmpty(Href))
@@ -117,7 +115,6 @@ else
 @code {
     private RenderFragment RenderContent() => __builder =>
     {
-        // Icon size
         var iconSize = Size switch
         {
             BwSize.Small => "text-xs",

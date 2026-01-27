@@ -24,32 +24,26 @@
 
     private string GetBaseClasses()
     {
-        var classes = new List<string>();
+        var classes = new List<string> { "bw-accordion" };
         
-        if (Variant == BwVariant.Outline)
+        // Variant classes
+        classes.Add(Variant switch
         {
-            classes.Add("border border-gray-200 dark:border-gray-700 rounded-md divide-y divide-gray-200 dark:divide-gray-700");
-        }
-        else if (Variant == BwVariant.Ghost)
-        {
-            classes.Add("divide-y divide-gray-200 dark:divide-gray-700");
-        }
-        else if (Variant == BwVariant.Filled)
-        {
-             classes.Add("bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md divide-y divide-gray-200 dark:divide-gray-700 shadow-sm");
-        }
+            BwVariant.Outline => "bw-accordion-outline",
+            BwVariant.Filled => "bw-accordion-filled",
+            BwVariant.Ghost => "bw-accordion-ghost",
+            _ => "bw-accordion-outline"
+        });
         
-        // Global font size adjustments if desired, or leave it to items?
-        // Usually accordion container might not set text size, but items do.
-        // However, setting it here ensures inheritance if items don't override.
-        switch(Size)
+        // Size handling
+        classes.Add(Size switch
         {
-            case BwSize.ExtraSmall: classes.Add("text-xs"); break;
-            case BwSize.Small: classes.Add("text-xs"); break;
-            case BwSize.Medium: classes.Add("text-sm"); break;
-            case BwSize.Large: classes.Add("text-base"); break;
-            case BwSize.ExtraLarge: classes.Add("text-lg"); break;
-        }
+            BwSize.ExtraSmall => "text-xs",
+            BwSize.Small => "text-xs",
+            BwSize.Large => "text-base",
+            BwSize.ExtraLarge => "text-lg",
+            _ => "text-sm"
+        });
 
         return string.Join(" ", classes);
     }

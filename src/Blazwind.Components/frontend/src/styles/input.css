@@ -1,0 +1,75 @@
+/* ============================================
+   Input Component Styles
+   ============================================ */
+
+.bw-input {
+    @apply w-full border rounded transition-colors duration-200 outline-none;
+    background-color: var(--bw-input-bg);
+    border-color: var(--bw-input-border);
+    color: var(--bw-input-text);
+}
+
+.bw-input::placeholder {
+    color: var(--bw-input-placeholder);
+}
+
+.bw-input:hover:not(:disabled):not(:focus) {
+    border-color: var(--bw-color-border-strong);
+}
+
+.bw-input:focus {
+    border-color: var(--bw-input-focus-border);
+    box-shadow: 0 0 0 3px var(--bw-input-focus-ring);
+}
+
+/* Size variants */
+.bw-input-small {
+    @apply h-8 px-2.5 text-xs;
+}
+
+.bw-input-medium {
+    @apply h-10 px-3 text-sm;
+}
+
+.bw-input-large {
+    @apply h-12 px-4 text-base;
+}
+
+/* State: Error */
+.bw-input-error {
+    border-color: var(--bw-input-error-border);
+}
+
+.bw-input-error:focus {
+    border-color: var(--bw-input-error-border);
+    box-shadow: 0 0 0 3px var(--bw-input-error-ring);
+}
+
+/* State: Disabled */
+.bw-input:disabled {
+    background-color: var(--bw-gray-50);
+    color: var(--bw-color-text-muted);
+    cursor: not-allowed;
+}
+
+.dark .bw-input:disabled {
+    background-color: var(--bw-gray-900);
+}
+
+/* Label */
+.bw-label {
+    @apply block text-sm font-medium;
+    color: var(--bw-color-text-secondary);
+}
+
+/* Error message */
+.bw-error-text {
+    @apply mt-1 text-xs flex items-center gap-1;
+    color: var(--bw-color-danger);
+}
+
+/* Required indicator */
+.bw-required {
+    color: var(--bw-color-danger);
+    @apply ml-0.5;
+}
