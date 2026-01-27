@@ -2,11 +2,6 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-@{
-    var wrapperClasses = "bw-calendar-wrapper";
-    var containerClasses = "bw-calendar flex flex-col h-full bg-white dark:bg-gray-900 rounded overflow-hidden border border-gray-200 dark:border-gray-700";
-}
-
 <style>
     .bw-calendar-fullscreen {
         position: fixed !important;
@@ -23,13 +18,13 @@
     }
 </style>
 
-<div class="@wrapperClasses h-full">
+<div class="bw-calendar-wrapper h-full">
     @* ChildContent for slot registration - hidden *@
     <CascadingValue Value="this" Name="ParentCalendar">
         <div style="display: none;">@ChildContent</div>
     </CascadingValue>
     
-    <div id="@Id" class="@CombineClasses($"{containerClasses}")" style="@Style" @attributes="AdditionalAttributes">
+    <div id="@Id" class="@CombineClasses("bw-calendar")" style="@Style" @attributes="AdditionalAttributes">
         @* Header - Navigation and View Switcher *@
         <BwCalendarHeader 
             SelectedDate="@SelectedDate"
@@ -65,9 +60,6 @@
                         HideEmptySlots="@HideEmptySlots"
                         AllowDrag="@AllowDrag"
                         AllowResize="@AllowResize"
-                        TodayHeaderClass="@GetTodayHeaderClass()"
-                        TodayBackgroundClass="@GetTodayBackgroundClass()"
-                        TodayTextClass="@GetTodayTextClass()"
                         EventTemplate="@GetEventTemplateForView(BwCalendarView.Daily)"
                         OnEventClicked="@OnEventClicked"
                         OnSlotSelected="@OnSlotSelected"
@@ -85,9 +77,6 @@
                         HideEmptySlots="@HideEmptySlots"
                         AllowDrag="@AllowDrag"
                         AllowResize="@AllowResize"
-                        TodayHeaderClass="@GetTodayHeaderClass()"
-                        TodayBackgroundClass="@GetTodayBackgroundClass()"
-                        TodayTextClass="@GetTodayTextClass()"
                         EventTemplate="@GetEventTemplateForView(BwCalendarView.Weekly)"
                         OnEventClicked="@OnEventClicked"
                         OnSlotSelected="@OnSlotSelected"
@@ -99,7 +88,6 @@
                         SelectedDate="@SelectedDate"
                         Events="@ExpandedEvents"
                         Calendars="@EffectiveCalendars"
-                        TodayHeaderClass="@GetTodayHeaderClass()"
                         EventTemplate="@GetEventTemplateForView(BwCalendarView.Monthly)"
                         OnDateSelected="@HandleDateSelected"
                         OnEventClicked="@OnEventClicked" />

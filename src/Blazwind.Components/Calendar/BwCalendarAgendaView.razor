@@ -11,19 +11,19 @@
         .ToList() ?? new();
 }
 
-<div class="h-full overflow-y-auto bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+<div class="bw-calendar-agenda">
     @if (!upcomingEvents.Any())
     {
         @* Empty State - Premium Design *@
         <div class="flex flex-col items-center justify-center h-full text-center px-8 py-16">
             <div class="relative">
-                <div class="absolute inset-0 bg-blue-500/10 dark:bg-blue-400/10 rounded-full blur-2xl scale-150"></div>
-                <div class="relative w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-500/20">
+                <div class="absolute inset-0 rounded-full blur-2xl scale-150" style="background-color: color-mix(in srgb, var(--bw-color-primary) 10%, transparent);"></div>
+                <div class="bw-calendar-agenda-empty-icon relative" style="box-shadow: 0 20px 25px -5px color-mix(in srgb, var(--bw-color-primary) 20%, transparent);">
                     <i class="fa-regular fa-calendar-check text-4xl text-white"></i>
                 </div>
             </div>
-            <h3 class="mt-8 text-xl font-semibold text-gray-900 dark:text-white">Yaklaşan etkinlik yok</h3>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+            <h3 class="bw-calendar-agenda-empty-title">Yaklaşan etkinlik yok</h3>
+            <p class="bw-calendar-agenda-empty-text">
                 Takviminiz temiz görünüyor. Yeni etkinlik eklemek için takvime tıklayın.
             </p>
         </div>
@@ -42,18 +42,18 @@
                 
                 <div class="relative">
                     @* Date Header - Modern Glass Style *@
-                    <div class="sticky top-0 z-10 pb-3 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm pt-2">
+                    <div class="bw-calendar-agenda-date-header backdrop-blur-sm">
                         <div class="flex items-center gap-4">
                             @* Date Badge *@
                             <div class="flex-shrink-0 w-16 sm:w-20">
-                                <div class="@(isToday ? "bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30" : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700") rounded-xl p-2 text-center transition-all">
-                                    <div class="text-xs uppercase tracking-widest @(isToday ? "text-blue-100" : "text-gray-400 dark:text-gray-500") font-medium">
+                                <div class="@(isToday ? "bw-calendar-agenda-date-badge bw-calendar-agenda-date-badge-today" : "bw-calendar-agenda-date-badge")">
+                                    <div class="@(isToday ? "bw-calendar-agenda-date-month bw-calendar-agenda-date-month-today" : "bw-calendar-agenda-date-month")">
                                         @date.ToString("MMM", culture).ToUpper()
                                     </div>
-                                    <div class="text-2xl sm:text-3xl font-bold @(isToday ? "text-white" : "text-gray-800 dark:text-white") leading-none mt-0.5">
+                                    <div class="@(isToday ? "bw-calendar-agenda-date-day bw-calendar-agenda-date-day-today" : "bw-calendar-agenda-date-day")">
                                         @date.Day
                                     </div>
-                                    <div class="text-xs @(isToday ? "text-blue-200" : "text-gray-500 dark:text-gray-400") mt-0.5">
+                                    <div class="@(isToday ? "bw-calendar-agenda-date-weekday bw-calendar-agenda-date-weekday-today" : "bw-calendar-agenda-date-weekday")">
                                         @date.ToString("ddd", culture)
                                     </div>
                                 </div>
@@ -61,10 +61,10 @@
                             
                             @* Day Title & Count *@
                             <div class="flex-1 min-w-0">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                                <h3 class="bw-calendar-agenda-day-title">
                                     @dateTitle
                                 </h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                <p class="bw-calendar-agenda-day-count">
                                     @dayGroup.Count() etkinlik
                                 </p>
                             </div>
@@ -86,7 +86,7 @@
                             var bgColor = $"rgba({r}, {g}, {b}, 0.08)";
                             var borderColor = $"rgba({r}, {g}, {b}, 0.25)";
                             
-                            <div class="group relative rounded-xl border overflow-hidden transition-all duration-200 hover:shadow-lg cursor-pointer @(isPast ? "opacity-60" : "")"
+                            <div class="bw-calendar-agenda-event @(isPast ? "bw-calendar-agenda-event-past" : "")"
                                  style="background: @bgColor; border-color: @borderColor;"
                                  @onclick="() => HandleEventClicked(calendarEvent)">
                                 
@@ -102,34 +102,34 @@
                                             <div class="flex items-center gap-2 mb-2">
                                                 @if (calendarEvent.IsAllDay)
                                                 {
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-purple-700 dark:text-purple-300 border border-purple-200/50 dark:border-purple-700/50">
+                                                    <span class="bw-calendar-agenda-allday-badge">
                                                         <i class="fa-solid fa-sun text-[10px] mr-1.5"></i>
                                                         Tüm gün
                                                     </span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300">
+                                                    <span class="bw-calendar-agenda-time-badge">
                                                         <i class="fa-regular fa-clock text-[10px] mr-1.5 opacity-70"></i>
                                                         @calendarEvent.StartTime.ToString("HH:mm") - @calendarEvent.EndTime.ToString("HH:mm")
                                                     </span>
                                                     
                                                     @* Duration *@
-                                                    <span class="text-xs text-gray-400 dark:text-gray-500">
+                                                    <span class="bw-calendar-agenda-duration">
                                                         (@(calendarEvent.DurationMinutes) dk)
                                                     </span>
                                                 }
                                             </div>
                                             
                                             @* Title *@
-                                            <h4 class="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                                            <h4 class="bw-calendar-agenda-event-title">
                                                 @calendarEvent.Title
                                             </h4>
                                             
                                             @* Description *@
                                             @if (!string.IsNullOrEmpty(calendarEvent.Description))
                                             {
-                                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                                                <p class="bw-calendar-agenda-event-desc">
                                                     @calendarEvent.Description
                                                 </p>
                                             }
@@ -140,15 +140,15 @@
                                                 <div class="flex flex-wrap items-center gap-3 mt-3">
                                                     @if (!string.IsNullOrEmpty(calendarEvent.Location))
                                                     {
-                                                        <span class="inline-flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                                            <i class="fa-solid fa-location-dot text-[10px] mr-1.5 text-gray-400"></i>
+                                                        <span class="bw-calendar-agenda-event-meta">
+                                                            <i class="fa-solid fa-location-dot text-[10px] mr-1.5 opacity-70"></i>
                                                             @calendarEvent.Location
                                                         </span>
                                                     }
                                                     
                                                     @if (calendar != null)
                                                     {
-                                                        <span class="inline-flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                                        <span class="bw-calendar-agenda-event-meta">
                                                             <span class="w-2 h-2 rounded-full mr-1.5" style="background-color: @calendar.Color"></span>
                                                             @calendar.Name
                                                         </span>
@@ -158,8 +158,8 @@
                                         </div>
                                         
                                         @* Arrow Icon *@
-                                        <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <i class="fa-solid fa-chevron-right text-gray-400 dark:text-gray-500"></i>
+                                        <div class="flex-shrink-0 bw-calendar-agenda-arrow">
+                                            <i class="fa-solid fa-chevron-right"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -170,10 +170,8 @@
             }
             
             @* Load More Indicator *@
-            <div class="text-center py-6">
-                <p class="text-sm text-gray-400 dark:text-gray-500">
-                    Son 2 haftadaki etkinlikler gösteriliyor
-                </p>
+            <div class="bw-calendar-agenda-footer">
+                Son 2 haftadaki etkinlikler gösteriliyor
             </div>
         </div>
     }

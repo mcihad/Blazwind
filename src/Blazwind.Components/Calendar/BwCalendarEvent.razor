@@ -15,7 +15,7 @@
 }
 
 <div data-event-id="@Event.Id"
-     class="group relative rounded px-2 py-1 border-l-2 cursor-pointer transition-all hover:shadow-md select-none @(Compact ? "text-xs" : "text-sm") @(!isHex ? $"bg-{eventColor}-50 border-{eventColor}-500 dark:bg-{eventColor}-900/30" : "")"
+     class="bw-calendar-event @(Compact ? "text-xs" : "text-sm") @(!isHex ? $"bg-{eventColor}-50 border-{eventColor}-500 dark:bg-{eventColor}-900/30" : "")"
      style="@bgStyle @StyleOverride"
      @onmousedown="HandleMouseDown"
      @onmousedown:preventDefault="@_isDragging"
@@ -59,12 +59,12 @@
     @if (AllowResize && !Compact)
     {
         @* Resize Handle *@
-        <div class="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize opacity-0 group-hover:opacity-100 flex items-center justify-center"
+        <div class="bw-calendar-event-resize-handle"
              @onmousedown="HandleResizeStart"
              @onmousedown:stopPropagation="true"
              @ontouchstart="HandleResizeStart"
              @ontouchstart:stopPropagation="true">
-            <div class="w-8 h-1 rounded-full bg-gray-400 dark:bg-gray-500"></div>
+            <div class="bw-calendar-event-resize-bar"></div>
         </div>
     }
 </div>

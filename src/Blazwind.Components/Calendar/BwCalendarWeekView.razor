@@ -15,27 +15,32 @@
 <div id="@containerId" class="relative flex flex-col h-full" data-start-hour="@StartHour"
     data-slot-minutes="@SlotMinutes" data-slot-height="@slotHeight">
 
-
-
     @* Time Grid - with horizontal scroll on mobile *@
     <div class="flex-1 overflow-y-auto overflow-x-auto relative">
         @* Week Header - Sticky *@
-        <div class="sticky top-0 z-30 flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 shadow-sm min-w-[700px]">
+        <div class="bw-calendar-week-header">
             @* Time column spacer *@
-            <div class="flex-shrink-0 w-14 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700"></div>
+            <div class="bw-calendar-week-header-spacer"></div>
 
             @* Day headers *@
             @foreach (var (day, index) in weekDays.Select((d, i) => (d, i)))
             {
                 var isToday = day.Date == DateTime.Today;
-                var dayClass = isToday ? TodayHeaderClass : "text-gray-700 dark:text-gray-300";
 
-                <div class="flex-1 min-w-[90px] text-center py-2 border-l border-gray-200 dark:border-gray-700 first:border-l-0">
-                    <div class="text-xs text-gray-500 dark:text-gray-400">@dayNames[index]</div>
-                    <div
-                        class="text-sm font-semibold mt-0.5 @dayClass @(isToday ? "w-7 h-7 rounded-full mx-auto flex items-center justify-center" : "")">
-                        @day.Day
-                    </div>
+                <div class="bw-calendar-week-day-header">
+                    <div class="bw-calendar-week-day-name">@dayNames[index]</div>
+                    @if (isToday)
+                    {
+                        <div class="bw-calendar-week-day-number bw-calendar-week-day-number-today">
+                            @day.Day
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="bw-calendar-week-day-number">
+                            @day.Day
+                        </div>
+                    }
                 </div>
             }
         </div>
@@ -45,8 +50,8 @@
         {
             <div class="bw-time-indicator absolute left-0 right-0 z-20 pointer-events-none flex items-center"
                 style="display: none;">
-                <div class="w-2 h-2 rounded-full @TodayBackgroundClass.Split(' ')[0].Replace("bg", "text")-600 ml-14"></div> @* Hacky: trying to use TodayColor for indicator too usually needs direct color *@
-                <div class="flex-1 h-0.5 bg-red-500"></div> @* Keeping red for now as it's standard "NOW" color *@
+                <div class="bw-calendar-time-indicator-dot ml-14"></div>
+                <div class="bw-calendar-time-indicator-line"></div>
             </div>
         }
 
@@ -59,10 +64,9 @@
                 var minutePart = minute % 60;
                 var timeStr = $"{hour:D2}:{minutePart:D2}";
 
-                <div class="flex border-b border-gray-100 dark:border-gray-800" style="height: @(slotHeight)px;">
+                <div class="flex bw-calendar-timegrid-slot" style="height: @(slotHeight)px;">
                     @* Time Label *@
-                    <div
-                        class="flex-shrink-0 w-14 text-right pr-2 pt-1 text-xs text-gray-400 dark:text-gray-500 select-none">
+                    <div class="bw-calendar-time-label">
                         @if (minutePart == 0)
                         {
                             <span class="font-medium">@timeStr</span>
@@ -73,11 +77,11 @@
                     @foreach (var day in weekDays)
                     {
                         var isToday = day.Date == DateTime.Today;
-                        var bgClass = isToday ? TodayBackgroundClass : "hover:bg-blue-50/50 dark:hover:bg-blue-900/20";
+                        var colClass = isToday ? "bw-calendar-week-day-col bw-calendar-week-day-col-today" : "bw-calendar-week-day-col";
                         var slotStart = day.Date.AddMinutes(minute);
                         var slotEnd = slotStart.AddMinutes(SlotMinutes);
 
-                        <div class="flex-1 border-l border-gray-200 dark:border-gray-700 first:border-l-0 relative transition-colors cursor-pointer @bgClass"
+                        <div class="@colClass"
                             @onclick="() => HandleSlotClick(slotStart, slotEnd)">
                         </div>
                     }
@@ -134,9 +138,6 @@
     [Parameter] public bool HideEmptySlots { get; set; }
     [Parameter] public bool AllowDrag { get; set; } = true;
     [Parameter] public bool AllowResize { get; set; } = true;
-    [Parameter] public string TodayHeaderClass { get; set; } = "bg-blue-600 text-white";
-    [Parameter] public string TodayBackgroundClass { get; set; } = "bg-blue-50 dark:bg-blue-900/10";
-    [Parameter] public string TodayTextClass { get; set; } = "text-blue-600 dark:text-blue-400";
     [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
     
     [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
@@ -164,10 +165,6 @@
             await JS.InvokeVoidAsync("Blazwind.Calendar.scrollToNow", containerId);
         }
     }
-
-
-
-
 
     private async Task HandleResizeStart((string EventId, double ClientY) args)
     {

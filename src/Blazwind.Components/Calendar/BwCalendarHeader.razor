@@ -13,32 +13,32 @@
     };
 }
 
-<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+<div class="bw-calendar-header">
     @* Left - Navigation and Title *@
     <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
         @* Today Button *@
         <button type="button" 
-                class="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                class="bw-calendar-btn"
                 @onclick="OnToday">
             Bugün
         </button>
         
         @* Navigation Buttons *@
-        <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded overflow-hidden">
+        <div class="bw-calendar-nav-group">
             <button type="button" 
-                    class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    class="bw-calendar-nav-btn"
                     @onclick="PreviousPeriod">
                 <i class="fa-solid fa-chevron-left text-sm"></i>
             </button>
             <button type="button" 
-                    class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-l border-gray-300 dark:border-gray-600"
+                    class="bw-calendar-nav-btn bw-calendar-nav-btn-divider"
                     @onclick="NextPeriod">
                 <i class="fa-solid fa-chevron-right text-sm"></i>
             </button>
         </div>
         
         @* Title *@
-        <h2 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+        <h2 class="bw-calendar-title">
             @headerTitle
         </h2>
     </div>
@@ -46,16 +46,16 @@
     @* Right - View Selector & Fullscreen *@
     <div class="flex items-center gap-2 w-full sm:w-auto">
         @* View Selector *@
-        <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 p-1 rounded flex-1 sm:flex-none overflow-x-auto">
+        <div class="bw-calendar-view-selector">
             @foreach (var view in Enum.GetValues<BwCalendarView>())
             {
                 var isActive = view == View;
                 var btnClass = isActive 
-                    ? "bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm" 
-                    : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white";
+                    ? "bw-calendar-view-btn bw-calendar-view-btn-active" 
+                    : "bw-calendar-view-btn";
                 
                 <button type="button" 
-                        class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded transition-all whitespace-nowrap @btnClass"
+                        class="@btnClass"
                         @onclick="() => ChangeView(view)">
                     @GetViewName(view)
                 </button>
@@ -66,7 +66,7 @@
         @if (ShowFullscreenButton)
         {
             <button type="button"
-                    class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                    class="bw-calendar-fullscreen-btn"
                     title="Tam Ekran"
                     @onclick="OnFullscreenToggle">
                 <i class="fa-solid fa-expand text-sm"></i>
