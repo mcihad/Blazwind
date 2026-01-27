@@ -57,6 +57,9 @@
 @import "./styles/slider.css";
 @import "./styles/tree.css";
 @import "./styles/marquee.css";
+@import "./styles/kanban.css";
+@import "./styles/kpi.css";
+@import "./styles/mentions.css";
 @import "./styles/flow.css";
 @import "./styles/form.css";
 @import "./styles/helptooltip.css";

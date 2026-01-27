@@ -1,0 +1,161 @@
+/* ============================================
+   KPI Component Styles (Theme-Aware)
+   ============================================ */
+
+.bw-kpi-card {
+    @apply relative overflow-hidden transition-all duration-300 border;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-kpi-card {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-kpi-card:hover {
+    @apply shadow-lg -translate-y-1;
+    border-color: var(--bw-color-primary-soft-bg);
+}
+
+/* ========================================
+   ICONS & BADGES
+   ======================================== */
+
+.bw-kpi-icon-wrapper {
+    @apply p-3 rounded-xl transition-transform duration-300;
+}
+
+.bw-kpi-card:hover .bw-kpi-icon-wrapper {
+    @apply scale-110;
+}
+
+/* Icon Color Variants */
+.bw-kpi-icon-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary);
+}
+
+.bw-kpi-icon-success {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success);
+}
+
+.bw-kpi-icon-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    color: var(--bw-color-warning);
+}
+
+.bw-kpi-icon-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    color: var(--bw-color-danger);
+}
+
+.bw-kpi-icon-info {
+    background-color: var(--bw-color-info-soft-bg);
+    color: var(--bw-color-info);
+}
+
+.bw-kpi-icon-secondary {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-kpi-icon-secondary {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-400);
+}
+
+/* ========================================
+   TEXT CONTENT
+   ======================================== */
+
+.bw-kpi-title {
+    @apply text-sm font-medium mb-1;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-kpi-value {
+    @apply text-2xl font-bold tracking-tight;
+    color: var(--bw-color-text);
+}
+
+/* ========================================
+   TREND INDICATORS
+   ======================================== */
+
+.bw-kpi-trend {
+    @apply flex items-center gap-1 text-sm font-medium px-2 py-0.5 rounded-full w-fit;
+}
+
+.bw-kpi-trend-up {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success);
+}
+
+.bw-kpi-trend-down {
+    background-color: var(--bw-color-danger-soft-bg);
+    color: var(--bw-color-danger);
+}
+
+.bw-kpi-trend-neutral {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-kpi-trend-neutral {
+    background-color: var(--bw-gray-800);
+    color: var(--bw-gray-400);
+}
+
+/* ========================================
+   PROGRESS BARS
+   ======================================== */
+
+.bw-kpi-progress-bg {
+    @apply w-full h-1.5 rounded-full mt-3 overflow-hidden;
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-kpi-progress-bg {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-kpi-progress-bar {
+    @apply h-full rounded-full transition-all duration-1000;
+}
+
+/* Progress Color Variants */
+.bw-kpi-progress-primary {
+    background-color: var(--bw-color-primary);
+}
+
+.bw-kpi-progress-success {
+    background-color: var(--bw-color-success);
+}
+
+.bw-kpi-progress-warning {
+    background-color: var(--bw-color-warning);
+}
+
+.bw-kpi-progress-danger {
+    background-color: var(--bw-color-danger);
+}
+
+.bw-kpi-progress-info {
+    background-color: var(--bw-color-info);
+}
+
+.bw-kpi-progress-secondary {
+    background-color: var(--bw-gray-500);
+}
+
+/* ========================================
+   CHART PLACEHOLDER
+   ======================================== */
+
+.bw-kpi-chart-overlay {
+    @apply absolute bottom-0 right-0 w-24 h-12 opacity-10;
+    /* Use current text color for the SVG fill to match theme */
+    fill: currentColor;
+}

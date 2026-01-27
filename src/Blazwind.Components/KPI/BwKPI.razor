@@ -2,72 +2,48 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses("bw-kpi", SizeClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
-    <div class="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-all hover:shadow-md @(Clickable ? "cursor-pointer hover:border-blue-300 dark:hover:border-blue-600" : "")" 
-         @onclick="HandleClick">
-        
-        @* Header with Icon *@
-        <div class="flex items-start justify-between p-3 pb-2">
-            <div class="flex-1 min-w-0">
-                <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide truncate">
-                    @Title
-                </div>
-                @if (!string.IsNullOrEmpty(Subtitle))
-                {
-                    <div class="text-[10px] text-gray-400 dark:text-gray-500 truncate mt-0.5">@Subtitle</div>
-                }
+<div class="@CombineClasses($"bw-kpi-card {Class}")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="HandleClick">
+    <div class="px-4 py-4">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="bw-kpi-title">@Title</p>
+                <h3 class="bw-kpi-value">
+                    @if (!string.IsNullOrEmpty(ValuePrefix))
+                    {
+                        <span class="text-sm opacity-60 mr-0.5 align-top">@ValuePrefix</span>
+                    }
+                    @Value
+                    @if (!string.IsNullOrEmpty(ValueSuffix))
+                    {
+                        <span class="text-sm opacity-60 ml-0.5 align-baseline">@ValueSuffix</span>
+                    }
+                </h3>
             </div>
-            
             @if (!string.IsNullOrEmpty(Icon))
             {
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg @IconBgClass flex items-center justify-center ml-2">
-                    <i class="@Icon text-sm @IconColorClass"></i>
+                <div class="@($"bw-kpi-icon-wrapper {GetIconColorClass()}")">
+                    <i class="@Icon fa-lg"></i>
                 </div>
             }
         </div>
-        
-        @* Value Section *@
-        <div class="px-3 pb-2">
-            <div class="flex items-end gap-2">
-                @if (!string.IsNullOrEmpty(Prefix))
-                {
-                    <span class="text-lg font-semibold text-gray-500 dark:text-gray-400">@Prefix</span>
-                }
-                <span class="text-2xl font-bold text-gray-900 dark:text-white leading-none">@FormattedValue</span>
-                @if (!string.IsNullOrEmpty(Suffix))
-                {
-                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-0.5">@Suffix</span>
-                }
-            </div>
-        </div>
-        
-        @* Trend Section *@
-        @if (ShowTrend && TrendValue.HasValue)
+
+        @if (ShowTrend)
         {
-            <div class="px-3 pb-3 flex items-center gap-2">
-                <div class="flex items-center gap-1 @TrendColorClass">
-                    <i class="fa-solid @TrendIcon text-xs"></i>
-                    <span class="text-xs font-semibold">@TrendFormatted</span>
+            <div class="mt-4 flex items-center justify-between">
+                <div class="@($"bw-kpi-trend {GetTrendColorClass()}")">
+                    <i class="@GetTrendIcon() text-xs"></i>
+                    <span>@TrendValue</span>
                 </div>
-                @if (!string.IsNullOrEmpty(TrendLabel))
+                @if (!string.IsNullOrEmpty(TrendDescription))
                 {
-                    <span class="text-xs text-gray-400">@TrendLabel</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">@TrendDescription</span>
                 }
             </div>
         }
-        
-        @* Progress Bar *@
-        @if (ShowProgress && Progress.HasValue)
+        @if (ShowProgress)
         {
-            <div class="px-3 pb-3">
-                <div class="flex items-center justify-between text-[10px] text-gray-500 mb-1">
-                    <span>İlerleme</span>
-                    <span class="font-medium">@Progress%</span>
-                </div>
-                <div class="h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full rounded-full transition-all duration-500 @ProgressColorClass"
-                         style="width: @Progress%"></div>
-                </div>
+            <div class="bw-kpi-progress-bg">
+                <div class="@($"bw-kpi-progress-bar {GetProgressColorClass()}")" style="width: @(ProgressValue ?? 0)%"></div>
             </div>
         }
         
@@ -85,8 +61,8 @@
     [Parameter] public string Title { get; set; } = "KPI";
     [Parameter] public string? Subtitle { get; set; }
     [Parameter] public double Value { get; set; }
-    [Parameter] public string? Prefix { get; set; }
-    [Parameter] public string? Suffix { get; set; }
+    [Parameter] public string? ValuePrefix { get; set; }
+    [Parameter] public string? ValueSuffix { get; set; }
     [Parameter] public string? Icon { get; set; }
     [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
@@ -94,87 +70,53 @@
     
     [Parameter] public bool ShowTrend { get; set; } = true;
     [Parameter] public double? TrendValue { get; set; }
-    [Parameter] public string? TrendLabel { get; set; } = "geçen aya göre";
+    [Parameter] public string? TrendDescription { get; set; } = "geçen aya göre";
     [Parameter] public bool TrendPositiveIsGood { get; set; } = true;
     
     [Parameter] public bool ShowProgress { get; set; } = false;
-    [Parameter] public double? Progress { get; set; }
+    [Parameter] public double? ProgressValue { get; set; }
     
     [Parameter] public bool Clickable { get; set; } = false;
     [Parameter] public EventCallback OnClick { get; set; }
     
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    private string FormattedValue => Format switch
+    private string GetTrendIcon() => TrendValue switch
     {
-        KpiFormat.Currency => Value.ToString("N0"),
-        KpiFormat.Percent => $"{Value:N1}%",
-        KpiFormat.Decimal => Value.ToString("N2"),
-        _ => Value.ToString("N0")
+        > 0 => "fa-solid fa-arrow-trend-up",
+        < 0 => "fa-solid fa-arrow-trend-down",
+        _ => "fa-solid fa-minus"
     };
 
-    private string TrendFormatted => TrendValue.HasValue
-        ? $"{(TrendValue > 0 ? "+" : "")}{TrendValue:N1}%"
-        : "";
-
-    private string TrendIcon => TrendValue switch
+    private string GetTrendColorClass() => TrendValue switch
     {
-        > 0 => "fa-arrow-up",
-        < 0 => "fa-arrow-down",
-        _ => "fa-minus"
+        > 0 when TrendPositiveIsGood => "bw-kpi-trend-up",
+        > 0 when !TrendPositiveIsGood => "bw-kpi-trend-down",
+        < 0 when TrendPositiveIsGood => "bw-kpi-trend-down",
+        < 0 when !TrendPositiveIsGood => "bw-kpi-trend-up",
+        _ => "bw-kpi-trend-neutral"
     };
 
-    private bool IsTrendGood => TrendPositiveIsGood 
-        ? TrendValue > 0 
-        : TrendValue < 0;
-
-    private string TrendColorClass => TrendValue switch
+    private string GetIconColorClass() => Color switch
     {
-        > 0 when TrendPositiveIsGood => "text-emerald-600",
-        > 0 when !TrendPositiveIsGood => "text-red-500",
-        < 0 when TrendPositiveIsGood => "text-red-500",
-        < 0 when !TrendPositiveIsGood => "text-emerald-600",
-        _ => "text-gray-400"
+        BwColor.Primary => "bw-kpi-icon-primary",
+        BwColor.Success => "bw-kpi-icon-success",
+        BwColor.Warning => "bw-kpi-icon-warning",
+        BwColor.Danger => "bw-kpi-icon-danger",
+        BwColor.Info => "bw-kpi-icon-info",
+        BwColor.Secondary => "bw-kpi-icon-secondary",
+        _ => "bw-kpi-icon-primary"
     };
 
-    private string SizeClass => Size switch
+    private string GetProgressColorClass() => Color switch
     {
-        BwSize.Small => "w-40",
-        BwSize.Large => "w-64",
-        _ => "w-52"
-    };
-
-    private string IconBgClass => Color switch
-    {
-        BwColor.Primary => "bg-blue-50 dark:bg-blue-900/20",
-        BwColor.Secondary => "bg-gray-100 dark:bg-gray-700",
-        BwColor.Success => "bg-emerald-50 dark:bg-emerald-900/20",
-        BwColor.Warning => "bg-amber-50 dark:bg-amber-900/20",
-        BwColor.Danger => "bg-red-50 dark:bg-red-900/20",
-        BwColor.Info => "bg-sky-50 dark:bg-sky-900/20",
-        _ => "bg-blue-50 dark:bg-blue-900/20"
-    };
-
-    private string IconColorClass => Color switch
-    {
-        BwColor.Primary => "text-blue-500 dark:text-blue-400",
-        BwColor.Secondary => "text-gray-500 dark:text-gray-400",
-        BwColor.Success => "text-emerald-500 dark:text-emerald-400",
-        BwColor.Warning => "text-amber-500 dark:text-amber-400",
-        BwColor.Danger => "text-red-500 dark:text-red-400",
-        BwColor.Info => "text-sky-500 dark:text-sky-400",
-        _ => "text-blue-500 dark:text-blue-400"
-    };
-
-    private string ProgressColorClass => Color switch
-    {
-        BwColor.Primary => "bg-blue-500",
-        BwColor.Secondary => "bg-gray-500",
-        BwColor.Success => "bg-emerald-500",
-        BwColor.Warning => "bg-amber-500",
-        BwColor.Danger => "bg-red-500",
-        BwColor.Info => "bg-sky-500",
-        _ => "bg-blue-500"
+        BwColor.Primary => "bw-kpi-progress-primary",
+        BwColor.Success => "bw-kpi-progress-success",
+        BwColor.Warning => "bw-kpi-progress-warning",
+        BwColor.Danger => "bw-kpi-progress-danger",
+        BwColor.Info => "bw-kpi-progress-info",
+        BwColor.Secondary => "bw-kpi-progress-secondary",
+        _ => "bw-kpi-progress-primary"
     };
 
     private async Task HandleClick()

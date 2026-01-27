@@ -4,64 +4,38 @@
 @using Blazwind.Components
 @using Microsoft.AspNetCore.Components.Web
 
-@{
-    var sizeClasses = Size switch
-    {
-        BwSize.Small => "text-sm py-1.5 px-2.5",
-        BwSize.Large => "text-lg py-3 px-4",
-        _ => "text-base py-2 px-3"
-    };
-
-    var variantClasses = Variant switch
-    {
-        BwVariant.Filled => "bg-gray-100 dark:bg-gray-800/50 border-transparent focus:bg-white dark:focus:bg-gray-800",
-        BwVariant.Ghost => "bg-transparent border-transparent hover:bg-gray-50 dark:hover:bg-gray-800",
-        _ => "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
-    };
-
-    var focusClasses = Color switch
-    {
-        BwColor.Success => "focus:border-emerald-500 focus:ring-emerald-500",
-        BwColor.Danger => "focus:border-red-500 focus:ring-red-500",
-        BwColor.Warning => "focus:border-amber-500 focus:ring-amber-500",
-        BwColor.Info => "focus:border-sky-500 focus:ring-sky-500",
-        _ => "focus:border-blue-500 focus:ring-blue-500"
-    };
-}
-
 <div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <textarea @ref="_textareaRef"
-        class="w-full rounded-lg border @sizeClasses @variantClasses @focusClasses focus:outline-none focus:ring-2 transition-all resize-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 @(IsDisabled ? "opacity-50 cursor-not-allowed" : "")"
+        class="@CombineClasses("bw-mentions-textarea", GetSizeClass(), GetVariantClass(), GetFocusClass())"
         placeholder="@Placeholder" disabled="@IsDisabled" rows="@Rows" @bind="_internalValue" @bind:event="oninput"
         @onkeydown="HandleKeyDown" @onkeydown:preventDefault="_preventKeyDown"
         @onblur="HandleBlur"></textarea>
 
     @if (_showSuggestions && _filteredMentions.Any())
     {
-        <div class="absolute z-50 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-60 overflow-y-auto"
+        <div class="bw-mentions-dropdown"
             style="bottom: 100%; left: 0; margin-bottom: 4px;">
             @foreach (var mention in _filteredMentions)
             {
                 var isSelected = _selectedIndex == _filteredMentions.IndexOf(mention);
                 <button type="button"
-                    class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors @(isSelected ? "bg-blue-50 dark:bg-blue-900/20" : "")"
+                    class="@($"bw-mentions-item {(isSelected ? "bw-mentions-item-selected" : "")}")"
                     @onmousedown="() => SelectMention(mention)" @onmousedown:preventDefault>
                     @if (!string.IsNullOrEmpty(mention.Avatar))
                     {
-                        <img src="@mention.Avatar" alt="@mention.Label" class="w-8 h-8 rounded-full object-cover" />
+                        <img src="@mention.Avatar" alt="@mention.Label" class="bw-mentions-item-avatar" />
                     }
                     else
                     {
-                        <div
-                            class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-medium text-sm">
+                        <div class="bw-mentions-item-avatar-placeholder">
                             @mention.Label?.FirstOrDefault()
                         </div>
                     }
                     <div class="flex flex-col min-w-0">
-                        <span class="font-medium text-gray-900 dark:text-white truncate">@mention.Label</span>
+                        <span class="bw-mentions-item-label">@mention.Label</span>
                         @if (!string.IsNullOrEmpty(mention.Description))
                         {
-                            <span class="text-xs text-gray-500 dark:text-gray-400 truncate">@mention.Description</span>
+                            <span class="bw-mentions-item-description">@mention.Description</span>
                         }
                     </div>
                 </button>
@@ -103,6 +77,30 @@
             CheckForMentionTrigger(value);
         }
     }
+
+    private string GetSizeClass() => Size switch
+    {
+        BwSize.Small => "bw-mentions-size-small",
+        BwSize.Large => "bw-mentions-size-large",
+        _ => "bw-mentions-size-medium"
+    };
+
+    private string GetVariantClass() => Variant switch
+    {
+        BwVariant.Filled => "bw-mentions-variant-filled",
+        BwVariant.Ghost => "bw-mentions-variant-ghost",
+        _ => "bw-mentions-variant-outline"
+    };
+
+    private string GetFocusClass() => Color switch
+    {
+        BwColor.Success => "bw-mentions-focus-success",
+        BwColor.Danger => "bw-mentions-focus-danger",
+        BwColor.Warning => "bw-mentions-focus-warning",
+        BwColor.Info => "bw-mentions-focus-info",
+        BwColor.Secondary => "bw-mentions-focus-secondary",
+        _ => "bw-mentions-focus-primary"
+    };
 
     private void CheckForMentionTrigger(string text)
     {

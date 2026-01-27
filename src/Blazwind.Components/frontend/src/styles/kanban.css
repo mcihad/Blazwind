@@ -1,0 +1,229 @@
+/* ============================================
+   Kanban Component Styles (Theme-Aware)
+   ============================================ */
+
+.bw-kanban {
+    @apply flex gap-4 overflow-x-auto pb-4 items-start h-full;
+}
+
+/* ========================================
+   COLUMNS
+   ======================================== */
+
+.bw-kanban-column {
+    @apply flex-shrink-0 w-72 rounded-xl overflow-hidden border transition-shadow;
+    background-color: var(--bw-gray-100);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-kanban-column {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-kanban-column-collapsed {
+    @apply flex-shrink-0 w-12 rounded-xl overflow-hidden flex flex-col items-center py-4 gap-4 cursor-pointer transition-colors h-full shadow-sm border;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+    max-height: calc(100vh - 200px);
+}
+
+.bw-kanban-column-collapsed:hover {
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-kanban-column-collapsed {
+    background-color: var(--bw-gray-800);
+}
+
+.dark .bw-kanban-column-collapsed:hover {
+    background-color: var(--bw-gray-700);
+}
+
+/* Collapsed Column Counter */
+.bw-kanban-column-collapsed-counter {
+    @apply w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-sm;
+    background-color: var(--bw-gray-50);
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-kanban-column-collapsed-counter {
+    background-color: var(--bw-gray-600);
+    color: var(--bw-gray-200);
+}
+
+/* Collapsed Title */
+.bw-kanban-column-collapsed-title {
+    @apply font-semibold whitespace-nowrap tracking-wide flex-1 text-center flex items-center justify-center;
+    writing-mode: vertical-rl;
+    color: var(--bw-color-text-secondary);
+}
+
+.dark .bw-kanban-column-collapsed-title {
+    color: var(--bw-gray-300);
+}
+
+/* ========================================
+   HEADERS
+   ======================================== */
+
+.bw-kanban-header {
+    @apply border-t-4 px-4 py-3 flex items-center justify-between;
+    background-color: var(--bw-color-surface);
+}
+
+.dark .bw-kanban-header {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-kanban-header-title {
+    @apply font-semibold;
+    color: var(--bw-color-text);
+}
+
+.bw-kanban-header-counter {
+    @apply text-xs px-2 py-0.5 rounded-full;
+    background-color: var(--bw-gray-200);
+    color: var(--bw-color-text-secondary);
+}
+
+.dark .bw-kanban-header-counter {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-gray-400);
+}
+
+/* WIP Limit Exceeded */
+.bw-kanban-header-wip-exceeded {
+    background-color: var(--bw-danger-100);
+    color: var(--bw-danger-700);
+}
+
+.dark .bw-kanban-header-wip-exceeded {
+    background-color: rgba(239, 68, 68, 0.3);
+    color: var(--bw-danger-300);
+}
+
+/* Border Variants */
+.bw-kanban-border-primary {
+    border-top-color: var(--bw-color-primary);
+}
+
+.bw-kanban-border-success {
+    border-top-color: var(--bw-color-success);
+}
+
+.bw-kanban-border-danger {
+    border-top-color: var(--bw-color-danger);
+}
+
+.bw-kanban-border-warning {
+    border-top-color: var(--bw-color-warning);
+}
+
+.bw-kanban-border-info {
+    border-top-color: var(--bw-color-info);
+}
+
+.bw-kanban-border-default {
+    border-top-color: var(--bw-gray-300);
+}
+
+.dark .bw-kanban-border-default {
+    border-top-color: var(--bw-gray-600);
+}
+
+/* Wip Exceeded Glow */
+.bw-kanban-shadow-danger {
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    border-top-color: var(--bw-color-danger);
+}
+
+/* ========================================
+   ITEMS
+   ======================================== */
+
+.bw-kanban-items-container {
+    @apply p-3 space-y-3 min-h-[200px] overflow-y-auto;
+    max-height: calc(100vh - 200px);
+}
+
+.bw-kanban-item {
+    @apply rounded-lg shadow-sm border p-3 cursor-move transition-all relative;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.bw-kanban-item:hover {
+    @apply shadow-md;
+}
+
+.dark .bw-kanban-item {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-kanban-item-dragging {
+    @apply opacity-40 grayscale;
+}
+
+.bw-kanban-item-target {
+    @apply translate-y-1;
+}
+
+.bw-kanban-drop-indicator {
+    @apply h-1 rounded my-1 transition-all duration-200;
+    background-color: rgba(59, 130, 246, 0.5);
+}
+
+/* Item Content */
+.bw-kanban-item-title {
+    @apply font-medium;
+    color: var(--bw-color-text);
+}
+
+.bw-kanban-item-description {
+    @apply text-sm line-clamp-2;
+    color: var(--bw-color-text-secondary);
+}
+
+/* Tags */
+.bw-kanban-tag {
+    @apply text-xs px-2 py-0.5 rounded-full;
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary-soft-text);
+}
+
+/* Meta Footer */
+.bw-kanban-item-footer {
+    @apply flex items-center justify-between pt-2 border-t mt-2;
+    border-color: var(--bw-gray-100);
+}
+
+.dark .bw-kanban-item-footer {
+    border-color: var(--bw-gray-700);
+}
+
+/* ========================================
+   EMPTY STATE & ADD BUTTON
+   ======================================== */
+
+.bw-kanban-empty {
+    @apply h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 m-1 opacity-50;
+    border-color: var(--bw-color-border);
+    color: var(--bw-color-text-muted);
+}
+
+.bw-kanban-add-btn {
+    @apply w-full py-2 text-sm rounded-lg transition-colors flex items-center justify-center gap-1;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-kanban-add-btn:hover {
+    background-color: var(--bw-gray-200);
+    color: var(--bw-color-text);
+}
+
+.dark .bw-kanban-add-btn:hover {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-gray-200);
+}

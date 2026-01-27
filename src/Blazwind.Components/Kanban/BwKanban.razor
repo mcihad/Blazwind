@@ -3,7 +3,7 @@
 @using Blazwind.Components.Shared
 @using Blazwind.Components
 
-<div class="@CombineClasses("flex gap-4 overflow-x-auto pb-4 items-start h-full")" style="@Style" id="@Id"
+<div class="@CombineClasses("bw-kanban")" style="@Style" id="@Id"
     @attributes="AdditionalAttributes">
     @foreach (var column in Columns)
     {
@@ -11,29 +11,29 @@
         var isWipExceeded = column.MaxItems.HasValue && (column.Items?.Count ?? 0) > column.MaxItems.Value;
         
         var headerBorderClass = isWipExceeded 
-            ? "border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]" 
+            ? "bw-kanban-shadow-danger" 
             : columnColor switch
             {
-                BwColor.Primary => "border-blue-500",
-                BwColor.Success => "border-emerald-500",
-                BwColor.Danger => "border-red-500",
-                BwColor.Warning => "border-amber-500",
-                BwColor.Info => "border-sky-500",
-                _ => "border-gray-300 dark:border-gray-600"
+                BwColor.Primary => "bw-kanban-border-primary",
+                BwColor.Success => "bw-kanban-border-success",
+                BwColor.Danger => "bw-kanban-border-danger",
+                BwColor.Warning => "bw-kanban-border-warning",
+                BwColor.Info => "bw-kanban-border-info",
+                _ => "bw-kanban-border-default"
             };
 
         if (column.IsCollapsed)
         {
             @* Collapsed State *@
-            <div class="flex-shrink-0 w-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden flex flex-col items-center py-4 gap-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors h-full max-h-[calc(100vh-200px)] shadow-sm"
+            <div class="bw-kanban-column-collapsed"
                  @onclick="() => column.IsCollapsed = false"
                  @ondragover="HandleDragOverColumn" @ondragover:preventDefault @ondrop="() => HandleDrop(column)">
                 
-                <div class="w-6 h-6 rounded-full bg-white dark:bg-gray-600 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-200 shadow-sm">
+                <div class="bw-kanban-column-collapsed-counter">
                     @(column.Items?.Count ?? 0)
                 </div>
 
-                <div class="writing-mode-vertical font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap tracking-wide flex-1 text-center flex items-center justify-center">
+                <div class="bw-kanban-column-collapsed-title">
                      @column.Title
                 </div>
                 
@@ -46,14 +46,13 @@
         else
         {
             @* Expanded State *@
-            @* Expanded State *@
-            <div class="flex-shrink-0 w-72 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden" 
+            <div class="bw-kanban-column" 
                 @ondragover="HandleDragOverColumn"
                 @ondragover:preventDefault 
                 @ondrop="() => HandleDrop(column)">
                 
                 @* Header *@
-                <div class="@headerBorderClass border-t-4 bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
+                <div class="bw-kanban-header @headerBorderClass">
                     <div class="flex items-center gap-2">
                          <button class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                                  @onclick="() => column.IsCollapsed = true">
@@ -64,9 +63,9 @@
                         {
                             <i class="@column.Icon text-gray-400 dark:text-gray-500"></i>
                         }
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-200">@column.Title</h3>
+                        <h3 class="bw-kanban-header-title">@column.Title</h3>
                         
-                        <span class="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs px-2 py-0.5 rounded-full @(isWipExceeded ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400" : "")">
+                        <span class="bw-kanban-header-counter @(isWipExceeded ? "bw-kanban-header-wip-exceeded" : "")">
                             @(column.Items?.Count ?? 0)
                             @if (column.MaxItems.HasValue)
                             {
@@ -81,7 +80,7 @@
                 </div>
 
                 @* Item List *@
-                <div class="p-3 space-y-3 min-h-[200px] max-h-[calc(100vh-200px)] overflow-y-auto">
+                <div class="bw-kanban-items-container">
                     @if (column.Items != null && column.Items.Any())
                     {
                         foreach (var item in column.Items)
@@ -92,10 +91,10 @@
                             @* Drop Zone Indicator *@
                             @if (isTarget && _draggedItem != item)
                             {
-                                <div class="h-1 rounded bg-blue-500/50 my-1 transition-all duration-200"></div>
+                                <div class="bw-kanban-drop-indicator"></div>
                             }
                         
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 cursor-move hover:shadow-md transition-shadow group relative @(isDragging ? "opacity-40 grayscale" : "") @(isTarget ? "translate-y-1" : "")"
+                            <div class="bw-kanban-item group @(isDragging ? "bw-kanban-item-dragging" : "") @(isTarget ? "bw-kanban-item-target" : "")"
                                 draggable="true" 
                                 @ondragstart="() => HandleDragStart(item, column)"
                                 @ondragenter="() => HandleDragEnterItem(item)"
@@ -110,24 +109,24 @@
                                     <div class="space-y-2">
                                         @if (!string.IsNullOrEmpty(item.Title))
                                         {
-                                            <h4 class="font-medium text-gray-900 dark:text-gray-100">@item.Title</h4>
+                                            <h4 class="bw-kanban-item-title">@item.Title</h4>
                                         }
                                         @if (!string.IsNullOrEmpty(item.Description))
                                         {
-                                            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">@item.Description</p>
+                                            <p class="bw-kanban-item-description">@item.Description</p>
                                         }
                                         @if (item.Tags?.Any() == true)
                                         {
                                             <div class="flex flex-wrap gap-1">
                                                 @foreach (var tag in item.Tags)
                                                 {
-                                                    <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">@tag</span>
+                                                    <span class="bw-kanban-tag">@tag</span>
                                                 }
                                             </div>
                                         }
                                         @if (item.Assignee != null || item.DueDate != null)
                                         {
-                                            <div class="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                                            <div class="bw-kanban-item-footer">
                                                 @if (item.Assignee != null)
                                                 {
                                                     <div class="flex items-center gap-1">
@@ -160,7 +159,7 @@
                     else
                     {
                          @* Empty State *@
-                        <div class="h-32 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl flex flex-col items-center justify-center text-gray-400 dark:text-gray-600 gap-2 m-1 opacity-50">
+                        <div class="bw-kanban-empty">
                             <i class="fa-solid fa-inbox text-xl opacity-50"></i>
                             <span class="text-xs font-medium">No Items</span>
                         </div>
@@ -171,7 +170,7 @@
                 {
                     <div class="p-3 pt-0">
                         <button type="button"
-                            class="w-full py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors flex items-center justify-center gap-1"
+                            class="bw-kanban-add-btn"
                             @onclick="() => HandleAddClick(column)">
                             <i class="fa-solid fa-plus"></i>
                             <span>Kart Ekle</span>

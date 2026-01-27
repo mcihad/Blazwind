@@ -1,0 +1,169 @@
+/* ============================================
+   Mentions Component Styles (Theme-Aware)
+   ============================================ */
+
+.bw-mentions-textarea {
+    @apply w-full rounded-lg border transition-all resize-none;
+    color: var(--bw-color-text);
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.bw-mentions-textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--bw-color-primary) 20%, transparent);
+}
+
+.bw-mentions-textarea:disabled {
+    @apply opacity-50 cursor-not-allowed;
+    background-color: var(--bw-gray-100);
+}
+
+.dark .bw-mentions-textarea:disabled {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-mentions-textarea::placeholder {
+    color: var(--bw-color-text-muted);
+}
+
+/* ========================================
+   VARIANTS
+   ======================================== */
+
+.bw-mentions-variant-filled {
+    background-color: var(--bw-gray-100);
+    border-color: transparent;
+}
+
+.bw-mentions-variant-filled:focus {
+    background-color: var(--bw-color-surface);
+}
+
+.dark .bw-mentions-variant-filled {
+    background-color: rgba(31, 41, 55, 0.5);
+    /* gray-800/50 */
+}
+
+.dark .bw-mentions-variant-filled:focus {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-mentions-variant-ghost {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.bw-mentions-variant-ghost:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-mentions-variant-ghost:hover {
+    background-color: var(--bw-gray-800);
+}
+
+.bw-mentions-variant-outline {
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-mentions-variant-outline {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* ========================================
+   SIZES
+   ======================================== */
+
+.bw-mentions-size-small {
+    @apply text-sm py-1.5 px-2.5;
+}
+
+.bw-mentions-size-medium {
+    @apply text-base py-2 px-3;
+}
+
+.bw-mentions-size-large {
+    @apply text-lg py-3 px-4;
+}
+
+/* ========================================
+   FOCUS COLORS
+   ======================================== */
+
+.bw-mentions-focus-primary:focus {
+    border-color: var(--bw-color-primary);
+}
+
+.bw-mentions-focus-success:focus {
+    border-color: var(--bw-color-success);
+}
+
+.bw-mentions-focus-danger:focus {
+    border-color: var(--bw-color-danger);
+}
+
+.bw-mentions-focus-warning:focus {
+    border-color: var(--bw-color-warning);
+}
+
+.bw-mentions-focus-info:focus {
+    border-color: var(--bw-color-info);
+}
+
+.bw-mentions-focus-secondary:focus {
+    border-color: var(--bw-gray-500);
+}
+
+/* ========================================
+   DROPDOWN SUGGESTIONS
+   ======================================== */
+
+.bw-mentions-dropdown {
+    @apply absolute z-50 w-64 rounded-lg shadow-lg border max-h-60 overflow-y-auto;
+    background-color: var(--bw-color-surface);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-mentions-dropdown {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-mentions-item {
+    @apply w-full px-3 py-2 text-left flex items-center gap-2 transition-colors;
+    color: var(--bw-color-text);
+}
+
+.bw-mentions-item:hover {
+    background-color: var(--bw-gray-50);
+}
+
+.dark .bw-mentions-item:hover {
+    background-color: var(--bw-gray-700);
+}
+
+.bw-mentions-item-selected {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+.bw-mentions-item-avatar {
+    @apply w-8 h-8 rounded-full object-cover;
+}
+
+.bw-mentions-item-avatar-placeholder {
+    @apply w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm;
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary-soft-text);
+}
+
+.bw-mentions-item-label {
+    @apply font-medium truncate;
+    color: var(--bw-color-text);
+}
+
+.bw-mentions-item-description {
+    @apply text-xs truncate;
+    color: var(--bw-color-text-secondary);
+}
