@@ -1,4 +1,3 @@
-```csharp
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -326,4 +325,3 @@ public static class RRuleBuilder
         _ => month.ToString()
     };
 }
-```
