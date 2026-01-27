@@ -1,0 +1,99 @@
+@using Bunit
+@using Xunit
+@using Blazwind.Components.Dialog
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
+@inherits TestContext
+
+@code {
+    [Fact]
+    public void AppliesDefaultWidthWhenNotSpecified()
+    {
+        // Arrange
+        var jsRuntime = JSInterop.SetupVoid("Blazwind.Dialog.makeDraggable");
+        JSInterop.SetupVoid("Blazwind.Dialog.makeResizable");
+
+        // Act
+        var cut = Render(@<BwDialog Title="Test Dialog">Content</BwDialog>);
+
+        // Assert - Default width should be 500px
+        Assert.Contains("width: 500px", cut.Markup);
+        Assert.Contains("max-width: 90vw", cut.Markup);
+        Assert.Contains("height: auto", cut.Markup);
+    }
+
+    [Fact]
+    public void AppliesCustomWidthWhenSpecified()
+    {
+        // Arrange
+        JSInterop.SetupVoid("Blazwind.Dialog.makeDraggable");
+        JSInterop.SetupVoid("Blazwind.Dialog.makeResizable");
+
+        // Act
+        var cut = Render(@<BwDialog Title="Test Dialog" Width="600px">Content</BwDialog>);
+
+        // Assert - Custom width should be 600px
+        Assert.Contains("width: 600px", cut.Markup);
+        Assert.Contains("max-width: 90vw", cut.Markup);
+    }
+
+    [Fact]
+    public void AppliesCustomMaxWidthWhenSpecified()
+    {
+        // Arrange
+        JSInterop.SetupVoid("Blazwind.Dialog.makeDraggable");
+        JSInterop.SetupVoid("Blazwind.Dialog.makeResizable");
+
+        // Act
+        var cut = Render(@<BwDialog Title="Test Dialog" MaxWidth="80vw">Content</BwDialog>);
+
+        // Assert
+        Assert.Contains("max-width: 80vw", cut.Markup);
+    }
+
+    [Fact]
+    public void DoesNotApplyDimensionStylesInFullScreenMode()
+    {
+        // Arrange
+        JSInterop.SetupVoid("Blazwind.Dialog.makeDraggable");
+        JSInterop.SetupVoid("Blazwind.Dialog.makeResizable");
+
+        // Act
+        var cut = Render(@<BwDialog Title="Test Dialog" FullScreen="true">Content</BwDialog>);
+
+        // Assert - Should not have width/max-width/height styles when in fullscreen
+        Assert.DoesNotContain("width: 500px", cut.Markup);
+    }
+
+    [Fact]
+    public void MergesCustomStyleWithDimensionStyles()
+    {
+        // Arrange
+        JSInterop.SetupVoid("Blazwind.Dialog.makeDraggable");
+        JSInterop.SetupVoid("Blazwind.Dialog.makeResizable");
+
+        // Act
+        var cut = Render(@<BwDialog Title="Test Dialog" Style="background-color: red;">Content</BwDialog>);
+
+        // Assert - Should have both dimension styles and custom style
+        Assert.Contains("width: 500px", cut.Markup);
+        Assert.Contains("max-width: 90vw", cut.Markup);
+        Assert.Contains("background-color: red;", cut.Markup);
+    }
+
+    [Fact]
+    public void RendersChildContentCorrectly()
+    {
+        // Arrange
+        JSInterop.SetupVoid("Blazwind.Dialog.makeDraggable");
+        JSInterop.SetupVoid("Blazwind.Dialog.makeResizable");
+        var content = "Dialog Content";
+
+        // Act
+        var cut = Render(@<BwDialog Title="Test">@content</BwDialog>);
+
+        // Assert
+        Assert.Contains("Dialog Content", cut.Markup);
+        Assert.Contains("Test", cut.Markup);
+    }
+}
