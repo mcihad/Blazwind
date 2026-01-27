@@ -43,7 +43,16 @@
     [Parameter] public bool CascadeSelection { get; set; } = false;
     [Parameter] public bool ShowSearch { get; set; } = true;
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    private string _componentId; // Will be set in OnInitialized
+    
+    [Parameter] public List<TreeNode<TItem>> SelectedNodes { get; set; } = new();
+    [Parameter] public EventCallback<List<TreeNode<TItem>>> SelectedNodesChanged { get; set; }
+    
+    [Parameter] public TreeNode<TItem>? ClickedNode { get; set; }
+    [Parameter] public EventCallback<TreeNode<TItem>> ClickedNodeChanged { get; set; }
+    
+    private bool _isOpen = false;
+    private ElementReference _containerRef;
+    private string _componentId = null!;
     private DotNetObjectReference<BwTreeSelect<TItem>>? _dotNetRef;
     
     // Removed Class parameter (inherited)
