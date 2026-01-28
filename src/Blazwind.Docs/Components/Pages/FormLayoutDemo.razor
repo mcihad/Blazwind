@@ -1,100 +1,118 @@
 @page "/components/form-layout"
 @using Blazwind.Components.Form
 @using Blazwind.Components.Input
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Card
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Alert
+@using Blazwind.Components.Shared
 
 <PageTitle>Form Layout Demo - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
     <BwHero Title="Form Layouts" Description="Compact, comfortable form layouts with different label positions."
-            Icon="fa-solid fa-table-cells" Color="BwColor.Primary"/>
+        Icon="fa-solid fa-table-cells" Color="BwColor.Primary" />
 
     @* Density Comparison *@
     <BwCard Title="Density Comparison" Subtitle="Compact, Normal and Relaxed modes" Icon="fa-solid fa-arrows-up-down"
-            Color="BwColor.Info">
+        Color="BwColor.Info">
         <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="3">
             @* Compact *@
-            <div class="p-4 border border-gray-200 rounded bg-gray-50">
-                <h4 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-compress text-blue-500"></i>
-                    Compact
-                </h4>
-                <BwForm Model="@_compactModel" Density="BwFormDensity.Compact">
-                    <BwFormField Label="Name">
-                        <BwInput @bind-Value="_compactModel.Name" Placeholder="Your name"/>
-                    </BwFormField>
-                    <BwFormField Label="Email">
-                        <BwInput @bind-Value="_compactModel.Email" Type="email" Placeholder="example@mail.com"/>
-                    </BwFormField>
-                    <BwFormField Label="Active">
-                        <BwSwitch @bind-Value="_compactModel.IsActive" Label="Is user active?"/>
-                    </BwFormField>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm">
+                            <BwIcon Name="fa-solid fa-compress" Color="BwColor.Primary" />
+                            <BwTypography Tag="BwTypographyTag.H4" Weight="BwFontWeight.Semibold">Compact</BwTypography>
+                        </BwRow>
+                    </BwMargin>
+                    <BwForm Model="@_compactModel" Density="BwFormDensity.Compact">
+                        <BwFormField Label="Name">
+                            <BwInput @bind-Value="_compactModel.Name" Placeholder="Your name" />
+                        </BwFormField>
+                        <BwFormField Label="Email">
+                            <BwInput @bind-Value="_compactModel.Email" Type="email" Placeholder="example@mail.com" />
+                        </BwFormField>
+                        <BwFormField Label="Active">
+                            <BwSwitch @bind-Value="_compactModel.IsActive" Label="Is user active?" />
+                        </BwFormField>
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
 
             @* Normal *@
-            <div class="p-4 border border-gray-200 rounded bg-gray-50">
-                <h4 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-grip-lines text-green-500"></i>
-                    Normal
-                </h4>
-                <BwForm Model="@_normalModel" Density="BwFormDensity.Normal">
-                    <BwFormField Label="Name">
-                        <BwInput @bind-Value="_normalModel.Name" Placeholder="Your name"/>
-                    </BwFormField>
-                    <BwFormField Label="Email">
-                        <BwInput @bind-Value="_normalModel.Email" Type="email" Placeholder="example@mail.com"/>
-                    </BwFormField>
-                    <BwFormField Label="Active">
-                        <BwSwitch @bind-Value="_normalModel.IsActive" Label="Is user active?"/>
-                    </BwFormField>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm">
+                            <BwIcon Name="fa-solid fa-grip-lines" Color="BwColor.Success" />
+                            <BwTypography Tag="BwTypographyTag.H4" Weight="BwFontWeight.Semibold">Normal</BwTypography>
+                        </BwRow>
+                    </BwMargin>
+                    <BwForm Model="@_normalModel" Density="BwFormDensity.Normal">
+                        <BwFormField Label="Name">
+                            <BwInput @bind-Value="_normalModel.Name" Placeholder="Your name" />
+                        </BwFormField>
+                        <BwFormField Label="Email">
+                            <BwInput @bind-Value="_normalModel.Email" Type="email" Placeholder="example@mail.com" />
+                        </BwFormField>
+                        <BwFormField Label="Active">
+                            <BwSwitch @bind-Value="_normalModel.IsActive" Label="Is user active?" />
+                        </BwFormField>
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
 
             @* Relaxed *@
-            <div class="p-4 border border-gray-200 rounded bg-gray-50">
-                <h4 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-expand text-purple-500"></i>
-                    Relaxed
-                </h4>
-                <BwForm Model="@_relaxedModel" Density="BwFormDensity.Relaxed">
-                    <BwFormField Label="Name">
-                        <BwInput @bind-Value="_relaxedModel.Name" Placeholder="Your name"/>
-                    </BwFormField>
-                    <BwFormField Label="Email">
-                        <BwInput @bind-Value="_relaxedModel.Email" Type="email" Placeholder="example@mail.com"/>
-                    </BwFormField>
-                    <BwFormField Label="Active">
-                        <BwSwitch @bind-Value="_relaxedModel.IsActive" Label="Is user active?"/>
-                    </BwFormField>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm">
+                            <BwIcon Name="fa-solid fa-expand" Color="BwColor.Warning" />
+                            <BwTypography Tag="BwTypographyTag.H4" Weight="BwFontWeight.Semibold">Relaxed</BwTypography>
+                        </BwRow>
+                    </BwMargin>
+                    <BwForm Model="@_relaxedModel" Density="BwFormDensity.Relaxed">
+                        <BwFormField Label="Name">
+                            <BwInput @bind-Value="_relaxedModel.Name" Placeholder="Your name" />
+                        </BwFormField>
+                        <BwFormField Label="Email">
+                            <BwInput @bind-Value="_relaxedModel.Email" Type="email" Placeholder="example@mail.com" />
+                        </BwFormField>
+                        <BwFormField Label="Active">
+                            <BwSwitch @bind-Value="_relaxedModel.IsActive" Label="Is user active?" />
+                        </BwFormField>
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
         </BwRow>
     </BwCard>
 
     @* Multi-Column Grid with Diverse Components *@
     <BwCard Title="Multi-Column Form (Compact)" Subtitle="Grid layout for forms with 50+ elements - all component types"
-            Icon="fa-solid fa-table-cells-large" Color="BwColor.Warning">
+        Icon="fa-solid fa-table-cells-large" Color="BwColor.Warning">
         <BwForm Model="@_gridModel" Density="BwFormDensity.Compact" OnValidSubmit="HandleGridSubmit">
             <BwFormGrid Columns="4">
                 <BwFormField Label="ID Number" IsRequired="true">
-                    <BwInput @bind-Value="_gridModel.TcNo" Placeholder="11111111111"/>
+                    <BwInput @bind-Value="_gridModel.TcNo" Placeholder="11111111111" />
                 </BwFormField>
                 <BwFormField Label="First Name" IsRequired="true">
-                    <BwInput @bind-Value="_gridModel.FirstName" Placeholder="First name"/>
+                    <BwInput @bind-Value="_gridModel.FirstName" Placeholder="First name" />
                 </BwFormField>
                 <BwFormField Label="Last Name" IsRequired="true">
-                    <BwInput @bind-Value="_gridModel.LastName" Placeholder="Last name"/>
+                    <BwInput @bind-Value="_gridModel.LastName" Placeholder="Last name" />
                 </BwFormField>
                 <BwFormField Label="Birth Date">
-                    <BwDatePicker @bind-Value="_gridModel.BirthDate" Placeholder="Select date"/>
+                    <BwDatePicker @bind-Value="_gridModel.BirthDate" Placeholder="Select date" />
                 </BwFormField>
                 <BwFormField Label="Phone">
                     <BwMaskedInput @bind-Value="_gridModel.Phone" Preset="BwMaskPreset.Phone"
-                                   Placeholder="(___) ___ __ __"/>
+                        Placeholder="(___) ___ __ __" />
                 </BwFormField>
                 <BwFormField Label="Email">
                     <BwInput @bind-Value="_gridModel.Email" Type="email" Placeholder="example@mail.com"
-                             IconLeft="fa-solid fa-envelope"/>
+                        IconLeft="fa-solid fa-envelope" />
                 </BwFormField>
                 <BwFormField Label="City">
                     <BwSelect @bind-Value="_gridModel.City" Placeholder="Select city">
@@ -106,8 +124,8 @@
                 </BwFormField>
                 <BwFormField Label="Gender">
                     <BwRadioGroup @bind-Value="_gridModel.Gender">
-                        <BwRadio Value="@("M")" Label="Male"/>
-                        <BwRadio Value="@("F")" Label="Female"/>
+                        <BwRadio Value="@("M")" Label="Male" />
+                        <BwRadio Value="@("F")" Label="Female" />
                     </BwRadioGroup>
                 </BwFormField>
                 <BwFormField Label="Neighborhood">
@@ -119,61 +137,62 @@
                     </BwSelect>
                 </BwFormField>
                 <BwFormField Label="Street">
-                    <BwInput @bind-Value="_gridModel.Street" Placeholder="Street"/>
+                    <BwInput @bind-Value="_gridModel.Street" Placeholder="Street" />
                 </BwFormField>
                 <BwFormField Label="Building No">
-                    <BwInput @bind-Value="_gridModel.BuildingNo" Placeholder="No"/>
+                    <BwInput @bind-Value="_gridModel.BuildingNo" Placeholder="No" />
                 </BwFormField>
                 <BwFormField Label="Apartment No">
-                    <BwInput @bind-Value="_gridModel.ApartmentNo" Placeholder="Apartment"/>
+                    <BwInput @bind-Value="_gridModel.ApartmentNo" Placeholder="Apartment" />
                 </BwFormField>
             </BwFormGrid>
 
             <BwFormRow>
                 <BwFormField Label="" Class="flex-1">
-                    <BwCheckbox @bind-Value="_gridModel.AcceptTerms" Label="I accept the terms of use"/>
+                    <BwCheckbox @bind-Value="_gridModel.AcceptTerms" Label="I accept the terms of use" />
                 </BwFormField>
                 <BwFormField Label="" Class="flex-1">
-                    <BwCheckbox @bind-Value="_gridModel.ReceiveNews" Label="I want to be informed about news"/>
+                    <BwCheckbox @bind-Value="_gridModel.ReceiveNews" Label="I want to be informed about news" />
                 </BwFormField>
             </BwFormRow>
 
             <BwFormActions>
-                <BwButton Text="Clear" Variant="BwVariant.Outline" Color="BwColor.Secondary" OnClick="ClearGridForm"/>
-                <BwButton Text="Save" Color="BwColor.Primary" Icon="fa-solid fa-save" HtmlType="submit"/>
+                <BwButton Text="Clear" Variant="BwVariant.Outline" Color="BwColor.Secondary" OnClick="ClearGridForm" />
+                <BwButton Text="Save" Color="BwColor.Primary" Icon="fa-solid fa-save" HtmlType="submit" />
             </BwFormActions>
         </BwForm>
 
         @if (_gridSubmitted)
         {
-            <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded flex items-center gap-2">
-                <i class="fa-solid fa-check-circle text-green-600"></i>
-                <span class="text-green-700 text-sm">Form submitted successfully!</span>
-            </div>
+            <BwMargin Top="BwSpacing.Md">
+                <BwAlert Type="BwAlertType.Success" ShowIcon="true">
+                    Form submitted successfully!
+                </BwAlert>
+            </BwMargin>
         }
     </BwCard>
 
     @* Left-Label Kurumsal Form *@
     <BwCard Title="Corporate Form (Left-Label)" Subtitle="Official document-like horizontal layout"
-            Icon="fa-solid fa-building-columns" Color="BwColor.Danger">
+        Icon="fa-solid fa-building-columns" Color="BwColor.Danger">
         <BwForm Model="@_corporateModel" LabelPosition="BwLabelPosition.Left" Density="BwFormDensity.Normal"
-                OnValidSubmit="HandleCorporateSubmit">
-            <div class="max-w-2xl">
+            OnValidSubmit="HandleCorporateSubmit">
+            <div style="max-width: 42rem;">
                 <BwFormField Label="Organization Name" IsRequired="true" LabelWidth="150px">
-                    <BwInput @bind-Value="_corporateModel.OrganizationName" Placeholder="Organization/Company name"/>
+                    <BwInput @bind-Value="_corporateModel.OrganizationName" Placeholder="Organization/Company name" />
                 </BwFormField>
                 <BwFormField Label="Tax Number" IsRequired="true" LabelWidth="150px">
-                    <BwInput @bind-Value="_corporateModel.TaxNumber" Placeholder="1234567890"/>
+                    <BwInput @bind-Value="_corporateModel.TaxNumber" Placeholder="1234567890" />
                 </BwFormField>
                 <BwFormField Label="Authorized Person" LabelWidth="150px">
-                    <BwInput @bind-Value="_corporateModel.AuthorizedPerson" Placeholder="Full name"/>
+                    <BwInput @bind-Value="_corporateModel.AuthorizedPerson" Placeholder="Full name" />
                 </BwFormField>
                 <BwFormField Label="Phone" LabelWidth="150px">
                     <BwMaskedInput @bind-Value="_corporateModel.Phone" Preset="BwMaskPreset.Phone"
-                                   Placeholder="(___) ___ __ __"/>
+                        Placeholder="(___) ___ __ __" />
                 </BwFormField>
                 <BwFormField Label="Email" LabelWidth="150px">
-                    <BwInput @bind-Value="_corporateModel.Email" Type="email" Placeholder="info@organization.gov.tr"/>
+                    <BwInput @bind-Value="_corporateModel.Email" Type="email" Placeholder="info@organization.gov.tr" />
                 </BwFormField>
                 <BwFormField Label="Organization Type" LabelWidth="150px">
                     <BwSelect @bind-Value="_corporateModel.OrganizationType" Placeholder="Select type">
@@ -183,65 +202,76 @@
                     </BwSelect>
                 </BwFormField>
                 <BwFormField Label="Rating" LabelWidth="150px">
-                    <BwRating @bind-Value="_corporateModel.Rating" ShowValue="true"/>
+                    <BwRating @bind-Value="_corporateModel.Rating" ShowValue="true" />
                 </BwFormField>
                 <BwFormField Label="Address" LabelWidth="150px">
-                    <BwTextarea @bind-Value="_corporateModel.Address" Placeholder="Full address..."/>
+                    <BwTextarea @bind-Value="_corporateModel.Address" Placeholder="Full address..." />
                 </BwFormField>
             </div>
             <BwFormActions Align="BwAlignment.Left">
                 <BwButton Text="Clear Form" Variant="BwVariant.Ghost" Color="BwColor.Secondary"
-                          OnClick="ClearCorporateForm"/>
+                    OnClick="ClearCorporateForm" />
                 <BwButton Text="Save and Send" Color="BwColor.Primary" Icon="fa-solid fa-paper-plane"
-                          HtmlType="submit"/>
+                    HtmlType="submit" />
             </BwFormActions>
         </BwForm>
 
         @if (_corporateSubmitted)
         {
-            <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded flex items-center gap-2">
-                <i class="fa-solid fa-check-circle text-green-600"></i>
-                <span class="text-green-700 text-sm">Corporate form submitted successfully!</span>
-            </div>
+            <BwMargin Top="BwSpacing.Md">
+                <BwAlert Type="BwAlertType.Success" ShowIcon="true">
+                    Corporate form submitted successfully!
+                </BwAlert>
+            </BwMargin>
         }
     </BwCard>
 
     @* HelpTextMode Demonstration *@
     <BwCard Title="Help Text Display" Subtitle="Inline and Popup help text modes" Icon="fa-solid fa-circle-question"
-            Color="BwColor.Success">
+        Color="BwColor.Success">
         <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
             @* Inline Mode (Default) *@
-            <div class="p-4 border border-gray-200 rounded bg-gray-50">
-                <h4 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-align-left text-green-500"></i>
-                    Inline Mode (Default)
-                </h4>
-                <BwForm Model="@_helpDemoModel" Density="BwFormDensity.Normal" HelpTextMode="BwHelpTextMode.Inline">
-                    <BwFormField Label="Full Name" HelperText="Enter your full name" IsRequired="true">
-                        <BwInput @bind-Value="_helpDemoModel.Name" Placeholder="Full Name"/>
-                    </BwFormField>
-                    <BwFormField Label="Email" HelperText="Prefer your work email">
-                        <BwInput @bind-Value="_helpDemoModel.Email" Type="email" Placeholder="example@mail.com"/>
-                    </BwFormField>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm">
+                            <BwIcon Name="fa-solid fa-align-left" Color="BwColor.Success" />
+                            <BwTypography Tag="BwTypographyTag.H4" Weight="BwFontWeight.Semibold">Inline Mode (Default)
+                            </BwTypography>
+                        </BwRow>
+                    </BwMargin>
+                    <BwForm Model="@_helpDemoModel" Density="BwFormDensity.Normal" HelpTextMode="BwHelpTextMode.Inline">
+                        <BwFormField Label="Full Name" HelperText="Enter your full name" IsRequired="true">
+                            <BwInput @bind-Value="_helpDemoModel.Name" Placeholder="Full Name" />
+                        </BwFormField>
+                        <BwFormField Label="Email" HelperText="Prefer your work email">
+                            <BwInput @bind-Value="_helpDemoModel.Email" Type="email" Placeholder="example@mail.com" />
+                        </BwFormField>
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
 
             @* Popup Mode *@
-            <div class="p-4 border border-gray-200 rounded bg-gray-50">
-                <h4 class="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-comment-dots text-blue-500"></i>
-                    Popup Mode (Tooltip)
-                </h4>
-                <BwForm Model="@_helpDemoModel" Density="BwFormDensity.Normal" HelpTextMode="BwHelpTextMode.Popup">
-                    <BwFormField Label="Full Name" HelperText="Enter your full name. Write it as it appears on your ID."
-                                 IsRequired="true">
-                        <BwInput @bind-Value="_helpDemoModel.Name" Placeholder="Full Name"/>
-                    </BwFormField>
-                    <BwFormField Label="Email" HelperText="Prefer your work email. Personal email is not accepted.">
-                        <BwInput @bind-Value="_helpDemoModel.Email" Type="email" Placeholder="example@mail.com"/>
-                    </BwFormField>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm">
+                            <BwIcon Name="fa-solid fa-comment-dots" Color="BwColor.Info" />
+                            <BwTypography Tag="BwTypographyTag.H4" Weight="BwFontWeight.Semibold">Popup Mode (Tooltip)
+                            </BwTypography>
+                        </BwRow>
+                    </BwMargin>
+                    <BwForm Model="@_helpDemoModel" Density="BwFormDensity.Normal" HelpTextMode="BwHelpTextMode.Popup">
+                        <BwFormField Label="Full Name"
+                            HelperText="Enter your full name. Write it as it appears on your ID." IsRequired="true">
+                            <BwInput @bind-Value="_helpDemoModel.Name" Placeholder="Full Name" />
+                        </BwFormField>
+                        <BwFormField Label="Email" HelperText="Prefer your work email. Personal email is not accepted.">
+                            <BwInput @bind-Value="_helpDemoModel.Email" Type="email" Placeholder="example@mail.com" />
+                        </BwFormField>
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
         </BwRow>
     </BwCard>
 </BwColumn>

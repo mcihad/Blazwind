@@ -1,4 +1,9 @@
 @page "/components/layout"
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Card
+@using Blazwind.Components.Alert
+@using Blazwind.Components.Shared
 
 <PageTitle>Layout Demo - Blazwind</PageTitle>
 
@@ -12,41 +17,77 @@
         Icon="fa-solid fa-arrows-left-right" Color="BwColor.Primary">
         <BwColumn Spacing="BwSpacing.Md">
             <div>
-                <p class="text-sm text-gray-500 mb-2">Default (MainAxisAlignment: Start)</p>
-                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-blue-500 text-white px-4 py-2 rounded">1</div>
-                    <div class="bg-blue-500 text-white px-4 py-2 rounded">2</div>
-                    <div class="bg-blue-500 text-white px-4 py-2 rounded">3</div>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Default (MainAxisAlignment: Start)
+                    </BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Sm"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-primary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        1</div>
+                    <div
+                        style="background-color: var(--bw-primary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        2</div>
+                    <div
+                        style="background-color: var(--bw-primary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        3</div>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">MainAxisAlignment: Center</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">MainAxisAlignment: Center</BwTypography>
+                </BwMargin>
                 <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.Center"
-                    Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-emerald-500 text-white px-4 py-2 rounded">1</div>
-                    <div class="bg-emerald-500 text-white px-4 py-2 rounded">2</div>
-                    <div class="bg-emerald-500 text-white px-4 py-2 rounded">3</div>
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        1</div>
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        2</div>
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        3</div>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">MainAxisAlignment: SpaceBetween</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">MainAxisAlignment: SpaceBetween
+                    </BwTypography>
+                </BwMargin>
                 <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.SpaceBetween"
-                    Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-amber-500 text-white px-4 py-2 rounded">1</div>
-                    <div class="bg-amber-500 text-white px-4 py-2 rounded">2</div>
-                    <div class="bg-amber-500 text-white px-4 py-2 rounded">3</div>
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        1</div>
+                    <div
+                        style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        2</div>
+                    <div
+                        style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        3</div>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">MainAxisAlignment: SpaceEvenly</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">MainAxisAlignment: SpaceEvenly
+                    </BwTypography>
+                </BwMargin>
                 <BwRow Spacing="BwSpacing.Sm" MainAxisAlignment="BwMainAxisAlignment.SpaceEvenly"
-                    Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-red-500 text-white px-4 py-2 rounded">1</div>
-                    <div class="bg-red-500 text-white px-4 py-2 rounded">2</div>
-                    <div class="bg-red-500 text-white px-4 py-2 rounded">3</div>
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-danger-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        1</div>
+                    <div
+                        style="background-color: var(--bw-danger-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        2</div>
+                    <div
+                        style="background-color: var(--bw-danger-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        3</div>
                 </BwRow>
             </div>
         </BwColumn>
@@ -57,29 +98,56 @@
         Icon="fa-solid fa-arrows-up-down" Color="BwColor.Success">
         <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="3">
             <div>
-                <p class="text-sm text-gray-500 mb-2">Spacing: Sm</p>
-                <BwColumn Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-indigo-500 text-white px-4 py-2 rounded text-center">A</div>
-                    <div class="bg-indigo-500 text-white px-4 py-2 rounded text-center">B</div>
-                    <div class="bg-indigo-500 text-white px-4 py-2 rounded text-center">C</div>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Spacing: Sm</BwTypography>
+                </BwMargin>
+                <BwColumn Spacing="BwSpacing.Sm"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-info-600); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        A</div>
+                    <div
+                        style="background-color: var(--bw-info-600); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        B</div>
+                    <div
+                        style="background-color: var(--bw-info-600); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        C</div>
                 </BwColumn>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">Spacing: Md</p>
-                <BwColumn Spacing="BwSpacing.Md" Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-sky-500 text-white px-4 py-2 rounded text-center">A</div>
-                    <div class="bg-sky-500 text-white px-4 py-2 rounded text-center">B</div>
-                    <div class="bg-sky-500 text-white px-4 py-2 rounded text-center">C</div>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Spacing: Md</BwTypography>
+                </BwMargin>
+                <BwColumn Spacing="BwSpacing.Md"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-info-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        A</div>
+                    <div
+                        style="background-color: var(--bw-info-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        B</div>
+                    <div
+                        style="background-color: var(--bw-info-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        C</div>
                 </BwColumn>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">Spacing: Lg</p>
-                <BwColumn Spacing="BwSpacing.Lg" Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-pink-500 text-white px-4 py-2 rounded text-center">A</div>
-                    <div class="bg-pink-500 text-white px-4 py-2 rounded text-center">B</div>
-                    <div class="bg-pink-500 text-white px-4 py-2 rounded text-center">C</div>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Spacing: Lg</BwTypography>
+                </BwMargin>
+                <BwColumn Spacing="BwSpacing.Lg"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-danger-400); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        A</div>
+                    <div
+                        style="background-color: var(--bw-danger-400); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        B</div>
+                    <div
+                        style="background-color: var(--bw-danger-400); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        C</div>
                 </BwColumn>
             </div>
         </BwRow>
@@ -90,32 +158,58 @@
         Color="BwColor.Warning">
         <BwColumn Spacing="BwSpacing.Md">
             <div>
-                <p class="text-sm text-gray-500 mb-2">CrossAxisAlignment: Start</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">CrossAxisAlignment: Start</BwTypography>
+                </BwMargin>
                 <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Start"
-                    Class="bg-gray-100 p-3 rounded h-24">
-                    <div class="bg-purple-500 text-white px-4 py-2 rounded">Short</div>
-                    <div class="bg-purple-500 text-white px-4 py-6 rounded">Long</div>
-                    <div class="bg-purple-500 text-white px-4 py-2 rounded">Short</div>
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default); height: 6rem;">
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Short</div>
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 0.5rem 1rem 1.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Long</div>
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Short</div>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">CrossAxisAlignment: Center</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">CrossAxisAlignment: Center
+                    </BwTypography>
+                </BwMargin>
                 <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center"
-                    Class="bg-gray-100 p-3 rounded h-24">
-                    <div class="bg-teal-500 text-white px-4 py-2 rounded">Short</div>
-                    <div class="bg-teal-500 text-white px-4 py-6 rounded">Long</div>
-                    <div class="bg-teal-500 text-white px-4 py-2 rounded">Short</div>
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default); height: 6rem;">
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Short</div>
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem 1.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Long</div>
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Short</div>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">CrossAxisAlignment: Stretch</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">CrossAxisAlignment: Stretch
+                    </BwTypography>
+                </BwMargin>
                 <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Stretch"
-                    Class="bg-gray-100 p-3 rounded h-24">
-                    <div class="bg-orange-500 text-white px-4 py-2 rounded flex items-center">Stretch</div>
-                    <div class="bg-orange-500 text-white px-4 py-2 rounded flex items-center">Stretch</div>
-                    <div class="bg-orange-500 text-white px-4 py-2 rounded flex items-center">Stretch</div>
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default); height: 6rem;">
+                    <div
+                        style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); display: flex; align-items: center;">
+                        Stretch</div>
+                    <div
+                        style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); display: flex; align-items: center;">
+                        Stretch</div>
+                    <div
+                        style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); display: flex; align-items: center;">
+                        Stretch</div>
                 </BwRow>
             </div>
         </BwColumn>
@@ -126,38 +220,58 @@
         Icon="fa-solid fa-expand" Color="BwColor.Danger">
         <BwColumn Spacing="BwSpacing.Md">
             <div>
-                <p class="text-sm text-gray-500 mb-2">One Expanded element</p>
-                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-blue-500 text-white px-4 py-2 rounded">Fixed</div>
-                    <BwExpanded Expanded="true" Class="bg-emerald-500 text-white px-4 py-2 rounded text-center">
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">One Expanded element</BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Sm"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-primary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Fixed</div>
+                    <BwExpanded Expanded="true"
+                        Style="background-color: var(--bw-success-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
                         Expanded (Fills Remaining Space)
                     </BwExpanded>
-                    <div class="bg-blue-500 text-white px-4 py-2 rounded">Fixed</div>
+                    <div
+                        style="background-color: var(--bw-primary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default);">
+                        Fixed</div>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">Two Expanded elements (equal distribution)</p>
-                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
-                    <BwExpanded Expanded="true" Class="bg-indigo-500 text-white px-4 py-2 rounded text-center">
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Two Expanded elements (equal
+                        distribution)</BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Sm"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <BwExpanded Expanded="true"
+                        Style="background-color: var(--bw-info-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
                         Left (1/2)
                     </BwExpanded>
-                    <BwExpanded Expanded="true" Class="bg-pink-500 text-white px-4 py-2 rounded text-center">
+                    <BwExpanded Expanded="true"
+                        Style="background-color: var(--bw-danger-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
                         Right (1/2)
                     </BwExpanded>
                 </BwRow>
             </div>
 
             <div>
-                <p class="text-sm text-gray-500 mb-2">Flex ratios (1:2:1)</p>
-                <BwRow Spacing="BwSpacing.Sm" Class="bg-gray-100 p-3 rounded">
-                    <BwExpanded Flex="1" Class="bg-amber-500 text-white px-4 py-2 rounded text-center">
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Flex ratios (1:2:1)</BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Sm"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <BwExpanded Flex="1"
+                        Style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
                         Flex 1
                     </BwExpanded>
-                    <BwExpanded Flex="2" Class="bg-red-500 text-white px-4 py-2 rounded text-center">
+                    <BwExpanded Flex="2"
+                        Style="background-color: var(--bw-danger-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
                         Flex 2
                     </BwExpanded>
-                    <BwExpanded Flex="1" Class="bg-amber-500 text-white px-4 py-2 rounded text-center">
+                    <BwExpanded Flex="1"
+                        Style="background-color: var(--bw-warning-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center;">
                         Flex 1
                     </BwExpanded>
                 </BwRow>
@@ -170,11 +284,16 @@
         Icon="fa-solid fa-text-width" Color="BwColor.Info">
         <BwColumn Spacing="BwSpacing.Md">
             <div>
-                <p class="text-sm text-gray-500 mb-2">Wrap: true</p>
-                <BwRow Spacing="BwSpacing.Sm" Wrap="true" Class="bg-gray-100 p-3 rounded">
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Wrap: true</BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Sm" Wrap="true"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
                     @for (var i = 1; i <= 12; i++)
                     {
-                        <div class="bg-cyan-500 text-white px-6 py-3 rounded">@i</div>
+                        <div
+                            style="background-color: var(--bw-info-500); color: white; padding: 0.75rem 1.5rem; border-radius: var(--bw-radius-default);">
+                            @i</div>
                     }
                 </BwRow>
             </div>
@@ -183,23 +302,37 @@
 
     @* Responsive Grid *@
     <BwCard Title="Responsive Grid System" Subtitle="Use Cols, SmCols, MdCols, etc. to switch to CSS Grid layout."
-            Icon="fa-solid fa-border-all" Color="BwColor.Secondary">
+        Icon="fa-solid fa-border-all" Color="BwColor.Secondary">
         <BwColumn Spacing="BwSpacing.Md">
-            <BwAlert Color="BwColor.Info" Variant="BwVariant.Soft" Icon="fa-solid fa-info-circle" Title="Quick Grid">
-                When you use <code>Cols</code>, <code>SmCols</code>, etc., the row automatically switches to <code>display: grid</code>.
-                You don't need to manually add <code>grid</code> classes. Max 8 columns supported using these helpers.
+            <BwAlert Type="BwAlertType.Info" ShowIcon="true" Title="Quick Grid">
+                When you use Cols, SmCols, etc., the row automatically switches to display: grid.
+                You don't need to manually add grid classes. Max 8 columns supported using these helpers.
             </BwAlert>
-            
+
             <div>
-                <p class="text-sm text-gray-500 mb-2">Responsive: 1 col mobile, 2 cols tablet, 4 cols desktop</p>
-                <div class="mb-2 text-xs text-gray-400">
-                    <code>&lt;BwRow Cols="1" MdCols="2" LgCols="4" ...&gt;</code>
-                </div>
-                <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2" LgCols="4" Class="bg-gray-100 p-3 rounded">
-                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 1</div>
-                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 2</div>
-                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 3</div>
-                    <div class="bg-violet-500 text-white p-4 rounded text-center">Item 4</div>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Responsive: 1 col mobile, 2 cols tablet,
+                        4 cols desktop</BwTypography>
+                </BwMargin>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.ExtraSmall" Color="BwColor.Secondary">
+                        <code>&lt;BwRow Cols="1" MdCols="2" LgCols="4" ...&gt;</code>
+                    </BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2" LgCols="4"
+                    Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        Item 1</div>
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        Item 2</div>
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        Item 3</div>
+                    <div
+                        style="background-color: var(--bw-secondary-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        Item 4</div>
                 </BwRow>
             </div>
         </BwColumn>

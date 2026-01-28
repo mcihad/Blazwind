@@ -1,29 +1,29 @@
 @page "/components/userprofile"
 @using Blazwind.Components.Dropdown
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Shared
 
 <PageTitle>User Profile - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
-    <BwHero Title="BwUserProfile"
-            Description="User profile display and dropdown trigger component."
-            Icon="fa-solid fa-user-circle"
-            Color="BwColor.Primary"/>
+    <BwHero Title="BwUserProfile" Description="User profile display and dropdown trigger component."
+        Icon="fa-solid fa-user-circle" Color="BwColor.Primary" />
 
     @* Basic Usage *@
     <BwCard Title="Basic Usage" Subtitle="Avatar, name and role display" Icon="fa-solid fa-user"
-            Color="BwColor.Primary">
+        Color="BwColor.Primary">
         <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="3">
             <div
-                class="p-4 border border-gray-100 dark:border-gray-700 rounded-xl flex justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                <BwUserProfile Name="Ahmet Yılmaz" Role="System Administrator"/>
+                style="padding: 1rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-xl); display: flex; justify-content: center;">
+                <BwUserProfile Name="Ahmet Yılmaz" Role="System Administrator" />
             </div>
             <div
-                class="p-4 border border-gray-100 dark:border-gray-700 rounded-xl flex justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                <BwUserProfile Name="Ayşe Demir" Role="Manager"/>
+                style="padding: 1rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-xl); display: flex; justify-content: center;">
+                <BwUserProfile Name="Ayşe Demir" Role="Manager" />
             </div>
             <div
-                class="p-4 border border-gray-100 dark:border-gray-700 rounded-xl flex justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                <BwUserProfile Name="Mehmet Kaya"/>
+                style="padding: 1rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-xl); display: flex; justify-content: center;">
+                <BwUserProfile Name="Mehmet Kaya" />
             </div>
         </BwRow>
     </BwCard>
@@ -32,39 +32,67 @@
     <BwRow Spacing="BwSpacing.Md" Cols="1" MdCols="2">
         <BwCard Title="Sizes" Subtitle="Small, Medium, Large" Icon="fa-solid fa-expand" Color="BwColor.Info">
             <BwRow Spacing="BwSpacing.Md" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">Small</span>
-                    <BwUserProfile Name="Small" Role="User" Size="BwSize.Small"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">Small
+                        </BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Small" Role="User" Size="BwSize.Small" />
                 </div>
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">Medium</span>
-                    <BwUserProfile Name="Medium" Role="User" Size="BwSize.Medium"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">Medium
+                        </BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Medium" Role="User" Size="BwSize.Medium" />
                 </div>
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">Large</span>
-                    <BwUserProfile Name="Large" Role="User" Size="BwSize.Large"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">Large
+                        </BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Large" Role="User" Size="BwSize.Large" />
                 </div>
             </BwRow>
         </BwCard>
 
         <BwCard Title="Status Colors" Subtitle="Online status with StatusColor" Icon="fa-solid fa-circle"
-                Color="BwColor.Success">
+            Color="BwColor.Success">
             <BwRow Spacing="BwSpacing.Md" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">Online</span>
-                    <BwUserProfile Name="Ali" StatusColor="BwColor.Success"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">Online
+                        </BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Ali" StatusColor="BwColor.Success" />
                 </div>
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">Busy</span>
-                    <BwUserProfile Name="Veli" StatusColor="BwColor.Warning"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">Busy
+                        </BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Veli" StatusColor="BwColor.Warning" />
                 </div>
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">Offline</span>
-                    <BwUserProfile Name="Hasan" StatusColor="BwColor.Danger"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">Offline
+                        </BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Hasan" StatusColor="BwColor.Danger" />
                 </div>
-                <div class="p-3 border border-gray-100 dark:border-gray-700 rounded-lg">
-                    <span class="text-xs text-gray-500 block mb-2 font-medium">No Status</span>
-                    <BwUserProfile Name="Zeynep" StatusColor="null"/>
+                <div
+                    style="padding: 0.75rem; border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default);">
+                    <BwMargin Bottom="BwSpacing.Xs">
+                        <BwTypography Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium" Color="BwColor.Gray">No
+                            Status</BwTypography>
+                    </BwMargin>
+                    <BwUserProfile Name="Zeynep" StatusColor="null" />
                 </div>
             </BwRow>
         </BwCard>
@@ -76,13 +104,13 @@
             <div class="relative">
                 <BwDropdown>
                     <TriggerContent>
-                        <BwUserProfile Name="User Name" Role="Administrator"/>
+                        <BwUserProfile Name="User Name" Role="Administrator" />
                     </TriggerContent>
                     <ChildContent>
                         <BwDropdownItem Icon="fa-solid fa-user">My Profile</BwDropdownItem>
                         <BwDropdownItem Icon="fa-solid fa-gear">Settings</BwDropdownItem>
                         <BwDropdownItem Icon="fa-solid fa-bell">Notifications</BwDropdownItem>
-                        <div class="h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+                        <div style="height: 1px; background-color: var(--bw-color-border); margin: 0.25rem 0;"></div>
                         <BwDropdownItem Icon="fa-solid fa-right-from-bracket" Color="BwColor.Danger">Sign Out
                         </BwDropdownItem>
                     </ChildContent>
@@ -92,12 +120,12 @@
             <div class="relative">
                 <BwDropdown>
                     <TriggerContent>
-                        <BwUserProfile Name="Admin" Role="System" Size="BwSize.Small" StatusColor="BwColor.Success"/>
+                        <BwUserProfile Name="Admin" Role="System" Size="BwSize.Small" StatusColor="BwColor.Success" />
                     </TriggerContent>
                     <ChildContent>
                         <BwDropdownItem Icon="fa-solid fa-cog">Preferences</BwDropdownItem>
                         <BwDropdownItem Icon="fa-solid fa-lock">Security</BwDropdownItem>
-                        <div class="h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+                        <div style="height: 1px; background-color: var(--bw-color-border); margin: 0.25rem 0;"></div>
                         <BwDropdownItem Icon="fa-solid fa-sign-out-alt" Color="BwColor.Danger">Sign Out</BwDropdownItem>
                     </ChildContent>
                 </BwDropdown>
@@ -107,30 +135,38 @@
 
     @* Header Örneği *@
     <BwCard Title="Navbar Example" Subtitle="Typical header usage" Icon="fa-solid fa-heading" Color="BwColor.Secondary">
-        <div class="bg-white border rounded shadow-sm">
-            <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Class="px-4 py-3">
-                <div class="text-lg font-bold text-blue-600">
-                    <i class="fa-solid fa-building-columns mr-2"></i>
+        <div
+            style="background-color: var(--bw-card-bg); border: 1px solid var(--bw-color-border); border-radius: var(--bw-radius-default); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+            <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Style="padding: 0.75rem 1rem;">
+                <div style="font-size: 1.125rem; font-weight: 700; color: var(--bw-primary-600);">
+                    <i class="fa-solid fa-building-columns" style="margin-right: 0.5rem;"></i>
                     Municipal Administration
                 </div>
-                <BwExpanded Expanded="true"/>
-                <div class="flex items-center gap-4">
-                    <button class="text-gray-500 hover:text-gray-700 relative">
+                <BwExpanded Expanded="true" />
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button
+                        style="color: var(--bw-gray-500); background: none; border: none; cursor: pointer; position: relative;"
+                        onmouseover="this.style.color='var(--bw-gray-700)'"
+                        onmouseout="this.style.color='var(--bw-gray-500)'">
                         <i class="fa-solid fa-bell"></i>
-                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span
+                            style="position: absolute; top: -0.25rem; right: -0.25rem; width: 0.5rem; height: 0.5rem; background-color: var(--bw-danger-500); border-radius: 9999px;"></span>
                     </button>
-                    <button class="text-gray-500 hover:text-gray-700">
+                    <button style="color: var(--bw-gray-500); background: none; border: none; cursor: pointer;"
+                        onmouseover="this.style.color='var(--bw-gray-700)'"
+                        onmouseout="this.style.color='var(--bw-gray-500)'">
                         <i class="fa-solid fa-envelope"></i>
                     </button>
                     <div class="relative">
                         <BwDropdown>
                             <TriggerContent>
-                                <BwUserProfile Name="Admin User" Role="System Administrator" Size="BwSize.Small"/>
+                                <BwUserProfile Name="Admin User" Role="System Administrator" Size="BwSize.Small" />
                             </TriggerContent>
                             <ChildContent>
                                 <BwDropdownItem Icon="fa-solid fa-user">My Profile</BwDropdownItem>
                                 <BwDropdownItem Icon="fa-solid fa-gear">Settings</BwDropdownItem>
-                                <div class="h-px bg-gray-200 dark:bg-gray-700 my-1"></div>
+                                <div style="height: 1px; background-color: var(--bw-color-border); margin: 0.25rem 0;">
+                                </div>
                                 <BwDropdownItem Icon="fa-solid fa-right-from-bracket" Color="BwColor.Danger">Sign Out
                                 </BwDropdownItem>
                             </ChildContent>

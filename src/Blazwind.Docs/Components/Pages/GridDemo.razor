@@ -1,55 +1,88 @@
 @page "/components/grid"
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Shared
 
 <PageTitle>Grid - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
     <BwHero Title="BwGrid"
-            Description="CSS Grid based layout component. Supports XAML/MAUI style RowDefs and ColumnDefs definitions."
-            Icon="fa-solid fa-table-cells"
-            Color="BwColor.Primary"/>
+        Description="CSS Grid based layout component. Supports XAML/MAUI style RowDefs and ColumnDefs definitions."
+        Icon="fa-solid fa-table-cells" Color="BwColor.Primary" />
 
     @* 1. XAML-Style Definitions *@
     <BwCard Title="XAML Style Definitions" Subtitle="RowDefs and ColumnDefs with proportional layout"
-            Icon="fa-solid fa-grip" Color="BwColor.Primary">
+        Icon="fa-solid fa-grip" Color="BwColor.Primary">
         <BwColumn Spacing="BwSpacing.Md">
-            <p class="text-sm text-gray-600 mb-2">ColumnDefs="*,2*,*" → Total 4 units (1:2:1 ratio)</p>
+            <BwMargin Bottom="BwSpacing.Xs">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnDefs="*,2*,*" → Total 4 units (1:2:1
+                    ratio)</BwTypography>
+            </BwMargin>
             <BwGrid ColumnDefs="*,2*,*" Gap="BwSpacing.Md">
-                <div class="bg-blue-500 text-white p-4 rounded text-center font-medium">1 birim (*)</div>
-                <div class="bg-blue-600 text-white p-4 rounded text-center font-medium">2 birim (2*)</div>
-                <div class="bg-blue-500 text-white p-4 rounded text-center font-medium">1 birim (*)</div>
+                <div
+                    style="background-color: var(--bw-primary-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center; font-weight: 500;">
+                    1 birim (*)</div>
+                <div
+                    style="background-color: var(--bw-primary-600); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center; font-weight: 500;">
+                    2 birim (2*)</div>
+                <div
+                    style="background-color: var(--bw-primary-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center; font-weight: 500;">
+                    1 birim (*)</div>
             </BwGrid>
         </BwColumn>
     </BwCard>
 
     @* 2. Star Ratios *@
     <BwCard Title="Proportional Distribution" Subtitle="Flexible widths with star (*) notation"
-            Icon="fa-solid fa-arrows-left-right" Color="BwColor.Success">
+        Icon="fa-solid fa-arrows-left-right" Color="BwColor.Success">
         <BwColumn Spacing="BwSpacing.Lg">
             <div>
-                <p class="text-sm text-gray-600 mb-2">ColumnDefs="*,*,*,*" → 4 equal pieces</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnDefs="*,*,*,*" → 4 equal pieces
+                    </BwTypography>
+                </BwMargin>
                 <BwGrid ColumnDefs="*,*,*,*" Gap="BwSpacing.Sm">
                     @for (var i = 1; i <= 4; i++)
                     {
-                        <div class="bg-emerald-500 text-white p-3 rounded text-center">@i</div>
+                        <div
+                            style="background-color: var(--bw-success-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                            @i</div>
                     }
                 </BwGrid>
             </div>
 
             <div>
-                <p class="text-sm text-gray-600 mb-2">ColumnDefs="*,2*,3*" → 6 units (1:2:3 ratio)</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnDefs="*,2*,3*" → 6 units (1:2:3
+                        ratio)</BwTypography>
+                </BwMargin>
                 <BwGrid ColumnDefs="*,2*,3*" Gap="BwSpacing.Sm">
-                    <div class="bg-green-400 text-white p-3 rounded text-center">1/6</div>
-                    <div class="bg-green-500 text-white p-3 rounded text-center">2/6</div>
-                    <div class="bg-green-600 text-white p-3 rounded text-center">3/6</div>
+                    <div
+                        style="background-color: var(--bw-success-400); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        1/6</div>
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        2/6</div>
+                    <div
+                        style="background-color: var(--bw-success-600); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        3/6</div>
                 </BwGrid>
             </div>
 
             <div>
-                <p class="text-sm text-gray-600 mb-2">ColumnDefs="2*,3*,5*" → 10 birim (2:3:5 oranı)</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnDefs="2*,3*,5*" → 10 birim (2:3:5
+                        oranı)</BwTypography>
+                </BwMargin>
                 <BwGrid ColumnDefs="2*,3*,5*" Gap="BwSpacing.Sm">
-                    <div class="bg-teal-400 text-white p-3 rounded text-center">2/10</div>
-                    <div class="bg-teal-500 text-white p-3 rounded text-center">3/10</div>
-                    <div class="bg-teal-600 text-white p-3 rounded text-center">5/10</div>
+                    <div
+                        style="background-color: var(--bw-success-400); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        2/10</div>
+                    <div
+                        style="background-color: var(--bw-success-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        3/10</div>
+                    <div
+                        style="background-color: var(--bw-success-600); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                        5/10</div>
                 </BwGrid>
             </div>
         </BwColumn>
@@ -57,18 +90,24 @@
 
     @* 3. Auto + Star Combination *@
     <BwCard Title="Auto + Star Combination" Subtitle="Content-sized and flexible areas" Icon="fa-solid fa-expand"
-            Color="BwColor.Warning">
+        Color="BwColor.Warning">
         <BwColumn Spacing="BwSpacing.Md">
-            <p class="text-sm text-gray-600 mb-2">ColumnDefs="Auto,*,Auto" → Edges sized by content, center flexible</p>
+            <BwMargin Bottom="BwSpacing.Xs">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnDefs="Auto,*,Auto" → Edges sized by
+                    content, center flexible</BwTypography>
+            </BwMargin>
             <BwGrid ColumnDefs="Auto,*,Auto" Gap="BwSpacing.Md">
-                <div class="bg-amber-500 text-white px-4 py-3 rounded text-center whitespace-nowrap">
-                    <i class="fa-solid fa-bars mr-2"></i>Menü ve İçeriği Falan
+                <div
+                    style="background-color: var(--bw-warning-500); color: white; padding: 0.75rem 1rem; border-radius: var(--bw-radius-default); text-align: center; white-space: nowrap;">
+                    <i class="fa-solid fa-bars" style="margin-right: 0.5rem;"></i>Menü ve İçeriği Falan
                 </div>
-                <div class="bg-amber-600 text-white p-3 rounded text-center">
+                <div
+                    style="background-color: var(--bw-warning-600); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
                     Esnek İçerik Alanı (*)
                 </div>
-                <div class="bg-amber-500 text-white px-4 py-3 rounded text-center whitespace-nowrap">
-                    <i class="fa-solid fa-user mr-2"></i>Profil
+                <div
+                    style="background-color: var(--bw-warning-500); color: white; padding: 0.75rem 1rem; border-radius: var(--bw-radius-default); text-align: center; white-space: nowrap;">
+                    <i class="fa-solid fa-user" style="margin-right: 0.5rem;"></i>Profil
                 </div>
             </BwGrid>
         </BwColumn>
@@ -76,38 +115,53 @@
 
     @* 4. ColumnSpacing & RowSpacing *@
     <BwCard Title="ColumnSpacing & RowSpacing" Subtitle="Separate horizontal and vertical spacing"
-            Icon="fa-solid fa-arrows-alt" Color="BwColor.Info">
+        Icon="fa-solid fa-arrows-alt" Color="BwColor.Info">
         <BwColumn Spacing="BwSpacing.Lg">
             <div>
-                <p class="text-sm text-gray-600 mb-2">ColumnSpacing="Xl" RowSpacing="Xs" → Wide horizontal, narrow
-                    vertical spacing</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnSpacing="Xl" RowSpacing="Xs" →
+                        Wide horizontal, narrow
+                        vertical spacing</BwTypography>
+                </BwMargin>
                 <BwGrid ColumnDefs="*,*,*" ColumnSpacing="BwSpacing.Xl" RowSpacing="BwSpacing.Xs">
                     @for (var i = 1; i <= 6; i++)
                     {
-                        <div class="bg-sky-500 text-white p-3 rounded text-center">@i</div>
+                        <div
+                            style="background-color: var(--bw-info-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                            @i</div>
                     }
                 </BwGrid>
             </div>
 
             <div>
-                <p class="text-sm text-gray-600 mb-2">ColumnSpacing="Xs" RowSpacing="Xl" → Narrow horizontal, wide
-                    vertical spacing</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnSpacing="Xs" RowSpacing="Xl" →
+                        Narrow horizontal, wide
+                        vertical spacing</BwTypography>
+                </BwMargin>
                 <BwGrid ColumnDefs="*,*,*" ColumnSpacing="BwSpacing.Xs" RowSpacing="BwSpacing.Xl">
                     @for (var i = 1; i <= 6; i++)
                     {
-                        <div class="bg-cyan-500 text-white p-3 rounded text-center">@i</div>
+                        <div
+                            style="background-color: var(--bw-info-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                            @i</div>
                     }
                 </BwGrid>
             </div>
 
             <div>
-                <p class="text-sm text-gray-600 mb-2">ColumnSpacing="None" RowSpacing="Lg" → Columns adjacent, rows
-                    separated</p>
+                <BwMargin Bottom="BwSpacing.Xs">
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ColumnSpacing="None" RowSpacing="Lg" →
+                        Columns adjacent, rows
+                        separated</BwTypography>
+                </BwMargin>
                 <BwGrid ColumnDefs="*,*,*,*" ColumnSpacing="BwSpacing.None" RowSpacing="BwSpacing.Lg">
                     @for (var i = 1; i <= 8; i++)
                     {
                         <div
-                            class="bg-indigo-500 text-white p-3 text-center border-r border-indigo-400 last:border-r-0">@i</div>
+                            style="background-color: var(--bw-info-500); color: white; padding: 0.75rem; text-align: center; border-right: 1px solid var(--bw-info-400);">
+                            @i
+                        </div>
                     }
                 </BwGrid>
             </div>
@@ -116,38 +170,41 @@
 
     @* 5. Rows and Columns (2D Grid) *@
     <BwCard Title="2D Grid Layout" Subtitle="RowDefs and ColumnDefs used together" Icon="fa-solid fa-border-all"
-            Color="BwColor.Danger">
+        Color="BwColor.Danger">
         <BwColumn Spacing="BwSpacing.Md">
-            <p class="text-sm text-gray-600 mb-2">RowDefs="Auto,*,Auto" ColumnDefs="*,3*,*" with page layout</p>
-            <BwGrid RowDefs="Auto,*,Auto" ColumnDefs="*,3*,*" Gap="BwSpacing.Sm" Class="h-64">
+            <BwMargin Bottom="BwSpacing.Xs">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">RowDefs="Auto,*,Auto" ColumnDefs="*,3*,*"
+                    with page layout</BwTypography>
+            </BwMargin>
+            <BwGrid RowDefs="Auto,*,Auto" ColumnDefs="*,3*,*" Gap="BwSpacing.Sm" Style="height: 16rem;">
                 @* Header - spans all columns *@
                 <BwGridItem Row="0" Column="0" ColumnSpan="3"
-                            Class="bg-red-500 text-white p-3 rounded flex items-center justify-center">
-                    <i class="fa-solid fa-heading mr-2"></i> Header (Auto, 3 sütun)
+                    Style="background-color: var(--bw-danger-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-heading" style="margin-right: 0.5rem;"></i> Header (Auto, 3 sütun)
                 </BwGridItem>
 
                 @* Sidebar *@
                 <BwGridItem Row="1" Column="0"
-                            Class="bg-red-400 text-white p-3 rounded flex items-center justify-center">
+                    Style="background-color: var(--bw-danger-400); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center;">
                     Sidebar (*)
                 </BwGridItem>
 
                 @* Main Content *@
                 <BwGridItem Row="1" Column="1"
-                            Class="bg-red-600 text-white p-3 rounded flex items-center justify-center">
+                    Style="background-color: var(--bw-danger-600); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center;">
                     Main Content (3*)
                 </BwGridItem>
 
                 @* Right Panel *@
                 <BwGridItem Row="1" Column="2"
-                            Class="bg-red-400 text-white p-3 rounded flex items-center justify-center">
+                    Style="background-color: var(--bw-danger-400); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center;">
                     Panel (*)
                 </BwGridItem>
 
                 @* Footer *@
                 <BwGridItem Row="2" Column="0" ColumnSpan="3"
-                            Class="bg-red-500 text-white p-3 rounded flex items-center justify-center">
-                    <i class="fa-solid fa-copyright mr-2"></i> Footer (Auto, 3 sütun)
+                    Style="background-color: var(--bw-danger-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-copyright" style="margin-right: 0.5rem;"></i> Footer (Auto, 3 sütun)
                 </BwGridItem>
             </BwGrid>
         </BwColumn>
@@ -155,32 +212,35 @@
 
     @* 6. GridItem with Spans *@
     <BwCard Title="GridItem with Span" Subtitle="RowSpan and ColumnSpan usage"
-            Icon="fa-solid fa-up-right-and-down-left-from-center" Color="BwColor.Primary">
+        Icon="fa-solid fa-up-right-and-down-left-from-center" Color="BwColor.Primary">
         <BwColumn Spacing="BwSpacing.Md">
-            <p class="text-sm text-gray-600 mb-2">4x3 grid, some cells occupy multiple areas</p>
-            <BwGrid ColumnDefs="*,*,*,*" RowDefs="*,*,*" Gap="BwSpacing.Sm" Class="h-48">
+            <BwMargin Bottom="BwSpacing.Xs">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">4x3 grid, some cells occupy multiple areas
+                </BwTypography>
+            </BwMargin>
+            <BwGrid ColumnDefs="*,*,*,*" RowDefs="*,*,*" Gap="BwSpacing.Sm" Style="height: 12rem;">
                 <BwGridItem Row="0" Column="0" RowSpan="2"
-                            Class="bg-violet-600 text-white p-3 rounded flex items-center justify-center text-sm">
+                    Style="background-color: var(--bw-primary-600); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
                     2 Satır
                 </BwGridItem>
                 <BwGridItem Row="0" Column="1" ColumnSpan="2"
-                            Class="bg-violet-400 text-white p-3 rounded flex items-center justify-center text-sm">
+                    Style="background-color: var(--bw-primary-400); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
                     2 Sütun
                 </BwGridItem>
                 <BwGridItem Row="0" Column="3"
-                            Class="bg-violet-500 text-white p-3 rounded flex items-center justify-center text-sm">
+                    Style="background-color: var(--bw-primary-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
                     1x1
                 </BwGridItem>
                 <BwGridItem Row="1" Column="1"
-                            Class="bg-violet-500 text-white p-3 rounded flex items-center justify-center text-sm">
+                    Style="background-color: var(--bw-primary-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
                     1x1
                 </BwGridItem>
                 <BwGridItem Row="1" Column="2" RowSpan="2" ColumnSpan="2"
-                            Class="bg-violet-700 text-white p-3 rounded flex items-center justify-center text-sm">
+                    Style="background-color: var(--bw-primary-700); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
                     2x2
                 </BwGridItem>
                 <BwGridItem Row="2" Column="0" ColumnSpan="2"
-                            Class="bg-violet-400 text-white p-3 rounded flex items-center justify-center text-sm">
+                    Style="background-color: var(--bw-primary-400); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); display: flex; align-items: center; justify-content: center; font-size: 0.875rem;">
                     2 Sütun
                 </BwGridItem>
             </BwGrid>
@@ -189,13 +249,18 @@
 
     @* 7. Legacy: Fixed Columns *@
     <BwCard Title="Fixed Column Count (Legacy)" Subtitle="Equal columns with Columns parameter"
-            Icon="fa-solid fa-columns" Color="BwColor.Secondary">
+        Icon="fa-solid fa-columns" Color="BwColor.Secondary">
         <BwColumn Spacing="BwSpacing.Md">
-            <p class="text-sm text-gray-600 mb-2">Columns="4" - 4 equal width columns</p>
+            <BwMargin Bottom="BwSpacing.Xs">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Columns="4" - 4 equal width columns
+                </BwTypography>
+            </BwMargin>
             <BwGrid Columns="4" Gap="BwSpacing.Md">
                 @for (var i = 1; i <= 8; i++)
                 {
-                    <div class="bg-slate-500 text-white p-4 rounded text-center font-medium">@i</div>
+                    <div
+                        style="background-color: var(--bw-gray-500); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center; font-weight: 500;">
+                        @i</div>
                 }
             </BwGrid>
         </BwColumn>
@@ -203,15 +268,19 @@
 
     @* 8. Legacy: MinItemWidth *@
     <BwCard Title="MinItemWidth (Legacy)" Subtitle="Automatic responsive with minimum item width"
-            Icon="fa-solid fa-arrows-alt-h" Color="BwColor.Secondary">
+        Icon="fa-solid fa-arrows-alt-h" Color="BwColor.Secondary">
         <BwColumn Spacing="BwSpacing.Md">
-            <p class="text-sm text-gray-600 mb-2">MinItemWidth="200px" - At least 200px, as many columns as fit</p>
+            <BwMargin Bottom="BwSpacing.Xs">
+                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">MinItemWidth="200px" - At least 200px, as
+                    many columns as fit</BwTypography>
+            </BwMargin>
             <BwGrid MinItemWidth="200px" Gap="BwSpacing.Md">
                 @for (var i = 1; i <= 6; i++)
                 {
-                    <div class="bg-gray-500 text-white p-6 rounded shadow-sm">
-                        <i class="fa-solid fa-cube text-2xl mb-2"></i>
-                        <p class="font-medium">Öğe @i</p>
+                    <div
+                        style="background-color: var(--bw-gray-500); color: white; padding: 1.5rem; border-radius: var(--bw-radius-default); box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);">
+                        <i class="fa-solid fa-cube" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                        <BwTypography Weight="BwFontWeight.Medium" Color="BwColor.White">Öğe @i</BwTypography>
                     </div>
                 }
             </BwGrid>

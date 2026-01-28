@@ -2,51 +2,73 @@
 @using System.ComponentModel.DataAnnotations
 @using Blazwind.Components.Form
 @using Blazwind.Components.Input
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Card
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Alert
+@using Blazwind.Components.Badge
+@using Blazwind.Components.Shared
 
 <PageTitle>Form Validation Demo - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
     <BwHero Title="Form Validation" Description="Form validation with DataAnnotations and automatic error display."
-            Icon="fa-solid fa-shield-check" Color="BwColor.Primary"/>
+        Icon="fa-solid fa-shield-check" Color="BwColor.Primary" />
 
     @* Yeni Feature: For Parameter ile Otomatik Validasyon *@
-    <div class="p-4 bg-green-50 border border-green-200 rounded">
-        <div class="flex items-start gap-3">
-            <i class="fa-solid fa-sparkles text-green-600 text-xl mt-0.5"></i>
-            <div>
-                <h4 class="font-semibold text-green-800 mb-1">New: Automatic Validation with For Parameter</h4>
-                <ul class="text-sm text-green-700 list-disc list-inside space-y-1">
-                    <li>Add <code>For="@@(() =&gt; Model.Property)"</code> to input components</li>
-                    <li>Validation messages are automatically displayed under inputs</li>
-                    <li>No need for <code>BwFormField</code> wrapper</li>
-                    <li>LabelPosition and Density cascade from form</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+    <BwAlert Type="BwAlertType.Success" ShowIcon="true">
+        <BwColumn Spacing="BwSpacing.Xs">
+            <BwTypography Tag="BwTypographyTag.H4" Weight="BwFontWeight.Semibold">New: Automatic Validation with For
+                Parameter</BwTypography>
+            <ul class="list-disc list-inside space-y-1">
+                <li>
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small">
+                        Add
+                        <BwBadge Text='For="() => Model.Property"' Color="BwColor.Info" Size="BwSize.Small" /> to input
+                        components
+                    </BwTypography>
+                </li>
+                <li>
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small">Validation messages are automatically
+                        displayed under inputs</BwTypography>
+                </li>
+                <li>
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small">
+                        No need for
+                        <BwBadge Text="BwFormField" Color="BwColor.Info" Size="BwSize.Small" /> wrapper
+                    </BwTypography>
+                </li>
+                <li>
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small">LabelPosition and Density cascade from
+                        form</BwTypography>
+                </li>
+            </ul>
+        </BwColumn>
+    </BwAlert>
 
     @* Örnek 1: For Parametresi ile Direkt Validasyon *@
     <BwCard Title="Direct Validation (For Parameter)"
-            Subtitle="Automatic error display with For parameter in input components" Icon="fa-solid fa-bolt"
-            Color="BwColor.Success">
+        Subtitle="Automatic error display with For parameter in input components" Icon="fa-solid fa-bolt"
+        Color="BwColor.Success">
         <BwForm Model="@_directModel" OnValidSubmit="HandleDirectSubmit" OnInvalidSubmit="HandleDirectInvalid"
-                LabelPosition="BwLabelPosition.Top" Density="BwFormDensity.Normal">
+            LabelPosition="BwLabelPosition.Top" Density="BwFormDensity.Normal">
             <BwFormGrid Columns="2">
                 @* For parametresi ile otomatik validasyon *@
                 <BwInput @bind-Value="_directModel.FullName" For="@(() => _directModel.FullName)" Label="Full Name"
-                         Placeholder="Your full name" IconLeft="fa-solid fa-user" IsRequired="true"/>
+                    Placeholder="Your full name" IconLeft="fa-solid fa-user" IsRequired="true" />
 
                 <BwInput @bind-Value="_directModel.Email" For="@(() => _directModel.Email)" Label="Email" Type="email"
-                         Placeholder="example@mail.com" IconLeft="fa-solid fa-envelope" IsRequired="true"/>
+                    Placeholder="example@mail.com" IconLeft="fa-solid fa-envelope" IsRequired="true" />
 
                 <BwMaskedInput @bind-Value="_directModel.Phone" For="@(() => _directModel.Phone)" Label="Phone"
-                               Preset="BwMaskPreset.Phone"/>
+                    Preset="BwMaskPreset.Phone" />
 
                 <BwDatePicker @bind-Value="_directModel.BirthDate" For="@(() => _directModel.BirthDate)"
-                              Label="Birth Date" IsRequired="true"/>
+                    Label="Birth Date" IsRequired="true" />
 
                 <BwSelect @bind-Value="_directModel.Country" For="@(() => _directModel.Country)" Label="Country"
-                          Placeholder="Select country" IsRequired="true">
+                    Placeholder="Select country" IsRequired="true">
                     <option value="TR">Turkey</option>
                     <option value="US">United States</option>
                     <option value="DE">Germany</option>
@@ -54,189 +76,163 @@
                 </BwSelect>
 
                 <BwTimePicker @bind-Value="_directModel.PreferredTime" For="@(() => _directModel.PreferredTime)"
-                              Label="Preferred Time"/>
+                    Label="Preferred Time" />
             </BwFormGrid>
 
             <BwFormRow>
                 <BwTextarea @bind-Value="_directModel.Bio" For="@(() => _directModel.Bio)" Label="About"
-                            Placeholder="Introduce yourself..." Rows="3" Class="flex-1"/>
+                    Placeholder="Introduce yourself..." Rows="3" Class="flex-1" />
             </BwFormRow>
 
             <BwFormRow>
                 <BwRating @bind-Value="_directModel.Satisfaction" For="@(() => _directModel.Satisfaction)"
-                          Label="Satisfaction" AllowHalf="true" ShowValue="true"/>
+                    Label="Satisfaction" AllowHalf="true" ShowValue="true" />
 
                 <BwSlider @bind-Value="_directModel.Budget" For="@(() => _directModel.Budget)" Label="Budget (TL)"
-                          Min="0" Max="10000" Step="500" ShowValue="true" ValueFormat="N0"/>
+                    Min="0" Max="10000" Step="500" ShowValue="true" ValueFormat="N0" />
             </BwFormRow>
 
             <BwFormRow>
                 <BwCheckbox @bind-Value="_directModel.AcceptTerms" For="@(() => _directModel.AcceptTerms)"
-                            Label="I accept the terms of use"/>
+                    Label="I accept the terms of use" />
 
                 <BwSwitch @bind-Value="_directModel.Newsletter" For="@(() => _directModel.Newsletter)"
-                          Label="I want to receive newsletter"/>
+                    Label="I want to receive newsletter" />
             </BwFormRow>
 
             <BwFormActions>
                 <BwButton Text="Clear" Variant="BwVariant.Outline" Color="BwColor.Secondary"
-                          OnClick="ClearDirectForm"/>
-                <BwButton Text="Submit" Color="BwColor.Success" Icon="fa-solid fa-check" HtmlType="submit"/>
+                    OnClick="ClearDirectForm" />
+                <BwButton Text="Submit" Color="BwColor.Success" Icon="fa-solid fa-check" HtmlType="submit" />
             </BwFormActions>
         </BwForm>
 
         @if (_directSuccess)
         {
-            <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded flex items-center gap-3">
-                <i class="fa-solid fa-check-circle text-green-600 text-xl"></i>
-                <span class="text-green-800 font-medium">Form submitted successfully!</span>
-            </div>
+            <BwMargin Top="BwSpacing.Md">
+                <BwAlert Type="BwAlertType.Success" ShowIcon="true">
+                    <BwTypography Weight="BwFontWeight.Medium">Form submitted successfully!</BwTypography>
+                </BwAlert>
+            </BwMargin>
         }
         @if (_directFailed)
         {
-            <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded flex items-center gap-3">
-                <i class="fa-solid fa-times-circle text-red-600 text-xl"></i>
-                <span class="text-red-800 font-medium">Please correct the errors.</span>
-            </div>
+            <BwMargin Top="BwSpacing.Md">
+                <BwAlert Type="BwAlertType.Danger" ShowIcon="true">
+                    <BwTypography Weight="BwFontWeight.Medium">Please correct the errors.</BwTypography>
+                </BwAlert>
+            </BwMargin>
         }
     </BwCard>
 
     @* Örnek 2: Label Pozisyonları *@
     <BwCard Title="Label Positions" Subtitle="LabelPosition cascade test" Icon="fa-solid fa-align-left"
-            Color="BwColor.Info">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        Color="BwColor.Info">
+        <BwRow Spacing="BwSpacing.Lg" Cols="1" LgCols="2">
             @* Top Label (Default) *@
-            <div class="p-4 bg-gray-50 rounded border">
-                <h5 class="font-semibold text-gray-700 mb-3">LabelPosition.Top</h5>
-                <BwForm Model="@_labelModel" LabelPosition="BwLabelPosition.Top" Density="BwFormDensity.Normal">
-                    <BwInput @bind-Value="_labelModel.Name" Label="Name" Placeholder="Your name"/>
-                    <BwInput @bind-Value="_labelModel.Email" Label="Email" Type="email"
-                             Placeholder="example@mail.com"/>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwTypography Tag="BwTypographyTag.H5" Weight="BwFontWeight.Semibold">LabelPosition.Top
+                        </BwTypography>
+                    </BwMargin>
+                    <BwForm Model="@_labelModel" LabelPosition="BwLabelPosition.Top" Density="BwFormDensity.Normal">
+                        <BwInput @bind-Value="_labelModel.Name" Label="Name" Placeholder="Your name" />
+                        <BwInput @bind-Value="_labelModel.Email" Label="Email" Type="email"
+                            Placeholder="example@mail.com" />
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
 
             @* Left Label *@
-            <div class="p-4 bg-gray-50 rounded border">
-                <h5 class="font-semibold text-gray-700 mb-3">LabelPosition.Left</h5>
-                <BwForm Model="@_labelModel" LabelPosition="BwLabelPosition.Left" Density="BwFormDensity.Normal">
-                    <BwInput @bind-Value="_labelModel.Name" Label="Name" Placeholder="Your name" LabelWidth="100px"/>
-                    <BwInput @bind-Value="_labelModel.Email" Label="Email" Type="email" Placeholder="example@mail.com"
-                             LabelWidth="100px"/>
-                </BwForm>
-            </div>
-        </div>
+            <BwCard Color="BwColor.Secondary">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwTypography Tag="BwTypographyTag.H5" Weight="BwFontWeight.Semibold">LabelPosition.Left
+                        </BwTypography>
+                    </BwMargin>
+                    <BwForm Model="@_labelModel" LabelPosition="BwLabelPosition.Left" Density="BwFormDensity.Normal">
+                        <BwInput @bind-Value="_labelModel.Name" Label="Name" Placeholder="Your name"
+                            LabelWidth="100px" />
+                        <BwInput @bind-Value="_labelModel.Email" Label="Email" Type="email"
+                            Placeholder="example@mail.com" LabelWidth="100px" />
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
+        </BwRow>
     </BwCard>
 
     @* Örnek 3: Density Seviyeleri *@
     <BwCard Title="Form Density" Subtitle="Compact, Normal and Relaxed spacing" Icon="fa-solid fa-arrows-alt-v"
-            Color="BwColor.Warning">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        Color="BwColor.Warning">
+        <BwRow Spacing="BwSpacing.Lg" Cols="1" LgCols="3">
             @* Compact *@
-            <div class="p-4 bg-yellow-50 rounded border border-yellow-200">
-                <h5 class="font-semibold text-yellow-800 mb-3">Compact</h5>
-                <BwForm Model="@_densityModel" Density="BwFormDensity.Compact">
-                    <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..."/>
-                    <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..."/>
-                    <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..."/>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Warning">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwTypography Tag="BwTypographyTag.H5" Weight="BwFontWeight.Semibold">Compact</BwTypography>
+                    </BwMargin>
+                    <BwForm Model="@_densityModel" Density="BwFormDensity.Compact">
+                        <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..." />
+                        <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..." />
+                        <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..." />
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
 
             @* Normal *@
-            <div class="p-4 bg-blue-50 rounded border border-blue-200">
-                <h5 class="font-semibold text-blue-800 mb-3">Normal</h5>
-                <BwForm Model="@_densityModel" Density="BwFormDensity.Normal">
-                    <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..."/>
-                    <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..."/>
-                    <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..."/>
-                </BwForm>
-            </div>
+            <BwCard Color="BwColor.Info">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwTypography Tag="BwTypographyTag.H5" Weight="BwFontWeight.Semibold">Normal</BwTypography>
+                    </BwMargin>
+                    <BwForm Model="@_densityModel" Density="BwFormDensity.Normal">
+                        <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..." />
+                        <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..." />
+                        <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..." />
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
 
             @* Relaxed *@
-            <div class="p-4 bg-green-50 rounded border border-green-200">
-                <h5 class="font-semibold text-green-800 mb-3">Relaxed</h5>
-                <BwForm Model="@_densityModel" Density="BwFormDensity.Relaxed">
-                    <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..."/>
-                    <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..."/>
-                    <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..."/>
-                </BwForm>
-            </div>
-        </div>
+            <BwCard Color="BwColor.Success">
+                <BwPadding All="BwSpacing.Md">
+                    <BwMargin Bottom="BwSpacing.Sm">
+                        <BwTypography Tag="BwTypographyTag.H5" Weight="BwFontWeight.Semibold">Relaxed</BwTypography>
+                    </BwMargin>
+                    <BwForm Model="@_densityModel" Density="BwFormDensity.Relaxed">
+                        <BwInput @bind-Value="_densityModel.Field1" Label="Field 1" Placeholder="..." />
+                        <BwInput @bind-Value="_densityModel.Field2" Label="Field 2" Placeholder="..." />
+                        <BwInput @bind-Value="_densityModel.Field3" Label="Field 3" Placeholder="..." />
+                    </BwForm>
+                </BwPadding>
+            </BwCard>
+        </BwRow>
     </BwCard>
 
     @* Örnek 4: Şifre Eşleştirme *@
     <BwCard Title="Password Matching Validation" Subtitle="Cross-field validation example" Icon="fa-solid fa-key"
-            Color="BwColor.Danger">
+        Color="BwColor.Danger">
         <BwForm Model="@_passwordModel" OnValidSubmit="HandlePasswordSubmit" Density="BwFormDensity.Normal">
-            <div class="max-w-md">
+            <div style="max-width: 28rem;">
                 <BwInput @bind-Value="_passwordModel.Password" For="@(() => _passwordModel.Password)" Type="password"
-                         Label="New Password" Placeholder="••••••••" IconLeft="fa-solid fa-lock" IsRequired="true"/>
+                    Label="New Password" Placeholder="••••••••" IconLeft="fa-solid fa-lock" IsRequired="true" />
 
                 <BwInput @bind-Value="_passwordModel.ConfirmPassword" For="@(() => _passwordModel.ConfirmPassword)"
-                         Type="password" Label="Confirm Password" Placeholder="••••••••" IconLeft="fa-solid fa-lock"
-                         IsRequired="true"/>
+                    Type="password" Label="Confirm Password" Placeholder="••••••••" IconLeft="fa-solid fa-lock"
+                    IsRequired="true" />
 
                 @if (_passwordSuccess)
                 {
-                    <div
-                        class="p-3 bg-green-50 border border-green-200 rounded text-sm text-green-700 flex items-center gap-2">
-                        <i class="fa-solid fa-check"></i>
+                    <BwAlert Type="BwAlertType.Success" ShowIcon="true" Size="BwSize.Small">
                         Password changed successfully!
-                    </div>
+                    </BwAlert>
                 }
             </div>
             <BwFormActions Align="BwAlignment.Left">
-                <BwButton Text="Change Password" Color="BwColor.Danger" Icon="fa-solid fa-lock" HtmlType="submit"/>
+                <BwButton Text="Change Password" Color="BwColor.Danger" Icon="fa-solid fa-lock" HtmlType="submit" />
             </BwFormActions>
         </BwForm>
-    </BwCard>
-
-    @* Validation Rules Reference *@
-    <BwCard Title="Validation Rules Reference" Subtitle="Supported DataAnnotations attributes" Icon="fa-solid fa-book"
-            Color="BwColor.Secondary">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                <tr class="bg-gray-100">
-                    <th class="px-4 py-2 text-left border">Attribute</th>
-                    <th class="px-4 py-2 text-left border">Description</th>
-                    <th class="px-4 py-2 text-left border">Example</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="px-4 py-2 border font-mono text-blue-600">[Required]</td>
-                    <td class="px-4 py-2 border">Required field</td>
-                    <td class="px-4 py-2 border font-mono text-xs">[Required(ErrorMessage = "Name is required")]
-                    </td>
-                </tr>
-                <tr class="bg-gray-50">
-                    <td class="px-4 py-2 border font-mono text-blue-600">[EmailAddress]</td>
-                    <td class="px-4 py-2 border">Email format</td>
-                    <td class="px-4 py-2 border font-mono text-xs">[EmailAddress]</td>
-                </tr>
-                <tr>
-                    <td class="px-4 py-2 border font-mono text-blue-600">[StringLength]</td>
-                    <td class="px-4 py-2 border">Min/Max characters</td>
-                    <td class="px-4 py-2 border font-mono text-xs">[StringLength(50, MinimumLength = 2)]</td>
-                </tr>
-                <tr class="bg-gray-50">
-                    <td class="px-4 py-2 border font-mono text-blue-600">[Range]</td>
-                    <td class="px-4 py-2 border">Number range</td>
-                    <td class="px-4 py-2 border font-mono text-xs">[Range(18, 120)]</td>
-                </tr>
-                <tr>
-                    <td class="px-4 py-2 border font-mono text-blue-600">[Compare]</td>
-                    <td class="px-4 py-2 border">Field comparison</td>
-                    <td class="px-4 py-2 border font-mono text-xs">[Compare("Password")]</td>
-                </tr>
-                <tr class="bg-gray-50">
-                    <td class="px-4 py-2 border font-mono text-blue-600">[Url]</td>
-                    <td class="px-4 py-2 border">URL format</td>
-                    <td class="px-4 py-2 border font-mono text-xs">[Url]</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
     </BwCard>
 </BwColumn>
 

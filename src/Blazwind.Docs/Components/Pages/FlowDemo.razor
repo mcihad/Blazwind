@@ -1,26 +1,33 @@
 @page "/components/flow"
 @using Blazwind.Components.Tabs
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Shared
 
 <PageTitle>Flow - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
     <BwHero Title="BwFlow"
-            Description="Flexbox-based flow layout component. Supports wrap, scroll, touch scrolling, and arrow navigation."
-            Icon="fa-solid fa-grip-lines" Color="BwColor.Primary"/>
+        Description="Flexbox-based flow layout component. Supports wrap, scroll, touch scrolling, and arrow navigation."
+        Icon="fa-solid fa-grip-lines" Color="BwColor.Primary" />
 
     <BwTabs>
         <BwTabItem Title="Examples" Icon="fa-solid fa-code">
             <BwColumn Spacing="BwSpacing.Lg" Class="pt-4">
                 @* 1. Basic Wrap Flow *@
                 <BwCard Title="Basic Wrap Flow"
-                        Subtitle="Items flow from left to right, wrap to next line when they don't fit"
-                        Icon="fa-solid fa-grip" Color="BwColor.Primary">
+                    Subtitle="Items flow from left to right, wrap to next line when they don't fit"
+                    Icon="fa-solid fa-grip" Color="BwColor.Primary">
                     <BwColumn Spacing="BwSpacing.Md">
-                        <p class="text-sm text-gray-600 mb-2">Wrap="true" (default) - 12 items</p>
+                        <BwMargin Bottom="BwSpacing.Xs">
+                            <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Wrap="true" (default) - 12 items
+                            </BwTypography>
+                        </BwMargin>
                         <BwFlow Wrap="true" Gap="BwSpacing.Sm">
                             @for (var i = 1; i <= 12; i++)
                             {
-                                <div class="bg-blue-500 text-white px-4 py-2 rounded text-center min-w-16">@i</div>
+                                <div
+                                    style="background-color: var(--bw-primary-500); color: white; padding: 0.5rem 1rem; border-radius: var(--bw-radius-default); text-align: center; min-width: 4rem;">
+                                    @i</div>
                             }
                         </BwFlow>
                     </BwColumn>
@@ -28,14 +35,18 @@
 
                 @* 2. Items Per Row *@
                 <BwCard Title="Items Per Row" Subtitle="Fixed column count with ItemsPerRow"
-                        Icon="fa-solid fa-table-cells" Color="BwColor.Success">
+                    Icon="fa-solid fa-table-cells" Color="BwColor.Success">
                     <BwColumn Spacing="BwSpacing.Lg">
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">ItemsPerRow="4" - 4 items per row</p>
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ItemsPerRow="4" - 4 items
+                                    per row</BwTypography>
+                            </BwMargin>
                             <BwFlow ItemsPerRow="4" Gap="BwSpacing.Sm">
                                 @for (var i = 1; i <= 8; i++)
                                 {
-                                    <BwFlowItem Class="bg-emerald-500 text-white p-3 rounded text-center">
+                                    <BwFlowItem
+                                        Style="background-color: var(--bw-success-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
                                         Item @i
                                     </BwFlowItem>
                                 }
@@ -46,16 +57,20 @@
 
                 @* 3. Horizontal Scroll (No Wrap) *@
                 <BwCard Title="Horizontal Scroll (Touch Enabled)"
-                        Subtitle="With Wrap=false scrolls left, can be scrolled with touch or mouse"
-                        Icon="fa-solid fa-arrows-left-right" Color="BwColor.Warning">
+                    Subtitle="With Wrap=false scrolls left, can be scrolled with touch or mouse"
+                    Icon="fa-solid fa-arrows-left-right" Color="BwColor.Warning">
                     <BwColumn Spacing="BwSpacing.Lg">
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">Wrap="false" - Scroll with finger or mouse</p>
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Wrap="false" - Scroll with
+                                    finger or mouse</BwTypography>
+                            </BwMargin>
                             <BwFlow Wrap="false" Overflow="BwOverflow.ScrollX" Gap="BwSpacing.Sm"
-                                    Class="bw-flow-touch-scroll">
+                                Class="bw-flow-touch-scroll">
                                 @for (var i = 1; i <= 20; i++)
                                 {
-                                    <BwFlowItem Width="100px" Class="bg-amber-500 text-white p-3 rounded text-center">
+                                    <BwFlowItem Width="100px"
+                                        Style="background-color: var(--bw-warning-500); color: white; padding: 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
                                         @i
                                     </BwFlowItem>
                                 }
@@ -63,12 +78,15 @@
                         </div>
 
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">ShowArrows="true" - Navigation with arrow buttons</p>
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">ShowArrows="true" -
+                                    Navigation with arrow buttons</BwTypography>
+                            </BwMargin>
                             <BwFlow Wrap="false" ShowArrows="true" Gap="BwSpacing.Sm">
                                 @for (var i = 1; i <= 15; i++)
                                 {
                                     <BwFlowItem Width="120px"
-                                                Class="bg-orange-500 text-white p-4 rounded text-center font-medium">
+                                        Style="background-color: var(--bw-warning-600); color: white; padding: 1rem; border-radius: var(--bw-radius-default); text-align: center; font-weight: 500;">
                                         Product @i
                                     </BwFlowItem>
                                 }
@@ -79,48 +97,70 @@
 
                 @* 4. Direction Variations *@
                 <BwCard Title="Direction Variations" Subtitle="Different flow directions with Direction parameter"
-                        Icon="fa-solid fa-arrows-alt" Color="BwColor.Info">
+                    Icon="fa-solid fa-arrows-alt" Color="BwColor.Info">
                     <BwGrid ColumnDefs="*,*" Gap="BwSpacing.Lg">
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">Direction="Row" (default)</p>
-                            <BwFlow Direction="BwFlexDirection.Row" Gap="BwSpacing.Xs" Class="bg-gray-100 p-3 rounded">
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Direction="Row" (default)
+                                </BwTypography>
+                            </BwMargin>
+                            <BwFlow Direction="BwFlexDirection.Row" Gap="BwSpacing.Xs"
+                                Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
                                 @for (var i = 1; i <= 6; i++)
                                 {
-                                    <div class="bg-sky-500 text-white px-3 py-2 rounded">@i</div>
+                                    <div
+                                        style="background-color: var(--bw-info-500); color: white; padding: 0.5rem 0.75rem; border-radius: var(--bw-radius-default);">
+                                        @i</div>
                                 }
                             </BwFlow>
                         </div>
 
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">Direction="RowReverse"</p>
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Direction="RowReverse"
+                                </BwTypography>
+                            </BwMargin>
                             <BwFlow Direction="BwFlexDirection.RowReverse" Gap="BwSpacing.Xs"
-                                    Class="bg-gray-100 p-3 rounded">
+                                Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
                                 @for (var i = 1; i <= 6; i++)
                                 {
-                                    <div class="bg-cyan-500 text-white px-3 py-2 rounded">@i</div>
+                                    <div
+                                        style="background-color: var(--bw-info-500); color: white; padding: 0.5rem 0.75rem; border-radius: var(--bw-radius-default);">
+                                        @i</div>
                                 }
                             </BwFlow>
                         </div>
 
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">Direction="Column" MaxHeight="150px"</p>
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Direction="Column"
+                                    MaxHeight="150px"</BwTypography>
+                            </BwMargin>
                             <BwFlow Direction="BwFlexDirection.Column" MaxHeight="150px" Overflow="BwOverflow.ScrollY"
-                                    Wrap="false" Gap="BwSpacing.Xs" Class="bg-gray-100 p-3 rounded">
+                                Wrap="false" Gap="BwSpacing.Xs"
+                                Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
                                 @for (var i = 1; i <= 10; i++)
                                 {
-                                    <div class="bg-indigo-500 text-white px-3 py-2 rounded text-center">@i</div>
+                                    <div
+                                        style="background-color: var(--bw-info-600); color: white; padding: 0.5rem 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                                        @i</div>
                                 }
                             </BwFlow>
                         </div>
 
                         <div>
-                            <p class="text-sm text-gray-600 mb-2">Direction="ColumnReverse" MaxHeight="150px"</p>
+                            <BwMargin Bottom="BwSpacing.Xs">
+                                <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Direction="ColumnReverse"
+                                    MaxHeight="150px"</BwTypography>
+                            </BwMargin>
                             <BwFlow Direction="BwFlexDirection.ColumnReverse" MaxHeight="150px"
-                                    Overflow="BwOverflow.ScrollY" Wrap="false" Gap="BwSpacing.Xs"
-                                    Class="bg-gray-100 p-3 rounded">
+                                Overflow="BwOverflow.ScrollY" Wrap="false" Gap="BwSpacing.Xs"
+                                Style="background-color: var(--bw-gray-100); padding: 0.75rem; border-radius: var(--bw-radius-default);">
                                 @for (var i = 1; i <= 10; i++)
                                 {
-                                    <div class="bg-purple-500 text-white px-3 py-2 rounded text-center">@i</div>
+                                    <div
+                                        style="background-color: var(--bw-info-700); color: white; padding: 0.5rem 0.75rem; border-radius: var(--bw-radius-default); text-align: center;">
+                                        @i</div>
                                 }
                             </BwFlow>
                         </div>
@@ -129,11 +169,12 @@
 
                 @* 5. Tag List *@
                 <BwCard Title="Tag List" Subtitle="Real world usage example" Icon="fa-solid fa-tags"
-                        Color="BwColor.Primary">
+                    Color="BwColor.Primary">
                     <BwFlow Gap="BwSpacing.Xs">
                         @foreach (var tag in _tags)
                         {
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">@tag</span>
+                            <span
+                                style="background-color: var(--bw-primary-100); color: var(--bw-primary-800); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem;">@tag</span>
                         }
                     </BwFlow>
                 </BwCard>
@@ -142,21 +183,23 @@
 
         <BwTabItem Title="POS Screen" Icon="fa-solid fa-cash-register">
             <BwCard Title="POS Screen" Subtitle="Category and product selection" Icon="fa-solid fa-cash-register"
-                    Color="BwColor.Primary">
+                Color="BwColor.Primary">
                 <BwColumn Spacing="BwSpacing.Md">
                     @* Categories - Horizontal scroll with touch *@
                     <BwColumn Spacing="BwSpacing.Xs">
-                        <span class="text-sm font-medium text-gray-600">Categories</span>
+                        <BwTypography Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Secondary">
+                            Categories</BwTypography>
                         <BwFlow Wrap="false" ShowArrows="true" Gap="BwSpacing.Sm" Class="bw-flow-touch-scroll">
                             @foreach (var category in _categories)
                             {
                                 var isSelected = category.Id == _selectedCategoryId;
                                 var catId = category.Id;
                                 <BwFlowItem Width="150px" Height="150px"
-                                            Class="@($"rounded cursor-pointer transition-all flex flex-col items-center justify-center gap-2 {(isSelected ? "bg-blue-600 text-white ring-4 ring-blue-300" : "bg-gray-100 hover:bg-gray-200 text-gray-800")}")"
-                                            OnClick="() => SelectCategory(catId)">
-                                    <i class="@category.Icon text-3xl"></i>
-                                    <span class="text-sm font-medium text-center px-2">@category.Name</span>
+                                    Style="@($"background-color: {(isSelected ? "var(--bw-primary-600)" : "var(--bw-gray-100)")}; color: {(isSelected ? "white" : "var(--bw-color-text)")}; border-radius: var(--bw-radius-default); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; {(isSelected ? "box-shadow: 0 0 0 4px var(--bw-primary-300);" : "")}")"
+                                    Class="@(!isSelected ? "hover:bg-gray-200" : "")" OnClick="() => SelectCategory(catId)">
+                                    <i class="@category.Icon" style="font-size: 1.875rem;"></i>
+                                    <span
+                                        style="font-size: 0.875rem; font-weight: 500; text-align: center; padding: 0 0.5rem;">@category.Name</span>
                                 </BwFlowItem>
                             }
                         </BwFlow>
@@ -164,19 +207,24 @@
 
                     @* Products - Wrap grid of 150x150 boxes *@
                     <BwColumn Spacing="BwSpacing.Xs">
-                        <span class="text-sm font-medium text-gray-600">Products - @(_categories.First(c => c.Id ==
-                                                                                                            _selectedCategoryId).Name)</span>
+                        <BwTypography Size="BwSize.Small" Weight="BwFontWeight.Medium" Color="BwColor.Secondary">
+                            Products - @(_categories.First(c => c.Id ==
+                                                        _selectedCategoryId).Name)</BwTypography>
                         <BwFlow Wrap="true" Gap="BwSpacing.Sm">
                             @foreach (var product in GetProductsForCategory(_selectedCategoryId))
                             {
                                 <BwFlowItem Width="150px" Height="150px"
-                                            Class="bg-white border-2 border-gray-200 hover:border-emerald-500 hover:shadow-lg rounded cursor-pointer transition-all flex flex-col items-center justify-center gap-2">
-                                    <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-                                        <i class="@product.Icon text-emerald-600 text-xl"></i>
+                                    Style="background-color: var(--bw-card-bg); border: 2px solid var(--bw-color-border); border-radius: var(--bw-radius-default); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;"
+                                    Class="hover:border-emerald-500 hover:shadow-lg">
+                                    <div
+                                        style="width: 3rem; height: 3rem; background-color: var(--bw-success-100); border-radius: 9999px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="@product.Icon"
+                                            style="color: var(--bw-success-600); font-size: 1.25rem;"></i>
                                     </div>
                                     <span
-                                        class="text-sm font-medium text-center px-2 text-gray-800">@product.Name</span>
-                                    <span class="text-lg font-bold text-emerald-600">₺@product.Price</span>
+                                        style="font-size: 0.875rem; font-weight: 500; text-align: center; padding: 0 0.5rem; color: var(--bw-color-text);">@product.Name</span>
+                                    <span
+                                        style="font-size: 1.125rem; font-weight: 700; color: var(--bw-success-600);">₺@product.Price</span>
                                 </BwFlowItem>
                             }
                         </BwFlow>
@@ -191,73 +239,73 @@
     private int _selectedCategoryId = 1;
 
     private readonly List<Category> _categories = new()
-    {
-        new Category(1, "Foods", "fa-solid fa-utensils"),
-        new Category(2, "Beverages", "fa-solid fa-mug-hot"),
-        new Category(3, "Desserts", "fa-solid fa-cake-candles"),
-        new Category(4, "Snacks", "fa-solid fa-cookie"),
-        new Category(5, "Breakfast", "fa-solid fa-egg"),
-        new Category(6, "Ice Cream", "fa-solid fa-ice-cream"),
-        new Category(7, "Salads", "fa-solid fa-leaf"),
-        new Category(8, "Pizzas", "fa-solid fa-pizza-slice")
-    };
+{
+new Category(1, "Foods", "fa-solid fa-utensils"),
+new Category(2, "Beverages", "fa-solid fa-mug-hot"),
+new Category(3, "Desserts", "fa-solid fa-cake-candles"),
+new Category(4, "Snacks", "fa-solid fa-cookie"),
+new Category(5, "Breakfast", "fa-solid fa-egg"),
+new Category(6, "Ice Cream", "fa-solid fa-ice-cream"),
+new Category(7, "Salads", "fa-solid fa-leaf"),
+new Category(8, "Pizzas", "fa-solid fa-pizza-slice")
+};
 
     private readonly List<Product> _products = new()
-    {
+{
 // Foods (1)
-        new Product(1, "Hamburger", "fa-solid fa-burger", 75, 1),
-        new Product(2, "Chicken Doner", "fa-solid fa-drumstick-bite", 55, 1),
-        new Product(3, "Lahmacun", "fa-solid fa-circle", 35, 1),
-        new Product(4, "Pide", "fa-solid fa-bread-slice", 65, 1),
-        new Product(5, "Kofte", "fa-solid fa-circle", 85, 1),
-        new Product(6, "Chicken Shish", "fa-solid fa-fire", 70, 1),
+new Product(1, "Hamburger", "fa-solid fa-burger", 75, 1),
+new Product(2, "Chicken Doner", "fa-solid fa-drumstick-bite", 55, 1),
+new Product(3, "Lahmacun", "fa-solid fa-circle", 35, 1),
+new Product(4, "Pide", "fa-solid fa-bread-slice", 65, 1),
+new Product(5, "Kofte", "fa-solid fa-circle", 85, 1),
+new Product(6, "Chicken Shish", "fa-solid fa-fire", 70, 1),
 
 // Beverages (2)
-        new Product(7, "Tea", "fa-solid fa-mug-saucer", 10, 2),
-        new Product(8, "Turkish Coffee", "fa-solid fa-mug-hot", 25, 2),
-        new Product(9, "Ayran", "fa-solid fa-glass-water", 15, 2),
-        new Product(10, "Cola", "fa-solid fa-bottle-water", 20, 2),
-        new Product(11, "Lemonade", "fa-solid fa-lemon", 25, 2),
+new Product(7, "Tea", "fa-solid fa-mug-saucer", 10, 2),
+new Product(8, "Turkish Coffee", "fa-solid fa-mug-hot", 25, 2),
+new Product(9, "Ayran", "fa-solid fa-glass-water", 15, 2),
+new Product(10, "Cola", "fa-solid fa-bottle-water", 20, 2),
+new Product(11, "Lemonade", "fa-solid fa-lemon", 25, 2),
 
 // Desserts (3)
-        new Product(12, "Baklava", "fa-solid fa-stroopwafel", 45, 3),
-        new Product(13, "Kunefe", "fa-solid fa-cheese", 55, 3),
-        new Product(14, "Rice Pudding", "fa-solid fa-bowl-food", 35, 3),
-        new Product(15, "Kazandibi", "fa-solid fa-bowl-food", 35, 3),
+new Product(12, "Baklava", "fa-solid fa-stroopwafel", 45, 3),
+new Product(13, "Kunefe", "fa-solid fa-cheese", 55, 3),
+new Product(14, "Rice Pudding", "fa-solid fa-bowl-food", 35, 3),
+new Product(15, "Kazandibi", "fa-solid fa-bowl-food", 35, 3),
 
 // Snacks (4)
-        new Product(16, "French Fries", "fa-solid fa-french-fries", 30, 4),
-        new Product(17, "Onion Rings", "fa-solid fa-ring", 35, 4),
-        new Product(18, "Nuggets", "fa-solid fa-shapes", 40, 4),
+new Product(16, "French Fries", "fa-solid fa-french-fries", 30, 4),
+new Product(17, "Onion Rings", "fa-solid fa-ring", 35, 4),
+new Product(18, "Nuggets", "fa-solid fa-shapes", 40, 4),
 
 // Breakfast (5)
-        new Product(19, "Continental Breakfast", "fa-solid fa-plate-wheat", 150, 5),
-        new Product(20, "Menemen", "fa-solid fa-egg", 45, 5),
-        new Product(21, "Fried Eggs", "fa-solid fa-egg", 35, 5),
-        new Product(22, "Omelette", "fa-solid fa-egg", 40, 5),
+new Product(19, "Continental Breakfast", "fa-solid fa-plate-wheat", 150, 5),
+new Product(20, "Menemen", "fa-solid fa-egg", 45, 5),
+new Product(21, "Fried Eggs", "fa-solid fa-egg", 35, 5),
+new Product(22, "Omelette", "fa-solid fa-egg", 40, 5),
 
 // Ice Cream (6)
-        new Product(23, "Vanilla", "fa-solid fa-ice-cream", 25, 6),
-        new Product(24, "Chocolate", "fa-solid fa-ice-cream", 25, 6),
-        new Product(25, "Fruit", "fa-solid fa-ice-cream", 30, 6),
+new Product(23, "Vanilla", "fa-solid fa-ice-cream", 25, 6),
+new Product(24, "Chocolate", "fa-solid fa-ice-cream", 25, 6),
+new Product(25, "Fruit", "fa-solid fa-ice-cream", 30, 6),
 
 // Salads (7)
-        new Product(26, "Shepherd Salad", "fa-solid fa-carrot", 35, 7),
-        new Product(27, "Caesar Salad", "fa-solid fa-leaf", 55, 7),
-        new Product(28, "Seasonal Salad", "fa-solid fa-seedling", 40, 7),
+new Product(26, "Shepherd Salad", "fa-solid fa-carrot", 35, 7),
+new Product(27, "Caesar Salad", "fa-solid fa-leaf", 55, 7),
+new Product(28, "Seasonal Salad", "fa-solid fa-seedling", 40, 7),
 
 // Pizzas (8)
-        new Product(29, "Margarita", "fa-solid fa-pizza-slice", 85, 8),
-        new Product(30, "Mixed", "fa-solid fa-pizza-slice", 110, 8),
-        new Product(31, "Sausage", "fa-solid fa-pizza-slice", 95, 8),
-        new Product(32, "Mushroom", "fa-solid fa-pizza-slice", 90, 8)
-    };
+new Product(29, "Margarita", "fa-solid fa-pizza-slice", 85, 8),
+new Product(30, "Mixed", "fa-solid fa-pizza-slice", 110, 8),
+new Product(31, "Sausage", "fa-solid fa-pizza-slice", 95, 8),
+new Product(32, "Mushroom", "fa-solid fa-pizza-slice", 90, 8)
+};
 
     private readonly List<string> _tags = new()
-    {
-        "Blazor", "C#", ".NET", "Tailwind", "CSS", "JavaScript", "TypeScript",
-        "Web", "Frontend", "Backend", "API", "Database", "Cloud", "Azure", "DevOps"
-    };
+{
+"Blazor", "C#", ".NET", "Tailwind", "CSS", "JavaScript", "TypeScript",
+"Web", "Frontend", "Backend", "API", "Database", "Cloud", "Azure", "DevOps"
+};
 
     private void SelectCategory(int categoryId)
     {

@@ -1,121 +1,104 @@
-# Blazwind Q2 2026 Release Roadmap
+# Blazwind Roadmap to Release (Target: June 15, 2026)
 
-**Current Date:** 2026-01-26
-**Target Release:** Q2 2026 (April - June)
-**Status:** Alpha
-**License:** MIT
-**Goal:** High-quality, intuitive, predictable, AI-ready Blazor Component Library.
+**Start Date:** Jan 28, 2026
 
-## 📌 Executive Summary
+**Mission:** Create an AI-First, Mobile-First, mature Blazor Component Library with a standardized design system and premium developer experience.
 
-This roadmap outlines the path from Alpha to v1.0 Release. The focus is on **standardization**, **predictability**, **testing**, and **AI-readiness**. We aim for a "Premium" developer experience where code is intuitive and documentation is machine-parsable.
+## �️ Strategic Foundations
 
----
+Before executing the timeline, these core principles apply to **all** phases:
 
-## 🗓️ Phase 1: Standardization & Architecture (Weeks 1-3)
-
-*Goal: Ensure every component feels like part of a preset system, not a collection of isolated scripts.*
-
-### 1.1 Core Architecture Refactoring
-- [ ] **Inheritance Standardization**: Refactor *ALL* components to inherit from `BwBase` (or `BwComponentBase`).
-    -   Ensure unified handling of `Id`, `Class`, `Style`, `AdditionalAttributes`.
-    -   Remove duplicate parameter definitions across 100+ components.
-- [ ] **Enum Consolidation**:
-    -   Audit `Blazwind.Components/Shared` to ensure NO duplicate enums exist.
-    -   Enforce usage of `BwColor`, `BwSize`, `BwVariant`, `BwShape`, etc.
-    -   Eliminate magic strings in component logic.
-- [ ] **Semantic CSS Layer**:
-    -   Introduce "Semantic Classes" (e.g., `.bw-button`, `.bw-card`) alongside Tailwind utilities.
-    -   This enables easier testing (selectors) and potential future theming hooks.
-    -   Write a `.editorconfig` to enforce coding styles (indentation, braces).
-
-### 1.2 Development Experience (DX)
-- [ ] **Analyzer Rules**: Add a Roslyn Analyzer or strict `.editorconfig` to warn on:
-    -   Missing XML documentation.
-    -   Public properties without default values.
-    -   Parameters not being compatible with the base class.
-- [ ] **Coding Rules Document**: Create `rules/CODING_STANDARDS.md`.
-    -   Define logical ordering of properties (Parameters -> Inject -> State -> Methods).
-    -   Define Naming conventions (`On[EvenName]`, `Is[State]`).
-- [ ] **Design Rules Document**: Create `rules/DESIGN_SYSTEM.md`.
-    -   Define strict token usage (Color palette URNs, Spacing logic).
+1.  **Strict Branching Strategy**:
+    *   Every phase/feature uses a dedicated branch (e.g., `feature/standardization`, `feature/theme-designer`).
+    *   No direct commits to `main` until fully tested and verified.
+2.  **AI-First & Mobile-First**:
+    *   All components must be touch-friendly and responsive by default.
+    *   "AI Support" means the library provides context and utilities that make it easy for AI agents to generate Blazwind code.
+3.  **First-Class Documentation**:
+    *   **Human Docs**: Interactive examples, detailed API refs.
+    *   **AI Docs**: Structured `llms.txt` and context files for agents.
+    *   **Code Docs**: 100% XML documentation coverage for IntelliSense.
 
 ---
 
-## 🛠️ Phase 2: Testing & Quality Assurance (Weeks 4-7)
+## 🗓️ Phase 1: Standardization & Architecture (Jan 28 - Feb 28)
 
-*Goal: Move from "It works on my machine" to "It works everywhere". Target Coverage: 60%.*
+**Goal:** Lay the unbreakable foundation. Standardize styles and naming conventions.
 
-### 2.1 Testing Infrastructure
-- [ ] **CI Pipeline**: Set up GitHub Actions to run tests on PRs.
-- [ ] **Snapshot Testing**: Implement HTML snapshot testing (using verified bUnit output) to detect accidental UI regressions.
-
-### 2.2 Unit Test Expansion
-- [ ] **Core Component Coverage**: Rewrite/Create tests for Top 20 most used components:
-    -   [ ] Button, Input, Select, Checkbox, Switch
-    -   [ ] Grid, Stack/Flex, Container
-    -   [ ] Card, Modal, Drawer
-- [ ] **Interaction Testing**: Test `OnClick`, `OnValidSubmit`, `OnDismiss` events.
-- [ ] **Corner Cases**: Test `null` inputs, `Disabled` states, and empty children.
-
-### 2.3 Static Analysis
-- [ ] **Accessibility Audit**: Run automated checks for ARIA labels, roles, and contrast ratios.
-- [ ] **Architecture Tests**: Use `NetArchTest` to enforce dependency rules (e.g., *Components should not depend on Feature logic*).
+*   **Style Standardization** (Feature Branch: `standardization`)
+    *   [ ] **Enum to CSS Variable Mapping**:
+        *   Implement automatic mapping of `BwColor` enums to CSS variables (e.g., `BwColor.Primary` â†’ `--bw-color-primary`).
+        *   Ensure strict naming consistency across all CSS variables.
+    *   [ ] **Component API Unification**:
+        *   Standardize parameter names (e.g., `Size`, `Variant`, `Color` across all components).
+        *   Refactor CSS classes to follow the generic `bw-{component}-{part}` pattern everywhere.
+*   **Infrastructure**
+    *   [ ] Setup branch protection and CI workflow updates to support the new roadmap.
 
 ---
 
-## 🤖 Phase 3: Documentation & AI-Readiness (Weeks 8-10)
+## 🛠️ Phase 2: Core Maturity & Quality (Mar 1 - Mar 31)
 
-*Goal: Make the library "Self-Documenting" for humans and "Structurally Parsable" for AI Agents.*
+**Goal:** Elevate every component to "Mature" status with robust implementation (Logic & Tests).
 
-### 3.1 Structured Documentation
-- [ ] **Metadata Schema**: Add YAML frontmatter to all `Docs/*.md` files.
-    -   `title`, `type`, `complexity`, `related_components`.
-- [ ] **XML Comments**: **Mandatory** XML summaries for every public Parameter and Method.
-    -   Why? So IDES *and* AI agents looking at source code understand intent immediately.
-- [ ] **Single Source of Truth**:
-    -   Update `COMPONENTS.md` to be the master index.
-    -   Ensure no "orphan" components without docs.
-
-### 3.2 AI Integration Kit
-- [ ] **`llms.txt` Evolution**: Upgrade `llms.txt` to a full content map.
-    -   Include short descriptions of every component.
-    -   Include "Best Practice" snippets for AI code generation.
-- [ ] **Context Window Optimization**: Create a `dist/blazwind-context.md` that concatenates high-level API definitions for use in Agent Prompts.
-
-### 3.3 Examples & Demo
-- [ ] **Interactive Playground**: (Optional) A WASM-based "Try it" page.
-- [ ] **Copy-Paste Ready**: Ensure all code blocks in docs include necessary `@using` statements.
+*   **Code Quality Drive** (Feature Branch: `quality-core`)
+    *   [ ] **Component Review Loops**:
+        *   Iterate through *every* component (Inputs, Layouts, Feedback, Navigation).
+        *   Refactor internal logic for readability and performance.
+        *   Ensure "Mobile First" behavior implementation in CSS/JS.
+*   **Testing Foundation**
+    *   [ ] **Razor C# Unit Tests**: Setup bUnit and write baseline tests for key components.
+    *   [ ] **TypeScript Unit Tests**: Setup Jest/Vitest for any JS interop code.
 
 ---
 
-## 🔐 Phase 4: Polish, Performance & Security (Weeks 11-12)
+## 🤖 Phase 3: The AI Engine & Validations (Apr 1 - Apr 30)
 
-*Goal: Production readiness.*
+**Goal:** Solidify the "AI First" capabilities through tools and servers.
 
-### 4.1 Security
-- [ ] **Dependency Audit**: Scan all NuGet and NPM packages for vulnerabilities.
-- [ ] **XSS Prevention**: Audit all `RenderFragment` and `MarkupString` usage. Ensure strict sanitization.
-- [ ] **Input Validation**: Harden `BwForm` components against malformed inputs.
-
-### 4.2 Performance
-- [ ] **Render Cycle Optimization**: Use `bUnit` to count render cycles. Eliminate unnecessary re-renders.
-- [ ] **Lazy Loading**: Ensure heavy JS (Maps, Charts) is lazy-loaded only when requested.
-- [ ] **Tree Shaking**: Verify Tailwind CSS build only includes used classes.
-
----
-
-## 🚀 Phase 5: Release Readiness (2 Weeks before Launch)
-
-- [ ] **NuGet Packaging**: Finalize `.nuspec` metadata (Tags, Icon, License, Readme).
-- [ ] **Changelog**: Generate a detailed Changelog from Git history.
-- [ ] **v1.0.0 Tag**: Release candidate builds.
-- [ ] **Announcement Post**: Blog post highlighting "AI-First Component Library".
+*   **AI Integration** (Feature Branch: `ai-features`)
+    *   [ ] **AI Helper Utilities**: Add features that assist AI in reasoning about the UI state (e.g., semantic accessibility trees).
+    *   [ ] **Blazwind MCP Server** (Feature Branch: `mcp-server`)
+        *   **Objective**: Create a Model Context Protocol (MCP) server to directly feed context to AI IDEs.
+        *   **Features**: Provide real-time component documentation, snippets, and validating potential new code against the current codebase rules.
+*   **Comprehensive Testing** (Feature Branch: `testing-sprint`)
+    *   [ ] **Unit Test Expansion**: Reach high code coverage (target > 80%).
+    *   [ ] **Edge Case Testing**: Verify mobile gestures, touch targets, and responsiveness.
 
 ---
 
-## 📊 Success Metrics
-1.  **Test Coverage**: > 60%
-2.  **Documentation Coverage**: 100% of public API.
-3.  **Lighthouse Score**: 95+ on Demo/Docs site.
-4.  **Zero Critical Security Issues**.
+## 📚 Phase 4: Documentation & Ecosystem (May 1 - May 31)
+
+**Goal:** Now that the Code is Stable, write the "First Class" Documents and build the tools.
+
+*   **Documentation Sprint** (Feature Branch: `docs-full`)
+    *   [ ] **Complete XML Documentation**:
+        *   Add `<summary>`, `<param>`, and `<example>` tags to 100% of public classes, properties, and methods. (Done *now* to avoid churn during refactors).
+    *   [ ] **AI Documentation Suite**:
+        *   Create high-quality `llms.txt` and "System Prompt" assets.
+        *   Document component hierarchies in machine-readable formats.
+*   **Creative Tools** (Feature Branch: `theme-designer`)
+    *   [ ] **Blazwind.ThemeDesigner**:
+        *   Develop a standalone (or embedded) GUI tools to adjust standard `BwColor`, `BwSize`, etc.
+        *   **Feature**: Save/Load mechanism for sets of CSS variables (Themes).
+        *   **Feature**: "Download Theme" functionality for users.
+*   **Blazwind.com** (Feature Branch: `website`)
+    *   [ ] **Official Website Launch**:
+        *   Landing page with "Mobile AI First" messaging.
+        *   Hosting the documentation and Theme Designer.
+        *   Interactive demos.
+
+---
+
+## 🚀 Phase 5: Final Polish & Launch (June 1 - June 15)
+
+**Goal:** Optimization, final verification, and Release.
+
+*   **Final Polish** (Feature Branch: `release-prep`)
+    *   [ ] **Optimizations**: Tree-shaking verification, CSS minification, JS Interop performance tuning.
+    *   [ ] **Regression Testing**: Full manual and automated sweep of the entire library.
+    *   [ ] **Merge**: Consolidate all branches into `main`.
+*   **Release Day (June 15, 2026)**
+    *   [ ] Publish NuGet Package v1.0.0.
+    *   [ ] Go Live with Blazwind.com.
+    *   [ ] Public Announcement.

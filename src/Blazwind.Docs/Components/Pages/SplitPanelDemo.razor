@@ -1,40 +1,43 @@
 @page "/components/split-panel"
+@using Blazwind.Components.Typography
 
 <PageTitle>Split Panel - Blazwind</PageTitle>
 
 <BwColumn Spacing="BwSpacing.Lg">
-    <BwHero Title="Split Panel"
-            Description="IDE style split panel component. Resize by dragging the middle bar."
-            Icon="fa-solid fa-columns"
-            Color="BwColor.Primary"/>
+    <BwHero Title="Split Panel" Description="IDE style split panel component. Resize by dragging the middle bar."
+        Icon="fa-solid fa-columns" Color="BwColor.Primary" />
 
     @* Horizontal Split *@
     <BwCard Title="Horizontal Split" Subtitle="Resize by dragging the middle bar" Icon="fa-solid fa-grip-lines-vertical"
-            Color="BwColor.Info">
+        Color="BwColor.Info">
         <div style="height: 300px; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden;">
             <BwSplitPanel DefaultSize="200" MinSize="100" MaxSize="400">
                 <FirstPanel>
                     <div class="h-full bg-gray-50 dark:bg-gray-800 p-4">
                         <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Left Panel</h4>
                         <ul class="space-y-2 text-sm">
-                            <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <li
+                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 <i class="fa-solid fa-folder text-yellow-500"></i> src
                             </li>
-                            <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <li
+                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 <i class="fa-solid fa-folder text-yellow-500"></i> components
                             </li>
-                            <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded bg-blue-50 dark:bg-blue-900/30">
+                            <li
+                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded bg-blue-50 dark:bg-blue-900/30">
                                 <i class="fa-solid fa-file-code text-blue-500"></i> main.ts
                             </li>
-                            <li class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                            <li
+                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 <i class="fa-solid fa-file-code text-blue-500"></i> index.html
                             </li>
                         </ul>
                     </div>
                 </FirstPanel>
                 <SecondPanel>
-                    <div class="h-full bg-white dark:bg-gray-900 p-4">
-                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3"> main.ts</h4>
+                    <div style="height: 100%; background-color: var(--bw-card-bg); padding: 1rem;">
+                        <h4 style="font-weight: 600; color: var(--bw-color-text); margin-bottom: 0.75rem;"> main.ts</h4>
                         <pre
                             class="p-3 bg-gray-900 dark:bg-gray-950 rounded text-xs font-mono text-green-400 overflow-auto">
 export function hello() {
@@ -50,12 +53,12 @@ hello();</pre>
 
     @* Vertical Split *@
     <BwCard Title="Vertical Split" Subtitle="Top-bottom panel layout" Icon="fa-solid fa-grip-lines"
-            Color="BwColor.Success">
+        Color="BwColor.Success">
         <div style="height: 350px; border: 1px solid #e5e7eb; border-radius: 4px; overflow: hidden;">
             <BwSplitPanel Orientation="BwOrientation.Vertical" DefaultSize="180" MinSize="80" MaxSize="280">
                 <FirstPanel>
-                    <div class="h-full bg-white dark:bg-gray-900 p-4">
-                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Editor</h4>
+                    <div style="height: 100%; background-color: var(--bw-card-bg); padding: 1rem;">
+                        <h4 style="font-weight: 600; color: var(--bw-color-text); margin-bottom: 0.5rem;">Editor</h4>
                         <pre
                             class="p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs font-mono text-gray-700 dark:text-gray-300">
 &lt;BwSplitPanel Orientation="Vertical"&gt;
