@@ -27,6 +27,11 @@ interface ToastInstance {
     timer?: number;
     position: string;
     duration: number;
+    // Swipe tracking
+    startX?: number;
+    startY?: number;
+    currentX?: number;
+    isDragging?: boolean;
 }
 
 const toasts: Map<string, ToastInstance> = new Map();
@@ -86,6 +91,147 @@ const positionClasses: Record<string, string> = {
     'bottom-left': 'bottom-4 left-1/2 -translate-x-1/2 sm:translate-x-0 sm:left-4 items-center sm:items-start',
     'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center'
 };
+
+// Swipe gesture configuration
+const SWIPE_THRESHOLD = 80; // Minimum distance to trigger dismiss
+const SWIPE_VELOCITY_THRESHOLD = 0.3; // Minimum velocity (px/ms)
+
+function setupSwipeGesture(toast: HTMLElement, instance: ToastInstance, position: string): void {
+    let startTime = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+        const touch = e.touches[0];
+        instance.startX = touch.clientX;
+        instance.startY = touch.clientY;
+        instance.currentX = touch.clientX;
+        instance.isDragging = false;
+        startTime = Date.now();
+
+        // Pause timer while touching
+        if (instance.timer) {
+            clearTimeout(instance.timer);
+        }
+
+        // Pause progress animation
+        const progress = toast.querySelector('.bw-toast-progress') as HTMLElement;
+        if (progress) progress.style.animationPlayState = 'paused';
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+        if (instance.startX === undefined || instance.startY === undefined) return;
+
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - instance.startX;
+        const deltaY = touch.clientY - instance.startY;
+
+        // Only start dragging if horizontal movement is greater than vertical
+        if (!instance.isDragging && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+            instance.isDragging = true;
+        }
+
+        if (instance.isDragging) {
+            e.preventDefault();
+            instance.currentX = touch.clientX;
+
+            // Apply transform with resistance at edges
+            const resistance = 0.5;
+            let translateX = deltaX;
+
+            // Determine swipe direction based on position
+            const isLeftPosition = position.includes('left');
+            const isRightPosition = position.includes('right');
+
+            // Apply resistance when swiping in "wrong" direction
+            if (isLeftPosition && deltaX > 0) {
+                translateX = deltaX * resistance;
+            } else if (isRightPosition && deltaX < 0) {
+                translateX = deltaX * resistance;
+            }
+
+            // Calculate opacity based on swipe distance
+            const absX = Math.abs(translateX);
+            const opacity = Math.max(0.3, 1 - (absX / (SWIPE_THRESHOLD * 2)));
+
+            toast.style.transform = `translateX(${translateX}px)`;
+            toast.style.opacity = String(opacity);
+            toast.style.transition = 'none';
+        }
+    };
+
+    const handleTouchEnd = () => {
+        if (!instance.isDragging || instance.startX === undefined || instance.currentX === undefined) {
+            // Resume progress and timer if not dragging
+            const progress = toast.querySelector('.bw-toast-progress') as HTMLElement;
+            if (progress) progress.style.animationPlayState = 'running';
+            if (instance.duration > 0) {
+                instance.timer = window.setTimeout(() => removeToast(instance.id, position), instance.duration);
+            }
+            return;
+        }
+
+        const deltaX = instance.currentX - instance.startX;
+        const absX = Math.abs(deltaX);
+        const elapsed = Date.now() - startTime;
+        const velocity = absX / elapsed;
+
+        const isLeftPosition = position.includes('left');
+        const isRightPosition = position.includes('right');
+        const isCenterPosition = position.includes('center');
+
+        // Determine if swipe should dismiss
+        let shouldDismiss = false;
+        let dismissDirection = 'right';
+
+        if (isCenterPosition) {
+            // Center: swipe in any direction
+            shouldDismiss = absX > SWIPE_THRESHOLD || velocity > SWIPE_VELOCITY_THRESHOLD;
+            dismissDirection = deltaX > 0 ? 'right' : 'left';
+        } else if (isLeftPosition) {
+            // Left position: swipe left to dismiss
+            shouldDismiss = (deltaX < -SWIPE_THRESHOLD || (deltaX < 0 && velocity > SWIPE_VELOCITY_THRESHOLD));
+            dismissDirection = 'left';
+        } else if (isRightPosition) {
+            // Right position: swipe right to dismiss
+            shouldDismiss = (deltaX > SWIPE_THRESHOLD || (deltaX > 0 && velocity > SWIPE_VELOCITY_THRESHOLD));
+            dismissDirection = 'right';
+        }
+
+        if (shouldDismiss) {
+            // Animate out
+            const translateX = dismissDirection === 'right' ? '100%' : '-100%';
+            toast.style.transition = 'transform 0.2s ease-out, opacity 0.2s ease-out';
+            toast.style.transform = `translateX(${translateX})`;
+            toast.style.opacity = '0';
+
+            setTimeout(() => {
+                removeToast(instance.id, position);
+            }, 200);
+        } else {
+            // Snap back
+            toast.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+
+            // Resume progress and timer
+            const progress = toast.querySelector('.bw-toast-progress') as HTMLElement;
+            if (progress) progress.style.animationPlayState = 'running';
+            if (instance.duration > 0) {
+                instance.timer = window.setTimeout(() => removeToast(instance.id, position), instance.duration);
+            }
+        }
+
+        // Reset state
+        instance.isDragging = false;
+        instance.startX = undefined;
+        instance.startY = undefined;
+        instance.currentX = undefined;
+    };
+
+    toast.addEventListener('touchstart', handleTouchStart, { passive: true });
+    toast.addEventListener('touchmove', handleTouchMove, { passive: false });
+    toast.addEventListener('touchend', handleTouchEnd, { passive: true });
+    toast.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+}
 
 function getOrCreateContainer(position: string): HTMLElement {
     if (containers.has(position)) return containers.get(position)!;
@@ -224,6 +370,9 @@ export function showToast(options: ToastOptions, dotnetRef?: any): string {
             removeToast(id, position);
         });
     }
+
+    // Swipe to dismiss (mobile)
+    setupSwipeGesture(toast, instance, position);
 
     let timer: number | undefined;
     if (duration > 0) {

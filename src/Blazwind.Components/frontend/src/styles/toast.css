@@ -3,11 +3,49 @@
    ============================================ */
 
 .bw-toast {
-    @apply flex items-start gap-3 p-4 rounded-sm relative overflow-hidden w-full;
+    @apply flex items-start gap-3 p-4 relative overflow-hidden w-full;
     background-color: var(--bw-color-surface);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-toast-shadow, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1));
     border-left-width: 4px;
     border-left-style: solid;
+    touch-action: pan-y pinch-zoom;
+    user-select: none;
+    will-change: transform, opacity;
+}
+
+/* Swipe indicator hint */
+.bw-toast::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    border-radius: 2px;
+    background-color: var(--bw-color-border);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* Show swipe hint on touch devices */
+@media (pointer: coarse) {
+    .bw-toast::before {
+        opacity: 0.5;
+    }
+
+    /* Position based on container position */
+    [id*="right"] .bw-toast::before {
+        right: 6px;
+    }
+
+    [id*="left"] .bw-toast::before {
+        left: 6px;
+    }
+
+    [id*="center"] .bw-toast::before {
+        right: 6px;
+    }
 }
 
 .dark .bw-toast {
@@ -147,7 +185,8 @@
 
 .bw-toast-close {
     color: var(--bw-color-text-muted);
-    @apply rounded p-1 inline-flex items-center justify-center transition-colors cursor-pointer;
+    @apply p-1 inline-flex items-center justify-center transition-colors cursor-pointer;
+    border-radius: var(--bw-radius-sm);
 }
 
 .bw-toast-close:hover {
@@ -164,7 +203,8 @@
    ======================================== */
 
 .bw-toast-action {
-    @apply text-xs font-semibold px-2 py-1 rounded transition-colors;
+    @apply text-xs font-semibold px-2 py-1 transition-colors cursor-pointer;
+    border-radius: var(--bw-radius-sm);
     color: white;
 }
 
