@@ -9,22 +9,22 @@
 
     var fillColor = Color switch
     {
-        BwColor.Primary => "#3B82F6",
-        BwColor.Success => "#22C55E",
-        BwColor.Danger => "#EF4444",
-        BwColor.Warning => "#F59E0B",
-        BwColor.Info => "#0EA5E9",
-        _ => "#3B82F6"
+        BwColor.Primary => "var(--bw-color-primary)",
+        BwColor.Success => "var(--bw-color-success)",
+        BwColor.Danger => "var(--bw-color-danger)",
+        BwColor.Warning => "var(--bw-color-warning)",
+        BwColor.Info => "var(--bw-color-info)",
+        _ => "var(--bw-color-primary)"
     };
 
     var thumbColor = Color switch
     {
-        BwColor.Primary => "#2563EB",
-        BwColor.Success => "#16A34A",
-        BwColor.Danger => "#DC2626",
-        BwColor.Warning => "#D97706",
-        BwColor.Info => "#0284C7",
-        _ => "#2563EB"
+        BwColor.Primary => "var(--bw-color-primary)",
+        BwColor.Success => "var(--bw-color-success)",
+        BwColor.Danger => "var(--bw-color-danger)",
+        BwColor.Warning => "var(--bw-color-warning)",
+        BwColor.Info => "var(--bw-color-info)",
+        _ => "var(--bw-color-primary)"
     };
 
     var heightPx = Size switch
@@ -46,8 +46,9 @@
     // The gradient direction is always "to right" relative to the element, which becomes "to top" visually after rotation.
     
     var percentageStr = percentage.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
-    var trackGradient = $"linear-gradient(to right, {fillColor} 0%, {fillColor} {percentageStr}%, #E5E7EB {percentageStr}%, #E5E7EB 100%)";
-    var errorTrackColor = HasError ? "#FCA5A5" : "#E5E7EB";
+    var trackBgColor = "var(--bw-gray-200)";
+    var trackGradient = $"linear-gradient(to right, {fillColor} 0%, {fillColor} {percentageStr}%, {trackBgColor} {percentageStr}%, {trackBgColor} 100%)";
+    var errorTrackColor = HasError ? "var(--bw-color-danger-soft)" : trackBgColor;
 
     // Layout Logic:
     // Vertical: Use flex-col to stack Label -> Slider -> Value (centered).
@@ -81,11 +82,11 @@
             @if (HasLabel)
             {
                 <div class="flex items-center gap-1 @(IsVertical ? "justify-center" : "")">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                    <label class="bw-label whitespace-nowrap">
                         @Label
                         @if (IsRequired)
                         {
-                            <span class="text-red-500 ml-0.5">*</span>
+                            <span class="bw-required">*</span>
                         }
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -96,7 +97,7 @@
             }
             @if (ShowValue && !IsVertical)
             {
-                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">@Value.ToString(ValueFormat)</span>
+                <span class="bw-label">@Value.ToString(ValueFormat)</span>
             }
         </div>
     }
@@ -112,7 +113,7 @@
     @* Vertical Value Display (Bottom) *@
     @if (ShowValue && IsVertical)
     {
-        <span class="text-sm font-medium text-gray-600 dark:text-gray-400 mt-1">@Value.ToString(ValueFormat)</span>
+        <span class="bw-label mt-1">@Value.ToString(ValueFormat)</span>
     }
 
     @* Horizontal Marks *@
@@ -122,7 +123,7 @@
             @foreach (var mark in Marks)
             {
                 var markPercent = ((mark - Min) / (Max - Min)) * 100;
-                <div class="absolute -translate-x-1/2 text-xs text-gray-500 dark:text-gray-400" style="left: @markPercent%;">
+                <div class="absolute -translate-x-1/2 text-xs text-[var(--bw-color-text-muted)]" style="left: @markPercent%;">
                     @mark
                 </div>
             }
@@ -132,14 +133,14 @@
     @* Error/Helper Messages *@
     @if (HasError)
     {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1 @(IsVertical ? "justify-center" : "")">
+        <p class="bw-error-text @(IsVertical ? "justify-center" : "")">
             <i class="fa-solid fa-circle-exclamation"></i>
             @DisplayError
         </p>
     }
     else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
     {
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 @(IsVertical ? "text-center" : "")">@HelperText</p>
+        <p class="bw-helper-text @(IsVertical ? "text-center" : "")">@HelperText</p>
     }
 </div>
 

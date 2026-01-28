@@ -1,0 +1,96 @@
+/* ============================================
+   Map Components Styles (Theme-Aware)
+   ============================================ */
+
+/* Map Layout Container */
+.bw-map-layout {
+    position: relative;
+    background-color: var(--bw-color-surface);
+}
+
+.bw-map-layout--fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 50;
+}
+
+/* MapLibre Container */
+.bw-maplibre {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+}
+
+/* Map Controls - common overlay styling */
+.bw-map-overlay {
+    position: absolute;
+    z-index: 10;
+    background-color: var(--bw-color-surface-elevated);
+    border-radius: var(--bw-radius-md);
+    box-shadow: var(--bw-shadow-md);
+    border: 1px solid var(--bw-color-border);
+}
+
+.bw-map-overlay-top-left {
+    top: 0.5rem;
+    left: 0.5rem;
+}
+
+.bw-map-overlay-top-right {
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.bw-map-overlay-bottom-left {
+    bottom: 0.5rem;
+    left: 0.5rem;
+}
+
+.bw-map-overlay-bottom-right {
+    bottom: 0.5rem;
+    right: 0.5rem;
+}
+
+/* Map Popup styling */
+.bw-map-popup {
+    background-color: var(--bw-color-surface-elevated);
+    color: var(--bw-color-text);
+    border-radius: var(--bw-radius-md);
+    box-shadow: var(--bw-shadow-lg);
+    padding: 0.5rem;
+}
+
+/* MapLibre GL overrides for theme */
+.maplibregl-popup-content {
+    background-color: var(--bw-color-surface-elevated) !important;
+    color: var(--bw-color-text) !important;
+    border-radius: var(--bw-radius-md) !important;
+    padding: 0.5rem !important;
+    box-shadow: var(--bw-shadow-lg) !important;
+}
+
+.maplibregl-popup-tip {
+    border-top-color: var(--bw-color-surface-elevated) !important;
+}
+
+.maplibregl-ctrl-group {
+    background-color: var(--bw-color-surface-elevated) !important;
+    border: 1px solid var(--bw-color-border) !important;
+    border-radius: var(--bw-radius-md) !important;
+    box-shadow: var(--bw-shadow-md) !important;
+}
+
+.maplibregl-ctrl-group button {
+    background-color: transparent !important;
+    color: var(--bw-color-text) !important;
+}
+
+.maplibregl-ctrl-group button:hover {
+    background-color: var(--bw-control-hover-bg) !important;
+}
+
+.maplibregl-ctrl-group button+button {
+    border-top: 1px solid var(--bw-color-border) !important;
+}

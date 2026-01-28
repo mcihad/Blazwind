@@ -36,33 +36,33 @@
 
     var baseClass = "flex-1 bg-transparent border-0 appearance-none focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none w-full";
     var stateClass = hasError
-    ? "text-red-900 dark:text-red-400 placeholder-red-300"
-    : "text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500";
-    var disabledClass = IsDisabled ? "bg-gray-50 dark:bg-gray-900 text-gray-400 cursor-not-allowed" : "";
+    ? "text-[var(--bw-color-danger)]"
+    : "text-[var(--bw-color-text)] placeholder-[var(--bw-color-text-muted)]";
+    var disabledClass = IsDisabled ? "bg-[var(--bw-color-surface-muted)] text-[var(--bw-color-text-muted)] cursor-not-allowed" : "";
 
     var wrapperBorder = hasError
-    ? "border-red-300 dark:border-red-700 focus-within:border-red-500 focus-within:ring-red-500/20"
-    : "border-gray-300 dark:border-gray-700 focus-within:border-blue-500 focus-within:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600";
+    ? "border-[var(--bw-color-danger)] focus-within:border-[var(--bw-color-danger)] focus-within:ring-[var(--bw-color-danger)]/$20"
+    : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)] focus-within:ring-[var(--bw-input-focus-ring)] hover:border-[var(--bw-color-border-strong)]";
 }
 
 <div class="@CombineClasses(Class)" style="@Style" id="@Id">
     @if (hasLabel)
     {
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+        <label class="bw-label mb-1.5">
             @Label
             @if (IsRequired)
             {
-                <span class="text-red-500 ml-0.5">*</span>
+                <span class="bw-required">*</span>
             }
         </label>
     }
 
     <div
-        class="flex @sizeClass rounded overflow-hidden border transition-colors duration-150 focus-within:ring-2 focus-within:ring-offset-0 @wrapperBorder @(IsDisabled ? "bg-gray-50 dark:bg-gray-900" : "bg-white dark:bg-gray-800")">
+        class="flex @sizeClass rounded overflow-hidden border transition-colors duration-150 focus-within:ring-2 focus-within:ring-offset-0 @wrapperBorder @(IsDisabled ? "bg-[var(--bw-color-surface-muted)]" : "bg-[var(--bw-color-surface)]")">
         @* Prepend Content (Custom) *@
         @if (PrependContent != null)
         {
-            <div class="flex items-center border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+            <div class="flex items-center border-r border-[var(--bw-color-border)] bg-[var(--bw-color-surface-muted)]">
                 @PrependContent
             </div>
         }
@@ -137,7 +137,7 @@
         @* Append Content (Custom) *@
         @if (AppendContent != null)
         {
-            <div class="flex items-center border-l border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+            <div class="flex items-center border-l border-[var(--bw-color-border)] bg-[var(--bw-color-surface-muted)]">
                 @AppendContent
             </div>
         }
@@ -145,14 +145,14 @@
 
     @if (hasError)
     {
-        <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+        <p class="bw-error-text mt-1.5">
             <i class="fa-solid fa-circle-exclamation"></i>
             @ErrorMessage
         </p>
     }
     else if (hasHelper)
     {
-        <p class="mt-1.5 text-xs text-gray-500">@HelperText</p>
+        <p class="bw-helper-text mt-1.5">@HelperText</p>
     }
 </div>
 

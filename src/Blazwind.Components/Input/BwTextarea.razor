@@ -12,11 +12,9 @@
     var showCounter = ShowCounter && MaxLength.HasValue;
     var currentLength = Value?.Length ?? 0;
     
-    var baseClass = "w-full border rounded transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-0 resize-none";
-    var stateClass = HasError
-        ? "border-red-300 dark:border-red-700 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400 placeholder-red-300 dark:placeholder-red-500" 
-        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500";
-    var disabledClass = IsDisabled ? "bg-gray-50 dark:bg-gray-900 text-gray-400 border-gray-200 dark:border-gray-700 cursor-not-allowed" : "";
+    var baseClass = "bw-input resize-none";
+    var stateClass = GetStateClass();
+    var disabledClass = GetDisabledClass();
     var paddingClass = "p-3 text-sm";
 }
 
@@ -27,11 +25,11 @@
             @if (HasLabel)
             {
                 <div class="flex items-center gap-1 @labelSpacingClass">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label class="bw-label">
                         @Label
                         @if (IsRequired)
                         {
-                            <span class="text-red-500 ml-0.5">*</span>
+                            <span class="bw-required">*</span>
                         }
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -64,11 +62,11 @@
                 @if (HasLabel)
                 {
                     <div class="flex items-center gap-1 pt-3 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                        <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
                             {
-                                <span class="text-red-500 ml-0.5">*</span>
+                                <span class="bw-required">*</span>
                             }
                         </label>
                         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -118,14 +116,14 @@
     <div class="flex justify-between items-center mt-1">
         @if (HasError)
         {
-            <p class="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+            <p class="bw-error-text">
                 <i class="fa-solid fa-circle-exclamation"></i>
                 @DisplayError
             </p>
         }
         else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
         {
-            <p class="text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+            <p class="bw-helper-text">@HelperText</p>
         }
         else
         {

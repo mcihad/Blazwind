@@ -11,7 +11,7 @@
 }
 else
 {
-    <div class="@AllClasses cursor-pointer" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="HandleClick">
+    <div class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="HandleClick">
         @RenderContent
     </div>
 }
@@ -25,42 +25,37 @@ else
     [Parameter] public BwColor BadgeColor { get; set; } = BwColor.Primary;
     [Parameter] public bool IsNew { get; set; }
     [Parameter] public bool Disabled { get; set; }
-    // Removed Class parameter (inherited)
     [Parameter] public EventCallback OnClick { get; set; }
 
-    private string AllClasses => CombineClasses("flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors", HoverClass, DisabledClass);
-
-    private string HoverClass => Disabled ? "" : "hover:bg-gray-100 dark:hover:bg-gray-800";
-    private string DisabledClass => Disabled ? "opacity-50 cursor-not-allowed" : "";
+    private string AllClasses => CombineClasses("bw-megamenu-item", Disabled ? "bw-megamenu-item--disabled" : null);
 
     private RenderFragment RenderContent => __builder =>
     {
         @if (!string.IsNullOrEmpty(Icon))
         {
-            <i class="@Icon text-sm text-gray-400 w-4"></i>
+            <i class="@Icon bw-megamenu-item-icon"></i>
         }
-        <span class="flex-1 text-gray-700 dark:text-gray-200">@Label</span>
+        <span class="bw-megamenu-item-label">@Label</span>
         @if (IsNew)
         {
-            <span
-                class="px-1 py-0.5 text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded">
+            <span class="bw-megamenu-badge bw-megamenu-badge--new">
                 Yeni
             </span>
         }
         @if (!string.IsNullOrEmpty(Badge))
         {
-            <span class="px-1 py-0.5 text-[10px] font-medium @BadgeClasses rounded">@Badge</span>
+            <span class="bw-megamenu-badge @BadgeClasses">@Badge</span>
         }
     };
 
     private string BadgeClasses => BadgeColor switch
     {
-        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-        BwColor.Warning => "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400",
-        _ => "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+        BwColor.Primary => "bw-megamenu-badge--primary",
+        BwColor.Success => "bw-megamenu-badge--success",
+        BwColor.Warning => "bw-megamenu-badge--warning",
+        BwColor.Danger => "bw-megamenu-badge--danger",
+        BwColor.Info => "bw-megamenu-badge--info",
+        _ => "bw-megamenu-badge--default"
     };
 
     private async Task HandleClick()

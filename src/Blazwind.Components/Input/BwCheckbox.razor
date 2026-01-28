@@ -6,9 +6,9 @@
 @{
     var sizeClass = Size switch
     {
-        BwSize.Small => "w-4 h-4",
-        BwSize.Large => "w-6 h-6",
-        _ => "w-5 h-5"
+        BwSize.Small => "bw-checkbox-small",
+        BwSize.Large => "bw-checkbox-large",
+        _ => "bw-checkbox-medium"
     };
 
     var iconSizeClass = Size switch
@@ -20,64 +20,48 @@
     
     var labelSizeClass = Size switch
     {
-        BwSize.Small => "text-xs",
-        BwSize.Large => "text-base",
-        _ => "text-sm"
+        BwSize.Small => "bw-label-small",
+        BwSize.Large => "bw-label-large",
+        _ => ""
     };
     
-    var stateClass = Value ? Color switch {
-        BwColor.Success => "bg-emerald-600 border-emerald-600 text-white",
-        BwColor.Danger => "bg-red-600 border-red-600 text-white",
-        BwColor.Warning => "bg-amber-500 border-amber-500 text-white",
-        BwColor.Info => "bg-sky-500 border-sky-500 text-white",
-        BwColor.Secondary => "bg-gray-600 border-gray-600 text-white",
-        _ => "bg-blue-600 border-blue-600 text-white"
-    } : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500";
-    
-    var ringClass = Color switch {
-        BwColor.Success => "focus:ring-emerald-500",
-        BwColor.Danger => "focus:ring-red-500",
-        BwColor.Warning => "focus:ring-amber-500",
-        BwColor.Info => "focus:ring-sky-500",
-        BwColor.Secondary => "focus:ring-gray-500",
-        _ => "focus:ring-blue-500"
+    var colorClass = Color switch {
+        BwColor.Success => "bw-checkbox-success",
+        BwColor.Danger => "bw-checkbox-danger",
+        BwColor.Warning => "bw-checkbox-warning",
+        BwColor.Info => "bw-checkbox-info",
+        _ => ""
     };
     
-    // Error state overrides normal state
-    var errorStateClass = HasError ? "border-red-500 ring-red-500/20" : "";
-
-    var checkboxBase = $"inline-flex items-center justify-center border rounded transition-all duration-200 focus:ring-2 focus:ring-offset-2 {sizeClass}";
-    var disabledClass = IsDisabled ? "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-900" : "cursor-pointer";
+    var errorClass = HasError ? "bw-input-error" : "";
     var marginClass = GetDensityMarginClass();
 }
 
 <div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     <div class="inline-flex items-center gap-2.5" @onclick="Toggle">
-        <div class="@checkboxBase @stateClass @ringClass @disabledClass @errorStateClass" 
+        <div class="bw-checkbox @sizeClass @colorClass @(Value ? "checked" : "") @(IsDisabled ? "bw-checkbox-disabled" : "") @errorClass" 
              tabindex="@(IsDisabled ? -1 : 0)" 
-             @onkeydown="OnKeyDownHandler"
-             @onclick:stopPropagation="true"
              @onkeydown="OnKeyDownHandler"
              @onclick:stopPropagation="true"
              @onclick="Toggle"
              @attributes="AdditionalAttributes">
-            <i class="fa-solid fa-check @iconSizeClass transition-opacity duration-200 @(Value ? "opacity-100" : "opacity-0")"></i>
+            <i class="fa-solid fa-check bw-checkbox-icon @iconSizeClass"></i>
         </div>
         
         @if (HasLabel)
         {
-            <span class="@labelSizeClass text-gray-700 dark:text-gray-300 select-none @(IsDisabled ? "opacity-60" : "")">
+            <span class="bw-label @labelSizeClass @(IsDisabled ? "opacity-60" : "") select-none">
                 @Label
                 @if (IsRequired)
                 {
-                    <span class="text-red-500 ml-0.5">*</span>
+                    <span class="bw-required">*</span>
                 }
             </span>
         }
         
         @if (ChildContent != null)
         {
-            <span class="@labelSizeClass text-gray-700 dark:text-gray-300 select-none @(IsDisabled ? "opacity-60" : "")">@ChildContent</span>
+            <span class="bw-label @labelSizeClass @(IsDisabled ? "opacity-60" : "") select-none">@ChildContent</span>
         }
         
         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -89,14 +73,14 @@
     @* Error/Helper Messages *@
     @if (HasError)
     {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+        <p class="bw-error-text">
             <i class="fa-solid fa-circle-exclamation"></i>
             @DisplayError
         </p>
     }
     else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
     {
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        <p class="bw-helper-text">@HelperText</p>
     }
 </div>
 

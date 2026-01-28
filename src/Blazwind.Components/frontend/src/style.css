@@ -86,6 +86,10 @@
 @import "./styles/tooltip.css";
 @import "./styles/typography.css";
 @import "./styles/watermark.css";
+@import "./styles/gantt.css";
+@import "./styles/chart.css";
+@import "./styles/map.css";
+@import "./styles/megamenu.css";
 
 /* Tailwind CSS 4 - Content sources for class detection */
 @source "../../**/*.razor";

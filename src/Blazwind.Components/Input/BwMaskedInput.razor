@@ -25,11 +25,11 @@
             @if (HasLabel)
             {
                 <div class="flex items-center gap-1 @labelSpacingClass">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label class="bw-label">
                         @Label
                         @if (IsRequired)
                         {
-                            <span class="text-red-500 ml-0.5">*</span>
+                            <span class="bw-required">*</span>
                         }
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -59,11 +59,11 @@
                 @if (HasLabel)
                 {
                     <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                        <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
                             {
-                                <span class="text-red-500 ml-0.5">*</span>
+                                <span class="bw-required">*</span>
                             }
                         </label>
                         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -110,14 +110,14 @@
     @* Error/Helper Messages *@
     @if (HasError)
     {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+        <p class="bw-error-text">
             <i class="fa-solid fa-circle-exclamation"></i>
             @DisplayError
         </p>
     }
     else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
     {
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        <p class="bw-helper-text">@HelperText</p>
     }
 </div>
 

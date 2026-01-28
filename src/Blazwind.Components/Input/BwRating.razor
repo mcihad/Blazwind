@@ -14,17 +14,17 @@
     
     var (filledColor, emptyColor) = Color switch
     {
-        BwColor.Warning => ("text-amber-400", "text-gray-300"),
-        BwColor.Danger => ("text-red-500", "text-gray-300"),
-        BwColor.Success => ("text-green-500", "text-gray-300 dark:text-gray-600"),
-        _ => ("text-amber-400", "text-gray-300 dark:text-gray-600")
+        BwColor.Warning => ("text-[var(--bw-color-warning)]", "text-[var(--bw-gray-300)]"),
+        BwColor.Danger => ("text-[var(--bw-color-danger)]", "text-[var(--bw-gray-300)]"),
+        BwColor.Success => ("text-[var(--bw-color-success)]", "text-[var(--bw-gray-300)]"),
+        _ => ("text-[var(--bw-color-warning)]", "text-[var(--bw-gray-300)]")
     };
 }
 
 <div class="@CombineClasses(Class)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">@Label</label>
+        <label class="bw-label mb-1.5">@Label</label>
     }
     
     <div class="flex items-center @sizeClass @(IsReadOnly || IsDisabled ? "" : "cursor-pointer")">
@@ -60,13 +60,13 @@
         
         @if (ShowValue)
         {
-            <span class="ml-2 text-sm text-gray-600 dark:text-gray-400 font-medium">@Value.ToString("0.#")</span>
+            <span class="bw-label ml-2">@Value.ToString("0.#")</span>
         }
     </div>
     
     @if (!string.IsNullOrEmpty(HelperText))
     {
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        <p class="bw-helper-text">@HelperText</p>
     }
 </div>
 

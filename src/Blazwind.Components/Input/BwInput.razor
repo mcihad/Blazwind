@@ -19,11 +19,11 @@
             @if (HasLabel)
             {
                 <div class="flex items-center gap-1 @labelSpacingClass">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label class="bw-label">
                         @Label
                         @if (IsRequired)
                         {
-                            <span class="text-red-500 ml-0.5">*</span>
+                            <span class="bw-required">*</span>
                         }
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
@@ -42,7 +42,7 @@
                 @if (HasLabel)
                 {
                     <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 text-right flex-1">
+                        <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
                             {
@@ -68,8 +68,8 @@
                 {
                     <label class="absolute left-3 transition-all duration-200 pointer-events-none
                                   @(HasValue || IsFocused 
-                                      ? "top-0 -translate-y-1/2 text-xs bg-white dark:bg-gray-800 px-1 text-blue-600 dark:text-blue-400" 
-                                      : "top-1/2 -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400")">
+                                      ? "bw-floating-label active" 
+                                      : "bw-floating-label")">
                         @Label
                         @if (IsRequired)
                         {
@@ -97,14 +97,14 @@
     @* Error/Helper Messages *@
     @if (HasError)
     {
-        <p class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+        <p class="bw-error-text">
             <i class="fa-solid fa-circle-exclamation"></i>
             @DisplayError
         </p>
     }
     else if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Inline)
     {
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">@HelperText</p>
+        <p class="bw-helper-text">@HelperText</p>
     }
 </div>
 
@@ -148,13 +148,13 @@
         
         @if (!string.IsNullOrEmpty(IconLeft))
         {
-            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div class="bw-input-icon bw-input-icon-left">
                 <i class="@IconLeft"></i>
             </div>
         }
         
         <input type="@Type"
-               class="@baseClass @sizeClass @stateClass @disabledClass @(!string.IsNullOrEmpty(IconLeft) ? "pl-10" : "") @(!string.IsNullOrEmpty(IconRight) ? "pr-10" : "")"
+               class="@baseClass @sizeClass @stateClass @disabledClass @(!string.IsNullOrEmpty(IconLeft) ? "has-icon-left" : "") @(!string.IsNullOrEmpty(IconRight) ? "has-icon-right" : "")"
                placeholder="@(EffectiveLabelPosition == BwLabelPosition.Floating && !IsFocused && !_hasValue ? "" : Placeholder)"
                value="@Value"
                disabled="@IsDisabled"
@@ -172,7 +172,7 @@
         
         @if (!string.IsNullOrEmpty(IconRight))
         {
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div class="bw-input-icon bw-input-icon-right">
                 <i class="@IconRight"></i>
             </div>
         }

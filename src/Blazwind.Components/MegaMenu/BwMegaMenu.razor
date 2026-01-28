@@ -3,9 +3,9 @@
 @using Blazwind.Components.Button
 @inherits BwBase
 
-<div class="@CombineClasses("relative inline-block")" style="@Style" id="@Id" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-megamenu")" style="@Style" id="@Id" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave" @attributes="AdditionalAttributes">
     @* Trigger *@
-    <div class="cursor-pointer" @onclick="HandleTriggerClick">
+    <div class="bw-megamenu-trigger" @onclick="HandleTriggerClick">
         @if (TriggerContent != null)
         {
             @TriggerContent
@@ -20,8 +20,8 @@
     @* Menu Dropdown *@
     @if (_isOpen)
     {
-        <div class="@DropdownPositionClass @WidthClass @AlignmentClass">
-            <div class="p-2 @ColumnsClass" style="@ColumnStyle">
+        <div class="@DropdownClasses">
+            <div class="@ContentClasses" style="@ColumnStyle">
                 @ChildContent
             </div>
         </div>
@@ -44,8 +44,6 @@
     [Parameter] public int ShowDelay { get; set; } = 50;
     [Parameter] public int HideDelay { get; set; } = 150;
     
-    // Removed Class parameter (inherited)
-    
     [Parameter] public EventCallback<bool> OnOpenChanged { get; set; }
 
     private bool _isOpen;
@@ -54,40 +52,44 @@
 
     private string ChevronIcon => OpenUpward ? "fa-solid fa-chevron-up" : "fa-solid fa-chevron-down";
 
-    private string DropdownPositionClass => OpenUpward
-    ? "absolute z-50 bottom-full mb-1 bg-white dark:bg-gray-800 rounded shadow-lg border border-gray-200 dark:border-gray-700"
-    : "absolute z-50 top-full mt-1 bg-white dark:bg-gray-800 rounded shadow-lg border border-gray-200 dark:border-gray-700";
-
-    private string ColumnsClass => Columns switch
+    private string DropdownClasses
     {
-        1 => "grid grid-cols-1 gap-1",
-        2 => "grid grid-cols-2 gap-1",
-        4 => "grid grid-cols-4 gap-1",
-        5 => "grid grid-cols-5 gap-1",
-        6 => "grid grid-cols-6 gap-1",
-        _ => "grid grid-cols-3 gap-1"
-    };
+        get
+        {
+            var classes = new List<string> { "bw-megamenu-dropdown" };
+            classes.Add(OpenUpward ? "bw-megamenu-dropdown--top" : "bw-megamenu-dropdown--bottom");
+            classes.Add(Alignment switch
+            {
+                MegaMenuAlignment.Center => "bw-megamenu-dropdown--center",
+                MegaMenuAlignment.End => "bw-megamenu-dropdown--end",
+                _ => "bw-megamenu-dropdown--start"
+            });
+            classes.Add(Width switch
+            {
+                MegaMenuWidth.Small => "bw-megamenu-dropdown--small",
+                MegaMenuWidth.Medium => "bw-megamenu-dropdown--medium",
+                MegaMenuWidth.Large => "bw-megamenu-dropdown--large",
+                MegaMenuWidth.XLarge => "bw-megamenu-dropdown--xlarge",
+                MegaMenuWidth.Full => "bw-megamenu-dropdown--full",
+                _ => "bw-megamenu-dropdown--auto"
+            });
+            return string.Join(" ", classes);
+        }
+    }
+
+    private string ContentClasses
+    {
+        get
+        {
+            var classes = new List<string> { "bw-megamenu-content" };
+            classes.Add($"bw-megamenu-content--cols-{Math.Clamp(Columns, 1, 6)}");
+            return string.Join(" ", classes);
+        }
+    }
 
     private string? ColumnStyle => !string.IsNullOrEmpty(ColumnWidth)
-    ? $"grid-template-columns: repeat({Columns}, {ColumnWidth});"
-    : null;
-
-    private string WidthClass => Width switch
-    {
-        MegaMenuWidth.Small => "w-80",
-        MegaMenuWidth.Medium => "w-96",
-        MegaMenuWidth.Large => "w-[32rem]",
-        MegaMenuWidth.XLarge => "w-[40rem]",
-        MegaMenuWidth.Full => "w-screen max-w-4xl",
-        _ => "w-auto min-w-80"
-    };
-
-    private string AlignmentClass => Alignment switch
-    {
-        MegaMenuAlignment.Center => "left-1/2 -translate-x-1/2",
-        MegaMenuAlignment.End => "right-0",
-        _ => "left-0"
-    };
+        ? $"grid-template-columns: repeat({Columns}, {ColumnWidth});"
+        : null;
 
     private async Task HandleMouseEnter()
     {

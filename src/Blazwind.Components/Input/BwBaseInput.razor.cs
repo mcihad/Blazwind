@@ -216,9 +216,9 @@ public abstract class BwBaseInput<TValue> : BwBase, IDisposable
 
     protected string GetSizeClass() => Size switch
     {
-        BwSize.Small => "h-8 px-2.5 text-xs",
-        BwSize.Large => "h-12 px-4 text-base",
-        _ => "h-10 px-3 text-sm"
+        BwSize.Small => "bw-input-small",
+        BwSize.Large => "bw-input-large",
+        _ => "bw-input-medium"
     };
 
     protected string GetDensityMarginClass() => EffectiveDensity switch
@@ -236,15 +236,15 @@ public abstract class BwBaseInput<TValue> : BwBase, IDisposable
     };
 
     protected string GetStateClass() => HasError
-        ? "border-red-300 dark:border-red-700 focus:border-red-500 focus:ring-red-500/20 text-red-900 dark:text-red-400"
-        : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500/20 hover:border-gray-400 dark:hover:border-gray-600 text-gray-900 dark:text-white";
+        ? "bw-input-error"
+        : "";
 
     protected string GetDisabledClass() => IsDisabled
-        ? "bg-gray-50 dark:bg-gray-900 text-gray-400 border-gray-200 dark:border-gray-700 cursor-not-allowed"
+        ? "bw-input-disabled"
         : "";
 
     protected string GetBaseInputClass() =>
-        "w-full border rounded transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-0";
+        "bw-input";
 
     #endregion
 

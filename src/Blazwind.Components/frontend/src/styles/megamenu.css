@@ -1,0 +1,214 @@
+/* ============================================
+   MegaMenu Component Styles (Theme-Aware)
+   ============================================ */
+
+/* Wrapper */
+.bw-megamenu {
+    position: relative;
+    display: inline-block;
+}
+
+/* Trigger */
+.bw-megamenu-trigger {
+    cursor: pointer;
+}
+
+/* Dropdown Panel */
+.bw-megamenu-dropdown {
+    position: absolute;
+    z-index: 50;
+    background-color: var(--bw-color-surface-elevated);
+    border-radius: var(--bw-radius-md);
+    box-shadow: var(--bw-shadow-lg);
+    border: 1px solid var(--bw-color-border);
+}
+
+.bw-megamenu-dropdown--top {
+    bottom: 100%;
+    margin-bottom: 0.25rem;
+}
+
+.bw-megamenu-dropdown--bottom {
+    top: 100%;
+    margin-top: 0.25rem;
+}
+
+.bw-megamenu-dropdown--start {
+    left: 0;
+}
+
+.bw-megamenu-dropdown--center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.bw-megamenu-dropdown--end {
+    right: 0;
+}
+
+/* Width variants */
+.bw-megamenu-dropdown--auto {
+    width: auto;
+    min-width: 20rem;
+}
+
+.bw-megamenu-dropdown--small {
+    width: 20rem;
+}
+
+.bw-megamenu-dropdown--medium {
+    width: 24rem;
+}
+
+.bw-megamenu-dropdown--large {
+    width: 32rem;
+}
+
+.bw-megamenu-dropdown--xlarge {
+    width: 40rem;
+}
+
+.bw-megamenu-dropdown--full {
+    width: 100vw;
+    max-width: 56rem;
+}
+
+/* Content Grid */
+.bw-megamenu-content {
+    padding: 0.5rem;
+    display: grid;
+    gap: 0.25rem;
+}
+
+.bw-megamenu-content--cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.bw-megamenu-content--cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.bw-megamenu-content--cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.bw-megamenu-content--cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.bw-megamenu-content--cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.bw-megamenu-content--cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* Column */
+.bw-megamenu-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.bw-megamenu-column-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.bw-megamenu-column-icon {
+    font-size: 0.75rem;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-megamenu-column-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bw-color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.bw-megamenu-column-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+/* Menu Item */
+.bw-megamenu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: var(--bw-radius-sm);
+    font-size: 0.875rem;
+    transition: background-color 0.15s;
+    color: var(--bw-color-text);
+    text-decoration: none;
+}
+
+.bw-megamenu-item:hover:not(.bw-megamenu-item--disabled) {
+    background-color: var(--bw-control-hover-bg);
+}
+
+.bw-megamenu-item--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bw-megamenu-item-icon {
+    font-size: 0.875rem;
+    width: 1rem;
+    color: var(--bw-color-text-muted);
+}
+
+.bw-megamenu-item-label {
+    flex: 1;
+    color: var(--bw-color-text);
+}
+
+/* Badges */
+.bw-megamenu-badge {
+    padding: 0.125rem 0.25rem;
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: var(--bw-radius-sm);
+}
+
+.bw-megamenu-badge--new {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success);
+}
+
+.bw-megamenu-badge--primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary);
+}
+
+.bw-megamenu-badge--success {
+    background-color: var(--bw-color-success-soft-bg);
+    color: var(--bw-color-success);
+}
+
+.bw-megamenu-badge--warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    color: var(--bw-color-warning);
+}
+
+.bw-megamenu-badge--danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    color: var(--bw-color-danger);
+}
+
+.bw-megamenu-badge--info {
+    background-color: var(--bw-color-info-soft-bg);
+    color: var(--bw-color-info);
+}
+
+.bw-megamenu-badge--default {
+    background-color: var(--bw-color-surface-muted);
+    color: var(--bw-color-text-secondary);
+}

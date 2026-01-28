@@ -1,0 +1,489 @@
+/* ============================================
+   Gantt Chart Component Styles (Theme-Aware)
+   ============================================ */
+
+/* Container - uses BwCard so minimal styling needed */
+.bw-gantt {
+    overflow: hidden;
+}
+
+.bw-gantt.fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    margin: 0;
+    border-radius: 0;
+    width: 100vw;
+    height: 100vh;
+    box-shadow: none;
+    border: none;
+    background-color: var(--bw-color-surface);
+}
+
+/* ========== Header Toolbar ========== */
+.bw-gantt-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--bw-color-border);
+    background-color: var(--bw-color-surface);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+@media (min-width: 640px) {
+    .bw-gantt-header {
+        flex-direction: row;
+    }
+}
+
+/* Title Section */
+.bw-gantt-title-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .bw-gantt-title-section {
+        width: auto;
+    }
+}
+
+.bw-gantt-title-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--bw-radius-md);
+    background-color: var(--bw-color-primary-soft-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bw-color-primary);
+}
+
+.bw-gantt-title {
+    font-weight: 600;
+    color: var(--bw-color-text);
+}
+
+/* Controls Container */
+.bw-gantt-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+}
+
+@media (min-width: 640px) {
+    .bw-gantt-controls {
+        width: auto;
+        padding-bottom: 0;
+    }
+}
+
+/* View Mode Switcher (Segmented Control) */
+.bw-gantt-view-switcher {
+    display: flex;
+    background-color: var(--bw-color-surface-muted);
+    padding: 0.25rem;
+    border-radius: var(--bw-radius-md);
+    flex-shrink: 0;
+    border: 1px solid transparent;
+}
+
+.dark .bw-gantt-view-switcher {
+    border-color: var(--bw-color-border);
+}
+
+.bw-gantt-view-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: var(--bw-radius-sm);
+    transition: all 0.15s;
+    color: var(--bw-color-text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.bw-gantt-view-btn:hover {
+    color: var(--bw-color-text);
+}
+
+.bw-gantt-view-btn.active {
+    background-color: var(--bw-color-surface-elevated);
+    color: var(--bw-color-text);
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.dark .bw-gantt-view-btn.active {
+    background-color: var(--bw-gray-700);
+}
+
+/* Action Group */
+.bw-gantt-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    padding-left: 1rem;
+    border-left: 1px solid var(--bw-color-border);
+}
+
+.bw-gantt-action-btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--bw-radius-md);
+    color: var(--bw-color-text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.bw-gantt-action-btn:hover {
+    background-color: var(--bw-control-hover-bg);
+}
+
+.bw-gantt-action-btn.active {
+    background-color: var(--bw-color-primary-soft-bg);
+    color: var(--bw-color-primary);
+}
+
+.bw-gantt-action-divider {
+    width: 1px;
+    height: 1rem;
+    background-color: var(--bw-color-border);
+    margin: 0 0.25rem;
+}
+
+/* ========== Task List (Left Panel) ========== */
+.bw-gantt-task-list {
+    flex-shrink: 0;
+    border-right: 1px solid var(--bw-color-border);
+    position: sticky;
+    left: 0;
+    background-color: var(--bw-color-surface);
+    z-index: 35;
+}
+
+.bw-gantt-task-list-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--bw-color-surface-muted);
+    border-bottom: 1px solid var(--bw-color-border);
+    padding: 0 0.75rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bw-color-text-secondary);
+    z-index: 32;
+}
+
+.bw-gantt-task-list-toggle {
+    padding: 0.25rem;
+    border-radius: var(--bw-radius-sm);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    transition: background-color 0.15s;
+}
+
+.bw-gantt-task-list-toggle:hover {
+    background-color: var(--bw-control-hover-bg);
+}
+
+.bw-gantt-task-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.75rem;
+    border-bottom: 1px solid var(--bw-color-divider);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.15s;
+    height: 2rem;
+}
+
+.bw-gantt-task-row.child {
+    padding-left: 1.5rem;
+}
+
+.bw-gantt-task-row:hover {
+    background-color: var(--bw-control-hover-bg);
+}
+
+.bw-gantt-task-row.hovered {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+.bw-gantt-task-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--bw-color-text);
+}
+
+.bw-gantt-task-title.completed {
+    text-decoration: line-through;
+    color: var(--bw-color-text-muted);
+}
+
+/* Collapsed state */
+.bw-gantt-task-list-collapsed {
+    flex-shrink: 0;
+    border-right: 1px solid var(--bw-color-border);
+    position: sticky;
+    left: 0;
+    background-color: var(--bw-color-surface);
+    z-index: 35;
+    width: 32px;
+}
+
+.bw-gantt-task-list-collapsed-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--bw-color-surface-muted);
+    border-bottom: 1px solid var(--bw-color-border);
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 32;
+}
+
+.bw-gantt-task-list-collapsed-row {
+    height: 2rem;
+    border-bottom: 1px solid var(--bw-color-divider);
+}
+
+/* ========== Timeline ========== */
+.bw-gantt-timeline {
+    flex: 1;
+}
+
+.bw-gantt-timeline-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--bw-color-surface-muted);
+    border-bottom: 1px solid var(--bw-color-border);
+    display: flex;
+    z-index: 30;
+    height: 2rem;
+}
+
+.bw-gantt-timeline-cell {
+    flex-shrink: 0;
+    text-align: center;
+    border-right: 1px solid var(--bw-color-border);
+    padding: 0 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bw-color-text-secondary);
+}
+
+/* Timeline Grid */
+.bw-gantt-grid {
+    position: relative;
+}
+
+.bw-gantt-row-bg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid var(--bw-color-divider);
+    transition: background-color 0.15s;
+}
+
+.bw-gantt-row-bg.even {
+    background-color: var(--bw-color-surface);
+}
+
+.bw-gantt-row-bg.odd {
+    background-color: var(--bw-color-surface-muted);
+    opacity: 0.3;
+}
+
+.bw-gantt-row-bg.hovered {
+    background-color: var(--bw-color-primary-soft-bg);
+    opacity: 0.5;
+}
+
+/* Vertical Grid Lines */
+.bw-gantt-grid-lines {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    pointer-events: none;
+}
+
+.bw-gantt-grid-line {
+    border-right: 1px solid var(--bw-color-divider);
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+/* Today Indicator */
+.bw-gantt-today-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 40;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.bw-gantt-today-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--bw-color-danger);
+    box-shadow: var(--bw-shadow-sm);
+    transform: translateX(-50%);
+}
+
+.bw-gantt-today-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    background-color: var(--bw-color-danger);
+    opacity: 0.5;
+}
+
+/* ========== Task Bars ========== */
+.bw-gantt-bar {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    z-index: 20;
+}
+
+.bw-gantt-bar.editable {
+    cursor: move;
+}
+
+.bw-gantt-bar-content {
+    height: 1.25rem;
+    border-radius: var(--bw-radius-sm);
+    box-shadow: var(--bw-shadow-sm);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+    width: 100%;
+}
+
+.bw-gantt-bar-content:hover {
+    box-shadow: var(--bw-shadow-md);
+}
+
+.bw-gantt-bar-progress {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: var(--bw-radius-sm) 0 0 var(--bw-radius-sm);
+}
+
+.bw-gantt-bar-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.25rem;
+}
+
+.bw-gantt-bar-label span {
+    font-size: 9px;
+    font-weight: 500;
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Milestone */
+.bw-gantt-milestone {
+    width: 0.75rem;
+    height: 0.75rem;
+    transform: rotate(45deg);
+    box-shadow: var(--bw-shadow-sm);
+    transition: transform 0.15s;
+}
+
+.bw-gantt-milestone:hover {
+    transform: rotate(45deg) scale(1.1);
+}
+
+/* Resize Handles */
+.bw-gantt-resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0.5rem;
+    cursor: ew-resize;
+    z-index: 10;
+    transition: background-color 0.15s;
+}
+
+.bw-gantt-resize-handle:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.bw-gantt-resize-left {
+    left: 0;
+}
+
+.bw-gantt-resize-right {
+    right: 0;
+}
+
+/* Dragging State */
+.bw-gantt-dragging {
+    opacity: 0.8;
+    z-index: 100 !important;
+}
+
+/* ========== Dependency Lines ========== */
+.bw-gantt-dependency-line {
+    opacity: 0.6;
+    transition: opacity 0.15s, stroke 0.15s;
+}
+
+.bw-gantt-dependency-line:hover {
+    opacity: 1;
+    stroke: var(--bw-color-text-secondary);
+}
+
+/* ========== Scrollbar Hide ========== */
+.bw-gantt-controls::-webkit-scrollbar {
+    display: none;
+}
+
+.bw-gantt-controls {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

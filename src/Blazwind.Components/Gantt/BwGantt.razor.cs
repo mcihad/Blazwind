@@ -748,35 +748,34 @@ public partial class BwGantt : BwBase, IAsyncDisposable
         if (task.IsMilestone)
         {
             builder.OpenElement(0, "div");
-            builder.AddAttribute(1, "class", "w-3 h-3 transform rotate-45 shadow-sm hover:scale-110 transition-transform");
-            builder.AddAttribute(2, "style", $"background-color: {task.Color ?? "#8b5cf6"};");
+            builder.AddAttribute(1, "class", "bw-gantt-milestone");
+            builder.AddAttribute(2, "style", $"background-color: {task.Color ?? "var(--bw-color-info)"};");
             builder.CloseElement();
         }
         else
         {
             builder.OpenElement(3, "div");
-            builder.AddAttribute(4, "class", "h-5 rounded shadow-sm relative overflow-hidden group transition-all hover:shadow-md");
-            builder.AddAttribute(5, "style", $"width: 100%; background-color: {GetTaskBgColor(task)};");
+            builder.AddAttribute(4, "class", "bw-gantt-bar-content");
+            builder.AddAttribute(5, "style", $"background-color: {GetTaskBgColor(task)};");
 
             if (Editable)
             {
                 builder.OpenElement(6, "div");
-                builder.AddAttribute(7, "class", "bw-gantt-resize-handle bw-gantt-resize-left absolute left-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-black/20 transition-colors z-10");
+                builder.AddAttribute(7, "class", "bw-gantt-resize-handle bw-gantt-resize-left");
                 builder.CloseElement();
             }
 
             if (task.Progress > 0)
             {
                 builder.OpenElement(8, "div");
-                builder.AddAttribute(9, "class", "absolute inset-y-0 left-0 rounded-l");
-                builder.AddAttribute(10, "style", $"width: {task.Progress}%; background-color: {task.Color ?? "#3b82f6"};");
+                builder.AddAttribute(9, "class", "bw-gantt-bar-progress");
+                builder.AddAttribute(10, "style", $"width: {task.Progress}%; background-color: {task.Color ?? "var(--bw-color-primary)"};");
                 builder.CloseElement();
             }
 
             builder.OpenElement(11, "div");
-            builder.AddAttribute(12, "class", "absolute inset-0 flex items-center justify-center px-1");
+            builder.AddAttribute(12, "class", "bw-gantt-bar-label");
             builder.OpenElement(13, "span");
-            builder.AddAttribute(14, "class", "text-[9px] font-medium text-white truncate drop-shadow");
             if (ShowBarLabels)
             {
                 builder.AddContent(15, task.Title);
@@ -795,15 +794,15 @@ public partial class BwGantt : BwBase, IAsyncDisposable
             if (Editable)
             {
                 builder.OpenElement(18, "div");
-                builder.AddAttribute(19, "class", "bw-gantt-resize-handle bw-gantt-resize-right absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize hover:bg-black/20 transition-colors z-10");
+                builder.AddAttribute(19, "class", "bw-gantt-resize-handle bw-gantt-resize-right");
                 builder.CloseElement();
             }
 
-            // Tooltip
+            // Tooltip - using theme-aware classes
             builder.OpenElement(20, "div");
             builder.AddAttribute(21, "class", "absolute left-0 bottom-full mb-1 hidden group-hover:block z-30 pointer-events-none");
             builder.OpenElement(22, "div");
-            builder.AddAttribute(23, "class", "bg-gray-800 text-white text-[10px] rounded px-2 py-1 whitespace-nowrap shadow-lg");
+            builder.AddAttribute(23, "class", "bg-gray-800 dark:bg-gray-900 text-white text-[10px] rounded px-2 py-1 whitespace-nowrap shadow-lg");
             builder.OpenElement(24, "span");
             builder.AddAttribute(25, "class", "font-medium");
             builder.AddContent(26, task.Title);

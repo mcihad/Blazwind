@@ -12,12 +12,12 @@
 <div class="@CombineClasses(Class)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (hasLabel)
     {
-        <label class="block text-sm font-medium text-gray-700 mb-1.5">@Label</label>
+        <label class="bw-label mb-1.5">@Label</label>
     }
     
     @* Drop Zone *@
     <div class="border-2 border-dashed rounded-lg p-6 text-center transition-colors
-        @(_isDragging ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20" : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800/50")
+        @(_isDragging ? "border-[var(--bw-color-primary)] bg-[var(--bw-color-primary-soft-bg)]" : "border-[var(--bw-color-border)] hover:border-[var(--bw-color-border-strong)] hover:bg-[var(--bw-color-surface-muted)]")
         @(IsDisabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer")"
          @ondragenter="OnDragEnter"
          @ondragover="OnDragOver"
@@ -26,13 +26,13 @@
          @onclick="TriggerFileInput">
         
         <div class="flex flex-col items-center justify-center py-8 px-4 text-center">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-3">
-                <i class="fa-solid fa-cloud-arrow-up text-blue-600 text-xl"></i>
+            <div class="w-12 h-12 rounded-full bg-[var(--bw-color-primary-soft-bg)] flex items-center justify-center mb-3">
+                <i class="fa-solid fa-cloud-arrow-up text-[var(--bw-color-primary)] text-xl"></i>
             </div>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                <span class="font-semibold text-blue-600 dark:text-blue-400">Dosya seçin</span> veya buraya sürükleyin
+            <p class="mt-2 text-sm text-[var(--bw-color-text-secondary)]">
+                <span class="font-semibold text-[var(--bw-color-primary)]">Dosya seçin</span> veya buraya sürükleyin
             </p>
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-500">
+            <p class="mt-1 text-xs text-[var(--bw-color-text-muted)]">
                 @if (!string.IsNullOrEmpty(Accept))
                 {
                     <span>@Accept</span>
@@ -59,7 +59,7 @@
             @foreach (var file in Files)
             {
                 var fileInfo = file;
-                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between p-3 bg-[var(--bw-color-surface-muted)] rounded-lg border border-[var(--bw-color-border)]">
                 <div class="flex items-center space-x-3 overflow-hidden">
                     <div class="flex-shrink-0">
                         @if (IsImageFile(file.Name))
@@ -76,10 +76,10 @@
                         }
                     </div>
                     <div class="min-w-0">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
+                        <p class="bw-label truncate">
                             @file.Name
                         </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                        <p class="text-xs text-[var(--bw-color-text-muted)]">
                             @FormatFileSize(file.Size)
                         </p>
                     </div>
@@ -97,12 +97,12 @@
     
     @if (!string.IsNullOrEmpty(HelperText))
     {
-        <p class="mt-1.5 text-xs text-gray-500">@HelperText</p>
+        <p class="bw-helper-text">@HelperText</p>
     }
     
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
-        <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+        <p class="bw-error-text">
             <i class="fa-solid fa-circle-exclamation"></i>
             @ErrorMessage
         </p>

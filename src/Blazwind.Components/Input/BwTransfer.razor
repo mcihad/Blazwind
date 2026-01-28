@@ -89,29 +89,29 @@
         var isAllChecked = allFilteredKeys.Count > 0 && allFilteredKeys.All(k => checkedKeys.Contains(k));
         var isIndeterminate = !isAllChecked && allFilteredKeys.Any(k => checkedKeys.Contains(k));
 
-        <div class="flex-1 flex flex-col border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm min-w-[250px]">
+        <div class="flex-1 flex flex-col border border-[var(--bw-color-border)] rounded-lg overflow-hidden bg-[var(--bw-color-surface)] shadow-sm min-w-[250px]">
             @* Header *@
-            <div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between px-3 py-2 bg-[var(--bw-color-surface-muted)] border-b border-[var(--bw-color-border)]">
                 <div class="flex items-center gap-2">
                      <input type="checkbox" 
                             class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                             checked="@isAllChecked"
                             @onchange="@(e => ToggleAll(e, filteredItems, checkedKeys))" />
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-200">@title</span>
+                    <span class="bw-label">@title</span>
                 </div>
-                <span class="text-xs text-gray-400">@filteredItems.Count item</span>
+                <span class="text-xs text-[var(--bw-color-text-muted)]">@filteredItems.Count item</span>
             </div>
             
             @* Search *@
             @if(ShowSearch)
             {
-                <div class="p-2 border-b border-gray-100 dark:border-gray-700">
+                <div class="p-2 border-b border-[var(--bw-color-border)]">
                     <div class="relative">
                          <input value="@searchValue"
                                 @oninput="@(e => onSearch(e.Value?.ToString() ?? ""))"
                                 placeholder="@SearchPlaceholder"
-                                class="w-full text-sm border-gray-300 dark:border-gray-600 rounded-md pl-8 focus:ring-blue-500 focus:border-blue-500 py-1.5 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
-                         <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                                class="bw-input bw-input-small has-icon-left" />
+                         <i class="fa-solid fa-magnifying-glass bw-input-icon bw-input-icon-left"></i>
                     </div>
                 </div>
             }
@@ -126,20 +126,20 @@
                         var isChecked = checkedKeys.Contains(key);
                         var itemId = $"bw-transfer-{side}-{key}";
                         
-                        <div class="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer @(isChecked ? "bg-blue-50 dark:bg-blue-900/20" : "")"
+                        <div class="flex items-center gap-2 px-2 py-1.5 hover:bg-[var(--bw-color-surface-muted)] rounded cursor-pointer @(isChecked ? "bg-[var(--bw-color-primary-soft-bg)]" : "")"
                              @onclick="@(() => ToggleItem(key, checkedKeys))">
                              <input type="checkbox" 
                                     id="@itemId"
                                     checked="@isChecked"
                                     readonly
-                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 pointer-events-none" />
-                            <label class="text-sm text-gray-700 dark:text-gray-200 cursor-pointer pointer-events-none truncate flex-1 block select-none">@TextSelector(item)</label>
+                                    class="bw-checkbox bw-checkbox-small @(isChecked ? "checked" : "")" />
+                            <label class="bw-label cursor-pointer pointer-events-none truncate flex-1 block select-none">@TextSelector(item)</label>
                         </div>
                     }
                 }
                 else
                 {
-                    <div class="flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 py-8">
+                    <div class="flex flex-col items-center justify-center h-full text-[var(--bw-color-text-muted)] py-8">
                          <span class="text-sm">Veri Yok</span>
                     </div>
                 }
