@@ -2,104 +2,134 @@
 @using Blazwind.Components.Drawer
 @using Blazwind.Components.Button
 @using Blazwind.Components.Map.Models
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Icon
+@using Blazwind.Components.Card
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Border
 @inject DialogService DialogService
 @inject DrawerService DrawerService
 
-<div class="flex flex-col gap-4">
+<BwColumn Spacing="BwSpacing.Md">
     @if (Feature != null)
     {
         @* Genel Bilgiler *@
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-            <div class="flex items-center gap-2 mb-3">
-                <i class="fa-solid fa-info-circle text-primary-500"></i>
-                <span class="font-semibold text-gray-700 dark:text-gray-300">General Information</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-                <div class="text-gray-500">Type:</div>
-                <div class="font-medium">@Feature.Type</div>
+        <BwCard Color="BwColor.Secondary">
+            <BwRow CrossAxisAlignment="BwCrossAxisAlignment.Center" Spacing="BwSpacing.Sm">
+                <BwMargin Bottom="BwSpacing.Sm" Class="flex items-center gap-2 w-full">
+                    <BwIcon Name="fa-solid fa-info-circle" Color="BwColor.Primary" />
+                    <BwTypography Tag="BwTypographyTag.Span" Weight="BwFontWeight.Semibold">General Information
+                    </BwTypography>
+                </BwMargin>
+            </BwRow>
+            <BwGrid Columns="2" Gap="BwSpacing.Sm">
+                <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Color="BwColor.Secondary">Type:</BwTypography>
+                <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Weight="BwFontWeight.Medium">@Feature.Type
+                </BwTypography>
 
                 @if (Feature.Id != null)
                 {
-                    <div class="text-gray-500">ID:</div>
-                    <div class="font-medium font-mono text-xs">@Feature.Id</div>
+                    <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Color="BwColor.Secondary">ID:</BwTypography>
+                    <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.ExtraSmall" Weight="BwFontWeight.Medium"
+                        Class="font-mono">@Feature.Id</BwTypography>
                 }
 
                 @if (!string.IsNullOrEmpty(Feature.Source))
                 {
-                    <div class="text-gray-500">Source:</div>
-                    <div class="font-medium">@Feature.Source</div>
+                    <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Color="BwColor.Secondary">Source:</BwTypography>
+                    <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Weight="BwFontWeight.Medium">@Feature.Source
+                    </BwTypography>
                 }
 
                 @if (!string.IsNullOrEmpty(Feature.SourceLayer))
                 {
-                    <div class="text-gray-500">Source Layer:</div>
-                    <div class="font-medium">@Feature.SourceLayer</div>
+                    <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Color="BwColor.Secondary">Source Layer:
+                    </BwTypography>
+                    <BwTypography Tag="BwTypographyTag.Div" Size="BwSize.Small" Weight="BwFontWeight.Medium">
+                        @Feature.SourceLayer</BwTypography>
                 }
-            </div>
-        </div>
+            </BwGrid>
+        </BwCard>
 
         @* Geometri Bilgisi *@
         @if (Feature.Geometry != null)
         {
-            <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                <div class="flex items-center gap-2 mb-3">
-                    <i class="fa-solid fa-draw-polygon text-blue-500"></i>
-                    <span class="font-semibold text-gray-700 dark:text-gray-300">Geometry</span>
-                </div>
-                <div class="text-sm">
-                    <span class="text-gray-500">Tip:</span>
-                    <span class="ml-2 font-medium">@Feature.Geometry.Type</span>
-                </div>
-            </div>
+            <BwCard Color="BwColor.Info">
+                <BwMargin Bottom="BwSpacing.Sm" Class="flex items-center gap-2">
+                    <BwIcon Name="fa-solid fa-draw-polygon" Color="BwColor.Info" />
+                    <BwTypography Tag="BwTypographyTag.Span" Weight="BwFontWeight.Semibold">Geometry</BwTypography>
+                </BwMargin>
+                <BwRow Spacing="BwSpacing.Sm">
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small" Color="BwColor.Secondary">Tip:</BwTypography>
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small" Weight="BwFontWeight.Medium">
+                        @Feature.Geometry.Type</BwTypography>
+                </BwRow>
+            </BwCard>
         }
 
         @* Properties *@
         @if (Feature.Properties != null && Feature.Properties.Count > 0)
         {
-            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                <div class="flex items-center gap-2 mb-3">
-                    <i class="fa-solid fa-tags text-green-500"></i>
-                    <span class="font-semibold text-gray-700 dark:text-gray-300">Properties</span>
-                    <span class="ml-auto text-xs text-gray-400">(@Feature.Properties.Count items)</span>
-                </div>
-                <div class="max-h-64 overflow-y-auto">
-                    <table class="w-full text-sm">
+            <BwCard Color="BwColor.Success">
+                <BwMargin Bottom="BwSpacing.Sm" Class="flex items-center gap-2">
+                    <BwIcon Name="fa-solid fa-tags" Color="BwColor.Success" />
+                    <BwTypography Tag="BwTypographyTag.Span" Weight="BwFontWeight.Semibold">Properties</BwTypography>
+                    <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.ExtraSmall" Color="BwColor.Secondary" Class="ml-auto">
+                        (@Feature.Properties.Count items)</BwTypography>
+                </BwMargin>
+                <div style="max-height: 16rem; overflow-y: auto;">
+                    <table style="width: 100%;">
                         <tbody>
                             @foreach (var prop in Feature.Properties.OrderBy(p => p.Key))
                             {
-                                <tr class="border-b border-gray-200 dark:border-gray-700 last:border-0">
-                                    <td class="py-2 pr-4 text-gray-500 font-medium whitespace-nowrap">@prop.Key</td>
-                                    <td class="py-2 text-gray-700 dark:text-gray-300 break-all">
-                                        @FormatValue(prop.Value)
+                                <tr style="border-bottom: 1px solid var(--bw-color-border);">
+                                    <td style="padding: 0.5rem 1rem 0.5rem 0;">
+                                        <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small" Weight="BwFontWeight.Medium"
+                                            Color="BwColor.Secondary" Class="whitespace-nowrap">@prop.Key</BwTypography>
+                                    </td>
+                                    <td style="padding: 0.5rem 0; word-break: break-all;">
+                                        <BwTypography Tag="BwTypographyTag.Span" Size="BwSize.Small">@FormatValue(prop.Value)
+                                        </BwTypography>
                                     </td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </BwCard>
         }
         else
         {
-            <div class="text-center text-gray-400 py-4">
-                <i class="fa-solid fa-inbox text-2xl mb-2"></i>
-                <p class="text-sm">No additional information available for this feature.</p>
-            </div>
+            <BwColumn MainAxisAlignment="BwMainAxisAlignment.Center" CrossAxisAlignment="BwCrossAxisAlignment.Center"
+                Spacing="BwSpacing.Sm">
+                <BwPadding Vertical="BwSpacing.Lg">
+                    <BwIcon Name="fa-solid fa-inbox" Size="BwSize.Large" Color="BwColor.Gray" />
+                    <BwTypography Tag="BwTypographyTag.P" Size="BwSize.Small" Color="BwColor.Gray">No additional information
+                        available for this feature.</BwTypography>
+                </BwPadding>
+            </BwColumn>
         }
     }
     else
     {
-        <div class="text-center text-gray-400 py-8">
-            <i class="fa-solid fa-exclamation-circle text-3xl mb-2"></i>
-            <p>Feature data not found.</p>
-        </div>
+        <BwColumn MainAxisAlignment="BwMainAxisAlignment.Center" CrossAxisAlignment="BwCrossAxisAlignment.Center"
+            Spacing="BwSpacing.Sm">
+            <BwPadding Vertical="BwSpacing.Xl">
+                <BwIcon Name="fa-solid fa-exclamation-circle" Size="BwSize.ExtraLarge" Color="BwColor.Gray" />
+                <BwTypography Tag="BwTypographyTag.P" Color="BwColor.Gray">Feature data not found.</BwTypography>
+            </BwPadding>
+        </BwColumn>
     }
 
     @* Footer *@
-    <div class="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <BwButton Text="Close" Color="BwColor.Secondary" OnClick="Close" />
-    </div>
-</div>
+    <BwBorder Position="BwBorderPosition.Top" />
+    <BwRow MainAxisAlignment="BwMainAxisAlignment.End" Spacing="BwSpacing.Sm">
+        <BwPadding Top="BwSpacing.Md">
+            <BwButton Text="Close" Color="BwColor.Secondary" OnClick="Close" />
+        </BwPadding>
+    </BwRow>
+</BwColumn>
 
 @code {
     [CascadingParameter] public DialogInstance? DialogInstance { get; set; }

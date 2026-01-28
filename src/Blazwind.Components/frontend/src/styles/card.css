@@ -8,7 +8,8 @@
     border-radius: var(--bw-radius-default);
 }
 
-.dark .bw-card {
+/* Default dark mode - only applies when no color variant is used */
+.dark .bw-card:not(.bw-card-primary):not(.bw-card-secondary):not(.bw-card-success):not(.bw-card-danger):not(.bw-card-warning):not(.bw-card-info) {
     background-color: var(--bw-gray-900);
     border-color: var(--bw-gray-700);
 }
@@ -108,6 +109,45 @@
 
 .bw-card-icon-info {
     color: var(--bw-color-info);
+}
+
+/* ========================================
+   CARD COLOR VARIANTS (Soft backgrounds)
+   ======================================== */
+
+.bw-card-primary {
+    background-color: var(--bw-color-primary-soft-bg);
+    border-color: var(--bw-primary-200);
+}
+
+.bw-card-secondary {
+    background-color: var(--bw-color-surface-muted);
+    border-color: var(--bw-color-border);
+}
+
+.dark .bw-card-secondary {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+.bw-card-success {
+    background-color: var(--bw-color-success-soft-bg);
+    border-color: var(--bw-success-200);
+}
+
+.bw-card-danger {
+    background-color: var(--bw-color-danger-soft-bg);
+    border-color: var(--bw-danger-200);
+}
+
+.bw-card-warning {
+    background-color: var(--bw-color-warning-soft-bg);
+    border-color: var(--bw-warning-200);
+}
+
+.bw-card-info {
+    background-color: var(--bw-color-info-soft-bg);
+    border-color: var(--bw-info-200);
 }
 
 /* ========================================

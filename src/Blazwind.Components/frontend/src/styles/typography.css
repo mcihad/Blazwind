@@ -5,7 +5,7 @@
 }
 
 .bw-text-secondary {
-    color: var(--bw-color-text-secondary);
+    color: var(--bw-color-secondary);
 }
 
 .bw-text-success {
@@ -36,6 +36,10 @@
     color: var(--bw-gray-500);
 }
 
+.dark .bw-text-gray {
+    color: var(--bw-gray-400);
+}
+
 .bw-text-white {
     color: white;
 }
@@ -45,9 +49,8 @@
     color: var(--bw-primary-400);
 }
 
-/* Lighter for dark mode */
 .dark .bw-text-secondary {
-    color: var(--bw-gray-400);
+    color: var(--bw-secondary-400);
 }
 
 /* Success/Danger/Warning/Info automatically handle via variables, but explicit overrides if needed: */

@@ -1,21 +1,28 @@
 @using Blazwind.Components.Dialog
 @using Blazwind.Components.Button
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Card
+@using Blazwind.Components.Shared
 @inject DialogService DialogService
 
-<div class="flex flex-col gap-4">
-    <p>
-        This dialog layer: <strong>@Depth</strong>
-    </p>
+<BwColumn Spacing="BwSpacing.Md">
+    <BwTypography Tag="BwTypographyTag.P">
+        This dialog layer: <BwTypography Tag="BwTypographyTag.Strong" Weight="BwFontWeight.Bold">@Depth</BwTypography>
+    </BwTypography>
 
-    <div class="p-4 bg-gray-50 rounded border border-gray-200">
-        <p class="text-sm mb-2">Press the button below for nested dialog test:</p>
-        <BwButton Text="Open New Dialog (Nested)" Color="BwColor.Warning" OnClick="OpenNext" />
-    </div>
+    <BwCard Color="BwColor.Secondary">
+        <BwColumn Spacing="BwSpacing.Sm">
+            <BwTypography Tag="BwTypographyTag.P" Size="BwSize.Small">Press the button below for nested dialog test:
+            </BwTypography>
+            <BwButton Text="Open New Dialog (Nested)" Color="BwColor.Warning" OnClick="OpenNext" />
+        </BwColumn>
+    </BwCard>
 
-    <div class="flex justify-end pt-4 border-t border-gray-100">
+    <BwRow MainAxisAlignment="BwMainAxisAlignment.End" Class="pt-4 border-t border-gray-100 dark:border-gray-700">
         <BwButton Text="Close" Color="BwColor.Secondary" Variant="BwVariant.Ghost" OnClick="Close" />
-    </div>
-</div>
+    </BwRow>
+</BwColumn>
 
 @code {
     [Parameter] public int Depth { get; set; } = 1;

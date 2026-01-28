@@ -1,9 +1,13 @@
 @using Blazwind.Components.Dialog
 @using Blazwind.Components.Button
 @using Blazwind.Components.Table
+@using Blazwind.Components.Layout
+@using Blazwind.Components.Typography
+@using Blazwind.Components.Shared
+@using Blazwind.Components.Border
 @inject DialogService DialogService
 
-<div class="flex flex-col gap-4">
+<BwColumn Spacing="BwSpacing.Md">
     <BwTable TItem="ProductItem" Items="_products" SelectionMode="BwSelectionMode.Multiple"
         SelectedItems="_selectedProducts" SelectedItemsChanged="@(items => _selectedProducts = items.ToList())"
         Striped="true" Hoverable="true" EnablePagination="true" PageSize="5">
@@ -11,20 +15,24 @@
         <BwTableColumn TItem="ProductItem" Title="Category" Field="@(x => x.Category)" Sortable="true" />
         <BwTableColumn TItem="ProductItem" Title="Price" Field="@(x => x.Price)" Sortable="true">
             <Template Context="item">
-                <span class="font-medium">@item.Price.ToString("N2") ₺</span>
+                <BwTypography Tag="BwTypographyTag.Span" Weight="BwFontWeight.Medium">@item.Price.ToString("N2") ₺
+                </BwTypography>
             </Template>
         </BwTableColumn>
         <BwTableColumn TItem="ProductItem" Title="Stock" Field="@(x => x.Stock)" Sortable="true" />
     </BwTable>
 
-    <div class="flex justify-end gap-2 pt-4 border-t border-gray-100">
-        <BwButton Text="Cancel" Color="BwColor.Secondary" OnClick="Close" />
-        <BwButton Color="BwColor.Primary" OnClick="Confirm">
-            <i class="fa-solid fa-check mr-2"></i>
-            Confirm Selection (@_selectedProducts.Count)
-        </BwButton>
-    </div>
-</div>
+    <BwBorder Position="BwBorderPosition.Top" />
+    <BwRow MainAxisAlignment="BwMainAxisAlignment.End" Spacing="BwSpacing.Sm">
+        <BwPadding Top="BwSpacing.Md">
+            <BwButton Text="Cancel" Color="BwColor.Secondary" OnClick="Close" />
+            <BwButton Color="BwColor.Primary" OnClick="Confirm" Icon="fa-solid fa-check"
+                IconPosition="BwIconPosition.Left">
+                Confirm Selection (@_selectedProducts.Count)
+            </BwButton>
+        </BwPadding>
+    </BwRow>
+</BwColumn>
 
 @code {
     [CascadingParameter] public DialogInstance? DialogInstance { get; set; }
