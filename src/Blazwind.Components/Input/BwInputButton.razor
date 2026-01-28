@@ -15,9 +15,9 @@
 
     var sizeClass = Size switch
     {
-        BwSize.Small => "h-8 text-xs",
-        BwSize.Large => "h-12 text-base",
-        _ => "h-10 text-sm"
+        BwSize.Small => "bw-input-small",
+        BwSize.Large => "bw-input-large",
+        _ => "bw-input-medium"
     };
 
     var iconSize = Size switch
@@ -27,28 +27,30 @@
         _ => "text-sm"
     };
 
+    // Padding is handled by checking icons, might need custom padding class or just rely on layout
     var inputPadding = Size switch
     {
-        BwSize.Small => hasPrefixIcon ? "pl-7 pr-2.5" : "px-2.5",
-        BwSize.Large => hasPrefixIcon ? "pl-11 pr-4" : "px-4",
-        _ => hasPrefixIcon ? "pl-9 pr-3" : "px-3"
+        BwSize.Small => hasPrefixIcon ? "pl-7 pr-7" : "px-2.5", // pr-7 for potential suffix icon
+        BwSize.Large => hasPrefixIcon ? "pl-11 pr-10" : "px-4",
+        _ => hasPrefixIcon ? "pl-9 pr-9" : "px-3"
     };
 
-    var baseClass = "flex-1 bg-transparent border-0 appearance-none focus:outline-none focus:ring-0 focus:border-transparent focus:shadow-none w-full";
+    var baseClass = "bw-input w-full"; // The group handles the border, but input needs reset
+    
+    // State classes for the GROUP container
+    var groupStateClass = "";
+    if (hasError) groupStateClass += " bw-input-error";
+    if (IsDisabled) groupStateClass += " bw-input-disabled";
+
     var stateClass = hasError
     ? "text-[var(--bw-color-danger)]"
-    : "text-[var(--bw-color-text)] placeholder-[var(--bw-color-text-muted)]";
-    var disabledClass = IsDisabled ? "bg-[var(--bw-color-surface-muted)] text-[var(--bw-color-text-muted)] cursor-not-allowed" : "";
-
-    var wrapperBorder = hasError
-    ? "border-[var(--bw-color-danger)] focus-within:border-[var(--bw-color-danger)] focus-within:ring-[var(--bw-color-danger)]/$20"
-    : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)] focus-within:ring-[var(--bw-input-focus-ring)] hover:border-[var(--bw-color-border-strong)]";
+    : "text-[var(--bw-color-text)] placeholder-[var(--bw-input-placeholder)]";
 }
 
 <div class="@CombineClasses(Class)" style="@Style" id="@Id">
     @if (hasLabel)
     {
-        <label class="bw-label mb-1.5">
+        <label class="bw-label mb-1.5 @(Size == BwSize.Small ? "bw-label-small" : (Size == BwSize.Large ? "bw-label-large" : ""))">
             @Label
             @if (IsRequired)
             {
@@ -57,12 +59,11 @@
         </label>
     }
 
-    <div
-        class="flex @sizeClass rounded overflow-hidden border transition-colors duration-150 focus-within:ring-2 focus-within:ring-offset-0 @wrapperBorder @(IsDisabled ? "bg-[var(--bw-color-surface-muted)]" : "bg-[var(--bw-color-surface)]")">
+    <div class="bw-input-group @sizeClass @groupStateClass">
         @* Prepend Content (Custom) *@
         @if (PrependContent != null)
         {
-            <div class="flex items-center border-r border-[var(--bw-color-border)] bg-[var(--bw-color-surface-muted)]">
+            <div class="bw-input-group-text">
                 @PrependContent
             </div>
         }
@@ -71,12 +72,12 @@
         <div class="flex-1 relative flex items-center">
             @if (hasPrefixIcon)
             {
-                <span class="absolute left-3 text-gray-400 @iconSize pointer-events-none">
+                <span class="bw-input-icon bw-input-icon-left @iconSize">
                     <i class="@PrefixIcon"></i>
                 </span>
             }
 
-            <input type="@actualType" @ref="_inputRef" class="@baseClass @inputPadding @stateClass @disabledClass"
+            <input type="@actualType" @ref="_inputRef" class="bw-input @inputPadding @stateClass @(IsDisabled ? "cursor-not-allowed" : "")"
                 style="outline: none !important; box-shadow: none !important;" placeholder="@Placeholder" value="@Value"
                 disabled="@IsDisabled" readonly="@IsReadOnly" @oninput="OnInput" @onclick="OnInputClick"
                 @onclick:stopPropagation="true" @onkeydown="HandleKeyDown" @attributes="AdditionalAttributes" />
@@ -85,7 +86,7 @@
             <div class="absolute right-2 flex items-center gap-1">
                 @if (_isLoading)
                 {
-                    <span class="text-blue-500 @iconSize">
+                    <span class="text-(--bw-color-primary) @iconSize">
                         <i class="fa-solid fa-spinner fa-spin"></i>
                     </span>
                 }
@@ -93,7 +94,7 @@
                 {
                     @if (ShowClear && !string.IsNullOrEmpty(Value) && !IsDisabled && !IsReadOnly)
                     {
-                        <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
+                        <button type="button" class="p-1 text-(--bw-color-text-muted) hover:text-(--bw-color-text) focus:outline-none @iconSize"
                             @onclick="ClearValue" @onclick:stopPropagation="true">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
@@ -101,7 +102,7 @@
 
                     @if (Type == "password" && ShowPasswordToggle)
                     {
-                        <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
+                        <button type="button" class="p-1 text-(--bw-color-text-muted) hover:text-(--bw-color-text) focus:outline-none @iconSize"
                             @onclick="TogglePassword" @onclick:stopPropagation="true">
                             <i class="@(_showPassword ? "fa-solid fa-eye-slash" : "fa-solid fa-eye")"></i>
                         </button>
@@ -109,16 +110,16 @@
 
                     @if (ShowCopy && !string.IsNullOrEmpty(Value))
                     {
-                        <button type="button" class="p-1 text-gray-400 hover:text-gray-600 focus:outline-none @iconSize"
+                        <button type="button" class="p-1 text-(--bw-color-text-muted) hover:text-(--bw-color-text) focus:outline-none @iconSize"
                             @onclick="CopyToClipboard" @onclick:stopPropagation="true" title="Kopyala">
-                            <i class="@(_copied ? "fa-solid fa-check text-green-500" : "fa-solid fa-copy")"></i>
+                            <i class="@(_copied ? "fa-solid fa-check text-(--bw-color-success)" : "fa-solid fa-copy")"></i>
                         </button>
                     }
 
                     @if (hasSuffixIcon && Buttons == null && AppendContent == null && !ShowCopy && !(Type == "password" &&
                                     ShowPasswordToggle))
                     {
-                        <span class="text-gray-400 @iconSize pointer-events-none">
+                        <span class="text-(--bw-color-text-muted) @iconSize pointer-events-none">
                             <i class="@SuffixIcon"></i>
                         </span>
                     }
@@ -137,7 +138,7 @@
         @* Append Content (Custom) *@
         @if (AppendContent != null)
         {
-            <div class="flex items-center border-l border-[var(--bw-color-border)] bg-[var(--bw-color-surface-muted)]">
+            <div class="bw-input-group-text">
                 @AppendContent
             </div>
         }
@@ -145,14 +146,14 @@
 
     @if (hasError)
     {
-        <p class="bw-error-text mt-1.5">
+        <p class="bw-error-text">
             <i class="fa-solid fa-circle-exclamation"></i>
             @ErrorMessage
         </p>
     }
     else if (hasHelper)
     {
-        <p class="bw-helper-text mt-1.5">@HelperText</p>
+        <p class="bw-helper-text">@HelperText</p>
     }
 </div>
 

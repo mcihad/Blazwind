@@ -64,6 +64,120 @@
     border-color: var(--bw-color-border);
 }
 
+/* ========== Input Group ========== */
+/* ========== Input Group ========== */
+.bw-input-group {
+    display: flex;
+    width: 100%;
+    border: 1px solid var(--bw-input-border);
+    border-radius: var(--bw-radius-default);
+    background-color: var(--bw-input-bg);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    /* overflow: hidden; -- Removed to allow focus ring to shine through */
+}
+
+/* Ensure corners are rounded correctly since overflow is visible */
+.bw-input-group>*:first-child {
+    border-top-left-radius: var(--bw-radius-default);
+    border-bottom-left-radius: var(--bw-radius-default);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.bw-input-group>*:last-child {
+    border-top-right-radius: var(--bw-radius-default);
+    border-bottom-right-radius: var(--bw-radius-default);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.bw-input-group:focus-within,
+.bw-input-group.bw-input-group-focus {
+    border-color: var(--bw-input-focus-border);
+    box-shadow: 0 0 0 3px var(--bw-input-focus-ring);
+    z-index: 1;
+    /* Bring forward */
+}
+
+/* Size overrides for input group containers */
+.bw-input-group.bw-input-small {
+    height: 2rem;
+    padding: 0;
+    /* Remove padding for containers */
+}
+
+.bw-input-group.bw-input-medium {
+    height: 2.5rem;
+    padding: 0;
+}
+
+.bw-input-group.bw-input-large {
+    height: 3rem;
+    padding: 0;
+}
+
+.bw-input-group.bw-input-error {
+    border-color: var(--bw-input-error-border);
+}
+
+.bw-input-group.bw-input-error:focus-within {
+    box-shadow: 0 0 0 3px var(--bw-input-error-ring);
+}
+
+.bw-input-group.bw-input-disabled {
+    background-color: var(--bw-color-surface-muted);
+    color: var(--bw-color-text-muted);
+    cursor: not-allowed;
+    border-color: var(--bw-color-border);
+}
+
+/* Input inside group should be borderless and transparent */
+.bw-input-group .bw-input {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background-color: transparent;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    /* Fill container height */
+}
+
+/* Group text/addon (prepend/append) */
+.bw-input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    color: var(--bw-color-text-secondary);
+    background-color: var(--bw-color-surface-muted);
+    border-left: 1px solid var(--bw-color-border);
+    border-right: 1px solid var(--bw-color-border);
+    white-space: nowrap;
+}
+
+.bw-input-group-text:first-child {
+    border-right: 1px solid var(--bw-color-border);
+    border-left: none;
+    border-top-left-radius: var(--bw-radius-default);
+    border-bottom-left-radius: var(--bw-radius-default);
+}
+
+.bw-input-group-text:last-child {
+    border-left: 1px solid var(--bw-color-border);
+    border-right: none;
+    border-top-right-radius: var(--bw-radius-default);
+    border-bottom-right-radius: var(--bw-radius-default);
+}
+
+/* Ensure buttons inside group don't have borders if not needed */
+.bw-input-group>.bw-btn {
+    border-radius: 0;
+    border-top: 0;
+    border-bottom: 0;
+    height: 100%;
+}
+
 /* ========== Labels ========== */
 .bw-label {
     display: block;

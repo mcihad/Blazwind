@@ -6,12 +6,12 @@
 @{
     var sizeClass = Size switch
     {
-        BwSize.Small => "h-8 px-2.5 text-xs tracking-wider",
-        BwSize.Large => "h-12 px-4 text-lg tracking-widest",
-        _ => "h-10 px-3 text-sm tracking-wide"
+        BwSize.Small => "bw-input-small tracking-wider",
+        BwSize.Large => "bw-input-large tracking-widest",
+        _ => "bw-input-medium tracking-wide"
     };
     
-    var baseClass = "w-full border rounded transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-0 font-mono";
+    var baseClass = "bw-input font-mono";
     var stateClass = GetStateClass();
     var disabledClass = GetDisabledClass();
     var marginClass = GetDensityMarginClass();
@@ -58,7 +58,7 @@
             <div class="flex items-start gap-3">
                 @if (HasLabel)
                 {
-                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                    <div class="flex items-center gap-1 pt-2.5 shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
                         <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
