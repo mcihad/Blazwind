@@ -4,8 +4,13 @@
 
 /* Base Button */
 .bw-btn {
-    @apply inline-flex items-center justify-center gap-2 font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent;
+    @apply inline-flex items-center justify-center gap-2 font-medium transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed border-2 border-transparent;
     border-radius: var(--bw-radius-default);
+}
+
+/* Focus ring - using box-shadow for pixel-perfect corners */
+.bw-btn:focus-visible {
+    box-shadow: 0 0 0 2px var(--bw-color-background), 0 0 0 4px var(--bw-color-primary);
 }
 
 /* Size Variants */
@@ -414,11 +419,6 @@
     box-shadow: none !important;
 }
 
-/* Dark mode ring offset */
-.dark .bw-btn {
-    --tw-ring-offset-color: var(--bw-gray-900);
-}
-
 /* ========================================
    BUTTON GROUP
    ======================================== */
@@ -432,8 +432,12 @@
 /* Ensure inner buttons stack correctly */
 .bw-btn-group .bw-btn {
     @apply focus:z-10;
-    /* Prevent double shadows in group context */
-    box-shadow: none;
+}
+
+/* Focus ring for buttons in group */
+.bw-btn-group .bw-btn:focus-visible {
+    box-shadow: 0 0 0 2px var(--bw-color-background), 0 0 0 4px var(--bw-color-primary);
+    z-index: 10;
 }
 
 /* Horizontal (Default) */

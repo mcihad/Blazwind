@@ -274,6 +274,74 @@
     --bw-datagrid-toolbar-bg: var(--bw-gray-50);
     --bw-datagrid-footer-bg: var(--bw-gray-50);
 
+    /* Tree */
+    --bw-tree-text: var(--bw-color-text);
+    --bw-tree-text-hover: var(--bw-color-primary);
+    --bw-tree-icon-color: var(--bw-gray-500);
+    --bw-tree-icon-folder: var(--bw-warning-500);
+    --bw-tree-toggle-hover-bg: var(--bw-gray-200);
+    --bw-tree-node-hover-bg: var(--bw-gray-100);
+    --bw-tree-node-selected-bg: var(--bw-primary-50);
+    --bw-tree-node-selected-border: var(--bw-color-primary);
+    --bw-tree-node-clicked-bg: var(--bw-primary-100);
+    --bw-tree-node-clicked-border: var(--bw-color-primary);
+    --bw-tree-search-highlight-bg: var(--bw-warning-100);
+    --bw-tree-dropdown-bg: var(--bw-color-surface);
+    --bw-tree-dropdown-border: var(--bw-color-border);
+
+    /* Range */
+    --bw-range-track-bg: var(--bw-gray-200);
+    --bw-range-thumb-bg: var(--bw-color-surface);
+    --bw-range-value-text: var(--bw-color-text-secondary);
+    --bw-range-label-text: var(--bw-color-text);
+
+    /* Range Colors - Primary */
+    --bw-range-primary-fill: var(--bw-primary-500);
+    --bw-range-primary-thumb-border: var(--bw-primary-500);
+    --bw-range-primary-thumb-border-hover: var(--bw-primary-600);
+    --bw-range-primary-selection-bg: var(--bw-color-primary-soft-bg);
+    --bw-range-primary-selection-text: var(--bw-color-primary-soft-text);
+
+    /* Range Colors - Secondary */
+    --bw-range-secondary-fill: var(--bw-gray-500);
+    --bw-range-secondary-thumb-border: var(--bw-gray-500);
+    --bw-range-secondary-thumb-border-hover: var(--bw-gray-600);
+    --bw-range-secondary-selection-bg: var(--bw-color-secondary-soft-bg);
+    --bw-range-secondary-selection-text: var(--bw-color-secondary-soft-text);
+
+    /* Range Colors - Success */
+    --bw-range-success-fill: var(--bw-success-500);
+    --bw-range-success-thumb-border: var(--bw-success-500);
+    --bw-range-success-thumb-border-hover: var(--bw-success-600);
+    --bw-range-success-selection-bg: var(--bw-color-success-soft-bg);
+    --bw-range-success-selection-text: var(--bw-color-success-soft-text);
+
+    /* Range Colors - Danger */
+    --bw-range-danger-fill: var(--bw-danger-500);
+    --bw-range-danger-thumb-border: var(--bw-danger-500);
+    --bw-range-danger-thumb-border-hover: var(--bw-danger-600);
+    --bw-range-danger-selection-bg: var(--bw-color-danger-soft-bg);
+    --bw-range-danger-selection-text: var(--bw-color-danger-soft-text);
+
+    /* Range Colors - Warning */
+    --bw-range-warning-fill: var(--bw-warning-500);
+    --bw-range-warning-thumb-border: var(--bw-warning-500);
+    --bw-range-warning-thumb-border-hover: var(--bw-warning-600);
+    --bw-range-warning-selection-bg: var(--bw-color-warning-soft-bg);
+    --bw-range-warning-selection-text: var(--bw-color-warning-soft-text);
+
+    /* Range Colors - Info */
+    --bw-range-info-fill: var(--bw-info-500);
+    --bw-range-info-thumb-border: var(--bw-info-500);
+    --bw-range-info-thumb-border-hover: var(--bw-info-600);
+    --bw-range-info-selection-bg: var(--bw-color-info-soft-bg);
+    --bw-range-info-selection-text: var(--bw-color-info-soft-text);
+
+    /* Range Brush */
+    --bw-brush-track-bg: var(--bw-gray-100);
+    --bw-brush-inactive-bg: rgba(156, 163, 175, 0.6);
+    --bw-brush-handle-bg: var(--bw-color-surface);
+
     /* ========================================
      SECTION 4: Design Tokens
      ======================================== */
@@ -381,4 +449,22 @@
     --bw-dialog-header-bg: var(--bw-gray-800);
 
     --bw-toast-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+
+    /* Tree overrides */
+    --bw-tree-text: var(--bw-gray-300);
+    --bw-tree-text-hover: var(--bw-primary-400);
+    --bw-tree-icon-color: var(--bw-gray-400);
+    --bw-tree-toggle-hover-bg: var(--bw-gray-600);
+    --bw-tree-node-hover-bg: var(--bw-gray-700);
+    --bw-tree-node-selected-bg: rgba(6, 182, 212, 0.2);
+    --bw-tree-node-clicked-bg: rgba(6, 182, 212, 0.3);
+    --bw-tree-node-clicked-border: var(--bw-primary-400);
+    --bw-tree-search-highlight-bg: rgba(249, 115, 22, 0.2);
+    --bw-tree-dropdown-bg: var(--bw-gray-800);
+    --bw-tree-dropdown-border: var(--bw-gray-700);
+
+    /* Range overrides */
+    --bw-range-track-bg: var(--bw-gray-700);
+    --bw-brush-track-bg: var(--bw-gray-800);
+    --bw-brush-inactive-bg: rgba(17, 24, 39, 0.7);
 }

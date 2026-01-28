@@ -5,7 +5,7 @@
 @inject IJSRuntime JS
 
 <div @ref="_triggerRef" class="@CombineClasses("relative inline-block text-left")" style="@Style" id="@Id"
-     @attributes="AdditionalAttributes">
+    @attributes="AdditionalAttributes">
     <div @onclick="Toggle">
         @TriggerContent
     </div>
@@ -16,7 +16,7 @@
         <div class="fixed inset-0 z-[1000] w-full h-full cursor-default" @onclick="Close"></div>
 
         @* Menu *@
-        <div class="bw-dropdown-menu @AlignmentClass @ComputedVPositionClass">
+        <div class="bw-dropdown-menu @ComputedAlignmentClass @ComputedVPositionClass">
             <div role="menu" aria-orientation="vertical">
                 <CascadingValue Value="this">
                     @ChildContent
@@ -38,27 +38,46 @@
     public BwDirection Alignment { get; set; } = BwDirection.Right;
 
     /// <summary>
-    ///     Vertical position: Top (opens above trigger), Bottom (opens below trigger), or Auto (automatically flips based on
-    ///     viewport)
+    /// Vertical position: Top (opens above trigger), Bottom (opens below trigger), or Auto (automatically flips based on
+    /// viewport)
     /// </summary>
     [Parameter]
     public BwDirection VPosition { get; set; } = BwDirection.Auto;
 
     /// <summary>
-    ///     Approximate height of dropdown menu for auto-flip calculation (default: 200px)
+    /// Approximate height of dropdown menu for auto-flip calculation (default: 200px)
     /// </summary>
     [Parameter]
     public int EstimatedMenuHeight { get; set; } = 200;
 
+    /// <summary>
+    /// Approximate width of dropdown menu for auto-flip calculation (default: 224px = w-56)
+    /// </summary>
+    [Parameter]
+    public int EstimatedMenuWidth { get; set; } = 224;
+
     private ElementReference _triggerRef;
     private bool _shouldOpenUp;
+    private bool _shouldOpenLeft;
 
     public bool IsOpen { get; private set; }
 
-    // Default is right-0, origin-top-right
-    private string AlignmentClass => Alignment == BwDirection.Left
-        ? "left-0 origin-top-left"
-        : "right-0 origin-top-right";
+    // Computed alignment based on parameter and auto-detection
+    private string ComputedAlignmentClass
+    {
+        get
+        {
+            // If Alignment is Auto, use detected position
+            if (Alignment == BwDirection.Auto)
+            {
+                return _shouldOpenLeft ? "right-0 origin-top-right" : "left-0 origin-top-left";
+            }
+            // Otherwise use specified alignment
+            return Alignment == BwDirection.Left
+            ? "left-0 origin-top-left"
+            : "right-0 origin-top-right";
+        }
+    }
 
     // Computed vertical position based on VPosition parameter or auto-detection
     private string ComputedVPositionClass
@@ -76,7 +95,7 @@
 
     public async Task Toggle()
     {
-        if (!IsOpen && VPosition == BwDirection.Auto)
+        if (!IsOpen)
         {
             await CheckViewportPosition();
         }
@@ -89,20 +108,18 @@
     {
         try
         {
-            var result = await JS.InvokeAsync<double[]>("Blazwind.Dropdown.getPosition", _triggerRef);
-            if (result != null && result.Length >= 3)
+            var result = await JS.InvokeAsync<DropdownPosition>("Blazwind.Dropdown.calculatePosition", _triggerRef,
+            EstimatedMenuWidth, EstimatedMenuHeight);
+            if (result != null)
             {
-                var bottom = result[0]; // element bottom position
-                var viewportHeight = result[1]; // viewport height
-                var top = result[2]; // element top position
-
-                var bottomSpace = viewportHeight - bottom;
-                _shouldOpenUp = bottomSpace < EstimatedMenuHeight && top > EstimatedMenuHeight;
+                _shouldOpenUp = result.ShouldOpenUp;
+                _shouldOpenLeft = result.ShouldOpenLeft;
             }
         }
         catch
         {
             _shouldOpenUp = false;
+            _shouldOpenLeft = false;
         }
     }
 
@@ -112,4 +129,9 @@
         StateHasChanged();
     }
 
+    private class DropdownPosition
+    {
+        public bool ShouldOpenUp { get; set; }
+        public bool ShouldOpenLeft { get; set; }
+    }
 }

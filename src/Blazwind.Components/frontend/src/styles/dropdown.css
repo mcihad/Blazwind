@@ -16,9 +16,11 @@
 }
 
 .bw-dropdown-menu {
-    @apply absolute z-[1010] w-56 rounded-md shadow-lg outline-none;
+    @apply absolute z-[1010] w-56 outline-none;
     background-color: var(--bw-color-surface-elevated);
     border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-lg);
     animation: bw-dropdown-enter 0.1s ease-out forwards;
 }
 

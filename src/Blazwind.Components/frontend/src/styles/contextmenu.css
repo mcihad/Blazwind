@@ -15,10 +15,12 @@
 }
 
 .bw-context-menu {
-    @apply fixed z-50 min-w-[160px] py-1 rounded-md shadow-lg outline-none cursor-default;
+    @apply fixed z-50 min-w-[160px] py-1 outline-none cursor-default;
     background-color: var(--bw-color-surface-elevated);
     /* Elevated surface for popups */
     border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-lg);
     /* Standard CSS Animation */
     animation: bw-fade-in-zoom 0.1s ease-out forwards;
 }
@@ -68,9 +70,11 @@
 
 /* Submenu container styles */
 .bw-context-submenu {
-    @apply absolute min-w-[160px] rounded-md shadow-lg py-1 z-50;
+    @apply absolute min-w-[160px] py-1 z-50;
     background-color: var(--bw-color-surface-elevated);
     border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-lg);
     animation: bw-fade-in-zoom 0.1s ease-out forwards;
 }
 
