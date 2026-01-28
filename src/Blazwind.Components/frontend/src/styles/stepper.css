@@ -81,18 +81,13 @@
     border-radius: 50%;
     font-size: 14px;
     font-weight: 600;
-    background-color: #e5e7eb;
-    color: #6b7280;
+    background-color: var(--bw-color-border);
+    color: var(--bw-color-text-secondary);
     border: none;
     cursor: pointer;
     z-index: 2;
     transition: all 0.2s ease;
     flex-shrink: 0;
-}
-
-.dark .bw-stepper-indicator {
-    background-color: #374151;
-    color: #9ca3af;
 }
 
 .bw-stepper-indicator:hover:not(:disabled) {
@@ -106,33 +101,24 @@
 
 /* Indicator States */
 .bw-stepper-indicator.pending {
-    background-color: #e5e7eb;
-    color: #6b7280;
-}
-
-.dark .bw-stepper-indicator.pending {
-    background-color: #374151;
-    color: #9ca3af;
+    background-color: var(--bw-color-border);
+    color: var(--bw-color-text-secondary);
 }
 
 .bw-stepper-indicator.active {
-    background-color: #3b82f6;
-    color: white;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-}
-
-.dark .bw-stepper-indicator.active {
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-text-inverse);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--bw-color-primary) 25%, transparent);
 }
 
 .bw-stepper-indicator.completed {
-    background-color: #10b981;
-    color: white;
+    background-color: var(--bw-color-success);
+    color: var(--bw-color-text-inverse);
 }
 
 .bw-stepper-indicator.error {
-    background-color: #ef4444;
-    color: white;
+    background-color: var(--bw-color-danger);
+    color: var(--bw-color-text-inverse);
 }
 
 /* Indicator Sizes */
@@ -155,16 +141,12 @@
     flex: 1;
     height: 2px;
     min-width: 3px;
-    background-color: #e5e7eb;
+    background-color: var(--bw-color-border);
     transition: background-color 0.3s ease;
 }
 
-.dark .bw-stepper-connector {
-    background-color: #4b5563;
-}
-
 .bw-stepper-connector.completed {
-    background-color: #10b981;
+    background-color: var(--bw-color-success);
 }
 
 /* Vertical connectors */
@@ -179,58 +161,34 @@
 .bw-stepper-label {
     font-size: 14px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--bw-color-text-secondary);
     margin: 0;
     line-height: 1.4;
 }
 
-.dark .bw-stepper-label {
-    color: #9ca3af;
-}
-
 .bw-stepper-label.active {
-    color: #111827;
+    color: var(--bw-color-text);
     font-weight: 600;
 }
 
-.dark .bw-stepper-label.active {
-    color: #f3f4f6;
-}
-
 .bw-stepper-label.completed {
-    color: #374151;
-}
-
-.dark .bw-stepper-label.completed {
-    color: #d1d5db;
+    color: var(--bw-color-text-secondary);
 }
 
 .bw-stepper-label.error {
-    color: #ef4444;
-}
-
-.dark .bw-stepper-label.error {
-    color: #f87171;
+    color: var(--bw-color-danger);
 }
 
 .bw-stepper-description {
     font-size: 12px;
-    color: #9ca3af;
+    color: var(--bw-color-text-muted);
     margin: 2px 0 0;
-}
-
-.dark .bw-stepper-description {
-    color: #6b7280;
 }
 
 .bw-stepper-optional {
     font-size: 11px;
-    color: #9ca3af;
+    color: var(--bw-color-text-muted);
     font-style: italic;
-}
-
-.dark .bw-stepper-optional {
-    color: #6b7280;
 }
 
 /* === Inline Label (Horizontal, next to indicator) === */
@@ -266,16 +224,11 @@
 /* === Step Content (Wizard Panel) === */
 .bw-stepper-content {
     padding: 16px;
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
+    background-color: var(--bw-color-surface-hover);
+    border: 1px solid var(--bw-color-border);
+    border-radius: var(--bw-radius-default);
     margin-top: 12px;
     animation: stepper-fade-in 0.2s ease-out;
-}
-
-.dark .bw-stepper-content {
-    background-color: #1f2937;
-    border-color: #374151;
 }
 
 @keyframes stepper-fade-in {
@@ -294,18 +247,14 @@
 .bw-stepper-progress-bar {
     width: 100%;
     height: 4px;
-    background-color: #e5e7eb;
+    background-color: var(--bw-color-border);
     border-radius: 2px;
     overflow: hidden;
 }
 
-.dark .bw-stepper-progress-bar {
-    background-color: #374151;
-}
-
 .bw-stepper-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #10b981);
+    background: linear-gradient(90deg, var(--bw-color-primary), var(--bw-color-success));
     border-radius: 2px;
     transition: width 0.4s ease;
 }

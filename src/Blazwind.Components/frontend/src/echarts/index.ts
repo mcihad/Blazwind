@@ -19,6 +19,87 @@ interface ChartInstance {
 const instances: Map<string, ChartInstance> = new Map();
 
 /**
+ * Get computed CSS variable value
+ */
+function getCSSVariable(name: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/**
+ * Get theme-aware colors from CSS variables
+ */
+function getThemeColors() {
+    return {
+        textColor: getCSSVariable('--bw-color-text') || '#111827',
+        textColorSecondary: getCSSVariable('--bw-color-text-secondary') || '#6b7280',
+        textColorMuted: getCSSVariable('--bw-color-text-muted') || '#9ca3af',
+        backgroundColor: getCSSVariable('--bw-color-surface') || '#ffffff',
+        borderColor: getCSSVariable('--bw-color-border') || '#e5e7eb',
+        primaryColor: getCSSVariable('--bw-color-primary') || '#2563eb',
+        successColor: getCSSVariable('--bw-color-success') || '#059669',
+        dangerColor: getCSSVariable('--bw-color-danger') || '#dc2626',
+        warningColor: getCSSVariable('--bw-color-warning') || '#f59e0b',
+        infoColor: getCSSVariable('--bw-color-info') || '#0284c7',
+    };
+}
+
+/**
+ * Apply theme colors to options
+ */
+function applyThemeToOptions(options: any): any {
+    const colors = getThemeColors();
+
+    // Deep clone to avoid mutating original
+    const themedOptions = JSON.parse(JSON.stringify(options));
+
+    // Apply text colors to title
+    if (themedOptions.title) {
+        if (!themedOptions.title.textStyle) themedOptions.title.textStyle = {};
+        if (!themedOptions.title.textStyle.color) themedOptions.title.textStyle.color = colors.textColor;
+
+        if (!themedOptions.title.subtextStyle) themedOptions.title.subtextStyle = {};
+        if (!themedOptions.title.subtextStyle.color) themedOptions.title.subtextStyle.color = colors.textColorSecondary;
+    }
+
+    // Apply text colors to legend
+    if (themedOptions.legend) {
+        if (!themedOptions.legend.textStyle) themedOptions.legend.textStyle = {};
+        if (!themedOptions.legend.textStyle.color) themedOptions.legend.textStyle.color = colors.textColorSecondary;
+    }
+
+    // Apply text colors to axes
+    const applyAxisStyle = (axis: any) => {
+        if (!axis) return;
+        const axes = Array.isArray(axis) ? axis : [axis];
+        axes.forEach((ax: any) => {
+            if (!ax.axisLabel) ax.axisLabel = {};
+            if (!ax.axisLabel.color) ax.axisLabel.color = colors.textColorSecondary;
+
+            if (!ax.axisLine) ax.axisLine = {};
+            if (!ax.axisLine.lineStyle) ax.axisLine.lineStyle = {};
+            if (!ax.axisLine.lineStyle.color) ax.axisLine.lineStyle.color = colors.borderColor;
+
+            if (!ax.splitLine) ax.splitLine = {};
+            if (!ax.splitLine.lineStyle) ax.splitLine.lineStyle = {};
+            if (!ax.splitLine.lineStyle.color) ax.splitLine.lineStyle.color = colors.borderColor;
+        });
+    };
+
+    applyAxisStyle(themedOptions.xAxis);
+    applyAxisStyle(themedOptions.yAxis);
+
+    // Apply tooltip styles
+    if (themedOptions.tooltip) {
+        if (!themedOptions.tooltip.backgroundColor) themedOptions.tooltip.backgroundColor = colors.backgroundColor;
+        if (!themedOptions.tooltip.borderColor) themedOptions.tooltip.borderColor = colors.borderColor;
+        if (!themedOptions.tooltip.textStyle) themedOptions.tooltip.textStyle = {};
+        if (!themedOptions.tooltip.textStyle.color) themedOptions.tooltip.textStyle.color = colors.textColor;
+    }
+
+    return themedOptions;
+}
+
+/**
  * Initialize a chart
  */
 export function init(
@@ -53,11 +134,14 @@ export function init(
         delete options.registerMap;
     }
 
+    // Apply theme colors from CSS variables
+    const themedOptions = applyThemeToOptions(options);
+
     const chart = echarts.init(container, theme || undefined, {
         renderer: 'canvas'
     });
 
-    chart.setOption(options);
+    chart.setOption(themedOptions);
 
     // Handle resize
     const resizeObserver = new ResizeObserver(() => {
@@ -109,7 +193,9 @@ export function setOption(id: string, options: any, notMerge: boolean = false): 
             delete options.registerMap;
         }
 
-        instance.chart.setOption(options, notMerge);
+        // Apply theme colors from CSS variables
+        const themedOptions = applyThemeToOptions(options);
+        instance.chart.setOption(themedOptions, notMerge);
     }
 }
 
