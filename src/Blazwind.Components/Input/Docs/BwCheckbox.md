@@ -1,56 +1,56 @@
-# Checkbox (Onay Kutusu)
+# Checkbox
 
-İkili (boolean) durum seçimi için kullanılan bileşen.
+A component used for binary (boolean) state selection.
 
-## Özellikler
+## Features
 
-*   **Boyutlar:** Small, Medium, Large.
-*   **Renk:** Primary, Success, Danger vb. renk desteği.
-*   **Validasyon:** `For` ile boolean validasyon (örn: Kullanım şartlarını kabul).
+* **Sizes:** Small, Medium, Large.
+* **Color:** Supports colors such as Primary, Success, Danger, etc.
+* **Validation:** Boolean validation using `For` (e.g., accepting terms of use).
 
-## Kullanım
+## Usage
 
 ```razor
-<BwCheckbox Label="Beni hatırla" @bind-Value="rememberMe" />
+<BwCheckbox Label="Remember me" @bind-Value="rememberMe" />
 ```
 
-### Renkli ve Boyutlu
+### Colored and Sized
 
 ```razor
-<BwCheckbox Label="Onaylıyorum" 
+<BwCheckbox Label="I approve" 
             Color="BwColor.Success" 
             Size="BwSize.Large" 
             @bind-Value="isApproved" />
 ```
 
-### Validasyon
+### Validation
 
 ```razor
-<BwCheckbox Label="Koşulları kabul ediyorum" 
+<BwCheckbox Label="I accept the terms" 
             @bind-Value="model.AcceptTerms" 
             For="@(() => model.AcceptTerms)" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `bool` | `false` | Seçim durumu (Two-way binding). |
-| `Label` | `string` | `null` | Kutunun yanındaki etiket metni. |
-| `ChildContent` | `RenderFragment` | `null` | Etiket yerine geçebilecek özel içerik. |
-| `Color` | `BwColor` | `Primary` | Aktif durumdaki renk. |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `IsRequired` | `bool` | `false` | Zorunlu alan işaretini gösterir. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `HelperText` | `string` | `null` | Yardımcı metin. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression<Func<bool>>` | `null` | Otomatik validasyon için boolean alan referansı (örn: Sözleşme onayı). |
+| Parameter      | Type                     | Default   | Description                                                                 |
+| :------------- | :----------------------- | :-------- | :-------------------------------------------------------------------------- |
+| `Value`        | `bool`                   | `false`   | Selection state (two-way binding).                                          |
+| `Label`        | `string`                 | `null`    | Label text displayed next to the checkbox.                                  |
+| `ChildContent` | `RenderFragment`         | `null`    | Custom content that can replace the label.                                  |
+| `Color`        | `BwColor`                | `Primary` | Color in the active state.                                                  |
+| `Size`         | `BwSize`                 | `Medium`  | Size (`Small`, `Medium`, `Large`).                                          |
+| `IsRequired`   | `bool`                   | `false`   | Displays the required field indicator.                                      |
+| `IsDisabled`   | `bool`                   | `false`   | Disables the component.                                                     |
+| `HelperText`   | `string`                 | `null`    | Helper text.                                                                |
+| `IsValid`      | `bool`                   | `true`    | Manual validation state.                                                    |
+| `ErrorMessage` | `string`                 | `null`    | Manual error message.                                                       |
+| `For`          | `Expression<Func<bool>>` | `null`    | Boolean field reference for automatic validation (e.g., contract approval). |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `bool` | Durum değiştiğinde tetiklenir (Two-way binding). |
-| `IsCheckedChanged` | `bool` | `ValueChanged` ile aynı anda tetiklenir. |
-| `OnChange` | `bool` | Değişiklik sonrası tetiklenir. |
+| Event              | Payload | Description                                         |
+| :----------------- | :------ | :-------------------------------------------------- |
+| `ValueChanged`     | `bool`  | Triggered when the value changes (two-way binding). |
+| `IsCheckedChanged` | `bool`  | Triggered at the same time as `ValueChanged`.       |
+| `OnChange`         | `bool`  | Triggered after the change.                         |

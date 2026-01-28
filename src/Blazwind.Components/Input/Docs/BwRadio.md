@@ -1,26 +1,26 @@
-# Radio & RadioGroup
+# Radio & Radio Group
 
-Tekli seçim grubu oluşturmak için kullanılan bileşenler. `Data` üzerinden dinamik liste veya manual `BwRadio` tanımı destekler.
+Components used to create a single-selection group. Supports a dynamic list via `Data` or manual `BwRadio` definitions.
 
-## Özellikler
+## Features
 
-*   **Dinamik Veri:** `Data` parametresi ile generic liste bağlama.
-*   **İki Yönlü Bağlama:** `Value` ve `ValueChanged` desteği.
-*   **Validasyon:** `For` parametresi ile otomatik validasyon.
-*   **Görünüm:** `Orientation` (dikey/yatay) ve `Size` ayarları.
+* **Dynamic Data:** Generic list binding via the `Data` parameter.
+* **Two-Way Binding:** Support for `Value` and `ValueChanged`.
+* **Validation:** Automatic validation via the `For` parameter.
+* **Layout:** `Orientation` (vertical/horizontal) and `Size` settings.
 
-## Kullanım
+## Usage
 
-### Manual Kullanım
+### Manual Usage
 
 ```razor
 <BwRadioGroup Name="options" @bind-Value="selectedOption">
-    <BwRadio Value="@("opt1")" Label="Seçenek 1" />
-    <BwRadio Value="@("opt2")" Label="Seçenek 2" />
+    <BwRadio Value="@("opt1")" Label="Option 1" />
+    <BwRadio Value="@("opt2")" Label="Option 2" />
 </BwRadioGroup>
 ```
 
-### Data API Kullanımı
+### Data API Usage
 
 ```razor
 <BwRadioGroup Data="@cities" 
@@ -30,7 +30,7 @@ Tekli seçim grubu oluşturmak için kullanılan bileşenler. `Data` üzerinden 
               Orientation="BwOrientation.Horizontal" />
 ```
 
-### Otomatik Validasyon
+### Automatic Validation
 
 ```razor
 <BwRadioGroup @bind-Value="model.Gender" 
@@ -38,35 +38,35 @@ Tekli seçim grubu oluşturmak için kullanılan bileşenler. `Data` üzerinden 
               Data="@genders" />
 ```
 
-## Parametreler
+## Parameters
 
-### BwRadio Group (Grup Temelli)
+### BwRadioGroup (Group-Based)
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `TValue` | - | Seçili değer (Two-way binding). |
-| `Data` | `IEnumerable<TItem>` | `null` | Dinamik veri kaynağı. |
-| `ItemText` | `Func<TItem, string>` | - | Görünen metin seçici. |
-| `ItemValue` | `Func<TItem, TValue>` | - | Değer seçici. |
-| `Name` | `string` | `null` | Grup adı (HTML `name` attribute). |
-| `Orientation` | `BwOrientation` | `Vertical` | Düzen (`Vertical`, `Horizontal`). |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `IsDisabled` | `bool` | `false` | Tüm grubu devre dışı bırakır. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression<Func<TValue>>` | `null` | Otomatik validasyon için alan referansı. |
+| Parameter      | Type                       | Default    | Description                               |
+| :------------- | :------------------------- | :--------- | :---------------------------------------- |
+| `Value`        | `TValue`                   | -          | Selected value (two-way binding).         |
+| `Data`         | `IEnumerable<TItem>`       | `null`     | Dynamic data source.                      |
+| `ItemText`     | `Func<TItem, string>`      | -          | Display text selector.                    |
+| `ItemValue`    | `Func<TItem, TValue>`      | -          | Value selector.                           |
+| `Name`         | `string`                   | `null`     | Group name (HTML `name` attribute).       |
+| `Orientation`  | `BwOrientation`            | `Vertical` | Layout (`Vertical`, `Horizontal`).        |
+| `Size`         | `BwSize`                   | `Medium`   | Size (`Small`, `Medium`, `Large`).        |
+| `IsDisabled`   | `bool`                     | `false`    | Disables the entire group.                |
+| `IsValid`      | `bool`                     | `true`     | Manual validation state.                  |
+| `ErrorMessage` | `string`                   | `null`     | Manual error message.                     |
+| `For`          | `Expression<Func<TValue>>` | `null`     | Field reference for automatic validation. |
 
-### BwRadio (Tekil)
+### BwRadio (Single)
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `TValue` | - | Radyo butonunun temsil ettiği değer. |
-| `Label` | `string` | `null` | Görünen etiket. |
-| `IsDisabled` | `bool` | `false` | Tekil olarak devre dışı bırakır. |
+| Parameter    | Type     | Default | Description                            |
+| :----------- | :------- | :------ | :------------------------------------- |
+| `Value`      | `TValue` | -       | Value represented by the radio button. |
+| `Label`      | `string` | `null`  | Display label.                         |
+| `IsDisabled` | `bool`   | `false` | Disables the individual radio button.  |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `TValue` | Seçim değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `TValue` | Seçim sonrası tetiklenir. |
+| Event          | Payload  | Description                                             |
+| :------------- | :------- | :------------------------------------------------------ |
+| `ValueChanged` | `TValue` | Triggered when the selection changes (two-way binding). |
+| `OnChange`     | `TValue` | Triggered after the selection changes.                  |

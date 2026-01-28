@@ -1,46 +1,50 @@
-# FileUpload (Dosya Yükleme)
+# File Upload
 
-Sürükle bırak destekli dosya yükleme alanı.
+A drag-and-drop–enabled file upload area.
 
-## Özellikler
-*   **Sürükle Bırak:** Dosyaları alana sürükleyerek yükleme.
-*   **Önizleme:** Yüklenen dosyaların listesini ve ikonlarını gösterme.
-*   **Kısıtlamalar:** `MaxFileSize`, `MaxFiles`, `Accept` ile dosya kontrolü.
+## Features
 
-## Kullanım
+* **Drag & Drop:** Upload files by dragging them into the area.
+* **Preview:** Displays a list and icons of uploaded files.
+* **Constraints:** File control using `MaxFileSize`, `MaxFiles`, and `Accept`.
 
-### Temel Kullanım
+## Usage
+
+### Basic Usage
+
 ```razor
-<BwFileUpload Label="Belgeler" @bind-Files="uploadedFiles" />
+<BwFileUpload Label="Documents" @bind-Files="uploadedFiles" />
 ```
 
-### Kısıtlamalı (Fotoğraf Sadece)
+### With Restrictions (Images Only)
+
 ```razor
-<BwFileUpload Accept=".jpg,.png" MaxFileSize="1048576" HelperText="Mak 1MB, JPG/PNG" />
+<BwFileUpload Accept=".jpg,.png" MaxFileSize="1048576" HelperText="Max 1MB, JPG/PNG" />
 ```
 
-### Tek Dosya
+### Single File
+
 ```razor
-<BwFileUpload Multiple="false" Label="Profil Fotoğrafı" />
+<BwFileUpload Multiple="false" Label="Profile Photo" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Files` | `List<IBrowserFile>` | `new()` | Seçilen dosyalar (Two-way binding). |
-| `Accept` | `string` | `null` | Kabul edilen dosya uzantıları (örn: `.jpg,.pdf`). |
-| `MaxFileSize` | `long?` | `null` | Maksimum dosya boyutu (bayt cinsinden). |
-| `MaxFiles` | `int?` | `10` | Maksimum seçilebilecek dosya sayısı. |
-| `Multiple` | `bool` | `true` | Birden fazla dosya seçimine izin verir. |
-| `ShowPreview` | `bool` | `true` | Yüklenen dosyaların listesini aşağıda gösterir. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `HelperText` | `string` | `null` | Yardımcı metin. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
+| Parameter     | Type                 | Default | Description                                   |
+| :------------ | :------------------- | :------ | :-------------------------------------------- |
+| `Files`       | `List<IBrowserFile>` | `new()` | Selected files (two-way binding).             |
+| `Accept`      | `string`             | `null`  | Accepted file extensions (e.g., `.jpg,.pdf`). |
+| `MaxFileSize` | `long?`              | `null`  | Maximum file size (in bytes).                 |
+| `MaxFiles`    | `int?`               | `10`    | Maximum number of selectable files.           |
+| `Multiple`    | `bool`               | `true`  | Allows selecting multiple files.              |
+| `ShowPreview` | `bool`               | `true`  | Shows the list of uploaded files below.       |
+| `Label`       | `string`             | `null`  | Field label.                                  |
+| `HelperText`  | `string`             | `null`  | Helper text.                                  |
+| `IsDisabled`  | `bool`               | `false` | Disables the component.                       |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `FilesChanged` | `List<IBrowserFile>` | Dosya listesi her değiştiğinde (ekleme/çıkarma) tetiklenir. |
-| `OnFileSelected` | `IReadOnlyList<IBrowserFile>` | Sadece yeni dosyalar seçildiğinde tetiklenir. |
+| Event            | Payload                       | Description                                            |
+| :--------------- | :---------------------------- | :----------------------------------------------------- |
+| `FilesChanged`   | `List<IBrowserFile>`          | Triggered whenever the file list changes (add/remove). |
+| `OnFileSelected` | `IReadOnlyList<IBrowserFile>` | Triggered only when new files are selected.            |

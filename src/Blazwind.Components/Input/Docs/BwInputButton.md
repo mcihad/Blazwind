@@ -1,27 +1,27 @@
-### Gelişmiş Özellikler (Kopyala, Temizle, Şifre)
+### Advanced Features (Copy, Clear, Password)
 
-Bileşen, sık kullanılan yardımcı fonksiyonları dahili olarak destekler.
+The component natively supports commonly used helper functions.
 
 ```razor
-<!-- Kopyalama Butonu -->
-<BwInputButton Label="Referans No" Value="REF-123456" ShowCopy="true" IsReadOnly="true" />
+<!-- Copy Button -->
+<BwInputButton Label="Reference No" Value="REF-123456" ShowCopy="true" IsReadOnly="true" />
 
-<!-- Temizleme Butonu -->
-<BwInputButton Label="Arama" @bind-Value="searchTerm" ShowClear="true" />
+<!-- Clear Button -->
+<BwInputButton Label="Search" @bind-Value="searchTerm" ShowClear="true" />
 
-<!-- Şifre Göster/Gizle -->
-<BwInputButton Label="Şifre" Type="password" ShowPasswordToggle="true" />
+<!-- Show/Hide Password -->
+<BwInputButton Label="Password" Type="password" ShowPasswordToggle="true" />
 ```
 
-### Slotlar (Prepend/Append/Buttons)
+### Slots (Prepend / Append / Buttons)
 
 ```razor
-<BwInputButton Label="Arama">
+<BwInputButton Label="Search">
     <PrependContent>
         <span class="px-3 text-gray-500">https://</span>
     </PrependContent>
     <Buttons>
-        <BwButton Text="Git" Color="BwColor.Primary" />
+        <BwButton Text="Go" Color="BwColor.Primary" />
     </Buttons>
     <AppendContent>
         <span class="px-3 text-gray-500">.com</span>
@@ -29,31 +29,31 @@ Bileşen, sık kullanılan yardımcı fonksiyonları dahili olarak destekler.
 </BwInputButton>
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `string` | `null` | Giriş değeri (Two-way binding). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Placeholder` | `string` | `null` | Yer tutucu metin. |
-| `Type` | `string` | `"text"` | Input tipi (`password`, `email` vb.). |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `ShowClear` | `bool` | `false` | Değer varken temizleme (X) butonu gösterir. |
-| `ShowCopy` | `bool` | `false` | Panoya kopyala butonu gösterir. |
-| `ShowPasswordToggle` | `bool` | `true` | Şifre tipi için göster/gizle butonu (göz ikonu). |
-| `IsLoading` | `bool` | `false` | Yükleniyor ikonu gösterir. |
-| `PrefixIcon` | `string` | `null` | Sol taraftaki ikon sınıfı. |
-| `SuffixIcon` | `string` | `null` | Sağ taraftaki ikon sınıfı. |
-| `PrependContent` | `RenderFragment` | `null` | En sol tarafa eklenecek içerik (gri arka planlı). |
-| `AppendContent` | `RenderFragment` | `null` | En sağ tarafa eklenecek içerik (gri arka planlı). |
-| `Buttons` | `RenderFragment` | `null` | Sağ tarafa eklenecek butonlar. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
+| Parameter            | Type             | Default  | Description                                            |
+| :------------------- | :--------------- | :------- | :----------------------------------------------------- |
+| `Value`              | `string`         | `null`   | Input value (two-way binding).                         |
+| `Label`              | `string`         | `null`   | Field label.                                           |
+| `Placeholder`        | `string`         | `null`   | Placeholder text.                                      |
+| `Type`               | `string`         | `"text"` | Input type (`password`, `email`, etc.).                |
+| `Size`               | `BwSize`         | `Medium` | Size (`Small`, `Medium`, `Large`).                     |
+| `ShowClear`          | `bool`           | `false`  | Shows a clear (X) button when a value exists.          |
+| `ShowCopy`           | `bool`           | `false`  | Shows a copy-to-clipboard button.                      |
+| `ShowPasswordToggle` | `bool`           | `true`   | Show/hide button for password type (eye icon).         |
+| `IsLoading`          | `bool`           | `false`  | Displays a loading icon.                               |
+| `PrefixIcon`         | `string`         | `null`   | Icon class on the left side.                           |
+| `SuffixIcon`         | `string`         | `null`   | Icon class on the right side.                          |
+| `PrependContent`     | `RenderFragment` | `null`   | Content added to the far left (with gray background).  |
+| `AppendContent`      | `RenderFragment` | `null`   | Content added to the far right (with gray background). |
+| `Buttons`            | `RenderFragment` | `null`   | Buttons added to the right side.                       |
+| `IsDisabled`         | `bool`           | `false`  | Disables the field.                                    |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `string` | Değer değiştiğinde tetiklenir. |
-| `OnClick` | `void` | Input alanına tıklandığında tetiklenir. |
-| `OnEnterPressed` | `void` | Enter tuşuna basıldığında tetiklenir. |
-| `OnClear` | `void` | Temizleme butonuna basıldığında tetiklenir. |
+| Event            | Payload  | Description                                 |
+| :--------------- | :------- | :------------------------------------------ |
+| `ValueChanged`   | `string` | Triggered when the value changes.           |
+| `OnClick`        | `void`   | Triggered when the input field is clicked.  |
+| `OnEnterPressed` | `void`   | Triggered when the Enter key is pressed.    |
+| `OnClear`        | `void`   | Triggered when the clear button is clicked. |

@@ -1,48 +1,48 @@
-# TimePicker (Saat Seçici)
+# Time Picker
 
-Saat seçimi için kullanılan bileşen.
+A component used for selecting time.
 
-## Özellikler
+## Features
 
-*   **Format:** Saat ve dakika seçimi (24 saat formatı).
-*   **Validasyon:** Standart validasyon desteği.
+* **Format:** Hour and minute selection (24-hour format).
+* **Validation:** Standard validation support.
 
-## Kullanım
+## Usage
 
 ```razor
-<BwTimePicker Label="Başlangıç Saati" @bind-Value="startTime" />
+<BwTimePicker Label="Start Time" @bind-Value="startTime" />
 ```
 
-### Validasyon
+### Validation
 
 ```razor
 <BwTimePicker @bind-Value="model.Time" 
               For="@(() => model.Time)" 
-              Label="Randevu Saati" />
+              Label="Appointment Time" />
 ```
 
-> [!NOTE]
-> Bu bileşen tarayıcının yerel saat seçicisini (`input type="time"`) kullanır. Görünüm kullanıcının tarayıcı ayarlarına bağlıdır, ancak `Value` her zaman `TimeSpan?` olarak iletilir.
+> **Note**
+> This component uses the browser’s native time picker (`input type="time"`). The appearance depends on the user’s browser settings, but `Value` is always provided as `TimeSpan?`.
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `TimeSpan?` | `null` | Seçili saat (Two-way binding). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `LabelPosition` | `BwLabelPosition` | `Top` | Etiket konumu (`Top`, `Left`, `Floating`, `Hidden`). |
-| `Size` | `BwSize` | `Medium` | Boyut. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `IsReadOnly` | `bool` | `false` | Sadece okunabilir yapar. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression` | `null` | Validasyon için alan referansı. |
+| Parameter       | Type              | Default  | Description                                           |
+| :-------------- | :---------------- | :------- | :---------------------------------------------------- |
+| `Value`         | `TimeSpan?`       | `null`   | Selected time (two-way binding).                      |
+| `Label`         | `string`          | `null`   | Field label.                                          |
+| `LabelPosition` | `BwLabelPosition` | `Top`    | Label position (`Top`, `Left`, `Floating`, `Hidden`). |
+| `Size`          | `BwSize`          | `Medium` | Size.                                                 |
+| `IsDisabled`    | `bool`            | `false`  | Disables the component.                               |
+| `IsReadOnly`    | `bool`            | `false`  | Makes the field read-only.                            |
+| `IsValid`       | `bool`            | `true`   | Manual validation state.                              |
+| `ErrorMessage`  | `string`          | `null`   | Manual error message.                                 |
+| `For`           | `Expression`      | `null`   | Field reference for validation.                       |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `TimeSpan?` | Saat değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `TimeSpan?` | Değişiklik sonrası tetiklenir. |
-| `OnFocus` | `FocusEventArgs` | Alan odaklandığında tetiklenir. |
-| `OnBlur` | `FocusEventArgs` | Odak ayrıldığında tetiklenir. |
+| Event          | Payload          | Description                                        |
+| :------------- | :--------------- | :------------------------------------------------- |
+| `ValueChanged` | `TimeSpan?`      | Triggered when the time changes (two-way binding). |
+| `OnChange`     | `TimeSpan?`      | Triggered after the change.                        |
+| `OnFocus`      | `FocusEventArgs` | Triggered when the field gains focus.              |
+| `OnBlur`       | `FocusEventArgs` | Triggered when the field loses focus.              |

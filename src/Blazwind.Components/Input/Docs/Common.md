@@ -1,120 +1,118 @@
-# Input Bileşenleri - Ortak Özellikler
+# Input Components – Common Features
 
-Tüm Blazwind input bileşenlerinde bulunan ortak parametreler ve form entegrasyonu özellikleri.
+Common parameters and form integration features available in all Blazwind input components.
 
-## For Parametresi (Otomatik Validasyon)
+## For Parameter (Automatic Validation)
 
-Tüm input bileşenlerinde `For` parametresi ile EditContext'e bağlanarak otomatik validation mesajı gösterimi sağlanır.
+In all input components, the `For` parameter binds to the `EditContext` to enable automatic validation message display.
 
 ```razor
 <BwForm Model="@_model" OnValidSubmit="HandleSubmit">
     <BwInput @bind-Value="_model.Email" 
              For="@(() => _model.Email)"
-             Label="E-posta" />
+             Label="Email" />
 </BwForm>
 ```
 
-### Nasıl Çalışır?
+### How It Works
 
-1. `For` parametresi `Expression<Func<TValue>>` tipindedir
-2. `BwForm` içindeki `EditContext` cascade olarak iletilir
-3. Validation değişikliklerinde input otomatik güncellenir
-4. Hata mesajları input altında gösterilir
+1. The `For` parameter is of type `Expression<Func<TValue>>`
+2. The `EditContext` inside `BwForm` is provided via cascading
+3. Inputs automatically update on validation changes
+4. Error messages are displayed under the input
 
+### Supported Components
 
+The table below shows which components fully support the common features.
 
-### Desteklenen Bileşenler
-
-Aşağıdaki tablo, ortak özelliklerin hangi bileşenlerde tam olarak desteklendiğini gösterir.
-
-| Bileşen | `For` (Validasyon) | `LabelPosition` | `Density` |
-|---------|------------------|-----------------|-----------|
-| BwInput | ✓ | ✓ (Top/Left/Floating/Hidden) | ✓ |
-| BwSelect | ✓ | ✓ (Top/Left/Hidden) | ✓ |
-| BwTextarea | ✓ | ✓ (Top/Left/Hidden) | ✓ |
-| BwDatePicker | ✓ | ✓ (Top/Left/Floating/Hidden) | ✓ |
-| BwMaskedInput | ✓ | ✓ (Top/Left/Floating/Hidden) | ✓ |
-| BwSlider | ✓ | ✓ (Inline) | ✓ |
-| BwCheckbox | ✓ | - | ✓ |
-| BwSwitch | ✓ | - | ✓ |
-| BwRating | ✓ | - | - |
-| BwRadioGroup<T> | ✓ | - | - |
-| BwColorPicker | ✓ | - | - |
-| BwTagInput | ✓ | - | - |
-| BwAutocomplete<T> | `For` / `ForMultiple` | - | - |
-| BwTransfer<T> | ✓ | - | - |
-| BwTimePicker | ✓ | - | - |
-| BwFileUpload | - | - | - |
+| Component         | `For` (Validation)    | `LabelPosition`              | `Density` |
+| ----------------- | --------------------- | ---------------------------- | --------- |
+| BwInput           | ✓                     | ✓ (Top/Left/Floating/Hidden) | ✓         |
+| BwSelect          | ✓                     | ✓ (Top/Left/Hidden)          | ✓         |
+| BwTextarea        | ✓                     | ✓ (Top/Left/Hidden)          | ✓         |
+| BwDatePicker      | ✓                     | ✓ (Top/Left/Floating/Hidden) | ✓         |
+| BwMaskedInput     | ✓                     | ✓ (Top/Left/Floating/Hidden) | ✓         |
+| BwSlider          | ✓                     | ✓ (Inline)                   | ✓         |
+| BwCheckbox        | ✓                     | -                            | ✓         |
+| BwSwitch          | ✓                     | -                            | ✓         |
+| BwRating          | ✓                     | -                            | -         |
+| BwRadioGroup<T>   | ✓                     | -                            | -         |
+| BwColorPicker     | ✓                     | -                            | -         |
+| BwTagInput        | ✓                     | -                            | -         |
+| BwAutocomplete<T> | `For` / `ForMultiple` | -                            | -         |
+| BwTransfer<T>     | ✓                     | -                            | -         |
+| BwTimePicker      | ✓                     | -                            | -         |
+| BwFileUpload      | -                     | -                            | -         |
 
 ---
 
-## LabelPosition (5 bileşende)
+## LabelPosition (5 components)
 
-Label pozisyonunu kontrol eder. `BwForm`'dan cascade edilir veya bileşende override edilebilir.
+Controls label position. Cascaded from `BwForm` or overridden on the component.
 
 ```razor
-<!-- Form'dan cascade -->
+<!-- Cascaded from form -->
 <BwForm Model="@_model" LabelPosition="BwLabelPosition.Left">
-    <BwInput @bind-Value="_model.Name" Label="Ad" />
+    <BwInput @bind-Value="_model.Name" Label="Name" />
 </BwForm>
 
-<!-- Bileşende override -->
+<!-- Overridden on component -->
 <BwInput @bind-Value="_model.Name" 
-         Label="Ad" 
+         Label="Name" 
          LabelPosition="BwLabelPosition.Top" />
 ```
 
-### Değerler
+### Values
 
-| Değer | Açıklama |
-|-------|----------|
-| `Top` | Label üstte (varsayılan) |
-| `Left` | Label solda, `LabelWidth` ile genişlik |
-| `Floating` | Material-style floating label |
-| `Hidden` | Label gizli, aria-label kullanılır |
+| Value      | Description                                         |
+| ---------- | --------------------------------------------------- |
+| `Top`      | Label on top (default)                              |
+| `Left`     | Label on the left, width controlled by `LabelWidth` |
+| `Floating` | Material-style floating label                       |
+| `Hidden`   | Label hidden, uses aria-label                       |
 
 ---
 
-## Density (5 bileşende)
+## Density (5 components)
 
-Form spacing'ini kontrol eder. `BwForm`'dan cascade edilir.
+Controls form spacing. Cascaded from `BwForm`.
 
 ```razor
 <BwForm Model="@_model" Density="BwFormDensity.Compact">
-    <BwInput @bind-Value="_model.Field1" Label="Alan 1" />
-    <BwInput @bind-Value="_model.Field2" Label="Alan 2" />
+    <BwInput @bind-Value="_model.Field1" Label="Field 1" />
+    <BwInput @bind-Value="_model.Field2" Label="Field 2" />
 </BwForm>
 ```
 
-### Değerler
+### Values
 
-| Değer | Margin | Kullanım |
-|-------|--------|----------|
-| `Compact` | `mb-2` | Yoğun formlar (50+ alan) |
-| `Normal` | `mb-4` | Standart formlar |
-| `Relaxed` | `mb-6` | Geniş, rahat spacing |
+| Value     | Margin | Usage                     |
+| --------- | ------ | ------------------------- |
+| `Compact` | `mb-2` | Dense forms (50+ fields)  |
+| `Normal`  | `mb-4` | Standard forms            |
+| `Relaxed` | `mb-6` | Spacious, relaxed spacing |
 
 ---
 
-## Ortak Parametreler
+## Common Parameters
 
-Tüm input bileşenlerinde bulunan standart parametreler:
+Standard parameters available in all input components:
 
-| Parametre | Tip | Açıklama |
-|-----------|-----|----------|
-| `Label` | `string?` | Alan etiketi |
-| `HelperText` | `string?` | Yardımcı metin |
-| `Error` | `string?` | Manuel hata mesajı |
-| `IsDisabled` | `bool` | Disabled durumu |
-| `IsRequired` | `bool` | Zorunlu göstergesi (*) |
-| `Size` | `BwSize` | Small / Medium / Large |
-| `Class` | `string?` | Ek CSS sınıfları |
+| Parameter    | Type      | Description            |
+| ------------ | --------- | ---------------------- |
+| `Label`      | `string?` | Field label            |
+| `HelperText` | `string?` | Helper text            |
+| `Error`      | `string?` | Manual error message   |
+| `IsDisabled` | `bool`    | Disabled state         |
+| `IsRequired` | `bool`    | Required indicator (*) |
+| `Size`       | `BwSize`  | Small / Medium / Large |
+| `Class`      | `string?` | Additional CSS classes |
 
 ---
 
 ## Cascading Parameters
 
-`BwForm` aşağıdaki parametreleri cascade eder:
+`BwForm` cascades the following parameters:
 
 ```csharp
 [CascadingParameter] EditContext? CascadedEditContext
@@ -122,14 +120,15 @@ Tüm input bileşenlerinde bulunan standart parametreler:
 [CascadingParameter] BwFormDensity? CascadedDensity
 ```
 
-Input bileşenlerinde öncelik sırası:
-1. Bileşen parametresi (override)
-2. Cascade value (BwForm'dan)
-3. Varsayılan değer
+Input component precedence order:
+
+1. Component parameter (override)
+2. Cascaded value (from `BwForm`)
+3. Default value
 
 ---
 
-## Örnek: Tam Form
+## Example: Full Form
 
 ```razor
 @code {
@@ -137,10 +136,10 @@ Input bileşenlerinde öncelik sırası:
     
     public class UserModel
     {
-        [Required(ErrorMessage = "Ad zorunlu")]
+        [Required(ErrorMessage = "Name is required")]
         public string? Name { get; set; }
         
-        [EmailAddress(ErrorMessage = "Geçerli e-posta girin")]
+        [EmailAddress(ErrorMessage = "Enter a valid email")]
         public string? Email { get; set; }
         
         [Range(18, 120)]
@@ -156,17 +155,17 @@ Input bileşenlerinde öncelik sırası:
     <BwFormGrid Columns="2">
         <BwInput @bind-Value="_model.Name" 
                  For="@(() => _model.Name)"
-                 Label="Ad" 
+                 Label="Name" 
                  IsRequired="true" />
                  
         <BwInput @bind-Value="_model.Email" 
                  For="@(() => _model.Email)"
-                 Label="E-posta" 
+                 Label="Email" 
                  Type="email" />
     </BwFormGrid>
     
     <BwFormActions>
-        <BwButton Text="Kaydet" HtmlType="submit" Color="BwColor.Primary" />
+        <BwButton Text="Save" HtmlType="submit" Color="BwColor.Primary" />
     </BwFormActions>
 </BwForm>
 ```

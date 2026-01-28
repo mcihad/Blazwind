@@ -1,34 +1,34 @@
-# ColorPicker (Renk Seçici)
+# Color Picker
 
-Renk seçimi için palet ve HEX girişi sunan bileşen.
+A component that provides a palette and HEX input for color selection.
 
-## Kullanım
+## Usage
 
 ```razor
-<BwColorPicker Label="Tema Rengi" @bind-Value="themeColor" />
-<BwColorPicker Label="Sadece Palet" ShowInput="false" />
+<BwColorPicker Label="Theme Color" @bind-Value="themeColor" />
+<BwColorPicker Label="Palette Only" ShowInput="false" />
 ```
 
 > [!NOTE]
-> Bu bileşen tarayıcının yerel renk seçicisini (`input type="color"`) kullanır. Bazı tarayıcılar `PresetColors` parametresini farklı şekillerde (datalist olarak) destekleyebilir.
+> This component uses the browser’s native color picker (`input type="color"`). Some browsers may support the `PresetColors` parameter differently (e.g., as a datalist).
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `string` | `"#3B82F6"` | Seçili renk (HEX formatında, Two-way binding). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `ShowInput` | `bool` | `false` | Renk seçiminin yanında HEX değerini gösteren bir metin kutusu açar. |
-| `PresetColors` | `string[]` | `null` | Hızlı seçim için ön tanımlı renk listesi (HEX). |
-| `Size` | `BwSize` | `Medium` | Boyut. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression` | `null` | Validasyon için alan referansı. |
+| Parameter      | Type         | Default     | Description                                                           |
+| :------------- | :----------- | :---------- | :-------------------------------------------------------------------- |
+| `Value`        | `string`     | `"#3B82F6"` | Selected color (HEX format, two-way binding).                         |
+| `Label`        | `string`     | `null`      | Field label.                                                          |
+| `ShowInput`    | `bool`       | `false`     | Displays a text input showing the HEX value next to the color picker. |
+| `PresetColors` | `string[]`   | `null`      | Predefined color list for quick selection (HEX).                      |
+| `Size`         | `BwSize`     | `Medium`    | Size.                                                                 |
+| `IsDisabled`   | `bool`       | `false`     | Disables the component.                                               |
+| `IsValid`      | `bool`       | `true`      | Manual validation state.                                              |
+| `ErrorMessage` | `string`     | `null`      | Manual error message.                                                 |
+| `For`          | `Expression` | `null`      | Field reference for validation.                                       |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `string` | Renk değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `string` | Değişiklik sonrası tetiklenir. |
+| Event          | Payload  | Description                                         |
+| :------------- | :------- | :-------------------------------------------------- |
+| `ValueChanged` | `string` | Triggered when the color changes (two-way binding). |
+| `OnChange`     | `string` | Triggered after the change.                         |

@@ -1,70 +1,70 @@
-# Select (Seçim Kutusu)
+# Select
 
-Açılır listeden tekli veya çoklu seçim yapılmasını sağlar. `Data` parametresi ile generic veri kaynağı destekler.
+Allows single or multiple selection from a dropdown list. Supports a generic data source via the `Data` parameter.
 
-## Özellikler
+## Features
 
-*   **Veri Kaynağı:** `Data` parametresi ile generic liste binding.
-*   **Çoklu Seçim:** `IsMultiple` ile birden fazla öğe seçimi.
-*   **Arama:** Entegre arama/filtreleme özelliği.
-*   **Validasyon:** Standart `For` validasyon desteği.
+* **Data Source:** Generic list binding via the `Data` parameter.
+* **Multiple Selection:** Select multiple items with `IsMultiple`.
+* **Search:** Built-in search/filtering feature.
+* **Validation:** Standard `For` validation support.
 
-## Kullanım
+## Usage
 
-### Liste ile Kullanım (Data API)
+### Usage with List (Data API)
 
 ```razor
 <BwSelect Data="@users" 
           @bind-Value="selectedUserId" 
           ItemValue="@(u => u.Id)" 
           ItemText="@(u => u.Name)"
-          Label="Kullanıcı Seçin" />
+          Label="Select User" />
 ```
 
-### Çoklu Seçim
+### Multiple Selection
 
 ```razor
 <BwSelect Data="@roles"
           @bind-SelectedValues="selectedRoles"
           IsMultiple="true"
-          Label="Roller" />
+          Label="Roles" />
 ```
 
-### Özel Seçenekler (Slot)
+### Custom Options (Slot)
 
-`Items` parametresi yerine manual `option` etiketleri veya özel içerik de kullanılabilir.
+Instead of the `Items` parameter, manual `option` tags or custom content can also be used.
 
 ```razor
-<BwSelect @bind-Value="selectedColor" Label="Renk">
-    <option value="red">Kırmızı</option>
-    <option value="blue">Mavi</option>
-    <option value="green">Yeşil</option>
+<BwSelect @bind-Value="selectedColor" Label="Color">
+    <option value="red">Red</option>
+    <option value="blue">Blue</option>
+    <option value="green">Green</option>
 </BwSelect>
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `TValue` | - | Seçili değer (Tekli seçim, Two-way binding). |
-| `SelectedValues` | `List<TValue>` | `null` | Seçili değerler listesi (Çoklu seçim, Two-way binding). |
-| `Items` | `IEnumerable<BwSelectItem<TValue>>` | `null` | Veri kaynağı. |
-| `IsMultiple` | `bool` | `false` | Çoklu seçimi etkinleştirir. |
-| `VisibleRows` | `int` | `4` | Çoklu seçim modunda görünür satır sayısı. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Placeholder` | `string` | `null` | Yer tutucu (Tekli seçimde ilk boş seçenek). |
-| `LabelPosition` | `BwLabelPosition` | `Top` | Etiket konumu (`Top`, `Left`, `Hidden`). |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `IsRequired` | `bool` | `false` | Zorunlu işaretini gösterir. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression<Func<T>>` | `null` | Otomatik validasyon için alan referansı. |
+| Parameter        | Type                                | Default | Description                                                    |
+| :--------------- | :---------------------------------- | :------ | :------------------------------------------------------------- |
+| `Value`          | `TValue`                            | -       | Selected value (single selection, two-way binding).            |
+| `SelectedValues` | `List<TValue>`                      | `null`  | List of selected values (multiple selection, two-way binding). |
+| `Items`          | `IEnumerable<BwSelectItem<TValue>>` | `null`  | Data source.                                                   |
+| `IsMultiple`     | `bool`                              | `false` | Enables multiple selection.                                    |
+| `VisibleRows`    | `int`                               | `4`     | Number of visible rows in multiple selection mode.             |
+| `Label`          | `string`                            | `null`  | Field label.                                                   |
+| `Placeholder`    | `string`                            | `null`  | Placeholder (first empty option in single selection).          |
+| `LabelPosition`  | `BwLabelPosition`                   | `Top`   | Label position (`Top`, `Left`, `Hidden`).                      |
+| `IsDisabled`     | `bool`                              | `false` | Disables the component.                                        |
+| `IsRequired`     | `bool`                              | `false` | Shows the required indicator.                                  |
+| `IsValid`        | `bool`                              | `true`  | Manual validation state.                                       |
+| `ErrorMessage`   | `string`                            | `null`  | Manual error message.                                          |
+| `For`            | `Expression<Func<T>>`               | `null`  | Field reference for automatic validation.                      |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `TValue` | Seçim değiştiğinde tetiklenir (Tekli seçim). |
-| `SelectedValuesChanged` | `List<TValue>` | Seçimler değiştiğinde tetiklenir (Çoklu seçim). |
-| `SelectedItemChanged` | `BwSelectItem<TValue>` | Seçilen öğe nesnesi değiştiğinde tetiklenir. |
-| `SelectedItemsChanged` | `List<BwSelectItem<TValue>>` | Seçilen öğe nesneleri listesi değiştiğinde tetiklenir. |
+| Event                   | Payload                      | Description                                               |
+| :---------------------- | :--------------------------- | :-------------------------------------------------------- |
+| `ValueChanged`          | `TValue`                     | Triggered when the selection changes (single selection).  |
+| `SelectedValuesChanged` | `List<TValue>`               | Triggered when selections change (multiple selection).    |
+| `SelectedItemChanged`   | `BwSelectItem<TValue>`       | Triggered when the selected item object changes.          |
+| `SelectedItemsChanged`  | `List<BwSelectItem<TValue>>` | Triggered when the list of selected item objects changes. |

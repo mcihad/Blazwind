@@ -1,50 +1,54 @@
-# Rating (Değerlendirme)
+# Rating
 
-Yıldız tabanlı derecelendirme bileşeni.
+Star-based rating component.
 
-## Özellikler
-*   **Yarım Yıldız:** `AllowHalf` ile buçuklu puanlama.
-*   **İkonlar:** `FilledIcon` ve `EmptyIcon` ile özelleştirilebilir ikonlar (kalp, daire vb.).
-*   **Okunur Mod:** `IsReadOnly` ile sadece gösterim.
+## Features
 
-## Kullanım
+* **Half Star:** Half-step rating with `AllowHalf`.
+* **Icons:** Customizable icons via `FilledIcon` and `EmptyIcon` (heart, circle, etc.).
+* **Read-Only Mode:** Display-only mode with `IsReadOnly`.
 
-### Temel Kullanım
+## Usage
+
+### Basic Usage
+
 ```razor
-<BwRating Label="Ürün Puanı" @bind-Value="rating" />
+<BwRating Label="Product Rating" @bind-Value="rating" />
 ```
 
-### Yarım Yıldız ve Gösterim
+### Half Star and Display
+
 ```razor
 <BwRating Value="3.5" AllowHalf="true" ShowValue="true" IsReadOnly="true" />
 ```
 
-### Özel İkon
+### Custom Icon
+
 ```razor
 <BwRating FilledIcon="fa-solid fa-heart" 
           EmptyIcon="fa-regular fa-heart" 
           Color="BwColor.Danger" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `double` | `0` | Mevcut puan (Two-way binding). |
-| `MaxValue` | `int` | `5` | Maksimum yıldız (veya ikon) sayısı. |
-| `AllowHalf` | `bool` | `false` | Yarım puanlık (buçuklu) seçim izni. |
-| `ShowValue` | `bool` | `false` | Seçilen değeri sayısal olarak yan tarafta gösterir. |
-| `FilledIcon` | `string` | `"fa-solid fa-star"` | Dolu ikon sınıfı. |
-| `EmptyIcon` | `string` | `"fa-regular fa-star"` | Boş ikon sınıfı. |
-| `Color` | `BwColor` | `Warning` | İkon rengi. |
-| `Size` | `BwSize` | `Medium` | İkon boyutu (`Small`, `Medium`, `Large`). |
-| `Label` | `string` | `null` | Üst etiket metni. |
-| `HelperText` | `string` | `null` | Alt yardımcı metin. |
-| `IsReadOnly` | `bool` | `false` | Sadece okuma modu (hover ve tıklama kapalı). |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
+| Parameter    | Type      | Default                | Description                                                |
+| :----------- | :-------- | :--------------------- | :--------------------------------------------------------- |
+| `Value`      | `double`  | `0`                    | Current rating (two-way binding).                          |
+| `MaxValue`   | `int`     | `5`                    | Maximum number of stars (or icons).                        |
+| `AllowHalf`  | `bool`    | `false`                | Allows half-step selection.                                |
+| `ShowValue`  | `bool`    | `false`                | Displays the selected value numerically next to the icons. |
+| `FilledIcon` | `string`  | `"fa-solid fa-star"`   | Filled icon class.                                         |
+| `EmptyIcon`  | `string`  | `"fa-regular fa-star"` | Empty icon class.                                          |
+| `Color`      | `BwColor` | `Warning`              | Icon color.                                                |
+| `Size`       | `BwSize`  | `Medium`               | Icon size (`Small`, `Medium`, `Large`).                    |
+| `Label`      | `string`  | `null`                 | Top label text.                                            |
+| `HelperText` | `string`  | `null`                 | Helper text below.                                         |
+| `IsReadOnly` | `bool`    | `false`                | Read-only mode (hover and click disabled).                 |
+| `IsDisabled` | `bool`    | `false`                | Disables the component.                                    |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `double` | Puan değiştiğinde tetiklenir (Two-way binding). |
+| Event          | Payload  | Description                                          |
+| :------------- | :------- | :--------------------------------------------------- |
+| `ValueChanged` | `double` | Triggered when the rating changes (two-way binding). |

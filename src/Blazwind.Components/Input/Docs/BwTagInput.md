@@ -1,70 +1,73 @@
-# TagInput (Etiket Girişi)
+# Tag Input
 
-Kullanıcının serbest metin etiketleri girmesini sağlayan bileşen.
+A component that allows users to enter free-text tags.
 
-## Özellikler
-*   **Klavye Kontrolü:** Enter, Tab veya Virgül ile etiket ekleme.
-*   **Silme:** Backspace veya çarpı ikonu ile silme.
-*   **Limit:** Maksimum etiket sayısı belirleme (`MaxTags`).
-*   **Benzersizlik:** Aynı etiketin tekrar eklenmesini engelleme (`AllowDuplicates`).
-*   **Yardım Araçları:** `BwHelpTooltip` entegrasyonu.
+## Features
 
-## Kullanım
+* **Keyboard Control:** Add tags using Enter, Tab, or Comma.
+* **Deletion:** Remove tags using Backspace or the close icon.
+* **Limit:** Set a maximum number of tags (`MaxTags`).
+* **Uniqueness:** Prevent duplicate tags (`AllowDuplicates`).
+* **Tooling:** `BwHelpTooltip` integration.
+
+## Usage
 
 ```razor
-<BwTagInput Label="Anahtar Kelimeler" @bind-Tags="keywords" />
+<BwTagInput Label="Keywords" @bind-Tags="keywords" />
 ```
 
-### Validasyonlu Kullanım
+### With Validation
 
 ```razor
 <BwTagInput Tags="keywords" 
             ErrorMessage="@errorMessage" 
             IsValid="@isValid" 
             HelpTextMode="BwHelpTextMode.Popup"
-            HelperText="En az 3 etiket giriniz" />
+            HelperText="Please enter at least 3 tags" />
 ```
 
-### Sınırlı ve Benzersiz
-Maksimum 5 etiket ve aynı etikete izin verme.
+### Limited and Unique
+
+Maximum of 5 tags and no duplicates allowed.
 
 ```razor
 <BwTagInput MaxTags="5" AllowDuplicates="false" />
 ```
 
-### Özel Ayırıcı Tuşlar (TriggerKeys)
+### Custom Trigger Keys
 
-Varsayılan olarak `Enter`, `Tab` ve `,` tuşları yeni etiket ekler. `TriggerKeys` ile bunu özelleştirebilirsiniz.
+By default, `Enter`, `Tab`, and `,` add a new tag. You can customize this using `TriggerKeys`.
 
 ```razor
 <BwTagInput @bind-Tags="myTags" 
             TriggerKeys="@(new[] { "Enter", " " })" 
-            Placeholder="Boşluk ile etiket ekle" />
+            Placeholder="Add tag with space" />
 ```
 
-## Parametreler
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Tags` | `List<string>` | `new()` | Etiket listesi (Two-way binding). |
-| `MaxTags` | `int?` | `null` | Maksimum eklenebilecek etiket sayısı. |
-| `AllowDuplicates` | `bool` | `false` | Aynı etiketin birden fazla eklenmesine izin verir. |
-| `TriggerKeys` | `string[]` | `["Enter", "Tab", ","]` | Yeni etiket eklemeyi tetikleyen tuşlar. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Placeholder` | `string` | `"Etiket ekle..."` | Yer tutucu metin. |
-| `Size` | `BwSize` | `Medium` | Boyut. |
-| `Color` | `BwColor` | `Primary` | Etiketlerin rengi. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `For` | `Expression` | `null` | Validasyon için alan referansı. |
-| `ErrorMessage` | `string` | `null` | Hata mesajı. |
-| `IsValid` | `bool` | `true` | Validasyon durumu. |
-| `HelperText` | `string` | `null` | Yardım metni. |
-| `HelpTextMode` | `BwHelpTextMode` | `Inline` | Yardım metni modu. |
-| `LabelPosition` | `BwLabelPosition` | `Top` | Etiket konumu. |
+## Parameters
 
-## Olaylar (Events)
+| Parameter         | Type              | Default                 | Description                               |
+| :---------------- | :---------------- | :---------------------- | :---------------------------------------- |
+| `Tags`            | `List<string>`    | `new()`                 | Tag list (two-way binding).               |
+| `MaxTags`         | `int?`            | `null`                  | Maximum number of tags that can be added. |
+| `AllowDuplicates` | `bool`            | `false`                 | Allows adding duplicate tags.             |
+| `TriggerKeys`     | `string[]`        | `["Enter", "Tab", ","]` | Keys that trigger tag creation.           |
+| `Label`           | `string`          | `null`                  | Field label.                              |
+| `Placeholder`     | `string`          | `"Add tag..."`          | Placeholder text.                         |
+| `Size`            | `BwSize`          | `Medium`                | Size.                                     |
+| `Color`           | `BwColor`         | `Primary`               | Tag color.                                |
+| `IsDisabled`      | `bool`            | `false`                 | Disables the component.                   |
+| `For`             | `Expression`      | `null`                  | Field reference for validation.           |
+| `ErrorMessage`    | `string`          | `null`                  | Error message.                            |
+| `IsValid`         | `bool`            | `true`                  | Validation state.                         |
+| `HelperText`      | `string`          | `null`                  | Helper text.                              |
+| `HelpTextMode`    | `BwHelpTextMode`  | `Inline`                | Helper text mode.                         |
+| `LabelPosition`   | `BwLabelPosition` | `Top`                   | Label position.                           |
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `TagsChanged` | `List<string>` | Etiket listesi değiştiğinde tetiklenir (Two-way binding). |
-| `OnTagAdded` | `string` | Yeni bir etiket eklendiğinde tetiklenir. |
-| `OnTagRemoved` | `string` | Bir etiket silindiğinde tetiklenir. |
+## Events
+
+| Event          | Payload        | Description                                            |
+| :------------- | :------------- | :----------------------------------------------------- |
+| `TagsChanged`  | `List<string>` | Triggered when the tag list changes (two-way binding). |
+| `OnTagAdded`   | `string`       | Triggered when a new tag is added.                     |
+| `OnTagRemoved` | `string`       | Triggered when a tag is removed.                       |

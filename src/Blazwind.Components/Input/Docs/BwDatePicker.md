@@ -1,59 +1,59 @@
-# DatePicker (Tarih Seçici)
+# Date Picker
 
-Tarih seçimi için kullanılan bileşen. Varsayılan olarak Türkçe (tr-TR) kültürünü kullanır.
+A component used for date selection. By default, it uses the Turkish (tr-TR) culture.
 
-## Özellikler
+## Features
 
-*   **Format:** Otomatik tarih formatlama.
-*   **Aralık:** `Min` ve `Max` tarih kısıtlaması.
-*   **Modlar:** Sadece tarih seçimi (Şimdilik).
+* **Format:** Automatic date formatting.
+* **Range:** `Min` and `Max` date constraints.
+* **Modes:** Date-only selection (for now).
 
-## Kullanım
+## Usage
 
 ```razor
-<BwDatePicker Label="Doğum Tarihi" @bind-Value="birthDate" />
+<BwDatePicker Label="Birth Date" @bind-Value="birthDate" />
 ```
 
-### Aralık Kısıtlama
+### Range Constraint
 
 ```razor
-<BwDatePicker Label="Randevu Tarihi" 
+<BwDatePicker Label="Appointment Date" 
               Min="@DateTime.Now" 
               Max="@DateTime.Now.AddDays(30)" />
 ```
 
-### Validasyon
+### Validation
 
 ```razor
 <BwDatePicker @bind-Value="model.Date" 
               For="@(() => model.Date)" 
-              Label="İşlem Tarihi" />
+              Label="Transaction Date" />
 ```
 
 > [!NOTE]
-> Bu bileşen tarayıcının yerel tarih seçicisini (`input type="date"`) kullanır. Görünüm (takvim dili, tarih formatı) kullanıcının tarayıcı ayarlarına bağlıdır, ancak `Value` her zaman standart `DateTime` olarak iletilir.
+> This component uses the browser’s native date picker (`input type="date"`). The appearance (calendar language, date format) depends on the user’s browser settings, but `Value` is always provided as a standard `DateTime`.
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `DateTime?` | `null` | Seçili tarih (Two-way binding). |
-| `Min` | `DateTime?` | `null` | Seçilebilecek en eski tarih. |
-| `Max` | `DateTime?` | `null` | Seçilebilecek en yeni tarih. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `LabelPosition` | `BwLabelPosition` | `Top` | Etiket konumu (`Top`, `Left`, `Floating`, `Hidden`). |
-| `Size` | `BwSize` | `Medium` | Boyut. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `IsReadOnly` | `bool` | `false` | Sadece okunabilir yapar. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression` | `null` | Validasyon için alan referansı. |
+| Parameter       | Type              | Default  | Description                                           |
+| :-------------- | :---------------- | :------- | :---------------------------------------------------- |
+| `Value`         | `DateTime?`       | `null`   | Selected date (two-way binding).                      |
+| `Min`           | `DateTime?`       | `null`   | Earliest selectable date.                             |
+| `Max`           | `DateTime?`       | `null`   | Latest selectable date.                               |
+| `Label`         | `string`          | `null`   | Field label.                                          |
+| `LabelPosition` | `BwLabelPosition` | `Top`    | Label position (`Top`, `Left`, `Floating`, `Hidden`). |
+| `Size`          | `BwSize`          | `Medium` | Size.                                                 |
+| `IsDisabled`    | `bool`            | `false`  | Disables the component.                               |
+| `IsReadOnly`    | `bool`            | `false`  | Makes the field read-only.                            |
+| `IsValid`       | `bool`            | `true`   | Manual validation state.                              |
+| `ErrorMessage`  | `string`          | `null`   | Manual error message.                                 |
+| `For`           | `Expression`      | `null`   | Field reference for validation.                       |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `DateTime?` | Tarih değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `DateTime?` | Değişiklik sonrası tetiklenir. |
-| `OnFocus` | `FocusEventArgs` | Alan odaklandığında tetiklenir. |
-| `OnBlur` | `FocusEventArgs` | Odak ayrıldığında tetiklenir.
+| Event          | Payload          | Description                                        |
+| :------------- | :--------------- | :------------------------------------------------- |
+| `ValueChanged` | `DateTime?`      | Triggered when the date changes (two-way binding). |
+| `OnChange`     | `DateTime?`      | Triggered after the change.                        |
+| `OnFocus`      | `FocusEventArgs` | Triggered when the field gains focus.              |
+| `OnBlur`       | `FocusEventArgs` | Triggered when the field loses focus.              |

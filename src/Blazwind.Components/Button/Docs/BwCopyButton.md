@@ -1,4 +1,4 @@
-# BwCopyButton
+# Copy Button
 
 A utility button component used to copy text or code blocks to the clipboard with visual feedback.
 
@@ -32,7 +32,7 @@ A utility button component used to copy text or code blocks to the clipboard wit
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `Content` | `string` | (Required) | The text content to be copied to the clipboard. |
-| `Text` | `string` | `"Kopyala"` | The button label. |
+| `Text` | `string` | `"Copy"` | The button label. |
 | `CopiedText` | `string` | `"Kopyalandı"` | The label shown after a successful copy. |
 | `Icon` | `string` | `"fa-regular fa-copy"` | The icon displayed inside the button. |
 | `Tooltip` | `string` | `"Panoya kopyala"` | Tooltip text shown on hover. |

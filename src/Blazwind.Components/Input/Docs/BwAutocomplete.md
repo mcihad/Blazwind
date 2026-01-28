@@ -1,89 +1,92 @@
-# Autocomplete (Otomatik Tamamlama)
+# Autocomplete
 
-Filtrelenebilir, tekli veya çoklu seçim yapılabilen gelişmiş liste bileşeni.
+An advanced list component that supports filtering, single selection, or multiple selection.
 
-## Kullanım
+## Usage
 
-### Tekli Seçim
+### Single Selection
+
 ```razor
 <BwAutocomplete Data="Cities" 
-                Label="Şehir Ara" 
-                Placeholder="Şehir yazın..." 
+                Label="Search City" 
+                Placeholder="Type a city..." 
                 @bind-SelectedItem="selectedCity" />
 ```
 
-### Çoklu Seçim
+### Multiple Selection
+
 ```razor
 <BwAutocomplete Data="Skills" 
-                Label="Yetenekler" 
+                Label="Skills" 
                 Multiple="true" 
                 MaxTags="5"
                 @bind-SelectedItems="mySkills" />
 ```
 
-### Asenkron Arama (Async Search)
+### Asynchronous Search (Async Search)
 
-Büyük veri setleri için `SearchFunc` kullanarak sunucu taraflı arama yapılabilir.
+For large data sets, server-side searching can be performed using `SearchFunc`.
 
 ```razor
 <BwAutocomplete TItem="User" 
-                Label="Kullanıcı Ara" 
+                Label="Search User" 
                 SearchFunc="@SearchUsers" 
                 ItemText="@(u => u.Name)" />
 
 @code {
     private async Task<IEnumerable<User>> SearchUsers(string searchText)
     {
-        // Örn: API çağrısı
+        // Example: API call
         return await Http.GetFromJsonAsync<List<User>>($"api/users?q={searchText}");
     }
 }
 ```
 
-### Yeni Öğe Oluşturma (AllowCreate)
+### Creating New Items (AllowCreate)
 
-Listede bulunmayan öğelerin kullanıcı tarafından eklenmesine izin verir.
+Allows users to add items that are not present in the list.
 
 ```razor
 <BwAutocomplete TItem="string" 
                 Items="@tags" 
                 AllowCreate="true" 
                 OnCreateNew="@((val) => tags.Add(val))"
-                Label="Etiketler" />
+                Label="Tags" />
 ```
 
-### Özelleştirme
-Dataların nasıl görüneceğini `ItemText` fonksiyonu ile belirleyebilirsiniz.
+### Customization
+
+You can define how data is displayed using the `ItemText` function.
 
 ```razor
 <BwAutocomplete Items="Users" 
                 ItemText="@(u => u.Name + " (" + u.Role + ")")" 
-                Label="Kullanıcı Seç" />
+                Label="Select User" />
 ```
 
-## Parametreler
+## Parameters
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `TItem` | - | Seçili öğe (Tekli seçim). |
-| `SelectedItems` | `List<TItem>` | `null` | Seçili öğeler (Çoklu seçim). |
-| `Items` | `IEnumerable<TItem>` | `null` | Statik veri kaynağı. |
-| `SearchFunc` | `Func<string, Task<IEnumerable<TItem>>>` | `null` | Asenkron arama fonksiyonu. |
-| `ItemText` | `Func<TItem, string>` | - | Öğenin görünen metni için seçici. |
-| `Multiple` | `bool` | `false` | Çoklu seçimi etkinleştirir. |
-| `AllowCreate` | `bool` | `false` | Yeni öğe oluşturulmasına izin verir. |
-| `MaxTags` | `int?` | `null` | Çoklu seçimde maksimum etiket sayısı. |
-| `Placeholder` | `string` | `"Seçiniz..."` | Yer tutucu metin. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Size` | `BwSize` | `Medium` | Boyut. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `For` | `Expression` | `null` | Validasyon için alan referansı. |
+| Parameter       | Type                                     | Default       | Description                                   |
+| :-------------- | :--------------------------------------- | :------------ | :-------------------------------------------- |
+| `Value`         | `TItem`                                  | -             | Selected item (single selection).             |
+| `SelectedItems` | `List<TItem>`                            | `null`        | Selected items (multiple selection).          |
+| `Items`         | `IEnumerable<TItem>`                     | `null`        | Static data source.                           |
+| `SearchFunc`    | `Func<string, Task<IEnumerable<TItem>>>` | `null`        | Asynchronous search function.                 |
+| `ItemText`      | `Func<TItem, string>`                    | -             | Selector for the item’s display text.         |
+| `Multiple`      | `bool`                                   | `false`       | Enables multiple selection.                   |
+| `AllowCreate`   | `bool`                                   | `false`       | Allows creating new items.                    |
+| `MaxTags`       | `int?`                                   | `null`        | Maximum number of tags in multiple selection. |
+| `Placeholder`   | `string`                                 | `"Select..."` | Placeholder text.                             |
+| `Label`         | `string`                                 | `null`        | Field label.                                  |
+| `Size`          | `BwSize`                                 | `Medium`      | Size.                                         |
+| `IsDisabled`    | `bool`                                   | `false`       | Disables the component.                       |
+| `For`           | `Expression`                             | `null`        | Field reference for validation.               |
 
-## Olaylar (Events)
+## Events
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `TItem` | Seçim değiştiğinde tetiklenir (Tekli seçim). |
-| `SelectedItemsChanged` | `List<TItem>` | Seçimler değiştiğinde tetiklenir (Çoklu seçim). |
-| `OnCreateNew` | `string` | Yeni bir öğe oluşturulduğunda tetiklenir. |
-| `OnSearch` | `string` | Arama yapıldığında tetiklenir. |
+| Event                  | Payload       | Description                                              |
+| :--------------------- | :------------ | :------------------------------------------------------- |
+| `ValueChanged`         | `TItem`       | Triggered when the selection changes (single selection). |
+| `SelectedItemsChanged` | `List<TItem>` | Triggered when selections change (multiple selection).   |
+| `OnCreateNew`          | `string`      | Triggered when a new item is created.                    |
+| `OnSearch`             | `string`      | Triggered when a search is performed.                    |

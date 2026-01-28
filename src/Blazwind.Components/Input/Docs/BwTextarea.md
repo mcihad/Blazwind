@@ -1,65 +1,65 @@
-# Textarea (Çok Satırlı Giriş)
+# Textarea
 
-Uzun metin girişleri için kullanılan bileşendir. `BwBaseInput` özelliklerini taşır ve otomatik validasyon destekler.
+A component used for long text input. Inherits `BwBaseInput` features and supports automatic validation.
 
-## Özellikler
+## Features
 
-*   **Otomatik Boyutlandırma:** `AutoResize` özelliği ile içerik girildikçe yükseklik artar.
-*   **Sayaç:** `MaxLength` belirlendiğinde karakter sayacı gösterir.
-*   **Satır Kontrolü:** `Rows`, `MinRows`, `MaxRows` ile satır sayısı yönetimi.
+* **Auto Resize:** Height increases as content is entered using `AutoResize`.
+* **Counter:** Displays a character counter when `MaxLength` is set.
+* **Row Control:** Manage row count using `Rows`, `MinRows`, and `MaxRows`.
 
-## Kullanım
+## Usage
 
-### Temel Kullanım
-
-```razor
-<BwTextarea Label="Açıklama" Placeholder="Detayları buraya yazınız..." Rows="4" />
-```
-
-### Otomatik Boyutlandırma (AutoResize)
+### Basic Usage
 
 ```razor
-<BwTextarea Label="Yorum" AutoResize="true" MinRows="2" MaxRows="5" />
+<BwTextarea Label="Description" Placeholder="Write details here..." Rows="4" />
 ```
 
-### Karakter Sınırlaması
+### Auto Resize
 
 ```razor
-<BwTextarea Label="Kısa Özgeçmiş" MaxLength="200" ShowCounter="true" />
+<BwTextarea Label="Comment" AutoResize="true" MinRows="2" MaxRows="5" />
 ```
 
-### Otomatik Validasyon
+### Character Limit
 
 ```razor
-<BwTextarea @bind-Value="form.Description" For="@(() => form.Description)" Label="Açıklama" />
+<BwTextarea Label="Short Bio" MaxLength="200" ShowCounter="true" />
 ```
 
-## Parametreler
+### Automatic Validation
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `string` | `null` | Metin değeri (Two-way binding). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Placeholder` | `string` | `null` | Yer tutucu metin. |
-| `Rows` | `int` | `3` | Görünür satır sayısı. |
-| `AutoResize` | `bool` | `false` | İçeriğe göre otomatik yükseklik ayarı. |
-| `MinRows` | `int` | `2` | AutoResize için minimum satır sayısı. |
-| `MaxRows` | `int` | `10` | AutoResize için maksimum satır sayısı. |
-| `MaxLength` | `int?` | `null` | Maksimum karakter sayısı. |
-| `ShowCounter` | `bool` | `true` | Karakter sayacı gösterimi (`MaxLength` varsa). |
-| `LabelPosition` | `BwLabelPosition` | `Top` | Etiket konumu (`Top`, `Left`, `Hidden`). |
-| `HelpTextMode` | `BwHelpTextMode` | `Inline` | Yardım metni konumu (`Inline`, `Popup`). |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `IsReadOnly` | `bool` | `false` | Sadece okunabilir yapar. |
-| `IsRequired` | `bool` | `false` | Zorunlu işaretini (*) gösterir. |
-| `IsValid` | `bool` | `true` | Manuel validasyon durumu. |
-| `ErrorMessage` | `string` | `null` | Manuel hata mesajı. |
-| `For` | `Expression<Func<string>>` | `null` | Otomatik validasyon için alan referansı. |
+```razor
+<BwTextarea @bind-Value="form.Description" For="@(() => form.Description)" Label="Description" />
+```
 
-## Olaylar (Events)
+## Parameters
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `string` | Değer her değiştiğinde tetiklenir. |
-| `OnChange` | `string` | Değer değiştiğinde veya alan blur olduğunda tetiklenir. |
-| `OnInput` | `ChangeEventArgs` | Her tuş vuruşunda tetiklenir. |
+| Parameter       | Type                       | Default  | Description                                        |
+| :-------------- | :------------------------- | :------- | :------------------------------------------------- |
+| `Value`         | `string`                   | `null`   | Text value (two-way binding).                      |
+| `Label`         | `string`                   | `null`   | Field label.                                       |
+| `Placeholder`   | `string`                   | `null`   | Placeholder text.                                  |
+| `Rows`          | `int`                      | `3`      | Number of visible rows.                            |
+| `AutoResize`    | `bool`                     | `false`  | Automatically adjusts height based on content.     |
+| `MinRows`       | `int`                      | `2`      | Minimum rows for AutoResize.                       |
+| `MaxRows`       | `int`                      | `10`     | Maximum rows for AutoResize.                       |
+| `MaxLength`     | `int?`                     | `null`   | Maximum character count.                           |
+| `ShowCounter`   | `bool`                     | `true`   | Shows character counter (when `MaxLength` is set). |
+| `LabelPosition` | `BwLabelPosition`          | `Top`    | Label position (`Top`, `Left`, `Hidden`).          |
+| `HelpTextMode`  | `BwHelpTextMode`           | `Inline` | Helper text mode (`Inline`, `Popup`).              |
+| `IsDisabled`    | `bool`                     | `false`  | Disables the component.                            |
+| `IsReadOnly`    | `bool`                     | `false`  | Makes the field read-only.                         |
+| `IsRequired`    | `bool`                     | `false`  | Shows required indicator (*).                      |
+| `IsValid`       | `bool`                     | `true`   | Manual validation state.                           |
+| `ErrorMessage`  | `string`                   | `null`   | Manual error message.                              |
+| `For`           | `Expression<Func<string>>` | `null`   | Field reference for automatic validation.          |
+
+## Events
+
+| Event          | Payload           | Description                                                |
+| :------------- | :---------------- | :--------------------------------------------------------- |
+| `ValueChanged` | `string`          | Triggered whenever the value changes.                      |
+| `OnChange`     | `string`          | Triggered when the value changes or the field loses focus. |
+| `OnInput`      | `ChangeEventArgs` | Triggered on every keystroke.                              |
