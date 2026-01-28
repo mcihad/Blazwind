@@ -89,6 +89,28 @@
     color: var(--bw-color-primary);
 }
 
+/* Sort Button */
+.bw-table-sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.bw-table-sort-btn:hover {
+    color: var(--bw-gray-900);
+}
+
+.dark .bw-table-sort-btn:hover {
+    color: var(--bw-gray-100);
+}
+
 /* Loading Overlay */
 .bw-table-loading {
     background-color: rgba(255, 255, 255, 0.8);

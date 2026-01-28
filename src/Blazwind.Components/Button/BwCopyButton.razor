@@ -7,49 +7,47 @@
 
 @{
     var colorName = Color.ToString().ToLower();
-    var buttonClasses = "bw-btn bw-btn-small transition-all";
+    var buttonClasses = "bw-btn bw-btn-small bw-copy-btn";
     var defaultClass = Variant == BwVariant.Filled
-        ? $"bw-btn-filled-{colorName}"
-        : $"bw-btn-outline-{colorName}";
+    ? $"bw-btn-filled-{colorName}"
+    : $"bw-btn-outline-{colorName}";
     var stateClasses = _copied
-        ? "bw-btn-filled-success" // Copied state: success
-        : defaultClass;
+    ? "bw-btn-filled-success" // Copied state: success
+    : defaultClass;
 }
 
-<button type="button"
-        class="@CombineClasses($"{buttonClasses} {stateClasses}")"
-        style="@Style"
-        id="@Id"
-        @attributes="AdditionalAttributes"
-        title="@(_copied ? CopiedTooltip : Tooltip)"
-        disabled="@(_copying)"
-        @onclick="HandleCopy">
-    @if (_copying)
-    {
-        <i class="fa-solid fa-spinner fa-spin text-xs"></i>
-    }
-    else if (_copied)
-    {
-        <i class="fa-solid fa-check text-xs"></i>
-        @if (ShowText)
+<button type="button" class="@CombineClasses($"{buttonClasses} {stateClasses}")" style="@Style" id="@Id"
+    @attributes="AdditionalAttributes" title="@(_copied? CopiedTooltip : Tooltip)" disabled="@(_copying)"
+    @onclick="HandleCopy">
+    <span class="bw-copy-btn-content">
+        @if (_copying)
         {
-            <span>@CopiedText</span>
+            <i class="fa-solid fa-spinner fa-spin text-xs"></i>
         }
-    }
-    else
-    {
-        <i class="@Icon text-xs"></i>
-        @if (ShowText)
+        else if (_copied)
         {
-            <span>@Text</span>
+            <i class="fa-solid fa-check text-xs"></i>
+            @if (ShowText)
+            {
+                <span>@CopiedText</span>
+            }
         }
-    }
+        else
+        {
+            <i class="@Icon text-xs"></i>
+            @if (ShowText)
+            {
+                <span>@Text</span>
+            }
+        }
+    </span>
 </button>
 
 @code {
 
     /// <summary>Text content to copy to clipboard</summary>
-    [Parameter][EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public string Content { get; set; } = "";
 
     /// <summary>Button color theme</summary>

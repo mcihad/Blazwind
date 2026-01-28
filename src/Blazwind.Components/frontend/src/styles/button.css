@@ -13,6 +13,24 @@
     box-shadow: 0 0 0 2px var(--bw-color-background), 0 0 0 4px var(--bw-color-primary);
 }
 
+/* Copy Button - prevent trembling on state change */
+.bw-copy-btn {
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.bw-copy-btn-content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 4.5rem;
+}
+
+.bw-copy-btn-content i {
+    width: 0.875rem;
+    text-align: center;
+}
+
 /* Size Variants */
 .bw-btn-small {
     @apply px-3 py-1.5 text-xs;

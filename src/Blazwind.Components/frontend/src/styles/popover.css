@@ -15,15 +15,40 @@
     border: 1px solid var(--bw-color-border);
     border-radius: var(--bw-radius-default);
     box-shadow: var(--bw-shadow-lg);
+    /* Ensure content is above arrow */
+    isolation: isolate;
 }
 
-/* Arrow */
+/* Arrow - positioned behind the content */
 .bw-popover-arrow {
     position: absolute;
     width: 0.75rem;
     height: 0.75rem;
     background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
     transform: rotate(45deg);
+    z-index: -1;
+}
+
+/* Hide the arrow edge that overlaps with content */
+.bw-popover-content[data-placement^="top"] .bw-popover-arrow {
+    border-top: none;
+    border-left: none;
+}
+
+.bw-popover-content[data-placement^="bottom"] .bw-popover-arrow {
+    border-bottom: none;
+    border-right: none;
+}
+
+.bw-popover-content[data-placement^="left"] .bw-popover-arrow {
+    border-bottom: none;
+    border-left: none;
+}
+
+.bw-popover-content[data-placement^="right"] .bw-popover-arrow {
+    border-top: none;
+    border-right: none;
 }
 
 /* Header */

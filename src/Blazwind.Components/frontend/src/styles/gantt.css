@@ -194,12 +194,13 @@
     position: sticky;
     left: 0;
     background-color: var(--bw-color-surface);
-    z-index: 35;
+    z-index: 40;
 }
 
 .bw-gantt-task-list-header {
     position: sticky;
     top: 0;
+    left: 0;
     background-color: var(--bw-color-surface-muted, #f3f4f6);
     border-bottom: 1px solid var(--bw-color-border);
     padding: 0 0.75rem;

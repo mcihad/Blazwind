@@ -37,8 +37,8 @@
     };
 
     var borderClass = hasError
-        ? "bw-input-error"
-        : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)]";
+    ? "bw-input-error"
+    : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)]";
 }
 
 <div class="@CombineClasses(marginClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -54,7 +54,7 @@
             </label>
             @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
             {
-                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
+                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
             }
         </div>
     }
@@ -69,10 +69,8 @@
                 @tag
                 @if (!IsDisabled && !IsReadOnly)
                 {
-                    <button type="button"
-                            class="bw-tag-remove"
-                            @onclick="() => RemoveTag(tagValue)"
-                            @onclick:stopPropagation="true">
+                    <button type="button" class="bw-tag-remove" @onclick="() => RemoveTag(tagValue)"
+                        @onclick:stopPropagation="true">
                         <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
                 }
@@ -82,12 +80,8 @@
         @* Input *@
         @if (!IsDisabled && !IsReadOnly && (!MaxTags.HasValue || Tags.Count < MaxTags))
         {
-            <input type="text"
-                   class="bw-tag-input"
-                   placeholder="@(Tags.Count == 0 ? Placeholder : "")"
-                   @bind="_inputValue"
-                   @bind:event="oninput"
-                   @onkeydown="HandleKeyDown"/>
+            <input type="text" class="bw-tag-input" placeholder="@(Tags.Count == 0 ? Placeholder : "")" @bind="_inputValue"
+                @bind:event="oninput" @bind:after="HandleInputAfter" @onkeydown="HandleKeyDown" />
         }
     </div>
 
@@ -142,7 +136,7 @@
 
     /// <summary>Keys that trigger tag addition</summary>
     [Parameter]
-    public string[] TriggerKeys { get; set; } = new[] { "Enter", "Tab", "," };
+    public string[] TriggerKeys { get; set; } = new[] { "Enter", "Tab" };
 
     [Parameter]
     public EventCallback<string> OnTagAdded { get; set; }
@@ -156,13 +150,40 @@
     protected override async Task HandleKeyDown(KeyboardEventArgs e)
     {
         await base.HandleKeyDown(e);
-        if (TriggerKeys.Contains(e.Key) && !string.IsNullOrWhiteSpace(_inputValue))
+
+        // Handle Enter key
+        if (e.Key == "Enter" && !string.IsNullOrWhiteSpace(_inputValue))
         {
-            await AddTag(_inputValue.Trim().TrimEnd(','));
+            await AddTag(_inputValue.Trim());
+            return;
+        }
+
+        // Handle Tab key
+        if (e.Key == "Tab" && !string.IsNullOrWhiteSpace(_inputValue))
+        {
+            await AddTag(_inputValue.Trim());
         }
         else if (e.Key == "Backspace" && string.IsNullOrEmpty(_inputValue) && Tags.Count > 0)
         {
             await RemoveTag(Tags.Last());
+        }
+    }
+
+    private async Task HandleInputAfter()
+    {
+        // Check for comma - add tag and clear the comma
+        if (_inputValue.Contains(','))
+        {
+            var parts = _inputValue.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var part in parts)
+            {
+                var trimmed = part.Trim();
+                if (!string.IsNullOrWhiteSpace(trimmed))
+                {
+                    await AddTag(trimmed);
+                }
+            }
+            _inputValue = "";
         }
     }
 

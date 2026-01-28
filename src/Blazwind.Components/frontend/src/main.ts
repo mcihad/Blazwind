@@ -34,6 +34,7 @@ import * as Tabs from './components/tabs';
 import * as Dropdown from './components/dropdown';
 import * as Toolbar from './components/toolbar';
 import * as Theme from './theme';
+import * as MaskedInput from './components/maskedInput';
 
 
 // Expose modules globally for JSInterop
@@ -70,6 +71,7 @@ declare global {
             Dropdown: typeof Dropdown;
             Toolbar: typeof Toolbar;
             Theme: typeof Theme;
+            MaskedInput: typeof MaskedInput;
         };
     }
 }
@@ -104,8 +106,9 @@ window.Blazwind = {
     Tabs,
     Dropdown,
     Toolbar,
-    Theme
+    Theme,
+    MaskedInput
 };
 
-export { Toast, Dialog, Nav, Sidebar, List, Drawer, ContextMenu, CommandPalette as commandPalette, Confetti as confetti, Calendar, SplitPanel, VirtualScroll, InfiniteScroll, ColumnDrag, ColumnResize, QRCode, RangeBrush, RangeSlider, SignaturePad, Barcode, OrgChart, Printable, Workflow, Gantt, DocumentViewer, Tour, Tabs, Dropdown, Toolbar, Theme };
+export { Toast, Dialog, Nav, Sidebar, List, Drawer, ContextMenu, CommandPalette as commandPalette, Confetti as confetti, Calendar, SplitPanel, VirtualScroll, InfiniteScroll, ColumnDrag, ColumnResize, QRCode, RangeBrush, RangeSlider, SignaturePad, Barcode, OrgChart, Printable, Workflow, Gantt, DocumentViewer, Tour, Tabs, Dropdown, Toolbar, Theme, MaskedInput };
 

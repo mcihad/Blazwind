@@ -1,7 +1,10 @@
 @namespace Blazwind.Components.Input
 @using Blazwind.Components.HelpTooltip
 @using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBaseInput<string>
+@implements IAsyncDisposable
+@inject IJSRuntime JS
 
 @{
     var sizeClass = Size switch
@@ -34,24 +37,15 @@
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                     {
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
                     }
                 </div>
             }
 
             <div class="relative">
-                <input type="text"
-                       class="@baseClass @sizeClass @stateClass @disabledClass"
-                       placeholder="@GetPlaceholder()"
-                       value="@_displayValue"
-                       maxlength="@_activeMask.Length"
-                       disabled="@IsDisabled"
-                       readonly="@IsReadOnly"
-                       @oninput="HandleInput"
-                       @onkeydown="HandleKeyDownEvent"
-                       @onfocus="HandleFocusEvent"
-                       @onblur="HandleBlurEvent"
-                       @attributes="AdditionalAttributes"/>
+                <input @ref="_inputRef" type="text" id="@_inputId" class="@baseClass @sizeClass @stateClass @disabledClass"
+                    placeholder="@GetPlaceholder()" disabled="@IsDisabled" readonly="@IsReadOnly" @onfocus="HandleFocusEvent"
+                    @onblur="HandleBlurEvent" @attributes="AdditionalAttributes" />
             </div>
             break;
 
@@ -59,8 +53,7 @@
             <div class="flex items-start gap-3">
                 @if (HasLabel)
                 {
-                    <div class="flex items-center gap-1 pt-2.5 shrink-0"
-                         style="width: @LabelWidth; min-width: @LabelWidth;">
+                    <div class="flex items-center gap-1 pt-2.5 shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
                         <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
@@ -70,41 +63,23 @@
                         </label>
                         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                         {
-                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
                         }
                     </div>
                 }
                 <div class="flex-1 relative">
-                    <input type="text"
-                           class="@baseClass @sizeClass @stateClass @disabledClass"
-                           placeholder="@GetPlaceholder()"
-                           value="@_displayValue"
-                           maxlength="@_activeMask.Length"
-                           disabled="@IsDisabled"
-                           readonly="@IsReadOnly"
-                           @oninput="HandleInput"
-                           @onkeydown="HandleKeyDownEvent"
-                           @onfocus="HandleFocusEvent"
-                           @onblur="HandleBlurEvent"
-                           @attributes="AdditionalAttributes"/>
+                    <input @ref="_inputRef" type="text" id="@_inputId" class="@baseClass @sizeClass @stateClass @disabledClass"
+                        placeholder="@GetPlaceholder()" disabled="@IsDisabled" readonly="@IsReadOnly"
+                        @onfocus="HandleFocusEvent" @onblur="HandleBlurEvent" @attributes="AdditionalAttributes" />
                 </div>
             </div>
             break;
 
         default:
             <div class="relative">
-                <input type="text"
-                       class="@baseClass @sizeClass @stateClass @disabledClass"
-                       placeholder="@GetPlaceholder()"
-                       value="@_displayValue"
-                       maxlength="@_activeMask.Length"
-                       disabled="@IsDisabled"
-                       readonly="@IsReadOnly"
-                       @oninput="HandleInput"
-                       @onkeydown="HandleKeyDownEvent"
-                       @onfocus="HandleFocusEvent"
-                       @onblur="HandleBlurEvent"
-                       @attributes="AdditionalAttributes"/>
+                <input @ref="_inputRef" type="text" id="@_inputId" class="@baseClass @sizeClass @stateClass @disabledClass"
+                    placeholder="@GetPlaceholder()" disabled="@IsDisabled" readonly="@IsReadOnly" @onfocus="HandleFocusEvent"
+                    @onblur="HandleBlurEvent" @attributes="AdditionalAttributes" />
             </div>
             break;
     }
@@ -141,19 +116,105 @@
     [Parameter]
     public bool UnmaskValue { get; set; } = true;
 
+    /// <summary>Override UnmaskValue per preset. Phone/CreditCard return raw, Date/Time return formatted.</summary>
+    [Parameter]
+    public bool? ForceUnmask { get; set; }
+
     /// <summary>Triggered when Enter key is pressed</summary>
     [Parameter]
     public EventCallback OnEnter { get; set; }
 
-    private string _displayValue = "";
+    private ElementReference _inputRef;
+    private string _inputId = $"bw-masked-{Guid.NewGuid():N}";
+    private DotNetObjectReference<BwMaskedInput>? _dotNetRef;
+    private bool _isInitialized;
     private string _activeMask = "";
-    private int _maxRawLength;
+    private bool _effectiveUnmask;
+    private string? _previousValue;
 
     protected override void OnParametersSet()
     {
         _activeMask = Preset.HasValue ? GetPresetMask(Preset.Value) : Mask;
-        _maxRawLength = _activeMask.Count(c => c == '#' || c == 'A' || c == '*');
-        UpdateDisplayValue();
+
+        // Determine effective unmask setting
+        if (ForceUnmask.HasValue)
+        {
+            _effectiveUnmask = ForceUnmask.Value;
+        }
+        else if (Preset.HasValue)
+        {
+            // Date and Time should return formatted by default
+            _effectiveUnmask = Preset.Value switch
+            {
+                BwMaskPreset.Date => false,
+                BwMaskPreset.Time => false,
+                _ => true // Phone, CreditCard, IBAN return raw
+            };
+        }
+        else
+        {
+            _effectiveUnmask = UnmaskValue;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await InitializeMaskedInput();
+            _isInitialized = true;
+        }
+        else if (_isInitialized && Value != _previousValue)
+        {
+            // Value changed from outside, update the input
+            await SetValueFromDotNet(Value ?? "");
+        }
+        _previousValue = Value;
+    }
+
+    private async Task InitializeMaskedInput()
+    {
+        var presetName = Preset?.ToString().ToLowerInvariant() ?? "";
+
+        // Map C# preset names to TypeScript preset names
+        var tsPreset = Preset switch
+        {
+            BwMaskPreset.Phone => "phone",
+            BwMaskPreset.CreditCard => "creditcard",
+            BwMaskPreset.Date => "date",
+            BwMaskPreset.Time => "time",
+            BwMaskPreset.Iban => "iban-tr",
+            _ => ""
+        };
+
+        var options = new
+        {
+            mask = string.IsNullOrEmpty(tsPreset) ? _activeMask : "",
+            preset = tsPreset,
+            placeholder = MaskChar.ToString(),
+            returnMasked = !_effectiveUnmask
+        };
+
+        await JS.InvokeVoidAsync("Blazwind.MaskedInput.initialize", _inputId, _dotNetRef, options);
+
+        // Set initial value if exists
+        if (!string.IsNullOrEmpty(Value))
+        {
+            await SetValueFromDotNet(Value);
+        }
+    }
+
+    private async Task SetValueFromDotNet(string value)
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("Blazwind.MaskedInput.setValue", _inputId, value);
+        }
+        catch
+        {
+            // Ignore if not initialized
+        }
     }
 
     private string GetPresetMask(BwMaskPreset preset)
@@ -169,44 +230,6 @@
         };
     }
 
-    private void UpdateDisplayValue()
-    {
-        if (string.IsNullOrEmpty(_activeMask))
-        {
-            _displayValue = Value ?? "";
-            return;
-        }
-
-        var rawValue = Value ?? "";
-        var result = "";
-        var rawIndex = 0;
-
-        foreach (var maskChar in _activeMask)
-        {
-            if (maskChar == '#' || maskChar == 'A' || maskChar == '*')
-            {
-                if (rawIndex < rawValue.Length)
-                {
-                    result += rawValue[rawIndex];
-                    rawIndex++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else
-            {
-                if (rawIndex < rawValue.Length || (rawIndex > 0 && rawIndex <= rawValue.Length))
-                {
-                    result += maskChar;
-                }
-            }
-        }
-
-        _displayValue = result;
-    }
-
     private string GetPlaceholder()
     {
         if (!string.IsNullOrEmpty(Placeholder)) return Placeholder;
@@ -214,101 +237,31 @@
         return _activeMask.Replace('#', MaskChar).Replace('A', MaskChar).Replace('*', MaskChar);
     }
 
-    private async Task HandleInput(ChangeEventArgs e)
+    /// <summary>Called from TypeScript when value changes</summary>
+    [JSInvokable]
+    public async Task OnValueChanged(string formattedValue, string rawValue)
     {
-        var input = e.Value?.ToString() ?? "";
-        var rawValue = "";
+        var newValue = _effectiveUnmask ? rawValue : formattedValue;
 
-        foreach (var ch in input)
+        if (Value != newValue)
         {
-            if (rawValue.Length >= _maxRawLength) break;
+            Value = newValue;
+            _previousValue = newValue;
+            await ValueChanged.InvokeAsync(Value);
+            await OnChange.InvokeAsync(Value);
 
-            var maskIndex = GetMaskIndexForRawPosition(rawValue.Length);
-            if (maskIndex < 0 || maskIndex >= _activeMask.Length) break;
-
-            var expectedMask = _activeMask[maskIndex];
-
-            if (expectedMask == '#' && char.IsDigit(ch))
+            if (CascadedEditContext != null && For != null)
             {
-                rawValue += ch;
+                CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
             }
-            else if (expectedMask == 'A' && char.IsLetter(ch))
-            {
-                rawValue += char.ToUpper(ch);
-            }
-            else if (expectedMask == '*' && char.IsLetterOrDigit(ch))
-            {
-                rawValue += ch;
-            }
-        }
-
-        // Set Value based on UnmaskValue parameter
-        if (UnmaskValue)
-        {
-            Value = rawValue;
-        }
-        else
-        {
-            // Build formatted value with mask literals
-            Value = BuildFormattedValue(rawValue);
-        }
-
-        await ValueChanged.InvokeAsync(Value);
-        await OnChange.InvokeAsync(Value);
-        UpdateDisplayValue();
-
-        if (CascadedEditContext != null && For != null)
-        {
-            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
         }
     }
 
-    private string BuildFormattedValue(string rawValue)
+    /// <summary>Called from TypeScript when Enter key is pressed</summary>
+    [JSInvokable]
+    public async Task OnEnterPressed()
     {
-        if (string.IsNullOrEmpty(_activeMask) || string.IsNullOrEmpty(rawValue))
-            return rawValue;
-
-        var result = "";
-        var rawIndex = 0;
-
-        foreach (var maskChar in _activeMask)
-        {
-            if (rawIndex >= rawValue.Length) break;
-
-            if (maskChar == '#' || maskChar == 'A' || maskChar == '*')
-            {
-                result += rawValue[rawIndex];
-                rawIndex++;
-            }
-            else
-            {
-                result += maskChar;
-            }
-        }
-
-        return result;
-    }
-
-    private int GetMaskIndexForRawPosition(int rawPosition)
-    {
-        var rawCount = 0;
-        for (var i = 0; i < _activeMask.Length; i++)
-        {
-            var c = _activeMask[i];
-            if (c == '#' || c == 'A' || c == '*')
-            {
-                if (rawCount == rawPosition) return i;
-                rawCount++;
-            }
-        }
-
-        return -1;
-    }
-
-    private async Task HandleKeyDownEvent(KeyboardEventArgs e)
-    {
-        await HandleKeyDown(e);
-        if (e.Key == "Enter" && OnEnter.HasDelegate)
+        if (OnEnter.HasDelegate)
         {
             await OnEnter.InvokeAsync();
         }
@@ -326,4 +279,19 @@
         await HandleBlur(e);
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        if (_isInitialized)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("Blazwind.MaskedInput.destroy", _inputId);
+            }
+            catch
+            {
+                // Ignore disposal errors
+            }
+        }
+        _dotNetRef?.Dispose();
+    }
 }

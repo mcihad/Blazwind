@@ -313,6 +313,10 @@
     padding-right: 2.5rem;
 }
 
+.dark .bw-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
 .bw-select:hover:not(:disabled) {
     border-color: var(--bw-color-border-strong);
 }
@@ -326,6 +330,64 @@
     background-color: var(--bw-color-surface-muted);
     color: var(--bw-color-text-muted);
     cursor: not-allowed;
+}
+
+/* Select option styling */
+.bw-select option {
+    background-color: var(--bw-color-surface);
+    color: var(--bw-input-text);
+}
+
+.bw-select option:checked {
+    background-color: var(--bw-color-primary);
+    color: white;
+}
+
+/* Select option hover - Note: limited browser support */
+.bw-select option:hover {
+    background-color: var(--bw-color-primary-soft-bg);
+}
+
+/* ========== Date/Time Picker Dark Mode ========== */
+input[type="date"].bw-input,
+input[type="time"].bw-input,
+input[type="datetime-local"].bw-input {
+    color-scheme: light;
+}
+
+.dark input[type="date"].bw-input,
+.dark input[type="time"].bw-input,
+.dark input[type="datetime-local"].bw-input {
+    color-scheme: dark;
+}
+
+/* Calendar/Time picker icon styling */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Dark mode - invert the calendar/time picker icon */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator:hover,
+.dark input[type="time"]::-webkit-calendar-picker-indicator:hover,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
 }
 
 /* ========== Checkbox ========== */
@@ -680,6 +742,10 @@
     cursor: pointer;
     opacity: 0.7;
     transition: opacity 0.15s;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
 }
 
 .bw-tag-remove:hover {
@@ -691,9 +757,16 @@
     min-width: 5rem;
     border: none;
     outline: none;
+    box-shadow: none;
     background: transparent;
     font-size: 0.875rem;
     color: var(--bw-input-text);
+}
+
+/* Remove any inner focus ring */
+.bw-tag-input:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 .bw-tag-input::placeholder {

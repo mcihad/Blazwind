@@ -130,7 +130,7 @@
                         }
                         else if (EnableSorting && column.Sortable)
                         {
-                            <button type="button" class="flex items-center gap-2 hover:text-gray-900 transition-colors"
+                            <button type="button" class="bw-table-sort-btn"
                                     @onclick="() => HandleSort(column)">
                                 <span>@column.Title</span>
                                 <i

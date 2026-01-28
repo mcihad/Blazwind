@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main, master ]
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   deploy-to-github-pages:
     runs-on: ubuntu-latest
@@ -34,3 +38,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: release/wwwroot
+          single-commit: true
