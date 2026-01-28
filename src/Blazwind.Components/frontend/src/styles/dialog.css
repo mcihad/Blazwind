@@ -90,6 +90,28 @@
     border-color: var(--bw-info-800);
 }
 
+/* Secondary */
+.bw-dialog-header-secondary {
+    background-color: var(--bw-gray-50);
+    border-color: var(--bw-gray-200);
+}
+
+.dark .bw-dialog-header-secondary {
+    background-color: var(--bw-gray-800);
+    border-color: var(--bw-gray-700);
+}
+
+/* Dark */
+.bw-dialog-header-dark {
+    background-color: var(--bw-gray-900);
+    border-color: var(--bw-gray-950);
+}
+
+.bw-dialog-header-dark .bw-dialog-title,
+.bw-dialog-header-dark .bw-dialog-close {
+    color: var(--bw-color-text-inverse);
+}
+
 /* Header Variants (Text) */
 .bw-dialog-title-success {
     color: var(--bw-color-success);
@@ -105,6 +127,14 @@
 
 .bw-dialog-title-info {
     color: var(--bw-color-info);
+}
+
+.bw-dialog-title-primary {
+    color: var(--bw-color-primary);
+}
+
+.bw-dialog-title-default {
+    color: var(--bw-color-text);
 }
 
 /* --- Inner Content Variants (Input/Message Dialogs) --- */
@@ -227,6 +257,38 @@
     100% {
         opacity: 1;
     }
+}
+
+
+/* --- Text Helpers --- */
+.bw-dialog-text-primary {
+    color: var(--bw-color-text);
+}
+
+.bw-dialog-text-secondary {
+    color: var(--bw-color-text-secondary);
+}
+
+/* --- Input Styling (Theme Aware) --- */
+.bw-dialog-label {
+    @apply block text-xs font-semibold mb-1.5 ml-0.5 uppercase tracking-wide;
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-dialog-input {
+    @apply w-full px-4 py-2.5 text-sm border rounded outline-none transition-all;
+    background-color: var(--bw-input-bg, var(--bw-color-surface));
+    border-color: var(--bw-input-border, var(--bw-color-border));
+    color: var(--bw-color-text);
+}
+
+.bw-dialog-input:focus {
+    border-color: var(--bw-input-focus-border, var(--bw-color-primary));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--bw-color-primary) 15%, transparent);
+}
+
+.bw-dialog-input::placeholder {
+    color: var(--bw-color-text-muted);
 }
 
 

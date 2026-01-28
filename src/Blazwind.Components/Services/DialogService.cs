@@ -102,10 +102,10 @@ public class DialogService
     }
 
     /// <summary>Show a loading dialog</summary>
-    public async Task<LoadingHandle> ShowLoadingAsync(string? message = null)
+    public async Task<LoadingHandle> ShowLoadingAsync(string title = "Loading", string? message = null)
     {
         var closeFunc =
-            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showLoading", new { Message = message });
+            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showLoading", new { Title = title, Message = message });
         return new LoadingHandle(closeFunc);
     }
 
@@ -118,17 +118,17 @@ public class DialogService
     }
 
     /// <summary>Show a busy dialog (Blocking full screen)</summary>
-    public async Task<LoadingHandle> ShowBusyAsync(string? message = null)
+    public async Task<LoadingHandle> ShowBusyAsync(string title = "Operation in Progress", string? message = null)
     {
         var closeFunc =
-            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showBusy", new { Message = message });
+            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showBusy", new { Title = title, Message = message });
         return new LoadingHandle(closeFunc);
     }
 
     /// <summary>Execute a task while showing busy indicator. Automatically closes when task finishes.</summary>
-    public async Task BusyAsync(Func<Task> work, string? message = null)
+    public async Task BusyAsync(Func<Task> work, string title = "Operation in Progress", string? message = null)
     {
-        var handle = await ShowBusyAsync(message);
+        var handle = await ShowBusyAsync(title, message);
         try
         {
             await work();

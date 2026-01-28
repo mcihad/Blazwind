@@ -432,7 +432,7 @@
 
     private async Task ShowLoading()
     {
-        var handle = await DialogService.ShowLoadingAsync("Processing...");
+        var handle = await DialogService.ShowLoadingAsync("Processing...", "Please wait while we process your request...");
         await Task.Delay(3000);
         await handle.CloseAsync();
     }
@@ -447,7 +447,7 @@
     private async Task ShowBusy()
     {
         // BusyAsync blocks UI until task completes
-        await DialogService.BusyAsync(async () => { await Task.Delay(4000); }, "Critical Database Operation (Blocking)...");
+        await DialogService.BusyAsync(async () => { await Task.Delay(4000); }, "Database Update", "Critical Database Operation (Blocking)...");
 
         await ToastService.SuccessAsync("Operation completed!");
     }

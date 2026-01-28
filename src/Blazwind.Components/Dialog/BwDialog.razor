@@ -29,7 +29,18 @@
         BwColor.Danger => "bw-dialog-title-danger",
         BwColor.Warning => "bw-dialog-title-warning",
         BwColor.Info => "bw-dialog-title-info",
-        _ => ""
+        BwColor.Primary => "bw-dialog-title-primary",
+        _ => "bw-dialog-title-default" 
+    };
+
+    var titleSizeClass = TitleSize switch
+    {
+        BwSize.ExtraSmall => "text-sm",
+        BwSize.Small => "text-base",
+        BwSize.Medium => "text-lg",
+        BwSize.Large => "text-xl",
+        BwSize.ExtraLarge => "text-2xl",
+        _ => "text-lg"
     };
 }
 
@@ -52,7 +63,7 @@
             @* Header *@
             <div id="@handleId"
                  class="bw-dialog-header @headerVariantClass @draggableClass">
-                <h3 class="bw-dialog-title @headerTextClass">@Title</h3>
+                <h3 class="bw-dialog-title @headerTextClass @titleSizeClass">@Title</h3>
 
                 @if (ShowClose)
                 {

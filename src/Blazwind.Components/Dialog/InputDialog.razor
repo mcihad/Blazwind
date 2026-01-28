@@ -10,20 +10,20 @@
                 @((MarkupString)GetIconHtml())
             </div>
             <div class="flex-1 min-w-0">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">@Title</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty mb-4">@Message</p>
+                <h3 class="@TitleSizeClass font-bold bw-dialog-text-primary mb-2 leading-tight">@Title</h3>
+                <p class="text-sm bw-dialog-text-secondary leading-relaxed text-pretty mb-4">@Message</p>
 
                 @* Input placed properly within the flow *@
                 <div class="w-full">
                     @if (!string.IsNullOrEmpty(Placeholder))
                     {
                         <label for="dialog-input-razor"
-                               class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5 uppercase tracking-wide">
+                               class="bw-dialog-label">
                             @Placeholder
                         </label>
                     }
                     <input type="@InputType"
-                           class="w-full px-4 py-2.5 text-sm border border-gray-300 dark:border-gray-600 rounded focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-500/30 outline-none transition-all placeholder-gray-400 dark:placeholder-gray-500 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-700"
+                           class="bw-dialog-input"
                            placeholder="@Placeholder"
                            value="@_value"
                            @onchange="@(e => _value = e.Value?.ToString() ?? "")"
@@ -100,6 +100,16 @@
             _ => $"<i class=\"fa-solid fa-circle-info {iconClass} bw-icon-info\"></i>"
         };
     }
+
+    private string TitleSizeClass => (DialogInstance.Options.TitleSize ?? BwSize.Medium) switch
+    {
+        BwSize.ExtraSmall => "text-sm",
+        BwSize.Small => "text-base",
+        BwSize.Medium => "text-lg",
+        BwSize.Large => "text-xl",
+        BwSize.ExtraLarge => "text-2xl",
+        _ => "text-lg"
+    };
 
     private void Confirm()
     {

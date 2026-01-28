@@ -9,8 +9,8 @@
                 @((MarkupString)GetIconHtml())
             </div>
             <div class="flex-1 min-w-0">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 leading-tight">@Title</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">@Message</p>
+                <h3 class="@TitleSizeClass font-bold bw-dialog-text-primary mb-2 leading-tight">@Title</h3>
+                <p class="text-sm bw-dialog-text-secondary leading-relaxed text-pretty">@Message</p>
             </div>
         </div>
 
@@ -68,6 +68,16 @@
             _ => "<i class=\"fa-solid fa-circle-info bw-icon-info\"></i>"
         };
     }
+
+    private string TitleSizeClass => (DialogInstance.Options.TitleSize ?? BwSize.Medium) switch
+    {
+        BwSize.ExtraSmall => "text-sm",
+        BwSize.Small => "text-base",
+        BwSize.Medium => "text-lg",
+        BwSize.Large => "text-xl",
+        BwSize.ExtraLarge => "text-2xl",
+        _ => "text-lg"
+    };
 
     private void Confirm()
     {
