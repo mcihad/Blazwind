@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blazwind Examples</title>
+    <base href="/Blazwind/" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="_content/Blazwind.Components/blazwind.css" rel="stylesheet" />
+    <link href="app.css" rel="stylesheet" />
+    <link href="Blazwind.Docs.styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <style>
+            .loading-container {
+                position: fixed;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background-color: #f9fafb;
+                z-index: 9999;
+                font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            }
+
+            .dark .loading-container {
+                background-color: #111827;
+            }
+
+            .logo-animation {
+                position: relative;
+                width: 80px;
+                height: 80px;
+                margin-bottom: 24px;
+            }
+
+            .logo-circle {
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                border: 4px solid rgba(59, 130, 246, 0.1);
+            }
+
+            .logo-arc {
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                border: 4px solid transparent;
+                border-top-color: #2563EB;
+                animation: spin 1s linear infinite;
+            }
+
+            .logo-inner {
+                position: absolute;
+                inset: 16px;
+                background: #eff6ff;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+
+            .dark .logo-inner {
+                background: #1f2937;
+            }
+
+            .logo-icon {
+                font-size: 24px;
+                color: #2563EB;
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            .loading-text {
+                font-size: 16px;
+                font-weight: 600;
+                color: #374151;
+                letter-spacing: -0.01em;
+                animation: fade 2s ease-in-out infinite;
+            }
+
+            .dark .loading-text {
+                color: #D1D5DB;
+            }
+
+            .loading-bar-bg {
+                width: 200px;
+                height: 4px;
+                background: #E5E7EB;
+                border-radius: 2px;
+                margin-top: 16px;
+                overflow: hidden;
+            }
+
+            .dark .loading-bar-bg {
+                background: #374151;
+            }
+
+            .loading-bar {
+                height: 100%;
+                background: #2563EB;
+                width: 50%;
+                animation: progress 1.5s ease-in-out infinite;
+                transform-origin: left;
+            }
+
+            .loading-progress-text {
+                margin-top: 8px;
+                font-size: 12px;
+                color: #6B7280;
+                font-variant-numeric: tabular-nums;
+            }
+
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+
+                50% {
+                    transform: scale(0.9);
+                    opacity: 0.8;
+                }
+            }
+
+            @keyframes progress {
+                0% {
+                    transform: translateX(-100%);
+                }
+
+                50% {
+                    transform: translateX(0);
+                }
+
+                100% {
+                    transform: translateX(100%);
+                }
+            }
+        </style>
+        <div class="loading-container">
+            <div class="logo-animation">
+                <div class="logo-circle"></div>
+                <div class="logo-arc"></div>
+                <div class="logo-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="logo-icon">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="loading-text">Blazwind Examples</div>
+            <div class="loading-bar-bg">
+                <div class="loading-bar"></div>
+            </div>
+            <div class="loading-progress-text">Loading resources...</div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/Blazwind.Components/blazwind.js"></script>
+    <script>
+        // Initialize theme system immediately after blazwind.js loads
+        if (window.Blazwind && window.Blazwind.Theme) {
+            console.log('[Blazwind] Theme module loaded, initializing...');
+            window.Blazwind.Theme.initialize();
+        } else {
+            console.error('[Blazwind] Theme module not found!');
+        }
+    </script>
+</body>
+
+</html>

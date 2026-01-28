@@ -1,0 +1,284 @@
+/* ========================================
+   Blazwind Examples - App Styles
+   Kurumsal Modernizm Tasarım Dili
+   ======================================== */
+
+/* CSS Custom Properties */
+:root {
+    /* Ana Renkler */
+    --color-primary: #0055AA;
+    --color-primary-dark: #004488;
+    --color-primary-light: #0077CC;
+
+    --color-secondary: #64748B;
+    --color-secondary-dark: #475569;
+    --color-secondary-light: #94A3B8;
+
+    /* Durum Renkleri */
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+    --color-info: #3B82F6;
+
+    /* Nötr Tonlar */
+    --color-background: #F9FAFB;
+    --color-surface: #FFFFFF;
+    --color-text: #111827;
+    --color-text-secondary: #6B7280;
+    --color-border: #E5E7EB;
+
+    /* Sidebar */
+    --sidebar-width: 260px;
+    --appbar-height: 56px;
+
+    /* Border Radius (max 4px) */
+    --radius-sm: 2px;
+    --radius-md: 4px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Base Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout */
+.app-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.sidebar-logo i {
+    font-size: 24px;
+}
+
+.sidebar-search {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    background-color: var(--color-background);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 85, 170, 0.1);
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+/* Tree Navigation */
+.nav-group {
+    margin-bottom: 4px;
+}
+
+.nav-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s;
+}
+
+.nav-group-header:hover {
+    background-color: var(--color-background);
+}
+
+.nav-group-header i {
+    font-size: 10px;
+    transition: transform 0.2s;
+}
+
+.nav-group.expanded .nav-group-header i {
+    transform: rotate(90deg);
+}
+
+.nav-group-items {
+    display: none;
+    padding-left: 8px;
+}
+
+.nav-group.expanded .nav-group-items {
+    display: block;
+}
+
+.nav-item {
+    display: block;
+    padding: 6px 16px 6px 24px;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+    margin: 0 8px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-item:hover {
+    background-color: var(--color-background);
+    color: var(--color-primary);
+}
+
+.nav-item.active {
+    background-color: rgba(0, 85, 170, 0.1);
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* AppBar */
+.appbar {
+    height: var(--appbar-height);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    flex-shrink: 0;
+}
+
+.appbar-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.appbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* Focus Styles */
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary-light);
+}
+
+/* Blazor Error UI */
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 24px;
+    background-color: var(--color-danger);
+    color: white;
+    z-index: 9999;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    margin-left: 16px;
+}
