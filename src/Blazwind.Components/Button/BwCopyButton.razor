@@ -6,10 +6,14 @@
 @inject IJSRuntime JS
 
 @{
+    var colorName = Color.ToString().ToLower();
     var buttonClasses = "bw-btn bw-btn-small transition-all";
+    var defaultClass = Variant == BwVariant.Filled 
+        ? $"bw-btn-filled-{colorName}" 
+        : $"bw-btn-outline-{colorName}";
     var stateClasses = _copied 
         ? "bw-btn-filled-success" // Copied state: success
-        : "bw-btn-outline-secondary hover:bg-gray-100 dark:hover:bg-gray-800"; // Default: secondary outline
+        : defaultClass;
 }
 
 <button type="button"
@@ -45,6 +49,12 @@
 @code {
     /// <summary>Text content to copy to clipboard</summary>
     [Parameter, EditorRequired] public string Content { get; set; } = "";
+    
+    /// <summary>Button color theme</summary>
+    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
+    
+    /// <summary>Button variant (Filled or Outline)</summary>
+    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
     
     /// <summary>Button text</summary>
     [Parameter] public string Text { get; set; } = "Kopyala";

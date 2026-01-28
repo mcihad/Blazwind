@@ -8,29 +8,19 @@
 @implements IAsyncDisposable
 @inherits BwBase
 
-<div class="@CombineClasses("bw-tree-select relative")" style="@Style" @ref="_containerRef" id="@_componentId" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-tree-select relative")" style="@Style" @ref="_containerRef" id="@_componentId"
+    @attributes="AdditionalAttributes">
     <div @onclick="ToggleDropdown" class="cursor-pointer">
-        <BwInput Placeholder="@Placeholder"
-                 Label="@Label"
-                 IconRight="fa-solid fa-chevron-down"
-                 Size="Size"
-                 Value="@DisplayValue"
-                 IsReadOnly="true"
-                 Class="pointer-events-none" />
+        <BwInput Placeholder="@Placeholder" Label="@Label" IconRight="fa-solid fa-chevron-down" Size="Size"
+            Value="@DisplayValue" IsReadOnly="true" Class="pointer-events-none" />
     </div>
-    
+
     @if (_isOpen)
     {
-        <div class="absolute top-full left-0 right-0 z-[1000] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg max-h-[300px] overflow-y-auto p-2 mt-1 text-gray-800 dark:text-gray-100">
-            <BwTree TItem="TItem"
-                    Nodes="Nodes"
-                    SelectionMode="SelectionMode"
-                    Selectable="true"
-                    CascadeSelection="CascadeSelection"
-                    ShowSearch="ShowSearch"
-                    @bind-SelectedNodes="SelectedNodes"
-                    ClickedNode="ClickedNode"
-                    OnNodeClick="HandleNodeSelected" />
+        <div class="bw-tree-select-dropdown">
+            <BwTree TItem="TItem" Nodes="Nodes" SelectionMode="SelectionMode" Selectable="true"
+                CascadeSelection="CascadeSelection" ShowSearch="ShowSearch" @bind-SelectedNodes="SelectedNodes"
+                ClickedNode="ClickedNode" OnNodeClick="HandleNodeSelected" />
         </div>
     }
 </div>
@@ -43,80 +33,80 @@
     [Parameter] public bool CascadeSelection { get; set; } = false;
     [Parameter] public bool ShowSearch { get; set; } = true;
     [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    
+
     [Parameter] public List<TreeNode<TItem>> SelectedNodes { get; set; } = new();
     [Parameter] public EventCallback<List<TreeNode<TItem>>> SelectedNodesChanged { get; set; }
-    
+
     [Parameter] public TreeNode<TItem>? ClickedNode { get; set; }
     [Parameter] public EventCallback<TreeNode<TItem>> ClickedNodeChanged { get; set; }
-    
+
     private bool _isOpen = false;
     private ElementReference _containerRef;
     private string _componentId = null!;
     private DotNetObjectReference<BwTreeSelect<TItem>>? _dotNetRef;
-    
+
     // Removed Class parameter (inherited)
-    
+
     protected override void OnInitialized()
     {
         _componentId = Id ?? $"bw-treeselect-{Guid.NewGuid():N}";
     }
-    
+
     private string DisplayValue => SelectionMode == BwSelectionMode.None
-        ? ClickedNode?.Title ?? ""
-        : SelectedNodes.Count > 0
-            ? string.Join(", ", SelectedNodes.Select(n => n.Title))
-            : "";
-    
+    ? ClickedNode?.Title ?? ""
+    : SelectedNodes.Count > 0
+    ? string.Join(", ", SelectedNodes.Select(n => n.Title))
+    : "";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("eval", $@"
-                window['bwTreeSelectClose_{_componentId}'] = function(dotNetRef) {{
-                    document.addEventListener('mousedown', function handler(e) {{
-                        var container = document.getElementById('{_componentId}');
-                        if (container && !container.contains(e.target)) {{
-                            dotNetRef.invokeMethodAsync('CloseFromJs');
-                            document.removeEventListener('mousedown', handler);
-                        }}
-                    }});
-                }};
-            ");
+window['bwTreeSelectClose_{_componentId}'] = function(dotNetRef) {{
+document.addEventListener('mousedown', function handler(e) {{
+var container = document.getElementById('{_componentId}');
+if (container && !container.contains(e.target)) {{
+dotNetRef.invokeMethodAsync('CloseFromJs');
+document.removeEventListener('mousedown', handler);
+}}
+}});
+}};
+");
         }
     }
-    
+
     private async Task ToggleDropdown()
     {
         _isOpen = !_isOpen;
-        
+
         if (_isOpen && _dotNetRef != null)
         {
             await JS.InvokeVoidAsync("eval", $"window['bwTreeSelectClose_{_componentId}']({{}})");
             await JS.InvokeVoidAsync($"bwTreeSelectClose_{_componentId}", _dotNetRef);
         }
     }
-    
+
     [JSInvokable]
     public void CloseFromJs()
     {
         _isOpen = false;
         InvokeAsync(StateHasChanged);
     }
-    
+
     private async Task HandleNodeSelected(TreeNode<TItem> node)
     {
         ClickedNode = node;
         await ClickedNodeChanged.InvokeAsync(node);
-        
+
         // Close dropdown only for single selection without checkbox/radio
         if (SelectionMode == BwSelectionMode.None)
         {
             _isOpen = false;
         }
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         _dotNetRef?.Dispose();

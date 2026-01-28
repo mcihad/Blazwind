@@ -4,4 +4,59 @@
 
 .bw-chart {
     background-color: transparent;
+    border-radius: var(--bw-radius-default);
+}
+
+/* Chart container with border */
+.bw-chart-bordered {
+    border: 1px solid var(--bw-color-border);
+    padding: 1rem;
+    background-color: var(--bw-color-surface);
+}
+
+/* Chart title */
+.bw-chart-title {
+    color: var(--bw-color-text);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+/* Chart subtitle */
+.bw-chart-subtitle {
+    color: var(--bw-color-text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Chart legend text */
+.bw-chart-legend {
+    color: var(--bw-color-text-secondary);
+}
+
+/* Chart axis labels */
+.bw-chart-axis-label {
+    color: var(--bw-color-text-secondary);
+}
+
+/* Chart tooltip */
+.bw-chart-tooltip {
+    background-color: var(--bw-color-surface);
+    border: 1px solid var(--bw-color-border);
+    color: var(--bw-color-text);
+    box-shadow: var(--bw-shadow-lg);
+}
+
+/* Chart loading overlay */
+.bw-chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bw-color-surface);
+    opacity: 0.8;
+}
+
+.bw-chart-loading-text {
+    color: var(--bw-color-text-muted);
+    font-size: 0.875rem;
 }

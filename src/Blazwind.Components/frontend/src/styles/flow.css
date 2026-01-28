@@ -64,3 +64,11 @@
     scroll-behavior: smooth;
     overscroll-behavior-x: contain;
 }
+
+/* Workflow Container */
+.bw-workflow-container {
+    width: 100%;
+    background-color: var(--bw-color-surface-hover);
+    border-radius: var(--bw-radius-default);
+    border: 1px solid var(--bw-color-border);
+}

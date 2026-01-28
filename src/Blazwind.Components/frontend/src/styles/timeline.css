@@ -38,12 +38,8 @@
     /* Start after the dot */
     bottom: 0;
     width: 2px;
-    background-color: #e5e7eb;
+    background-color: var(--bw-color-border);
     z-index: 0;
-}
-
-.dark .bw-timeline.vertical .bw-timeline-item:not(:last-child)::before {
-    background-color: #4b5563;
 }
 
 .bw-timeline.vertical.small .bw-timeline-item:not(:last-child)::before {
@@ -80,12 +76,8 @@
     left: 16px;
     right: 16px;
     height: 2px;
-    background-color: #e5e7eb;
+    background-color: var(--bw-color-border);
     z-index: 0;
-}
-
-.dark .bw-timeline.horizontal::before {
-    background-color: #4b5563;
 }
 
 .bw-timeline.horizontal.small::before {
@@ -108,12 +100,8 @@
     /* Just enough to cover the 2px line */
     left: -16px;
     right: 50%;
-    background-color: white;
+    background-color: var(--bw-color-background);
     z-index: 1;
-}
-
-.dark .bw-timeline.horizontal .bw-timeline-item:first-child::before {
-    background-color: #111827;
 }
 
 /* Hide horizontal line after last item */
@@ -126,12 +114,8 @@
     /* Just enough to cover the 2px line */
     left: 50%;
     right: -16px;
-    background-color: white;
+    background-color: var(--bw-color-background);
     z-index: 1;
-}
-
-.dark .bw-timeline.horizontal .bw-timeline-item:last-child::after {
-    background-color: #111827;
 }
 
 /* === Timeline Dot === */
@@ -144,17 +128,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #3b82f6;
-    color: white;
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-text-inverse);
     font-size: 14px;
     font-weight: 500;
-    box-shadow: 0 0 0 4px white;
+    box-shadow: 0 0 0 4px var(--bw-color-background);
     z-index: 2;
     transition: all 0.3s ease;
-}
-
-.dark .bw-timeline-dot {
-    box-shadow: 0 0 0 4px #111827;
 }
 
 .bw-timeline-dot:hover {
@@ -178,50 +158,42 @@
 
 /* Dot States */
 .bw-timeline-dot.completed {
-    background-color: #10b981;
+    background-color: var(--bw-color-success);
 }
 
 .bw-timeline-dot.active {
-    background-color: #3b82f6;
-    box-shadow: 0 0 0 4px white, 0 0 0 8px rgba(59, 130, 246, 0.2);
+    background-color: var(--bw-color-primary);
+    box-shadow: 0 0 0 4px var(--bw-color-background), 0 0 0 8px color-mix(in srgb, var(--bw-color-primary) 25%, transparent);
     animation: timeline-dot-pulse 2s ease-in-out infinite;
 }
 
-.dark .bw-timeline-dot.active {
-    box-shadow: 0 0 0 4px #111827, 0 0 0 8px rgba(59, 130, 246, 0.3);
-}
-
 .bw-timeline-dot.pending {
-    background-color: #9ca3af;
-}
-
-.dark .bw-timeline-dot.pending {
-    background-color: #4b5563;
+    background-color: var(--bw-color-text-muted);
 }
 
 /* Dot Variants */
 .bw-timeline-dot.primary {
-    background-color: #3b82f6;
+    background-color: var(--bw-color-primary);
 }
 
 .bw-timeline-dot.success {
-    background-color: #10b981;
+    background-color: var(--bw-color-success);
 }
 
 .bw-timeline-dot.warning {
-    background-color: #f59e0b;
+    background-color: var(--bw-color-warning);
 }
 
 .bw-timeline-dot.danger {
-    background-color: #ef4444;
+    background-color: var(--bw-color-danger);
 }
 
 .bw-timeline-dot.info {
-    background-color: #0ea5e9;
+    background-color: var(--bw-color-info);
 }
 
 .bw-timeline-dot.secondary {
-    background-color: #6b7280;
+    background-color: var(--bw-color-secondary);
 }
 
 /* Minimal Variant */
@@ -229,12 +201,8 @@
     width: 12px;
     height: 12px;
     min-width: 12px;
-    box-shadow: 0 0 0 3px white;
+    box-shadow: 0 0 0 3px var(--bw-color-background);
     /* Smaller shadow for minimal */
-}
-
-.dark .bw-timeline.minimal .bw-timeline-dot {
-    box-shadow: 0 0 0 3px #111827;
 }
 
 /* === Timeline Content === */

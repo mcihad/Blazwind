@@ -1,0 +1,31 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "npm build",
+			"type": "shell",
+			"command": "cd src/Blazwind.Components/frontend && npm run build",
+			"isBackground": false
+		},
+		{
+			"label": "dotnet build",
+			"type": "shell",
+			"command": "dotnet build",
+			"isBackground": false
+		},
+		{
+			"label": "NPM Build Blazwind",
+			"type": "shell",
+			"command": "cd src/Blazwind.Components/frontend && npm run build",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Dotnet Build Blazwind.Components",
+			"type": "shell",
+			"command": "dotnet build src/Blazwind.Components/Blazwind.Components.csproj",
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

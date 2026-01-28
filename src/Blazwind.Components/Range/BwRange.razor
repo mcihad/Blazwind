@@ -5,48 +5,53 @@
 @implements IAsyncDisposable
 @inherits BwBase
 
+@{
+    var colorName = Color.ToString().ToLower();
+    var fillClass = $"bw-range-fill-{colorName}";
+    var thumbClass = $"bw-range-thumb bw-range-thumb-{colorName}";
+    var tooltipClass = $"bw-range-tooltip bw-range-tooltip-{colorName}";
+    var selectionClass = $"bw-range-selection-{colorName}";
+}
+
 <div class="@CombineClasses("bw-range")" style="@Style" id="@_elementId" @attributes="AdditionalAttributes">
     <div class="flex items-center gap-4">
         @if (!string.IsNullOrEmpty(Label))
         {
-            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[80px]">@Label</label>
+            <label class="bw-range-label">@Label</label>
         }
 
         <div class="flex-1 flex items-center gap-3">
             @* Min Value Display *@
             @if (ShowValues)
             {
-                <span class="text-xs text-gray-500 dark:text-gray-400 min-w-[40px] text-right">@FormatValue(Min)</span>
+                <span class="bw-range-value text-right">@FormatValue(Min)</span>
             }
 
             @* Dual Range Slider Track *@
-            <div class="bw-range-track flex-1 relative h-10 flex items-center select-none">
+            <div class="bw-range-track flex-1 select-none">
                 @* Track Background *@
-                <div class="absolute inset-x-0 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                <div class="bw-range-track-bg"></div>
 
                 @* Active Range *@
-                <div class="bw-active-range absolute h-2 rounded-full @GetColorClass()"
-                    style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;"></div>
+                <div class="bw-active-range absolute h-2 rounded-full @fillClass"
+                    style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
+                </div>
 
                 @* Start Thumb *@
-                <div class="bw-range-thumb-start absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
-                    style="left: @GetInvariantPercent(_startPercent)%;">
+                <div class="bw-range-thumb-start @thumbClass" style="left: @GetInvariantPercent(_startPercent)%;">
                     @if (ShowTooltip)
                     {
-                        <div
-                            class="bw-tooltip-start absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap opacity-0 transition-opacity @GetColorClass()">
+                        <div class="bw-tooltip-start @tooltipClass">
                             @FormatValue(_currentStart)
                         </div>
                     }
                 </div>
 
                 @* End Thumb *@
-                <div class="bw-range-thumb-end absolute w-6 h-6 -ml-3 rounded-full bg-white border-2 shadow-lg cursor-grab active:cursor-grabbing hover:scale-110 transition-transform z-10 @GetThumbBorderClass()"
-                    style="left: @GetInvariantPercent(_endPercent)%;">
+                <div class="bw-range-thumb-end @thumbClass" style="left: @GetInvariantPercent(_endPercent)%;">
                     @if (ShowTooltip)
                     {
-                        <div
-                            class="bw-tooltip-end absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white rounded shadow-lg whitespace-nowrap opacity-0 transition-opacity @GetColorClass()">
+                        <div class="bw-tooltip-end @tooltipClass">
                             @FormatValue(_currentEnd)
                         </div>
                     }
@@ -56,7 +61,7 @@
             @* Max Value Display *@
             @if (ShowValues)
             {
-                <span class="text-xs text-gray-500 dark:text-gray-400 min-w-[40px]">@FormatValue(Max)</span>
+                <span class="bw-range-value">@FormatValue(Max)</span>
             }
         </div>
     </div>
@@ -65,8 +70,7 @@
     @if (ShowSelection)
     {
         <div class="mt-2 text-center">
-            <span
-                class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-full @GetSelectionBgClass()">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-full @selectionClass">
                 <span>@FormatValue(_currentStart)</span>
                 <i class="fa-solid fa-arrow-right text-xs opacity-60"></i>
                 <span>@FormatValue(_currentEnd)</span>
@@ -98,7 +102,7 @@
     private double _endPercent;
     private bool _isDraggingStart;
     private bool _isDraggingEnd;
-    
+
     private double _prevStart;
     private double _prevEnd;
     private double _prevMin;
@@ -113,17 +117,17 @@
         _elementId = Id ?? $"bw-range-{Guid.NewGuid():N}";
         InitializeState();
     }
-    
+
     private void InitializeState()
     {
         _currentStart = Start;
         _currentEnd = End;
-        
+
         _prevStart = Start;
         _prevEnd = End;
         _prevMin = Min;
         _prevMax = Max;
-        
+
         UpdatePercentages();
     }
 
@@ -132,20 +136,20 @@
         if (IsDragging) return;
 
         bool paramsChanged = Math.Abs(Start - _prevStart) > double.Epsilon ||
-                             Math.Abs(End - _prevEnd) > double.Epsilon ||
-                             Math.Abs(Min - _prevMin) > double.Epsilon ||
-                             Math.Abs(Max - _prevMax) > double.Epsilon;
+        Math.Abs(End - _prevEnd) > double.Epsilon ||
+        Math.Abs(Min - _prevMin) > double.Epsilon ||
+        Math.Abs(Max - _prevMax) > double.Epsilon;
 
         if (!paramsChanged) return;
 
         _currentStart = Start;
         _currentEnd = End;
-        
+
         _prevStart = Start;
         _prevEnd = End;
         _prevMin = Min;
         _prevMax = Max;
-        
+
         UpdatePercentages();
     }
 
@@ -214,42 +218,9 @@
 
     private string FormatValue(double value) => string.IsNullOrEmpty(Format) ? value.ToString("N0") :
     value.ToString(Format);
-    
-    private string GetInvariantPercent(double value) => 
-        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
-    private string GetColorClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-500",
-        BwColor.Secondary => "bg-gray-500",
-        BwColor.Success => "bg-green-500",
-        BwColor.Danger => "bg-red-500",
-        BwColor.Warning => "bg-yellow-500",
-        BwColor.Info => "bg-cyan-500",
-        _ => "bg-blue-500"
-    };
-
-    private string GetThumbBorderClass() => Color switch
-    {
-        BwColor.Primary => "border-blue-500 hover:border-blue-600",
-        BwColor.Secondary => "border-gray-500 hover:border-gray-600",
-        BwColor.Success => "border-green-500 hover:border-green-600",
-        BwColor.Danger => "border-red-500 hover:border-red-600",
-        BwColor.Warning => "border-yellow-500 hover:border-yellow-600",
-        BwColor.Info => "border-cyan-500 hover:border-cyan-600",
-        _ => "border-blue-500 hover:border-blue-600"
-    };
-
-    private string GetSelectionBgClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-        BwColor.Secondary => "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-        BwColor.Warning => "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
-        _ => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-    };
+    private string GetInvariantPercent(double value) =>
+    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     public async ValueTask DisposeAsync()
     {

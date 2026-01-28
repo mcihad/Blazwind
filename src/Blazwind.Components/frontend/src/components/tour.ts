@@ -71,15 +71,14 @@ export function prev() {
 function createDOM() {
     // 1. Overlay (The Spotlight)
     overlay = document.createElement('div');
-    overlay.className = 'bw-tour-overlay fixed z-[9998] transition-all duration-300 ease-in-out pointer-events-none';
+    overlay.className = 'bw-tour-overlay';
     // Box shadow style for dimming
     overlay.style.boxShadow = `0 0 0 9999px ${options.overlayColor || 'rgba(0,0,0,0.5)'}`;
-    overlay.style.borderRadius = '4px'; // Default
     document.body.appendChild(overlay);
 
     // 2. Tooltip
     tooltip = document.createElement('div');
-    tooltip.className = 'bw-tour-tooltip fixed z-[9999] bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-4 rounded shadow-xl border border-gray-200 dark:border-gray-700 w-[300px] max-w-[90vw] transition-all duration-300';
+    tooltip.className = 'bw-tour-tooltip';
     document.body.appendChild(tooltip);
 }
 
@@ -179,35 +178,35 @@ function renderTooltip(step: TourStep, index: number) {
 
     // Header
     if (step.title) {
-        html += `<h3 class="font-bold text-lg mb-2">${step.title}</h3>`;
+        html += `<h3 class="bw-tour-title">${step.title}</h3>`;
     }
 
     // Body
-    html += `<div class="text-sm text-gray-600 dark:text-gray-300 mb-4">${step.content}</div>`;
+    html += `<div class="bw-tour-content">${step.content}</div>`;
 
     // Footer (Progress + Buttons)
-    html += `<div class="flex items-center justify-between mt-4">`;
+    html += `<div class="bw-tour-footer">`;
 
     // Progress
-    html += `<div class="text-xs text-gray-400 dark:text-gray-500">${index + 1} / ${steps.length}</div>`;
+    html += `<div class="bw-tour-progress">${index + 1} / ${steps.length}</div>`;
 
     // Buttons
-    html += `<div class="flex gap-2">`;
+    html += `<div class="bw-tour-buttons">`;
 
     if (!isFirst) {
-        html += `<button class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-200 transition" onclick="window.Blazwind.Tour.prev()">Geri</button>`;
+        html += `<button class="bw-tour-btn bw-tour-btn-secondary" onclick="window.Blazwind.Tour.prev()">Geri</button>`;
     }
 
     if (isLast) {
-        html += `<button class="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition" onclick="window.Blazwind.Tour.end()">Bitir</button>`;
+        html += `<button class="bw-tour-btn bw-tour-btn-primary" onclick="window.Blazwind.Tour.end()">Bitir</button>`;
     } else {
-        html += `<button class="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition" onclick="window.Blazwind.Tour.next()">İleri</button>`;
+        html += `<button class="bw-tour-btn bw-tour-btn-primary" onclick="window.Blazwind.Tour.next()">İleri</button>`;
     }
 
     html += `</div></div>`; // End buttons, footer
 
     // Close button (X)
-    html += `<button class="absolute top-2 right-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" onclick="window.Blazwind.Tour.end()">
+    html += `<button class="bw-tour-close" onclick="window.Blazwind.Tour.end()">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>

@@ -99,6 +99,17 @@
     color: var(--bw-color-info);
 }
 
+/* Title */
+.bw-collapse-title {
+    color: var(--bw-color-text);
+}
+
+/* Chevron */
+.bw-collapse-chevron {
+    color: var(--bw-color-text-muted);
+    opacity: 0.5;
+}
+
 /* Content */
 .bw-collapse-content {
     @apply border-t;

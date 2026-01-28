@@ -1,0 +1,842 @@
+/* ============================================
+   Range Component Styles
+   Theme-aware dual range slider and brush components
+   ============================================ */
+
+/* ========================================
+   BASE RANGE SLIDER
+   ======================================== */
+
+.bw-range {
+    width: 100%;
+}
+
+.bw-range-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--bw-range-label-text);
+    min-width: 5rem;
+}
+
+.bw-range-value {
+    font-size: 0.75rem;
+    color: var(--bw-range-value-text);
+    min-width: 2.5rem;
+}
+
+.bw-range-track {
+    position: relative;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    user-select: none;
+}
+
+.bw-range-track-bg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0.5rem;
+    background-color: var(--bw-range-track-bg);
+    border-radius: var(--bw-radius-full);
+}
+
+/* Active Range Fill */
+.bw-range-fill-primary {
+    background-color: var(--bw-range-primary-fill);
+}
+
+.bw-range-fill-secondary {
+    background-color: var(--bw-range-secondary-fill);
+}
+
+.bw-range-fill-success {
+    background-color: var(--bw-range-success-fill);
+}
+
+.bw-range-fill-danger {
+    background-color: var(--bw-range-danger-fill);
+}
+
+.bw-range-fill-warning {
+    background-color: var(--bw-range-warning-fill);
+}
+
+.bw-range-fill-info {
+    background-color: var(--bw-range-info-fill);
+}
+
+/* Range Thumb */
+.bw-range-thumb {
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: -0.75rem;
+    border-radius: var(--bw-radius-full);
+    background-color: var(--bw-range-thumb-bg);
+    border-width: 2px;
+    border-style: solid;
+    box-shadow: var(--bw-shadow-lg);
+    cursor: grab;
+    z-index: 10;
+    transition: transform 0.15s ease;
+}
+
+.bw-range-thumb:hover {
+    transform: scale(1.1);
+}
+
+.bw-range-thumb:active {
+    cursor: grabbing;
+}
+
+/* Thumb Border Colors */
+.bw-range-thumb-primary {
+    border-color: var(--bw-range-primary-thumb-border);
+}
+
+.bw-range-thumb-primary:hover {
+    border-color: var(--bw-range-primary-thumb-border-hover);
+}
+
+.bw-range-thumb-secondary {
+    border-color: var(--bw-range-secondary-thumb-border);
+}
+
+.bw-range-thumb-secondary:hover {
+    border-color: var(--bw-range-secondary-thumb-border-hover);
+}
+
+.bw-range-thumb-success {
+    border-color: var(--bw-range-success-thumb-border);
+}
+
+.bw-range-thumb-success:hover {
+    border-color: var(--bw-range-success-thumb-border-hover);
+}
+
+.bw-range-thumb-danger {
+    border-color: var(--bw-range-danger-thumb-border);
+}
+
+.bw-range-thumb-danger:hover {
+    border-color: var(--bw-range-danger-thumb-border-hover);
+}
+
+.bw-range-thumb-warning {
+    border-color: var(--bw-range-warning-thumb-border);
+}
+
+.bw-range-thumb-warning:hover {
+    border-color: var(--bw-range-warning-thumb-border-hover);
+}
+
+.bw-range-thumb-info {
+    border-color: var(--bw-range-info-thumb-border);
+}
+
+.bw-range-thumb-info:hover {
+    border-color: var(--bw-range-info-thumb-border-hover);
+}
+
+/* Tooltip */
+.bw-range-tooltip {
+    position: absolute;
+    top: -2.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--bw-color-text-inverse);
+    border-radius: var(--bw-radius-default);
+    box-shadow: var(--bw-shadow-lg);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+}
+
+.bw-range-thumb:hover .bw-range-tooltip,
+.bw-range-thumb:active .bw-range-tooltip {
+    opacity: 1;
+}
+
+.bw-range-tooltip-primary {
+    background-color: var(--bw-range-primary-fill);
+}
+
+.bw-range-tooltip-secondary {
+    background-color: var(--bw-range-secondary-fill);
+}
+
+.bw-range-tooltip-success {
+    background-color: var(--bw-range-success-fill);
+}
+
+.bw-range-tooltip-danger {
+    background-color: var(--bw-range-danger-fill);
+}
+
+.bw-range-tooltip-warning {
+    background-color: var(--bw-range-warning-fill);
+}
+
+.bw-range-tooltip-info {
+    background-color: var(--bw-range-info-fill);
+}
+
+/* Selection Display */
+.bw-range-selection-primary {
+    background-color: var(--bw-range-primary-selection-bg);
+    color: var(--bw-range-primary-selection-text);
+}
+
+.bw-range-selection-secondary {
+    background-color: var(--bw-range-secondary-selection-bg);
+    color: var(--bw-range-secondary-selection-text);
+}
+
+.bw-range-selection-success {
+    background-color: var(--bw-range-success-selection-bg);
+    color: var(--bw-range-success-selection-text);
+}
+
+.bw-range-selection-danger {
+    background-color: var(--bw-range-danger-selection-bg);
+    color: var(--bw-range-danger-selection-text);
+}
+
+.bw-range-selection-warning {
+    background-color: var(--bw-range-warning-selection-bg);
+    color: var(--bw-range-warning-selection-text);
+}
+
+.bw-range-selection-info {
+    background-color: var(--bw-range-info-selection-bg);
+    color: var(--bw-range-info-selection-text);
+}
+
+/* ========================================
+   RANGE BRUSH
+   ======================================== */
+
+.bw-range-brush {
+    width: 100%;
+}
+
+.bw-brush-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--bw-range-label-text);
+    margin-bottom: 0.75rem;
+}
+
+.bw-brush-chart {
+    margin-bottom: 0.5rem;
+    height: 4rem;
+    border-radius: var(--bw-radius-lg);
+    overflow: hidden;
+    background-color: var(--bw-brush-track-bg);
+}
+
+.bw-brush-track {
+    position: relative;
+    height: 3rem;
+    border-radius: var(--bw-radius-lg);
+    background-color: var(--bw-brush-track-bg);
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+}
+
+.bw-brush-inactive {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: var(--bw-brush-inactive-bg);
+    backdrop-filter: blur(2px);
+    transition: width 0.1s ease;
+}
+
+.bw-brush-selection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    cursor: grab;
+    transition: box-shadow 0.15s ease;
+}
+
+.bw-brush-selection:active {
+    cursor: grabbing;
+}
+
+.bw-brush-selection:hover {
+    box-shadow: var(--bw-shadow-lg);
+}
+
+/* Brush Fill Colors */
+.bw-brush-fill-primary {
+    background: linear-gradient(to right, var(--bw-primary-500), var(--bw-primary-600));
+}
+
+.bw-brush-fill-secondary {
+    background: linear-gradient(to right, var(--bw-gray-500), var(--bw-gray-600));
+}
+
+.bw-brush-fill-success {
+    background: linear-gradient(to right, var(--bw-success-500), var(--bw-success-600));
+}
+
+.bw-brush-fill-danger {
+    background: linear-gradient(to right, var(--bw-danger-500), var(--bw-danger-600));
+}
+
+.bw-brush-fill-warning {
+    background: linear-gradient(to right, var(--bw-warning-500), var(--bw-warning-600));
+}
+
+.bw-brush-fill-info {
+    background: linear-gradient(to right, var(--bw-info-500), var(--bw-info-600));
+}
+
+/* Bar Active Classes (for histogram/timeline bars) */
+.bw-brush-bar-active-primary {
+    background-color: var(--bw-primary-400);
+}
+
+.dark .bw-brush-bar-active-primary {
+    background-color: var(--bw-primary-500);
+}
+
+.bw-brush-bar-active-secondary {
+    background-color: var(--bw-gray-400);
+}
+
+.dark .bw-brush-bar-active-secondary {
+    background-color: var(--bw-gray-500);
+}
+
+.bw-brush-bar-active-success {
+    background-color: var(--bw-success-400);
+}
+
+.dark .bw-brush-bar-active-success {
+    background-color: var(--bw-success-500);
+}
+
+.bw-brush-bar-active-danger {
+    background-color: var(--bw-danger-400);
+}
+
+.dark .bw-brush-bar-active-danger {
+    background-color: var(--bw-danger-500);
+}
+
+.bw-brush-bar-active-warning {
+    background-color: var(--bw-warning-400);
+}
+
+.dark .bw-brush-bar-active-warning {
+    background-color: var(--bw-warning-500);
+}
+
+.bw-brush-bar-active-info {
+    background-color: var(--bw-info-400);
+}
+
+.dark .bw-brush-bar-active-info {
+    background-color: var(--bw-info-500);
+}
+
+/* Icon Color Classes */
+.bw-brush-icon-primary {
+    color: var(--bw-primary-500);
+}
+
+.bw-brush-icon-secondary {
+    color: var(--bw-gray-500);
+}
+
+.bw-brush-icon-success {
+    color: var(--bw-success-500);
+}
+
+.bw-brush-icon-danger {
+    color: var(--bw-danger-500);
+}
+
+.bw-brush-icon-warning {
+    color: var(--bw-warning-500);
+}
+
+.bw-brush-icon-info {
+    color: var(--bw-info-500);
+}
+
+/* Badge Classes */
+.bw-brush-badge-primary {
+    background-color: var(--bw-primary-100);
+    color: var(--bw-primary-700);
+}
+
+.dark .bw-brush-badge-primary {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: var(--bw-primary-400);
+}
+
+.bw-brush-badge-secondary {
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-700);
+}
+
+.dark .bw-brush-badge-secondary {
+    background-color: rgba(100, 116, 139, 0.15);
+    color: var(--bw-gray-400);
+}
+
+.bw-brush-badge-success {
+    background-color: var(--bw-success-100);
+    color: var(--bw-success-700);
+}
+
+.dark .bw-brush-badge-success {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--bw-success-400);
+}
+
+.bw-brush-badge-danger {
+    background-color: var(--bw-danger-100);
+    color: var(--bw-danger-700);
+}
+
+.dark .bw-brush-badge-danger {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--bw-danger-400);
+}
+
+.bw-brush-badge-warning {
+    background-color: var(--bw-warning-100);
+    color: var(--bw-warning-700);
+}
+
+.dark .bw-brush-badge-warning {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: var(--bw-warning-400);
+}
+
+.bw-brush-badge-info {
+    background-color: var(--bw-info-100);
+    color: var(--bw-info-700);
+}
+
+.dark .bw-brush-badge-info {
+    background-color: rgba(14, 165, 233, 0.15);
+    color: var(--bw-info-400);
+}
+
+/* Preset Active Classes */
+.bw-brush-preset-active-primary {
+    background-color: var(--bw-primary-500) !important;
+    color: white !important;
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-brush-preset-active-secondary {
+    background-color: var(--bw-gray-500) !important;
+    color: white !important;
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-brush-preset-active-success {
+    background-color: var(--bw-success-500) !important;
+    color: white !important;
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-brush-preset-active-danger {
+    background-color: var(--bw-danger-500) !important;
+    color: white !important;
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-brush-preset-active-warning {
+    background-color: var(--bw-warning-500) !important;
+    color: white !important;
+    box-shadow: var(--bw-shadow-sm);
+}
+
+.bw-brush-preset-active-info {
+    background-color: var(--bw-info-500) !important;
+    color: white !important;
+    box-shadow: var(--bw-shadow-sm);
+}
+
+/* Text Color Classes */
+.bw-brush-text-primary {
+    color: var(--bw-primary-600);
+}
+
+.dark .bw-brush-text-primary {
+    color: var(--bw-primary-400);
+}
+
+.bw-brush-text-secondary {
+    color: var(--bw-gray-600);
+}
+
+.dark .bw-brush-text-secondary {
+    color: var(--bw-gray-400);
+}
+
+.bw-brush-text-success {
+    color: var(--bw-success-600);
+}
+
+.dark .bw-brush-text-success {
+    color: var(--bw-success-400);
+}
+
+.bw-brush-text-danger {
+    color: var(--bw-danger-600);
+}
+
+.dark .bw-brush-text-danger {
+    color: var(--bw-danger-400);
+}
+
+.bw-brush-text-warning {
+    color: var(--bw-warning-600);
+}
+
+.dark .bw-brush-text-warning {
+    color: var(--bw-warning-400);
+}
+
+.bw-brush-text-info {
+    color: var(--bw-info-600);
+}
+
+.dark .bw-brush-text-info {
+    color: var(--bw-info-400);
+}
+
+/* Brush Handles */
+.bw-brush-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1.25rem;
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.bw-brush-handle-left {
+    left: 0;
+    margin-left: -0.25rem;
+}
+
+.bw-brush-handle-right {
+    right: 0;
+    margin-right: -0.25rem;
+}
+
+.bw-brush-handle-bar {
+    width: 0.25rem;
+    height: 2rem;
+    border-radius: var(--bw-radius-full);
+    background-color: var(--bw-brush-handle-bg);
+    border: 2px solid;
+    box-shadow: var(--bw-shadow-md);
+    transition: height 0.15s ease, width 0.15s ease;
+}
+
+.bw-brush-handle:hover .bw-brush-handle-bar {
+    height: 2.5rem;
+    width: 0.375rem;
+}
+
+/* Handle Border Colors */
+.bw-brush-handle-primary .bw-brush-handle-bar {
+    border-color: var(--bw-primary-600);
+}
+
+.bw-brush-handle-secondary .bw-brush-handle-bar {
+    border-color: var(--bw-gray-600);
+}
+
+.bw-brush-handle-success .bw-brush-handle-bar {
+    border-color: var(--bw-success-600);
+}
+
+.bw-brush-handle-danger .bw-brush-handle-bar {
+    border-color: var(--bw-danger-600);
+}
+
+.bw-brush-handle-warning .bw-brush-handle-bar {
+    border-color: var(--bw-warning-600);
+}
+
+.bw-brush-handle-info .bw-brush-handle-bar {
+    border-color: var(--bw-info-600);
+}
+
+/* Brush Grip Pattern */
+.bw-brush-grip {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.bw-brush-grip-bar {
+    width: 0.125rem;
+    height: 1rem;
+    background-color: white;
+    border-radius: var(--bw-radius-full);
+    margin: 0 0.125rem;
+}
+
+/* Scale Markers */
+.bw-brush-scale {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.25rem;
+    pointer-events: none;
+}
+
+.bw-brush-scale-marker {
+    width: 1px;
+    height: 0.375rem;
+    background-color: var(--bw-gray-400);
+    opacity: 0.5;
+}
+
+/* Value Display */
+.bw-brush-values {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.bw-brush-value-label {
+    color: var(--bw-color-text-secondary);
+}
+
+.bw-brush-value-text-primary {
+    font-weight: 600;
+    color: var(--bw-primary-600);
+}
+
+.bw-brush-value-text-secondary {
+    font-weight: 600;
+    color: var(--bw-gray-600);
+}
+
+.bw-brush-value-text-success {
+    font-weight: 600;
+    color: var(--bw-success-600);
+}
+
+.bw-brush-value-text-danger {
+    font-weight: 600;
+    color: var(--bw-danger-600);
+}
+
+.bw-brush-value-text-warning {
+    font-weight: 600;
+    color: var(--bw-warning-600);
+}
+
+.bw-brush-value-text-info {
+    font-weight: 600;
+    color: var(--bw-info-600);
+}
+
+.dark .bw-brush-value-text-primary {
+    color: var(--bw-primary-400);
+}
+
+.dark .bw-brush-value-text-secondary {
+    color: var(--bw-gray-400);
+}
+
+.dark .bw-brush-value-text-success {
+    color: var(--bw-success-400);
+}
+
+.dark .bw-brush-value-text-danger {
+    color: var(--bw-danger-400);
+}
+
+.dark .bw-brush-value-text-warning {
+    color: var(--bw-warning-400);
+}
+
+.dark .bw-brush-value-text-info {
+    color: var(--bw-info-400);
+}
+
+/* ========================================
+   DATE/TIME/NUMBER RANGE
+   ======================================== */
+
+.bw-date-range,
+.bw-time-range,
+.bw-number-range {
+    width: 100%;
+}
+
+.bw-range-input-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--bw-range-label-text);
+    margin-bottom: 0.5rem;
+}
+
+/* Focus Ring Classes */
+.bw-range-focus-primary:focus {
+    border-color: var(--bw-color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.bw-range-focus-secondary:focus {
+    border-color: var(--bw-color-secondary);
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.2);
+}
+
+.bw-range-focus-success:focus {
+    border-color: var(--bw-color-success);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.bw-range-focus-danger:focus {
+    border-color: var(--bw-color-danger);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.bw-range-focus-warning:focus {
+    border-color: var(--bw-color-warning);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.bw-range-focus-info:focus {
+    border-color: var(--bw-color-info);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+/* Duration Badge */
+.bw-range-duration-primary {
+    background-color: var(--bw-range-primary-selection-bg);
+    color: var(--bw-range-primary-selection-text);
+}
+
+.bw-range-duration-secondary {
+    background-color: var(--bw-range-secondary-selection-bg);
+    color: var(--bw-range-secondary-selection-text);
+}
+
+.bw-range-duration-success {
+    background-color: var(--bw-range-success-selection-bg);
+    color: var(--bw-range-success-selection-text);
+}
+
+.bw-range-duration-danger {
+    background-color: var(--bw-range-danger-selection-bg);
+    color: var(--bw-range-danger-selection-text);
+}
+
+.bw-range-duration-warning {
+    background-color: var(--bw-range-warning-selection-bg);
+    color: var(--bw-range-warning-selection-text);
+}
+
+.bw-range-duration-info {
+    background-color: var(--bw-range-info-selection-bg);
+    color: var(--bw-range-info-selection-text);
+}
+
+/* Preset Buttons */
+.bw-range-preset {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    border-radius: var(--bw-radius-md);
+    transition: background-color 0.15s ease, color 0.15s ease;
+    background-color: var(--bw-gray-100);
+    color: var(--bw-gray-600);
+}
+
+.bw-range-preset:hover {
+    background-color: var(--bw-gray-200);
+}
+
+.dark .bw-range-preset {
+    background-color: var(--bw-gray-700);
+    color: var(--bw-gray-300);
+}
+
+.dark .bw-range-preset:hover {
+    background-color: var(--bw-gray-600);
+}
+
+/* Active Preset States */
+.bw-range-preset-active-primary {
+    background-color: var(--bw-primary-500) !important;
+    color: white !important;
+}
+
+.bw-range-preset-active-secondary {
+    background-color: var(--bw-gray-500) !important;
+    color: white !important;
+}
+
+.bw-range-preset-active-success {
+    background-color: var(--bw-success-500) !important;
+    color: white !important;
+}
+
+.bw-range-preset-active-danger {
+    background-color: var(--bw-danger-500) !important;
+    color: white !important;
+}
+
+.bw-range-preset-active-warning {
+    background-color: var(--bw-warning-500) !important;
+    color: white !important;
+}
+
+.bw-range-preset-active-info {
+    background-color: var(--bw-info-500) !important;
+    color: white !important;
+}
+
+/* ========================================
+   CUSTOM RANGE
+   ======================================== */
+
+.bw-custom-range {
+    width: 100%;
+}
+
+.bw-custom-range-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--bw-range-label-text);
+    margin-bottom: 0.75rem;
+}

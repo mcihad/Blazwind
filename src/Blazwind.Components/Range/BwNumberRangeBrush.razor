@@ -5,10 +5,20 @@
 @implements IAsyncDisposable
 @inherits BwBase
 
-<div class="@CombineClasses("bw-number-range-brush")" style="@Style" id="@_elementId" @attributes="AdditionalAttributes">
+@{
+    var colorName = Color.ToString().ToLower();
+    var brushFillClass = $"bw-brush-fill-{colorName}";
+    var handleClass = $"bw-brush-handle bw-brush-handle-{colorName}";
+    var barActiveClass = $"bw-brush-bar-active-{colorName}";
+    var textColorClass = $"bw-brush-text-{colorName}";
+    var presetActiveClass = $"bw-brush-preset-active-{colorName}";
+}
+
+<div class="@CombineClasses("bw-number-range-brush")" style="@Style" id="@_elementId"
+    @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
+        <label class="bw-brush-label">@Label</label>
     }
 
     @* Mini Histogram/Bar Chart *@
@@ -19,43 +29,35 @@
             {
                 var height = MaxDataValue > 0 ? (value / MaxDataValue) * 100 : 0;
                 var isInRange = IsIndexInRange(index);
-                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? GetBarActiveClass() : "bg-gray-300 dark:bg-gray-600")"
+                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? barActiveClass : "bg-gray-300 dark:bg-gray-600")"
                     style="height: @(Math.Max(4, height))%;"></div>
             }
         </div>
     }
 
     @* Brush Track *@
-    <div
-        class="bw-brush-track relative h-10 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden cursor-pointer select-none">
+    <div class="bw-brush-track h-10">
         @* Inactive areas *@
-        <div class="absolute inset-y-0 left-0 bg-gray-200/80 dark:bg-gray-900/60 transition-all"
-            style="width: @GetInvariantPercent(StartPercent)%;"></div>
-        <div class="absolute inset-y-0 right-0 bg-gray-200/80 dark:bg-gray-900/60 transition-all"
-            style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
+        <div class="bw-brush-inactive left-0" style="width: @GetInvariantPercent(StartPercent)%;"></div>
+        <div class="bw-brush-inactive right-0" style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
 
         @* Selection Brush *@
-        <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
-                    @GetBrushBgClass() shadow-md hover:shadow-lg transition-shadow"
+        <div class="bw-brush-selection @brushFillClass"
             style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
-            <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-2.5 cursor-ew-resize
-                        flex items-center justify-center @GetHandleClass()">
+            <div class="bw-brush-handle-left @handleClass">
                 <div class="w-0.5 h-5 bg-white/70 rounded-full"></div>
             </div>
 
             @* Grip Pattern *@
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-                <div class="flex gap-0.5">
-                    <div class="w-0.5 h-3 bg-white rounded-full"></div>
-                    <div class="w-0.5 h-3 bg-white rounded-full"></div>
-                </div>
+            <div class="bw-brush-grip">
+                <div class="bw-brush-grip-bar" style="height: 0.75rem;"></div>
+                <div class="bw-brush-grip-bar" style="height: 0.75rem;"></div>
             </div>
 
             @* Right Handle *@
-            <div class="bw-brush-handle-right absolute right-0 inset-y-0 w-2.5 cursor-ew-resize
-                        flex items-center justify-center @GetHandleClass()">
+            <div class="bw-brush-handle-right @handleClass">
                 <div class="w-0.5 h-5 bg-white/70 rounded-full"></div>
             </div>
         </div>
@@ -77,12 +79,12 @@
         <div class="mt-6 flex items-center justify-center gap-4">
             <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
                 <span class="text-xs text-gray-500 dark:text-gray-400">Min:</span>
-                <span class="text-sm font-semibold @GetTextColorClass()">@FormatValue(CurrentStart)</span>
+                <span class="text-sm font-semibold @textColorClass">@FormatValue(CurrentStart)</span>
             </div>
             <i class="fa-solid fa-arrow-right text-gray-400 text-xs"></i>
             <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800">
                 <span class="text-xs text-gray-500 dark:text-gray-400">Max:</span>
-                <span class="text-sm font-semibold @GetTextColorClass()">@FormatValue(CurrentEnd)</span>
+                <span class="text-sm font-semibold @textColorClass">@FormatValue(CurrentEnd)</span>
             </div>
         </div>
     }
@@ -95,7 +97,7 @@
             {
                 <button type="button"
                     class="px-2 py-1 text-xs rounded-md transition-colors
-                                               @(IsPresetActive(preset) ? GetActivePresetClass() : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300")"
+                                                       @(IsPresetActive(preset) ? presetActiveClass : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300")"
                     @onclick="() => ApplyPreset(preset)">
                     @preset.Label
                 </button>
@@ -130,7 +132,7 @@
     private double _endPercent;
 
     private bool _isDragging;
-    
+
     private double _prevStart;
     private double _prevEnd;
     private double _prevMin; // Needed as Min/Max changes affect percent calculation
@@ -149,12 +151,12 @@
         _elementId = Id ?? $"bw-number-brush-{Guid.NewGuid():N}";
         InitializeState();
     }
-    
+
     private void InitializeState()
     {
         _startPercent = ((Start - Min) / (Max - Min)) * 100;
         _endPercent = ((End - Min) / (Max - Min)) * 100;
-        
+
         _prevStart = Start;
         _prevEnd = End;
         _prevMin = Min;
@@ -166,9 +168,9 @@
         if (_isDragging) return;
 
         bool paramsChanged = Math.Abs(Start - _prevStart) > double.Epsilon ||
-                             Math.Abs(End - _prevEnd) > double.Epsilon ||
-                             Math.Abs(Min - _prevMin) > double.Epsilon ||
-                             Math.Abs(Max - _prevMax) > double.Epsilon;
+        Math.Abs(End - _prevEnd) > double.Epsilon ||
+        Math.Abs(Min - _prevMin) > double.Epsilon ||
+        Math.Abs(Max - _prevMax) > double.Epsilon;
 
         if (!paramsChanged) return;
 
@@ -180,7 +182,7 @@
         _prevMin = Min;
         _prevMax = Max;
     }
-    
+
     [JSInvokable]
     public void HandleDragStart()
     {
@@ -261,56 +263,8 @@
         return result;
     }
 
-    private string GetInvariantPercent(double value) => 
-        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
-
-    private string GetBrushBgClass() => Color switch
-    {
-        BwColor.Primary => "bg-gradient-to-r from-blue-500 to-blue-600",
-        BwColor.Success => "bg-gradient-to-r from-green-500 to-green-600",
-        BwColor.Danger => "bg-gradient-to-r from-red-500 to-red-600",
-        BwColor.Warning => "bg-gradient-to-r from-yellow-500 to-yellow-600",
-        BwColor.Info => "bg-gradient-to-r from-cyan-500 to-cyan-600",
-        _ => "bg-gradient-to-r from-blue-500 to-blue-600"
-    };
-
-    private string GetHandleClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-700",
-        BwColor.Success => "bg-green-700",
-        BwColor.Danger => "bg-red-700",
-        BwColor.Warning => "bg-yellow-700",
-        BwColor.Info => "bg-cyan-700",
-        _ => "bg-blue-700"
-    };
-
-    private string GetBarActiveClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-400 dark:bg-blue-500",
-        BwColor.Success => "bg-green-400 dark:bg-green-500",
-        BwColor.Danger => "bg-red-400 dark:bg-red-500",
-        BwColor.Warning => "bg-yellow-400 dark:bg-yellow-500",
-        BwColor.Info => "bg-cyan-400 dark:bg-cyan-500",
-        _ => "bg-blue-400 dark:bg-blue-500"
-    };
-
-    private string GetTextColorClass() => Color switch
-    {
-        BwColor.Primary => "text-blue-600 dark:text-blue-400",
-        BwColor.Success => "text-green-600 dark:text-green-400",
-        BwColor.Danger => "text-red-600 dark:text-red-400",
-        BwColor.Warning => "text-yellow-600 dark:text-yellow-400",
-        BwColor.Info => "text-cyan-600 dark:text-cyan-400",
-        _ => "text-blue-600 dark:text-blue-400"
-    };
-
-    private string GetActivePresetClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-500 text-white",
-        BwColor.Success => "bg-green-500 text-white",
-        BwColor.Danger => "bg-red-500 text-white",
-        _ => "bg-blue-500 text-white"
-    };
+    private string GetInvariantPercent(double value) =>
+    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     public async ValueTask DisposeAsync()
     {

@@ -1,0 +1,117 @@
+/* Tour Component Styles */
+
+/* Overlay */
+.bw-tour-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    transition: opacity 0.3s ease;
+}
+
+/* Tooltip */
+.bw-tour-tooltip {
+    position: fixed;
+    background-color: var(--bw-color-surface);
+    border-radius: var(--bw-radius-default);
+    padding: 1rem;
+    min-width: 280px;
+    max-width: 360px;
+    box-shadow: var(--bw-shadow-lg);
+    z-index: 10000;
+    color: var(--bw-color-text);
+    border: 1px solid var(--bw-color-border);
+}
+
+/* Tour Title */
+.bw-tour-title {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: var(--bw-color-text);
+}
+
+/* Tour Content */
+.bw-tour-content {
+    font-size: 0.875rem;
+    color: var(--bw-color-text-muted);
+    margin-bottom: 1rem;
+}
+
+/* Tour Footer */
+.bw-tour-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+/* Progress Text */
+.bw-tour-progress {
+    font-size: 0.75rem;
+    color: var(--bw-color-text-muted);
+    opacity: 0.7;
+}
+
+/* Buttons Container */
+.bw-tour-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Base Button */
+.bw-tour-btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: var(--bw-radius-default);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+}
+
+/* Primary Button */
+.bw-tour-btn-primary {
+    background-color: var(--bw-color-primary);
+    color: var(--bw-color-primary-contrast);
+}
+
+.bw-tour-btn-primary:hover {
+    opacity: 0.9;
+    filter: brightness(1.1);
+}
+
+/* Secondary Button */
+.bw-tour-btn-secondary {
+    background-color: var(--bw-color-surface-hover);
+    color: var(--bw-color-text);
+    border: 1px solid var(--bw-color-border);
+}
+
+.bw-tour-btn-secondary:hover {
+    background-color: var(--bw-color-surface-active);
+}
+
+/* Close Button */
+.bw-tour-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: var(--bw-color-text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.bw-tour-close:hover {
+    color: var(--bw-color-text);
+    background-color: var(--bw-color-surface-hover);
+}
+
+.bw-tour-close svg {
+    width: 1rem;
+    height: 1rem;
+}

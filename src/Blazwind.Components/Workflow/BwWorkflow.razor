@@ -8,7 +8,8 @@
 @inject IJSRuntime JS
 @inherits BwBase
 
-<div @ref="_container" class="@CombineClasses($"w-full bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700")" style="height: @Height; @Style" id="@Id" @attributes="AdditionalAttributes">
+<div @ref="_container" class="@CombineClasses("bw-workflow-container")" style="height: @Height; @Style" id="@Id"
+    @attributes="AdditionalAttributes">
 </div>
 
 @code {
@@ -16,95 +17,95 @@
     private string? _instanceId;
     private bool _isInitialized;
     private DotNetObjectReference<BwWorkflow>? _netRef;
-    
+
     #region Parameters
-    
+
     /// <summary>
     /// Workflow nodes
     /// </summary>
     [Parameter] public List<IWorkflowNode> Nodes { get; set; } = new();
-    
+
     /// <summary>
     /// Workflow edges
     /// </summary>
     [Parameter] public List<IWorkflowEdge> Edges { get; set; } = new();
-    
+
     /// <summary>
     /// Container height
     /// </summary>
     [Parameter] public string Height { get; set; } = "400px";
-    
+
     // Removed Style and Class parameters (inherited)
-    
+
     /// <summary>
     /// Node width
     /// </summary>
     [Parameter] public int NodeWidth { get; set; } = 180;
-    
+
     /// <summary>
     /// Node height
     /// </summary>
     [Parameter] public int NodeHeight { get; set; } = 70;
-    
+
     /// <summary>
     /// Horizontal spacing between nodes
     /// </summary>
     [Parameter] public int HorizontalSpacing { get; set; } = 100;
-    
+
     /// <summary>
     /// Vertical spacing between nodes
     /// </summary>
     [Parameter] public int VerticalSpacing { get; set; } = 80;
-    
+
     /// <summary>
     /// Flow direction
     /// </summary>
     [Parameter] public WorkflowDirection Direction { get; set; } = WorkflowDirection.Horizontal;
-    
+
     /// <summary>
     /// Show labels on nodes
     /// </summary>
     [Parameter] public bool ShowLabels { get; set; } = true;
-    
+
     /// <summary>
     /// Enable node interactions
     /// </summary>
     [Parameter] public bool Interactive { get; set; } = true;
-    
+
     /// <summary>
     /// Enable node dragging
     /// </summary>
     [Parameter] public bool Draggable { get; set; } = true;
-    
+
     /// <summary>
     /// Enable animations
     /// </summary>
     [Parameter] public bool Animated { get; set; } = true;
-    
+
     /// <summary>
     /// Fit to screen on load
     /// </summary>
     [Parameter] public bool FitToScreen { get; set; } = true;
-    
+
     /// <summary>
     /// Node click event
     /// </summary>
     [Parameter] public EventCallback<NodeClickedEventArgs> OnNodeClick { get; set; }
-    
+
     /// <summary>
     /// Node position changed event (after drag)
     /// </summary>
     [Parameter] public EventCallback<NodePositionChangedEventArgs> OnNodePositionChanged { get; set; }
-    
+
     /// <summary>
     /// Node status changed event
     /// </summary>
     [Parameter] public EventCallback<NodeStatusChangedEventArgs> OnNodeStatusChanged { get; set; }
-    
+
     // Removed AdditionalAttributes (inherited)
-    
+
     #endregion
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && Nodes.Count > 0)
@@ -112,7 +113,7 @@
             await InitializeAsync();
         }
     }
-    
+
     protected override async Task OnParametersSetAsync()
     {
         if (_isInitialized && Nodes.Count > 0)
@@ -120,11 +121,11 @@
             await UpdateAsync();
         }
     }
-    
+
     private async Task InitializeAsync()
     {
         _netRef = DotNetObjectReference.Create(this);
-        
+
         var data = new
         {
             nodes = Nodes.Select(n => new
@@ -148,7 +149,7 @@
                 animated = e.Animated
             })
         };
-        
+
         var options = new
         {
             nodeWidth = NodeWidth,
@@ -162,11 +163,11 @@
             animated = Animated,
             fitToScreen = FitToScreen
         };
-        
+
         _instanceId = await JS.InvokeAsync<string>("Blazwind.Workflow.init", _container, data, options, _netRef);
         _isInitialized = true;
     }
-    
+
     private async Task UpdateAsync()
     {
         if (_instanceId != null)
@@ -194,13 +195,13 @@
                     animated = e.Animated
                 })
             };
-            
+
             await JS.InvokeVoidAsync("Blazwind.Workflow.update", _instanceId, data);
         }
     }
-    
+
     #region Public API
-    
+
     /// <summary>
     /// Update a node's status
     /// </summary>
@@ -211,7 +212,7 @@
             await JS.InvokeVoidAsync("Blazwind.Workflow.updateNodeStatus", _instanceId, nodeId, status.ToString().ToLower());
         }
     }
-    
+
     /// <summary>
     /// Zoom in
     /// </summary>
@@ -222,7 +223,7 @@
             await JS.InvokeVoidAsync("Blazwind.Workflow.zoomIn", _instanceId);
         }
     }
-    
+
     /// <summary>
     /// Zoom out
     /// </summary>
@@ -233,7 +234,7 @@
             await JS.InvokeVoidAsync("Blazwind.Workflow.zoomOut", _instanceId);
         }
     }
-    
+
     /// <summary>
     /// Fit diagram to screen
     /// </summary>
@@ -244,11 +245,11 @@
             await JS.InvokeVoidAsync("Blazwind.Workflow.fitToScreen", _instanceId);
         }
     }
-    
+
     #endregion
-    
+
     #region JS Interop Callbacks
-    
+
     [JSInvokable]
     public async Task HandleNodeClick(string nodeId, string nodeJson)
     {
@@ -262,7 +263,7 @@
             });
         }
     }
-    
+
     [JSInvokable]
     public async Task HandleNodePositionChanged(string nodeId, JsonElement oldPos, JsonElement newPos)
     {
@@ -271,10 +272,10 @@
         {
             var oldPosition = new NodePosition(oldPos.GetProperty("x").GetDouble(), oldPos.GetProperty("y").GetDouble());
             var newPosition = new NodePosition(newPos.GetProperty("x").GetDouble(), newPos.GetProperty("y").GetDouble());
-            
+
             // Update node position
             node.Position = newPosition;
-            
+
             if (OnNodePositionChanged.HasDelegate)
             {
                 await OnNodePositionChanged.InvokeAsync(new NodePositionChangedEventArgs
@@ -286,11 +287,11 @@
             }
         }
     }
-    
+
     #endregion
-    
+
     // Removed local CombineClasses method (inherited)
-    
+
     public async ValueTask DisposeAsync()
     {
         if (_instanceId != null)

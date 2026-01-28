@@ -178,6 +178,18 @@
     height: 100%;
 }
 
+/* Buttons at the end of input group should have right radius */
+.bw-input-group>.bw-btn:last-child {
+    border-top-right-radius: var(--bw-radius-default);
+    border-bottom-right-radius: var(--bw-radius-default);
+}
+
+/* Buttons at the start of input group should have left radius */
+.bw-input-group>.bw-btn:first-child {
+    border-top-left-radius: var(--bw-radius-default);
+    border-bottom-left-radius: var(--bw-radius-default);
+}
+
 /* ========== Labels ========== */
 .bw-label {
     display: block;

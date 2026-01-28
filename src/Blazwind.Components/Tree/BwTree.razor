@@ -8,56 +8,41 @@
     @if (ShowSearch)
     {
         <div class="mb-3">
-            <BwInput Placeholder="Ara..." 
-                     IconLeft="fa-solid fa-search"
-                     Size="BwSize.Small"
-                     @bind-Value="_searchQuery"
-                     @bind-Value:after="OnSearchChanged" />
+            <BwInput Placeholder="Ara..." IconLeft="fa-solid fa-search" Size="BwSize.Small" @bind-Value="_searchQuery"
+                @bind-Value:after="OnSearchChanged" />
         </div>
     }
-    
+
     @if (ShowToolbar)
     {
-        <div class="flex items-center gap-2 mb-3 text-sm">
-            <button type="button" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" @onclick="ExpandAll">
+        <div class="bw-tree-toolbar">
+            <button type="button" class="bw-tree-toolbar-btn" @onclick="ExpandAll">
                 <i class="fa-solid fa-folder-open mr-1"></i> Tümünü Aç
             </button>
-            <span class="text-gray-300 dark:text-gray-600">|</span>
-            <button type="button" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" @onclick="CollapseAll">
+            <span class="bw-tree-toolbar-separator">|</span>
+            <button type="button" class="bw-tree-toolbar-btn" @onclick="CollapseAll">
                 <i class="fa-solid fa-folder-minus mr-1"></i> Tümünü Kapat
             </button>
         </div>
     }
-    
+
     <div class="bw-tree-content">
         @if (_filteredNodes.Any())
         {
             @foreach (var node in _filteredNodes)
             {
-                <BwTreeNode TItem="TItem" 
-                            Node="node" 
-                            Level="0"
-                            SelectionMode="SelectionMode"
-                            Selectable="Selectable"
-                            CascadeSelection="CascadeSelection"
-                            Draggable="Draggable"
-                            ShowChildCount="ShowChildCount"
-                            OnNodeClick="HandleNodeClick"
-                            OnNodeToggle="HandleNodeToggle"
-                            OnSelectionChanged="HandleSelectionChanged"
-                            OnRowClick="HandleRowClick"
-                            SelectedNodes="_selectedNodes"
-                            ClickedNode="_clickedNode"
-                            SearchQuery="_searchQuery"
-                            NodeTemplate="NodeTemplate"
-                            ColumnsTemplate="ColumnsTemplate"
-                            ShowTableMode="ShowTableMode" />
+                <BwTreeNode TItem="TItem" Node="node" Level="0" SelectionMode="SelectionMode" Selectable="Selectable"
+                    CascadeSelection="CascadeSelection" Draggable="Draggable" ShowChildCount="ShowChildCount"
+                    OnNodeClick="HandleNodeClick" OnNodeToggle="HandleNodeToggle" OnSelectionChanged="HandleSelectionChanged"
+                    OnRowClick="HandleRowClick" SelectedNodes="_selectedNodes" ClickedNode="_clickedNode"
+                    SearchQuery="_searchQuery" NodeTemplate="NodeTemplate" ColumnsTemplate="ColumnsTemplate"
+                    ShowTableMode="ShowTableMode" />
             }
         }
         else
         {
-            <div class="text-center text-gray-400 dark:text-gray-500 py-8">
-                <i class="fa-solid fa-tree text-3xl mb-2"></i>
+            <div class="bw-tree-empty">
+                <i class="fa-solid fa-tree bw-tree-empty-icon"></i>
                 <p>@(string.IsNullOrEmpty(_searchQuery) ? "Veri bulunamadı" : "Arama sonucu bulunamadı")</p>
             </div>
         }
@@ -75,38 +60,38 @@
     [Parameter] public bool ShowTableMode { get; set; } = false;
     [Parameter] public bool ShowChildCount { get; set; } = false;
     // Removed Class parameter (inherited)
-    
+
     /// <summary>
     /// Async callback for lazy loading children when a node is expanded
     /// </summary>
     [Parameter] public Func<TreeNode<TItem>, Task<List<TreeNode<TItem>>>>? OnLoadChildren { get; set; }
-    
+
     [Parameter] public RenderFragment<TreeNode<TItem>>? NodeTemplate { get; set; }
     [Parameter] public RenderFragment<TreeNode<TItem>>? ColumnsTemplate { get; set; }
-    
+
     [Parameter] public EventCallback<TreeNode<TItem>> OnNodeClick { get; set; }
     [Parameter] public EventCallback<TreeNode<TItem>> OnNodeExpand { get; set; }
     [Parameter] public EventCallback<List<TreeNode<TItem>>> SelectedNodesChanged { get; set; }
     [Parameter] public List<TreeNode<TItem>> SelectedNodes { get; set; } = new();
-    
+
     // For single row click selection (Selectable mode)
     [Parameter] public TreeNode<TItem>? ClickedNode { get; set; }
     [Parameter] public EventCallback<TreeNode<TItem>> ClickedNodeChanged { get; set; }
-    
+
     private HashSet<TreeNode<TItem>> _selectedNodes = new();
     private TreeNode<TItem>? _clickedNode;
     private string _searchQuery = "";
     private List<TreeNode<TItem>> _filteredNodes = new();
-    
+
     private string _containerClasses => ShowTableMode ? "bw-tree-table" : "";
-    
+
     protected override void OnParametersSet()
     {
         _selectedNodes = new HashSet<TreeNode<TItem>>(SelectedNodes);
         _clickedNode = ClickedNode;
         FilterNodes();
     }
-    
+
     private void FilterNodes()
     {
         if (string.IsNullOrWhiteSpace(_searchQuery))
@@ -118,16 +103,16 @@
             _filteredNodes = FilterNodesRecursive(Nodes, _searchQuery.ToLower());
         }
     }
-    
+
     private List<TreeNode<TItem>> FilterNodesRecursive(List<TreeNode<TItem>> nodes, string query)
     {
         var result = new List<TreeNode<TItem>>();
-        
+
         foreach (var node in nodes)
         {
             var matchesTitle = node.Title.ToLower().Contains(query);
             var filteredChildren = FilterNodesRecursive(node.Children, query);
-            
+
             if (matchesTitle || filteredChildren.Any())
             {
                 var clonedNode = new TreeNode<TItem>
@@ -145,21 +130,21 @@
                 result.Add(clonedNode);
             }
         }
-        
+
         return result;
     }
-    
+
     private void OnSearchChanged()
     {
         FilterNodes();
         StateHasChanged();
     }
-    
+
     private async Task HandleNodeClick(TreeNode<TItem> node)
     {
         await OnNodeClick.InvokeAsync(node);
     }
-    
+
     private async Task HandleRowClick(TreeNode<TItem> node)
     {
         if (Selectable && !node.IsDisabled)
@@ -169,7 +154,7 @@
             StateHasChanged();
         }
     }
-    
+
     private async Task HandleNodeToggle(TreeNode<TItem> node)
     {
         // Lazy loading: if node has children but they're not loaded yet
@@ -177,7 +162,7 @@
         {
             node.IsLoading = true;
             StateHasChanged();
-            
+
             try
             {
                 var children = await OnLoadChildren(node);
@@ -188,7 +173,7 @@
                 node.IsLoading = false;
             }
         }
-        
+
         node.IsExpanded = !node.IsExpanded;
         if (node.IsExpanded)
         {
@@ -196,7 +181,7 @@
         }
         StateHasChanged();
     }
-    
+
     private async Task HandleSelectionChanged(TreeNode<TItem> node)
     {
         if (SelectionMode == BwSelectionMode.Single)
@@ -207,7 +192,7 @@
         else if (SelectionMode == BwSelectionMode.Multiple)
         {
             var wasSelected = _selectedNodes.Contains(node);
-            
+
             if (wasSelected)
             {
                 _selectedNodes.Remove(node);
@@ -225,10 +210,10 @@
                 }
             }
         }
-        
+
         await SelectedNodesChanged.InvokeAsync(_selectedNodes.ToList());
     }
-    
+
     private void SelectAllChildren(TreeNode<TItem> node)
     {
         foreach (var child in node.Children)
@@ -240,7 +225,7 @@
             }
         }
     }
-    
+
     private void DeselectAllChildren(TreeNode<TItem> node)
     {
         foreach (var child in node.Children)
@@ -249,19 +234,19 @@
             DeselectAllChildren(child);
         }
     }
-    
+
     public void ExpandAll()
     {
         SetExpandedRecursive(Nodes, true);
         StateHasChanged();
     }
-    
+
     public void CollapseAll()
     {
         SetExpandedRecursive(Nodes, false);
         StateHasChanged();
     }
-    
+
     private void SetExpandedRecursive(List<TreeNode<TItem>> nodes, bool expanded)
     {
         foreach (var node in nodes)
@@ -271,4 +256,3 @@
         }
     }
 }
-

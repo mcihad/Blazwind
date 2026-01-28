@@ -5,10 +5,19 @@
 @implements IAsyncDisposable
 @inherits BwBase
 
+@{
+    var colorName = Color.ToString().ToLower();
+    var brushFillClass = $"bw-brush-fill-{colorName}";
+    var handleClass = $"bw-brush-handle bw-brush-handle-{colorName}";
+    var barActiveClass = $"bw-brush-bar-active-{colorName}";
+    var iconColorClass = $"bw-brush-icon-{colorName}";
+    var presetActiveClass = $"bw-brush-preset-active-{colorName}";
+}
+
 <div class="@CombineClasses("bw-time-range-brush")" style="@Style" id="@_elementId" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">@Label</label>
+        <label class="bw-brush-label">@Label</label>
     }
 
     @* Activity/Usage Chart *@
@@ -19,7 +28,7 @@
             {
                 var height = MaxValue > 0 ? (point.Value / MaxValue) * 100 : 0;
                 var isInRange = IsTimeInRange(point.Time);
-                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? GetBarActiveClass() : "bg-gray-200 dark:bg-gray-700")"
+                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? barActiveClass : "bg-gray-200 dark:bg-gray-700")"
                     style="height: @(Math.Max(2, height))%;" title="@point.Time.ToString(@"hh\:mm") - @point.Value">
                 </div>
             }
@@ -27,35 +36,28 @@
     }
 
     @* Brush Track *@
-    <div class="bw-brush-track relative h-8 rounded-lg @GetTrackBgClass() overflow-hidden cursor-pointer select-none">
+    <div class="bw-brush-track border border-gray-200 dark:border-gray-700">
         @* Inactive areas *@
-        <div class="absolute inset-y-0 left-0 bg-gray-300/50 dark:bg-gray-900/60 transition-all"
-            style="width: @GetInvariantPercent(StartPercent)%;"></div>
-        <div class="absolute inset-y-0 right-0 bg-gray-300/50 dark:bg-gray-900/60 transition-all"
-            style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
+        <div class="bw-brush-inactive left-0" style="width: @GetInvariantPercent(StartPercent)%;"></div>
+        <div class="bw-brush-inactive right-0" style="width: @GetInvariantPercent(100 - EndPercent)%;"></div>
 
         @* Selection Brush *@
-        <div class="bw-brush-selection absolute inset-y-0 cursor-grab active:cursor-grabbing
-                    @GetBrushBgClass() shadow hover:shadow-md transition-all"
+        <div class="bw-brush-selection @brushFillClass"
             style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
-            <div class="bw-brush-handle-left absolute left-0 inset-y-0 w-2.5 cursor-ew-resize @GetHandleClass()
-                        flex items-center justify-center rounded-l">
+            <div class="bw-brush-handle-left @handleClass">
                 <div class="w-0.5 h-4 bg-white/50 rounded-full"></div>
             </div>
 
             @* Grip *@
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
-                <div class="flex gap-0.5">
-                    <div class="w-0.5 h-2.5 bg-white rounded-full"></div>
-                    <div class="w-0.5 h-2.5 bg-white rounded-full"></div>
-                </div>
+            <div class="bw-brush-grip">
+                <div class="bw-brush-grip-bar" style="height: 0.625rem;"></div>
+                <div class="bw-brush-grip-bar" style="height: 0.625rem;"></div>
             </div>
 
             @* Right Handle *@
-            <div class="bw-brush-handle-right absolute right-0 inset-y-0 w-2.5 cursor-ew-resize @GetHandleClass()
-                        flex items-center justify-center rounded-r">
+            <div class="bw-brush-handle-right @handleClass">
                 <div class="w-0.5 h-4 bg-white/50 rounded-full"></div>
             </div>
         </div>
@@ -86,7 +88,7 @@
         <div class="mt-5 flex items-center justify-center gap-3">
             <div
                 class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <i class="fa-regular fa-clock @GetIconColorClass() text-xs"></i>
+                <i class="fa-regular fa-clock @iconColorClass text-xs"></i>
                 <span
                     class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300">@CurrentStartTime.ToString(@"hh\:mm")</span>
             </div>
@@ -96,7 +98,7 @@
             </div>
             <div
                 class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <i class="fa-regular fa-clock @GetIconColorClass() text-xs"></i>
+                <i class="fa-regular fa-clock @iconColorClass text-xs"></i>
                 <span
                     class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300">@CurrentEndTime.ToString(@"hh\:mm")</span>
             </div>
@@ -111,7 +113,7 @@
             {
                 <button type="button"
                     class="px-2 py-1 text-xs font-medium rounded-md transition-all
-                                                       @(IsPresetActive(preset) ? GetActivePresetClass() : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300")"
+                                                               @(IsPresetActive(preset) ? presetActiveClass : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300")"
                     @onclick="() => ApplyPreset(preset)">
                     @preset.Label
                 </button>
@@ -144,7 +146,7 @@
     private double _endPercent;
 
     private bool _isDragging;
-    
+
     private TimeSpan _prevStart;
     private TimeSpan _prevEnd;
     private TimeSpan _prevMin;
@@ -157,7 +159,7 @@
     100))));
     private TimeSpan CurrentEndTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (_endPercent / 100))));
     private double MaxValue => Data?.Max(x => x.Value) ?? 0;
-    
+
     protected override bool ShouldRender() => !_isDragging;
 
     private string DurationText
@@ -176,7 +178,7 @@
         _elementId = Id ?? $"bw-time-brush-{Guid.NewGuid():N}";
         InitializeState();
     }
-    
+
     private void InitializeState()
     {
         if (TotalMinutes > 0)
@@ -184,7 +186,7 @@
             _startPercent = ((StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
             _endPercent = ((EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
         }
-        
+
         _prevStart = StartTime;
         _prevEnd = EndTime;
         _prevMin = MinTime;
@@ -196,9 +198,9 @@
         if (_isDragging) return;
 
         bool paramsChanged = StartTime != _prevStart ||
-                             EndTime != _prevEnd ||
-                             MinTime != _prevMin ||
-                             MaxTime != _prevMax;
+        EndTime != _prevEnd ||
+        MinTime != _prevMin ||
+        MaxTime != _prevMax;
 
         if (!paramsChanged) return;
 
@@ -213,7 +215,7 @@
         _prevMin = MinTime;
         _prevMax = MaxTime;
     }
-    
+
     [JSInvokable]
     public void HandleDragStart()
     {
@@ -296,66 +298,8 @@
         return TimeSpan.FromMinutes(totalMinutes);
     }
 
-    private string GetInvariantPercent(double value) => 
-        value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
-
-    private string GetTrackBgClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-100 dark:bg-blue-950",
-        BwColor.Success => "bg-green-100 dark:bg-green-950",
-        BwColor.Danger => "bg-red-100 dark:bg-red-950",
-        BwColor.Warning => "bg-amber-100 dark:bg-amber-950",
-        BwColor.Info => "bg-cyan-100 dark:bg-cyan-950",
-        _ => "bg-blue-100 dark:bg-blue-950"
-    };
-
-    private string GetBrushBgClass() => Color switch
-    {
-        BwColor.Primary => "bg-gradient-to-r from-blue-500 to-blue-600",
-        BwColor.Success => "bg-gradient-to-r from-green-500 to-green-600",
-        BwColor.Danger => "bg-gradient-to-r from-red-500 to-red-600",
-        BwColor.Warning => "bg-gradient-to-r from-amber-500 to-amber-600",
-        BwColor.Info => "bg-gradient-to-r from-cyan-500 to-cyan-600",
-        _ => "bg-gradient-to-r from-blue-500 to-blue-600"
-    };
-
-    private string GetHandleClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-700",
-        BwColor.Success => "bg-green-700",
-        BwColor.Danger => "bg-red-700",
-        BwColor.Warning => "bg-amber-700",
-        BwColor.Info => "bg-cyan-700",
-        _ => "bg-blue-700"
-    };
-
-    private string GetBarActiveClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-400 dark:bg-blue-500",
-        BwColor.Success => "bg-green-400 dark:bg-green-500",
-        BwColor.Danger => "bg-red-400 dark:bg-red-500",
-        BwColor.Warning => "bg-amber-400 dark:bg-amber-500",
-        BwColor.Info => "bg-cyan-400 dark:bg-cyan-500",
-        _ => "bg-blue-400 dark:bg-blue-500"
-    };
-
-    private string GetIconColorClass() => Color switch
-    {
-        BwColor.Primary => "text-blue-500",
-        BwColor.Success => "text-green-500",
-        BwColor.Danger => "text-red-500",
-        BwColor.Warning => "text-amber-500",
-        BwColor.Info => "text-cyan-500",
-        _ => "text-blue-500"
-    };
-
-    private string GetActivePresetClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-500 text-white shadow-sm",
-        BwColor.Success => "bg-green-500 text-white shadow-sm",
-        BwColor.Danger => "bg-red-500 text-white shadow-sm",
-        _ => "bg-blue-500 text-white shadow-sm"
-    };
+    private string GetInvariantPercent(double value) =>
+    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
 
     public async ValueTask DisposeAsync()
     {

@@ -2,10 +2,16 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
+@{
+    var colorName = Color.ToString().ToLower();
+    var focusClass = $"bw-range-focus-{colorName}";
+    var durationClass = $"bw-range-duration-{colorName}";
+}
+
 <div class="@CombineClasses("bw-date-range")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">@Label</label>
+        <label class="bw-range-input-label">@Label</label>
     }
 
     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -17,7 +23,7 @@
                 <input type="date" min="@Min?.ToString("yyyy-MM-dd")" max="@End?.ToString("yyyy-MM-dd")"
                     value="@Start?.ToString("yyyy-MM-dd")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
                               bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
-                              text-gray-900 dark:text-white @GetFocusRingClass()" @onchange="HandleStartChange" />
+                              text-gray-900 dark:text-white @focusClass" @onchange="HandleStartChange" />
             </div>
         </div>
 
@@ -34,7 +40,7 @@
                 <input type="date" min="@Start?.ToString("yyyy-MM-dd")" max="@Max?.ToString("yyyy-MM-dd")"
                     value="@End?.ToString("yyyy-MM-dd")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
                               bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
-                              text-gray-900 dark:text-white @GetFocusRingClass()" @onchange="HandleEndChange" />
+                              text-gray-900 dark:text-white @focusClass" @onchange="HandleEndChange" />
             </div>
         </div>
     </div>
@@ -43,7 +49,7 @@
     @if (ShowDuration && Start.HasValue && End.HasValue)
     {
         <div class="mt-2 text-center">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-full @GetDurationBgClass()">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-full @durationClass">
                 <i class="fa-regular fa-clock text-xs"></i>
                 <span>@GetDurationText()</span>
             </span>
@@ -142,39 +148,14 @@
         return days == 1 ? "1 gün" : $"{days} gün";
     }
 
-    private string GetFocusRingClass() => Color switch
-    {
-        BwColor.Primary => "focus:ring-blue-500/30 focus:border-blue-500",
-        BwColor.Success => "focus:ring-green-500/30 focus:border-green-500",
-        BwColor.Danger => "focus:ring-red-500/30 focus:border-red-500",
-        BwColor.Warning => "focus:ring-yellow-500/30 focus:border-yellow-500",
-        BwColor.Info => "focus:ring-cyan-500/30 focus:border-cyan-500",
-        _ => "focus:ring-blue-500/30 focus:border-blue-500"
-    };
-
-    private string GetDurationBgClass() => Color switch
-    {
-        BwColor.Primary => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-        BwColor.Success => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-        BwColor.Danger => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
-        BwColor.Warning => "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-        BwColor.Info => "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
-        _ => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-    };
-
     private string GetPresetClass(string preset)
     {
-        var baseClass = "px-2.5 py-1 text-xs rounded-md transition-colors ";
+        var colorName = Color.ToString().ToLower();
+        var baseClass = "bw-range-preset ";
         if (_activePreset == preset)
         {
-            return baseClass + (Color switch
-            {
-                BwColor.Primary => "bg-blue-500 text-white",
-                BwColor.Success => "bg-green-500 text-white",
-                BwColor.Danger => "bg-red-500 text-white",
-                _ => "bg-blue-500 text-white"
-            });
+            return baseClass + $"bw-range-preset-active-{colorName}";
         }
-        return baseClass + "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600";
+        return baseClass;
     }
 }
