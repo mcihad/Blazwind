@@ -1,8 +1,6 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Shared
 @using Microsoft.AspNetCore.Components.Forms
-@inherits BwBaseInput<List<IBrowserFile>>
+@inherits BwBaseInput<List<Microsoft.AspNetCore.Components.Forms.IBrowserFile>>
 
 @{
     var hasLabel = !string.IsNullOrEmpty(Label);
@@ -14,7 +12,7 @@
     {
         <label class="bw-label mb-1.5">@Label</label>
     }
-    
+
     @* Drop Zone *@
     <div class="border-2 border-dashed rounded-lg p-6 text-center transition-colors
         @(_isDragging ? "border-[var(--bw-color-primary)] bg-[var(--bw-color-primary-soft-bg)]" : "border-[var(--bw-color-border)] hover:border-[var(--bw-color-border-strong)] hover:bg-[var(--bw-color-surface-muted)]")
@@ -24,9 +22,10 @@
          @ondragleave="OnDragLeave"
          @ondrop="OnDrop"
          @onclick="TriggerFileInput">
-        
+
         <div class="flex flex-col items-center justify-center py-8 px-4 text-center">
-            <div class="w-12 h-12 rounded-full bg-[var(--bw-color-primary-soft-bg)] flex items-center justify-center mb-3">
+            <div
+                class="w-12 h-12 rounded-full bg-[var(--bw-color-primary-soft-bg)] flex items-center justify-center mb-3">
                 <i class="fa-solid fa-cloud-arrow-up text-[var(--bw-color-primary)] text-xl"></i>
             </div>
             <p class="mt-2 text-sm text-[var(--bw-color-text-secondary)]">
@@ -43,15 +42,15 @@
                 }
             </p>
         </div>
-        
+
         <InputFile @ref="_inputFile"
                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                    OnChange="OnFilesSelected"
                    accept="@Accept"
                    multiple="@Multiple"
-                   disabled="@IsDisabled" />
+                   disabled="@IsDisabled"/>
     </div>
-    
+
     @* File List *@
     @if (ShowPreview && hasFiles)
     {
@@ -59,31 +58,32 @@
             @foreach (var file in Files)
             {
                 var fileInfo = file;
-                <div class="flex items-center justify-between p-3 bg-[var(--bw-color-surface-muted)] rounded-lg border border-[var(--bw-color-border)]">
-                <div class="flex items-center space-x-3 overflow-hidden">
-                    <div class="flex-shrink-0">
-                        @if (IsImageFile(file.Name))
-                        {
-                            <i class="fa-solid fa-image text-blue-500 text-xl"></i>
-                        }
-                        else if (IsPdfFile(file.Name))
-                        {
-                            <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
-                        }
-                        else
-                        {
-                            <i class="fa-solid fa-file text-gray-400 dark:text-gray-500 text-xl"></i>
-                        }
-                    </div>
-                    <div class="min-w-0">
-                        <p class="bw-label truncate">
-                            @file.Name
-                        </p>
-                        <p class="text-xs text-[var(--bw-color-text-muted)]">
-                            @FormatFileSize(file.Size)
-                        </p>
-                    </div>
-                </div>    @* Remove button *@
+                <div
+                    class="flex items-center justify-between p-3 bg-[var(--bw-color-surface-muted)] rounded-lg border border-[var(--bw-color-border)]">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <div class="flex-shrink-0">
+                            @if (IsImageFile(file.Name))
+                            {
+                                <i class="fa-solid fa-image text-blue-500 text-xl"></i>
+                            }
+                            else if (IsPdfFile(file.Name))
+                            {
+                                <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-file text-gray-400 dark:text-gray-500 text-xl"></i>
+                            }
+                        </div>
+                        <div class="min-w-0">
+                            <p class="bw-label truncate">
+                                @file.Name
+                            </p>
+                            <p class="text-xs text-[var(--bw-color-text-muted)]">
+                                @FormatFileSize(file.Size)
+                            </p>
+                        </div>
+                    </div> @* Remove button *@
                     <button type="button"
                             class="text-gray-400 hover:text-red-500 transition-colors p-1"
                             @onclick="() => RemoveFile(fileInfo)"
@@ -94,12 +94,12 @@
             }
         </div>
     }
-    
+
     @if (!string.IsNullOrEmpty(HelperText))
     {
         <p class="bw-helper-text">@HelperText</p>
     }
-    
+
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
         <p class="bw-error-text">
@@ -110,33 +110,41 @@
 </div>
 
 @code {
+
     /// <summary>Selected files</summary>
-    [Parameter] public List<IBrowserFile> Files 
-    { 
-        get => Value ?? new List<IBrowserFile>(); 
+    [Parameter]
+    public List<IBrowserFile> Files
+    {
+        get => Value ?? new List<IBrowserFile>();
         set => Value = value;
     }
-    
-    [Parameter] public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
-    
-    /// <summary>Accepted file types (e.g., ".jpg,.png,.pdf")</summary>
-    [Parameter] public string? Accept { get; set; }
-    
-    /// <summary>Maximum file size in bytes</summary>
-    [Parameter] public long? MaxFileSize { get; set; }
-    
-    /// <summary>Maximum number of files</summary>
-    [Parameter] public int? MaxFiles { get; set; }
-    
-    /// <summary>Allow multiple files</summary>
-    [Parameter] public bool Multiple { get; set; } = true;
-    
-    /// <summary>Show file preview list</summary>
-    [Parameter] public bool ShowPreview { get; set; } = true;
-    
 
-    
-    [Parameter] public EventCallback<IReadOnlyList<IBrowserFile>> OnFileSelected { get; set; }
+    [Parameter]
+    public EventCallback<List<IBrowserFile>> FilesChanged { get; set; }
+
+    /// <summary>Accepted file types (e.g., ".jpg,.png,.pdf")</summary>
+    [Parameter]
+    public string? Accept { get; set; }
+
+    /// <summary>Maximum file size in bytes</summary>
+    [Parameter]
+    public long? MaxFileSize { get; set; }
+
+    /// <summary>Maximum number of files</summary>
+    [Parameter]
+    public int? MaxFiles { get; set; }
+
+    /// <summary>Allow multiple files</summary>
+    [Parameter]
+    public bool Multiple { get; set; } = true;
+
+    /// <summary>Show file preview list</summary>
+    [Parameter]
+    public bool ShowPreview { get; set; } = true;
+
+
+    [Parameter]
+    public EventCallback<IReadOnlyList<IBrowserFile>> OnFileSelected { get; set; }
 
     private InputFile? _inputFile;
     private bool _isDragging;
@@ -149,16 +157,16 @@
     private async Task OnFilesSelected(InputFileChangeEventArgs e)
     {
         var selectedFiles = e.GetMultipleFiles(MaxFiles ?? 10).ToList();
-        
+
         foreach (var file in selectedFiles)
         {
             if (MaxFileSize.HasValue && file.Size > MaxFileSize.Value) continue;
             if (!Multiple && Files.Count > 0) Files.Clear();
             if (MaxFiles.HasValue && Files.Count >= MaxFiles) break;
-            
+
             Files.Add(file);
         }
-        
+
         await FilesChanged.InvokeAsync(Files);
         await ValueChanged.InvokeAsync(Files);
         await OnFileSelected.InvokeAsync(selectedFiles);
@@ -171,10 +179,25 @@
         await ValueChanged.InvokeAsync(Files);
     }
 
-    private void OnDragEnter(DragEventArgs e) => _isDragging = true;
-    private void OnDragOver(DragEventArgs e) => e.DataTransfer.DropEffect = "copy";
-    private void OnDragLeave(DragEventArgs e) => _isDragging = false;
-    private void OnDrop(DragEventArgs e) => _isDragging = false;
+    private void OnDragEnter(DragEventArgs e)
+    {
+        _isDragging = true;
+    }
+
+    private void OnDragOver(DragEventArgs e)
+    {
+        e.DataTransfer.DropEffect = "copy";
+    }
+
+    private void OnDragLeave(DragEventArgs e)
+    {
+        _isDragging = false;
+    }
+
+    private void OnDrop(DragEventArgs e)
+    {
+        _isDragging = false;
+    }
 
     private string FormatFileSize(long bytes)
     {
@@ -183,13 +206,18 @@
         return $"{bytes / (1024.0 * 1024):0.#} MB";
     }
 
-    private bool IsImageFile(string name) => 
-        name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
-        name.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-        name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-        name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) ||
-        name.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+    private bool IsImageFile(string name)
+    {
+        return name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+               name.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+               name.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+               name.EndsWith(".gif", StringComparison.OrdinalIgnoreCase) ||
+               name.EndsWith(".webp", StringComparison.OrdinalIgnoreCase);
+    }
 
-    private bool IsPdfFile(string name) => 
-        name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+    private bool IsPdfFile(string name)
+    {
+        return name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase);
+    }
+
 }

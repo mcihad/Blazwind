@@ -23,34 +23,34 @@ OTP (One Time Password) veya PIN kodu girişi için özelleştirilmiş input bil
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `string` | `""` | Girilen tüm kod (Two-way binding). |
-| `Length` | `int` | `6` | Karakter sayısı (kutu sayısı). |
-| `NumericOnly` | `bool` | `true` | Sadece rakam girişine izin verir. |
-| `IsMasked` | `bool` | `false` | Girişi gizler (password tipi). |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `Color` | `BwColor` | `Primary` | Odaklanıldığındaki vurgu rengi. |
-| `Variant` | `BwVariant` | `Outline` | Görünüm varyantı (`Filled`, `Outline`). |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
-| `AutoFocus` | `bool` | `false` | İlk kutuya otomatik odaklanır. |
-| `HasError` | `bool` | `false` | Hata durumunu görselleştirir. |
-| `ErrorMessage` | `string` | `null` | Hata mesajı. |
-| `HelperText` | `string` | `null` | Yardımcı metin. |
+| Parametre      | Tip         | Varsayılan | Açıklama                                |
+|:---------------|:------------|:-----------|:----------------------------------------|
+| `Value`        | `string`    | `""`       | Girilen tüm kod (Two-way binding).      |
+| `Length`       | `int`       | `6`        | Karakter sayısı (kutu sayısı).          |
+| `NumericOnly`  | `bool`      | `true`     | Sadece rakam girişine izin verir.       |
+| `IsMasked`     | `bool`      | `false`    | Girişi gizler (password tipi).          |
+| `Label`        | `string`    | `null`     | Alan etiketi.                           |
+| `Size`         | `BwSize`    | `Medium`   | Boyut (`Small`, `Medium`, `Large`).     |
+| `Color`        | `BwColor`   | `Primary`  | Odaklanıldığındaki vurgu rengi.         |
+| `Variant`      | `BwVariant` | `Outline`  | Görünüm varyantı (`Filled`, `Outline`). |
+| `IsDisabled`   | `bool`      | `false`    | Devre dışı bırakır.                     |
+| `AutoFocus`    | `bool`      | `false`    | İlk kutuya otomatik odaklanır.          |
+| `HasError`     | `bool`      | `false`    | Hata durumunu görselleştirir.           |
+| `ErrorMessage` | `string`    | `null`     | Hata mesajı.                            |
+| `HelperText`   | `string`    | `null`     | Yardımcı metin.                         |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `string` | Her karakter girişinde tetiklenir (Two-way binding). |
-| `OnComplete` | `string` | Tüm kutular dolduğunda tetiklenir. |
-| `OnFocus` | `index: int` | Bir kutuya odaklanıldığında tetiklenir. |
+| Olay           | Paylaşım (Payload) | Açıklama                                             |
+|:---------------|:-------------------|:-----------------------------------------------------|
+| `ValueChanged` | `string`           | Her karakter girişinde tetiklenir (Two-way binding). |
+| `OnComplete`   | `string`           | Tüm kutular dolduğunda tetiklenir.                   |
+| `OnFocus`      | `index: int`       | Bir kutuya odaklanıldığında tetiklenir.              |
 
 ## Metotlar (Methods)
 
-| Metot | Açıklama |
-| :--- | :--- |
+| Metot     | Açıklama               |
+|:----------|:-----------------------|
 | `Clear()` | Tüm kutuları temizler. |
 
 ## Örnekler

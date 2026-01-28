@@ -7,18 +7,34 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public string TagName { get; set; } = "div";
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string TagName { get; set; } = "div";
 
     // EdgeInsets-like API
-    [Parameter] public BwSpacing? All { get; set; }
-    [Parameter] public BwSpacing? Horizontal { get; set; }
-    [Parameter] public BwSpacing? Vertical { get; set; }
-    [Parameter] public BwSpacing? Top { get; set; }
-    [Parameter] public BwSpacing? Bottom { get; set; }
-    [Parameter] public BwSpacing? Left { get; set; }
-    [Parameter] public BwSpacing? Right { get; set; }
+    [Parameter]
+    public BwSpacing? All { get; set; }
+
+    [Parameter]
+    public BwSpacing? Horizontal { get; set; }
+
+    [Parameter]
+    public BwSpacing? Vertical { get; set; }
+
+    [Parameter]
+    public BwSpacing? Top { get; set; }
+
+    [Parameter]
+    public BwSpacing? Bottom { get; set; }
+
+    [Parameter]
+    public BwSpacing? Left { get; set; }
+
+    [Parameter]
+    public BwSpacing? Right { get; set; }
 
     private string _classes => BuildClasses();
 
@@ -37,6 +53,7 @@
         {
             classes.Add($"bw-mx-{GetSize(Horizontal.Value)}");
         }
+
         if (Vertical.HasValue)
         {
             classes.Add($"bw-my-{GetSize(Vertical.Value)}");
@@ -47,14 +64,17 @@
         {
             classes.Add($"bw-mt-{GetSize(Top.Value)}");
         }
+
         if (Bottom.HasValue)
         {
             classes.Add($"bw-mb-{GetSize(Bottom.Value)}");
         }
+
         if (Left.HasValue)
         {
             classes.Add($"bw-ml-{GetSize(Left.Value)}");
         }
+
         if (Right.HasValue)
         {
             classes.Add($"bw-mr-{GetSize(Right.Value)}");
@@ -63,15 +83,19 @@
         return string.Join(" ", classes);
     }
 
-    private string GetSize(BwSpacing spacing) => spacing switch
+    private string GetSize(BwSpacing spacing)
     {
-        BwSpacing.None => "none",
-        BwSpacing.Xs => "xs",
-        BwSpacing.Sm => "sm",
-        BwSpacing.Md => "md",
-        BwSpacing.Lg => "lg",
-        BwSpacing.Xl => "xl",
-        BwSpacing.Xxl => "xxl",
-        _ => "md"
-    };
+        return spacing switch
+        {
+            BwSpacing.None => "none",
+            BwSpacing.Xs => "xs",
+            BwSpacing.Sm => "sm",
+            BwSpacing.Md => "md",
+            BwSpacing.Lg => "lg",
+            BwSpacing.Xl => "xl",
+            BwSpacing.Xxl => "xxl",
+            _ => "md"
+        };
+    }
+
 }

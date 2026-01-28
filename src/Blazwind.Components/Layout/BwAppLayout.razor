@@ -5,7 +5,7 @@
 @{
     var hasSidebar = Sidebar != null;
     var marginClass = "";
-    
+
     if (hasSidebar)
     {
         marginClass = SidebarPosition == BwDirection.Right ? "mr-72" : "ml-72";
@@ -29,7 +29,7 @@
             <header class="bw-app-header px-2">
                 @if (hasSidebar)
                 {
-                    <BwSidebarToggle />
+                    <BwSidebarToggle/>
                 }
                 @Header
             </header>
@@ -57,7 +57,7 @@
             <header class="bw-app-header px-3">
                 @if (hasSidebar)
                 {
-                    <BwSidebarToggle />
+                    <BwSidebarToggle/>
                 }
                 @Header
             </header>
@@ -79,10 +79,20 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? Sidebar { get; set; }
-    [Parameter] public RenderFragment? Header { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Footer { get; set; }
 
-    [Parameter] public BwDirection SidebarPosition { get; set; } = BwDirection.Left;
+    [Parameter]
+    public RenderFragment? Sidebar { get; set; }
+
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
+    [Parameter]
+    public BwDirection SidebarPosition { get; set; } = BwDirection.Left;
+
 }

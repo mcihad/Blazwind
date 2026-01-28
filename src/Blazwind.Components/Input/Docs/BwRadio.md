@@ -43,7 +43,7 @@ Components used to create a single-selection group. Supports a dynamic list via 
 ### BwRadioGroup (Group-Based)
 
 | Parameter      | Type                       | Default    | Description                               |
-| :------------- | :------------------------- | :--------- | :---------------------------------------- |
+|:---------------|:---------------------------|:-----------|:------------------------------------------|
 | `Value`        | `TValue`                   | -          | Selected value (two-way binding).         |
 | `Data`         | `IEnumerable<TItem>`       | `null`     | Dynamic data source.                      |
 | `ItemText`     | `Func<TItem, string>`      | -          | Display text selector.                    |
@@ -59,7 +59,7 @@ Components used to create a single-selection group. Supports a dynamic list via 
 ### BwRadio (Single)
 
 | Parameter    | Type     | Default | Description                            |
-| :----------- | :------- | :------ | :------------------------------------- |
+|:-------------|:---------|:--------|:---------------------------------------|
 | `Value`      | `TValue` | -       | Value represented by the radio button. |
 | `Label`      | `string` | `null`  | Display label.                         |
 | `IsDisabled` | `bool`   | `false` | Disables the individual radio button.  |
@@ -67,6 +67,6 @@ Components used to create a single-selection group. Supports a dynamic list via 
 ## Events
 
 | Event          | Payload  | Description                                             |
-| :------------- | :------- | :------------------------------------------------------ |
+|:---------------|:---------|:--------------------------------------------------------|
 | `ValueChanged` | `TValue` | Triggered when the selection changes (two-way binding). |
 | `OnChange`     | `TValue` | Triggered after the selection changes.                  |

@@ -7,6 +7,7 @@ This document explains how to use the BwDataGrid component with Entity Framework
 ### Server-Side Mode
 
 Server-side mode is optimized for large datasets. In this mode:
+
 - **Filtering**, **sorting**, and **pagination** operations occur at the database level.
 - Only the necessary records are fetched, rather than the entire dataset.
 - Performance is significantly improved.
@@ -160,21 +161,21 @@ var totalCount = dbContext.Employees.GetTotalCount(state);
 
 ## Supported Filter Operators
 
-| Operator | Description | Supported Types |
-|----------|----------|-------------------|
-| `Contains` | Contains substring | string |
-| `NotContains` | Does not contain substring | string |
-| `StartsWith` | Starts with | string |
-| `EndsWith` | Ends with | string |
-| `Equals` | Equals | All |
-| `NotEquals` | Not equals | All |
-| `GreaterThan` | Greater than | Numeric, Date |
-| `GreaterThanOrEqual` | Greater than or equal | Numeric, Date |
-| `LessThan` | Less than | Numeric, Date |
-| `LessThanOrEqual` | Less than or equal | Numeric, Date |
-| `Between` | Between two values | Numeric, Date |
-| `IsNull` | Is null | Nullable types |
-| `IsNotNull` | Is not null | Nullable types |
+| Operator             | Description                | Supported Types |
+|----------------------|----------------------------|-----------------|
+| `Contains`           | Contains substring         | string          |
+| `NotContains`        | Does not contain substring | string          |
+| `StartsWith`         | Starts with                | string          |
+| `EndsWith`           | Ends with                  | string          |
+| `Equals`             | Equals                     | All             |
+| `NotEquals`          | Not equals                 | All             |
+| `GreaterThan`        | Greater than               | Numeric, Date   |
+| `GreaterThanOrEqual` | Greater than or equal      | Numeric, Date   |
+| `LessThan`           | Less than                  | Numeric, Date   |
+| `LessThanOrEqual`    | Less than or equal         | Numeric, Date   |
+| `Between`            | Between two values         | Numeric, Date   |
+| `IsNull`             | Is null                    | Nullable types  |
+| `IsNotNull`          | Is not null                | Nullable types  |
 
 ---
 

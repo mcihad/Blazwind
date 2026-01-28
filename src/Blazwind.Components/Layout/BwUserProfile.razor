@@ -1,11 +1,12 @@
 @namespace Blazwind.Components.Layout
-@using Blazwind.Components.Shared
 @using Blazwind.Components.Avatar
+@using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses("bw-user-profile")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="OnClick">
-    <BwAvatar Name="@Name" Src="@Src" StatusColor="@StatusColor" Size="@Size" />
-    
+<div class="@CombineClasses("bw-user-profile")" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     @onclick="OnClick">
+    <BwAvatar Name="@Name" Src="@Src" StatusColor="@StatusColor" Size="@Size"/>
+
     <div class="flex flex-col min-w-0 hidden sm:block">
         <div class="bw-user-profile-name">@Name</div>
         @if (!string.IsNullOrEmpty(Role))
@@ -13,15 +14,28 @@
             <div class="bw-user-profile-role">@Role</div>
         }
     </div>
-    
+
     <i class="fa-solid fa-chevron-down bw-user-profile-chevron"></i>
 </div>
 
 @code {
-    [Parameter] public string Name { get; set; } = "User";
-    [Parameter] public string? Role { get; set; }
-    [Parameter] public string? Src { get; set; }
-    [Parameter] public BwColor? StatusColor { get; set; } = BwColor.Success;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } = "User";
+
+    [Parameter]
+    public string? Role { get; set; }
+
+    [Parameter]
+    public string? Src { get; set; }
+
+    [Parameter]
+    public BwColor? StatusColor { get; set; } = BwColor.Success;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
 }

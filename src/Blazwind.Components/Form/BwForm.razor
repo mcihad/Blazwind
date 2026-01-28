@@ -9,8 +9,8 @@
     <CascadingValue Value="@LabelPosition" IsFixed="true">
         <CascadingValue Value="@Density" IsFixed="true">
             <CascadingValue Value="@HelpTextMode" IsFixed="true">
-                <form @ref="_formRef" 
-                      class="@CombineClasses($"bw-form")" 
+                <form @ref="_formRef"
+                      class="@CombineClasses("bw-form")"
                       style="@Style" id="@Id" @attributes="AdditionalAttributes"
                       @onsubmit="HandleSubmit"
                       @onsubmit:preventDefault>
@@ -25,39 +25,48 @@
     private ElementReference _formRef;
     private EditContext? _editContext;
     private ValidationMessageStore? _messageStore;
-    
-    /// <summary>Model object for form binding</summary>
-    [Parameter] public object? Model { get; set; }
-    
-    /// <summary>Existing EditContext (alternative to Model)</summary>
-    [Parameter] public EditContext? EditContext { get; set; }
-    
-    /// <summary>Default label position for all fields</summary>
-    [Parameter] public BwLabelPosition LabelPosition { get; set; } = BwLabelPosition.Top;
-    
-    /// <summary>Form density/spacing mode</summary>
-    [Parameter] public BwFormDensity Density { get; set; } = BwFormDensity.Normal;
-    
 
-    
+    /// <summary>Model object for form binding</summary>
+    [Parameter]
+    public object? Model { get; set; }
+
+    /// <summary>Existing EditContext (alternative to Model)</summary>
+    [Parameter]
+    public EditContext? EditContext { get; set; }
+
+    /// <summary>Default label position for all fields</summary>
+    [Parameter]
+    public BwLabelPosition LabelPosition { get; set; } = BwLabelPosition.Top;
+
+    /// <summary>Form density/spacing mode</summary>
+    [Parameter]
+    public BwFormDensity Density { get; set; } = BwFormDensity.Normal;
+
+
     /// <summary>Child content (form fields)</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Callback when form is submitted with valid data</summary>
-    [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
-    
+    [Parameter]
+    public EventCallback<EditContext> OnValidSubmit { get; set; }
+
     /// <summary>Callback when form is submitted with invalid data</summary>
-    [Parameter] public EventCallback<EditContext> OnInvalidSubmit { get; set; }
-    
+    [Parameter]
+    public EventCallback<EditContext> OnInvalidSubmit { get; set; }
+
     /// <summary>Callback for any submit (before validation)</summary>
-    [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }
-    
+    [Parameter]
+    public EventCallback<EditContext> OnSubmit { get; set; }
+
     /// <summary>Enable DataAnnotations validation</summary>
-    [Parameter] public bool EnableDataAnnotationsValidation { get; set; } = true;
-    
+    [Parameter]
+    public bool EnableDataAnnotationsValidation { get; set; } = true;
+
     /// <summary>Default help text display mode for all fields</summary>
-    [Parameter] public BwHelpTextMode HelpTextMode { get; set; } = BwHelpTextMode.Inline;
-    
+    [Parameter]
+    public BwHelpTextMode HelpTextMode { get; set; } = BwHelpTextMode.Inline;
+
     protected override void OnParametersSet()
     {
         if (EditContext != null)
@@ -70,7 +79,7 @@
             {
                 _editContext = new EditContext(Model);
                 _messageStore = new ValidationMessageStore(_editContext);
-                
+
                 if (EnableDataAnnotationsValidation)
                 {
                     _editContext.EnableDataAnnotationsValidation(ServiceProvider);
@@ -83,15 +92,15 @@
             _messageStore = null;
         }
     }
-    
+
     private async Task HandleSubmit()
     {
         if (_editContext == null) return;
-        
+
         await OnSubmit.InvokeAsync(_editContext);
-        
+
         var isValid = _editContext.Validate();
-        
+
         if (isValid)
         {
             await OnValidSubmit.InvokeAsync(_editContext);
@@ -101,22 +110,22 @@
             await OnInvalidSubmit.InvokeAsync(_editContext);
         }
     }
-    
+
     /// <summary>Add a validation error to a specific field</summary>
     public void AddError(string fieldName, string message)
     {
         if (_editContext == null || _messageStore == null) return;
-        
+
         var fieldIdentifier = _editContext.Field(fieldName);
         _messageStore.Add(fieldIdentifier, message);
         _editContext.NotifyValidationStateChanged();
     }
-    
+
     /// <summary>Add validation errors from FluentValidation or external source</summary>
     public void AddErrors(IDictionary<string, string[]> errors)
     {
         if (_editContext == null || _messageStore == null) return;
-        
+
         foreach (var error in errors)
         {
             var fieldIdentifier = _editContext.Field(error.Key);
@@ -125,36 +134,38 @@
                 _messageStore.Add(fieldIdentifier, message);
             }
         }
+
         _editContext.NotifyValidationStateChanged();
     }
-    
+
     /// <summary>Clear all validation errors</summary>
     public void ClearErrors()
     {
         _messageStore?.Clear();
         _editContext?.NotifyValidationStateChanged();
     }
-    
+
     /// <summary>Clear errors for a specific field</summary>
     public void ClearErrors(string fieldName)
     {
         if (_editContext == null || _messageStore == null) return;
-        
+
         var fieldIdentifier = _editContext.Field(fieldName);
         _messageStore.Clear(fieldIdentifier);
         _editContext.NotifyValidationStateChanged();
     }
-    
+
     /// <summary>Validate the form manually</summary>
     public bool Validate()
     {
         return _editContext?.Validate() ?? false;
     }
-    
+
     /// <summary>Reset the form to initial state</summary>
     public void Reset()
     {
         ClearErrors();
         _editContext?.MarkAsUnmodified();
     }
+
 }

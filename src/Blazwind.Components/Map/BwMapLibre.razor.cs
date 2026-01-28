@@ -11,365 +11,47 @@ public partial class BwMapLibre : IAsyncDisposable
     private const string MapLibreScriptPath = "_content/Blazwind.Components/blazwind.maplibre.js";
     private const string MapLibreStylePath = "_content/Blazwind.Components/blazwind.maplibre.css";
 
-    [Inject] private IJSRuntime JS { get; set; } = default!;
-    [Inject] private ScriptLoaderService ScriptLoader { get; set; } = default!;
-
-    #region Parameters
-
-    /// <summary>
-    /// Map style URL (MapLibre style JSON)
-    /// </summary>
-    [Parameter]
-    public string StyleUrl { get; set; } = "https://demotiles.maplibre.org/style.json";
-
-    /// <summary>
-    /// Initial map center [longitude, latitude]
-    /// </summary>
-    [Parameter]
-    public double[]? Center { get; set; }
-
-    /// <summary>
-    /// Initial zoom level
-    /// </summary>
-    [Parameter]
-    public double? Zoom { get; set; }
-
-    /// <summary>
-    /// Initial pitch (tilt) in degrees
-    /// </summary>
-    [Parameter]
-    public double? Pitch { get; set; }
-
-    /// <summary>
-    /// Initial bearing (rotation) in degrees
-    /// </summary>
-    [Parameter]
-    public double? Bearing { get; set; }
-
-    /// <summary>
-    /// Minimum zoom level
-    /// </summary>
-    [Parameter]
-    public double? MinZoom { get; set; }
-
-    /// <summary>
-    /// Maximum zoom level
-    /// </summary>
-    [Parameter]
-    public double? MaxZoom { get; set; }
-
-    /// <summary>
-    /// Minimum pitch in degrees
-    /// </summary>
-    [Parameter]
-    public double? MinPitch { get; set; }
-
-    /// <summary>
-    /// Maximum pitch in degrees
-    /// </summary>
-    [Parameter]
-    public double? MaxPitch { get; set; }
-
-    /// <summary>
-    /// Maximum bounds [[west, south], [east, north]]
-    /// </summary>
-    [Parameter]
-    public double[][]? MaxBounds { get; set; }
-
-    /// <summary>
-    /// Whether to add hash to URL
-    /// </summary>
-    [Parameter]
-    public bool Hash { get; set; }
-
-    /// <summary>
-    /// Whether map is interactive
-    /// </summary>
-    [Parameter]
-    public bool Interactive { get; set; } = true;
-
-    /// <summary>
-    /// Whether to enable pitch with rotate gesture
-    /// </summary>
-    [Parameter]
-    public bool PitchWithRotate { get; set; } = true;
-
-    /// <summary>
-    /// Cooperative gestures for mobile
-    /// </summary>
-    [Parameter]
-    public bool? CooperativeGestures { get; set; }
-
-    /// <summary>
-    /// Preserve drawing buffer for screenshots
-    /// </summary>
-    [Parameter]
-    public bool PreserveDrawingBuffer { get; set; }
-
-    /// <summary>
-    /// Controls configuration
-    /// </summary>
-    [Parameter]
-    public MapControlsConfig? Controls { get; set; }
-
-    // Legacy control parameters (for backward compatibility)
-    [Parameter] public bool NavigationControl { get; set; } = true;
-    [Parameter] public bool FullscreenControl { get; set; }
-    [Parameter] public bool ScaleControl { get; set; }
-    [Parameter] public bool GeolocateControl { get; set; }
-    [Parameter] public bool AttributionControl { get; set; } = true;
-
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-
-    #endregion
-
-    #region Events
-
-    /// <summary>
-    /// Fired when map is loaded and ready
-    /// </summary>
-    [Parameter]
-    public EventCallback OnLoad { get; set; }
-
-    /// <summary>
-    /// Fired when map starts moving
-    /// </summary>
-    [Parameter]
-    public EventCallback OnMoveStart { get; set; }
-
-    /// <summary>
-    /// Fired during map movement
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMoveEventArgs> OnMove { get; set; }
-
-    /// <summary>
-    /// Fired when map stops moving
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMoveEventArgs> OnMoveEnd { get; set; }
-
-    /// <summary>
-    /// Fired when zoom starts
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnZoomStart { get; set; }
-
-    /// <summary>
-    /// Fired during zoom
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnZoom { get; set; }
-
-    /// <summary>
-    /// Fired when zoom ends
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnZoomEnd { get; set; }
-
-    /// <summary>
-    /// Fired when rotation starts
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnRotateStart { get; set; }
-
-    /// <summary>
-    /// Fired during rotation
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnRotate { get; set; }
-
-    /// <summary>
-    /// Fired when rotation ends
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnRotateEnd { get; set; }
-
-    /// <summary>
-    /// Fired when pitch starts
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnPitchStart { get; set; }
-
-    /// <summary>
-    /// Fired during pitch
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnPitch { get; set; }
-
-    /// <summary>
-    /// Fired when pitch ends
-    /// </summary>
-    [Parameter]
-    public EventCallback<double> OnPitchEnd { get; set; }
-
-    /// <summary>
-    /// Fired on map click
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMouseEventArgs> OnClick { get; set; }
-
-    /// <summary>
-    /// Fired on map double click
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMouseEventArgs> OnDoubleClick { get; set; }
-
-    /// <summary>
-    /// Fired on map right click
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMouseEventArgs> OnContextMenu { get; set; }
-
-    /// <summary>
-    /// Fired on mouse move
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMouseEventArgs> OnMouseMove { get; set; }
-
-    /// <summary>
-    /// Fired when mouse enters map
-    /// </summary>
-    [Parameter]
-    public EventCallback OnMouseEnter { get; set; }
-
-    /// <summary>
-    /// Fired when mouse leaves map
-    /// </summary>
-    [Parameter]
-    public EventCallback OnMouseLeave { get; set; }
-
-    /// <summary>
-    /// Fired on touch start
-    /// </summary>
-    [Parameter]
-    public EventCallback<double[]> OnTouchStart { get; set; }
-
-    /// <summary>
-    /// Fired on touch end
-    /// </summary>
-    [Parameter]
-    public EventCallback<double[]> OnTouchEnd { get; set; }
-
-    /// <summary>
-    /// Fired on map error
-    /// </summary>
-    [Parameter]
-    public EventCallback<string> OnError { get; set; }
-
-    /// <summary>
-    /// Fired when map is idle
-    /// </summary>
-    [Parameter]
-    public EventCallback OnIdle { get; set; }
-
-    /// <summary>
-    /// Fired when a source is loaded
-    /// </summary>
-    [Parameter]
-    public EventCallback<string> OnSourceLoaded { get; set; }
-
-    /// <summary>
-    /// Fired when a style image is missing
-    /// </summary>
-    [Parameter]
-    public EventCallback<string> OnStyleImageMissing { get; set; }
-
-    /// <summary>
-    /// Fired on layer click
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapLayerEventArgs> OnLayerClick { get; set; }
-
-    /// <summary>
-    /// Fired when mouse enters a layer
-    /// </summary>
-    [Parameter]
-    public EventCallback<string> OnLayerMouseEnter { get; set; }
-
-    /// <summary>
-    /// Fired when mouse leaves a layer
-    /// </summary>
-    [Parameter]
-    public EventCallback<string> OnLayerMouseLeave { get; set; }
-
-    /// <summary>
-    /// Fired on layer mouse move
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapLayerEventArgs> OnLayerMouseMove { get; set; }
-
-    /// <summary>
-    /// Fired on marker drag start
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMarkerEventArgs> OnMarkerDragStart { get; set; }
-
-    /// <summary>
-    /// Fired during marker drag
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMarkerEventArgs> OnMarkerDrag { get; set; }
-
-    /// <summary>
-    /// Fired on marker drag end
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapMarkerEventArgs> OnMarkerDragEnd { get; set; }
-
-    /// <summary>
-    /// Fired when popup is closed
-    /// </summary>
-    [Parameter]
-    public EventCallback<string> OnPopupClose { get; set; }
-
-    /// <summary>
-    /// Fired when fly animation starts
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapFlyEventArgs> OnFlyStart { get; set; }
-
-    /// <summary>
-    /// Fired when fly animation ends
-    /// </summary>
-    [Parameter]
-    public EventCallback<MapFlyEventArgs> OnFlyEnd { get; set; }
-
-    #endregion
-
-    private ElementReference _mapContainer;
-    private string? _mapId;
-    private DotNetObjectReference<BwMapLibre>? _netRef;
-    private bool _isLoaded;
-
-    private readonly Queue<MapSource> _sourceQueue = new();
+    private readonly Dictionary<string, LayerEventHandler> _layerEventHandlers = new();
     private readonly Queue<MapLayer> _layerQueue = new();
     private readonly Queue<MapMarker> _markerQueue = new();
 
-    // Layer event registry for click order handling
-    private record LayerEventHandler(
-        int ClickOrder,
-        Func<MapLayerClickEventArgs, Task>? OnClick,
-        Func<MapLayerEventArgs, Task>? OnMouseEnter,
-        Func<MapLayerEventArgs, Task>? OnMouseLeave
-    );
+    private readonly Queue<MapSource> _sourceQueue = new();
 
-    private readonly Dictionary<string, LayerEventHandler> _layerEventHandlers = new();
+    private ElementReference _mapContainer;
+    private DotNetObjectReference<BwMapLibre>? _netRef;
 
-    /// <summary>
-    /// Whether the map is loaded and ready
-    /// </summary>
-    public bool IsLoaded => _isLoaded;
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+
+    [Inject]
+    private ScriptLoaderService ScriptLoader { get; set; } = default!;
 
     /// <summary>
-    /// The map ID assigned to this instance
+    ///     Whether the map is loaded and ready
     /// </summary>
-    public string? MapId => _mapId;
+    public bool IsLoaded { get; private set; }
+
+    /// <summary>
+    ///     The map ID assigned to this instance
+    /// </summary>
+    public string? MapId { get; private set; }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            if (MapId != null) await JS.InvokeVoidAsync("BwMapLibre.disposeMap", MapId);
+
+            _netRef?.Dispose();
+        }
+        catch
+        {
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-        {
             try
             {
                 // Lazy load MapLibre JS and CSS
@@ -379,13 +61,12 @@ public partial class BwMapLibre : IAsyncDisposable
 
                 var options = BuildMapOptions();
                 var centerLog = Center != null ? $"[{Center[0]}, {Center[1]}]" : "null";
-                _mapId = await JS.InvokeAsync<string>("BwMapLibre.initMap", _mapContainer, options, _netRef);
+                MapId = await JS.InvokeAsync<string>("BwMapLibre.initMap", _mapContainer, options, _netRef);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[BwMapLibre] Error initializing map: {ex.Message}");
             }
-        }
     }
 
     private object BuildMapOptions()
@@ -396,7 +77,6 @@ public partial class BwMapLibre : IAsyncDisposable
 
         // Navigation control
         if (controls.Navigation != null)
-        {
             controlsObj["navigation"] = new
             {
                 showCompass = controls.Navigation.ShowCompass,
@@ -404,9 +84,7 @@ public partial class BwMapLibre : IAsyncDisposable
                 visualizePitch = controls.Navigation.VisualizePitch,
                 position = controls.Navigation.Position ?? "top-right"
             };
-        }
         else if (NavigationControl)
-        {
             controlsObj["navigation"] = new
             {
                 showCompass = true,
@@ -414,44 +92,33 @@ public partial class BwMapLibre : IAsyncDisposable
                 visualizePitch = false,
                 position = "top-right"
             };
-        }
 
         // Scale control
         if (controls.Scale != null)
-        {
             controlsObj["scale"] = new
             {
                 maxWidth = controls.Scale.MaxWidth ?? 100,
                 unit = controls.Scale.Unit ?? "metric",
                 position = controls.Scale.Position ?? "bottom-left"
             };
-        }
         else if (ScaleControl)
-        {
             controlsObj["scale"] = new
             {
                 maxWidth = 100,
                 unit = "metric",
                 position = "bottom-left"
             };
-        }
 
         // Fullscreen control
         if (controls.Fullscreen != null)
-        {
             controlsObj["fullscreen"] = new
             {
                 position = controls.Fullscreen.Position ?? "top-right"
             };
-        }
-        else if (FullscreenControl)
-        {
-            controlsObj["fullscreen"] = new { position = "top-right" };
-        }
+        else if (FullscreenControl) controlsObj["fullscreen"] = new { position = "top-right" };
 
         // Geolocate control
         if (controls.Geolocate != null)
-        {
             controlsObj["geolocate"] = new
             {
                 trackUserLocation = controls.Geolocate.TrackUserLocation,
@@ -460,9 +127,7 @@ public partial class BwMapLibre : IAsyncDisposable
                 showUserHeading = controls.Geolocate.ShowUserHeading,
                 position = controls.Geolocate.Position ?? "top-right"
             };
-        }
         else if (GeolocateControl)
-        {
             controlsObj["geolocate"] = new
             {
                 trackUserLocation = false,
@@ -471,38 +136,31 @@ public partial class BwMapLibre : IAsyncDisposable
                 showUserHeading = false,
                 position = "top-right"
             };
-        }
 
         // Attribution control
         if (controls.Attribution != null)
-        {
             controlsObj["attribution"] = new
             {
                 compact = controls.Attribution.Compact,
                 customAttribution = controls.Attribution.CustomAttribution,
                 position = controls.Attribution.Position ?? "bottom-right"
             };
-        }
         else if (AttributionControl)
-        {
             controlsObj["attribution"] = new
             {
                 compact = true,
                 customAttribution = (string?)null,
                 position = "bottom-right"
             };
-        }
 
         // Terrain control
         if (controls.Terrain != null)
-        {
             controlsObj["terrain"] = new
             {
                 source = controls.Terrain.Source,
                 exaggeration = controls.Terrain.Exaggeration,
                 position = controls.Terrain.Position ?? "top-right"
             };
-        }
 
         return new
         {
@@ -537,36 +195,384 @@ public partial class BwMapLibre : IAsyncDisposable
         };
     }
 
+    #region Export Methods
+
+    /// <summary>
+    ///     Export map to data URL (requires preserveDrawingBuffer)
+    /// </summary>
+    public async Task<string?> ToDataUrlAsync()
+    {
+        if (MapId == null) return null;
+        return await JS.InvokeAsync<string?>("BwMapLibre.toDataURL", MapId);
+    }
+
+    #endregion
+
+    // Layer event registry for click order handling
+    private record LayerEventHandler(
+        int ClickOrder,
+        Func<MapLayerClickEventArgs, Task>? OnClick,
+        Func<MapLayerEventArgs, Task>? OnMouseEnter,
+        Func<MapLayerEventArgs, Task>? OnMouseLeave
+    );
+
+    #region Parameters
+
+    /// <summary>
+    ///     Map style URL (MapLibre style JSON)
+    /// </summary>
+    [Parameter]
+    public string StyleUrl { get; set; } = "https://demotiles.maplibre.org/style.json";
+
+    /// <summary>
+    ///     Initial map center [longitude, latitude]
+    /// </summary>
+    [Parameter]
+    public double[]? Center { get; set; }
+
+    /// <summary>
+    ///     Initial zoom level
+    /// </summary>
+    [Parameter]
+    public double? Zoom { get; set; }
+
+    /// <summary>
+    ///     Initial pitch (tilt) in degrees
+    /// </summary>
+    [Parameter]
+    public double? Pitch { get; set; }
+
+    /// <summary>
+    ///     Initial bearing (rotation) in degrees
+    /// </summary>
+    [Parameter]
+    public double? Bearing { get; set; }
+
+    /// <summary>
+    ///     Minimum zoom level
+    /// </summary>
+    [Parameter]
+    public double? MinZoom { get; set; }
+
+    /// <summary>
+    ///     Maximum zoom level
+    /// </summary>
+    [Parameter]
+    public double? MaxZoom { get; set; }
+
+    /// <summary>
+    ///     Minimum pitch in degrees
+    /// </summary>
+    [Parameter]
+    public double? MinPitch { get; set; }
+
+    /// <summary>
+    ///     Maximum pitch in degrees
+    /// </summary>
+    [Parameter]
+    public double? MaxPitch { get; set; }
+
+    /// <summary>
+    ///     Maximum bounds [[west, south], [east, north]]
+    /// </summary>
+    [Parameter]
+    public double[][]? MaxBounds { get; set; }
+
+    /// <summary>
+    ///     Whether to add hash to URL
+    /// </summary>
+    [Parameter]
+    public bool Hash { get; set; }
+
+    /// <summary>
+    ///     Whether map is interactive
+    /// </summary>
+    [Parameter]
+    public bool Interactive { get; set; } = true;
+
+    /// <summary>
+    ///     Whether to enable pitch with rotate gesture
+    /// </summary>
+    [Parameter]
+    public bool PitchWithRotate { get; set; } = true;
+
+    /// <summary>
+    ///     Cooperative gestures for mobile
+    /// </summary>
+    [Parameter]
+    public bool? CooperativeGestures { get; set; }
+
+    /// <summary>
+    ///     Preserve drawing buffer for screenshots
+    /// </summary>
+    [Parameter]
+    public bool PreserveDrawingBuffer { get; set; }
+
+    /// <summary>
+    ///     Controls configuration
+    /// </summary>
+    [Parameter]
+    public MapControlsConfig? Controls { get; set; }
+
+    // Legacy control parameters (for backward compatibility)
+    [Parameter]
+    public bool NavigationControl { get; set; } = true;
+
+    [Parameter]
+    public bool FullscreenControl { get; set; }
+
+    [Parameter]
+    public bool ScaleControl { get; set; }
+
+    [Parameter]
+    public bool GeolocateControl { get; set; }
+
+    [Parameter]
+    public bool AttributionControl { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    #endregion
+
+    #region Events
+
+    /// <summary>
+    ///     Fired when map is loaded and ready
+    /// </summary>
+    [Parameter]
+    public EventCallback OnLoad { get; set; }
+
+    /// <summary>
+    ///     Fired when map starts moving
+    /// </summary>
+    [Parameter]
+    public EventCallback OnMoveStart { get; set; }
+
+    /// <summary>
+    ///     Fired during map movement
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMoveEventArgs> OnMove { get; set; }
+
+    /// <summary>
+    ///     Fired when map stops moving
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMoveEventArgs> OnMoveEnd { get; set; }
+
+    /// <summary>
+    ///     Fired when zoom starts
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnZoomStart { get; set; }
+
+    /// <summary>
+    ///     Fired during zoom
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnZoom { get; set; }
+
+    /// <summary>
+    ///     Fired when zoom ends
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnZoomEnd { get; set; }
+
+    /// <summary>
+    ///     Fired when rotation starts
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnRotateStart { get; set; }
+
+    /// <summary>
+    ///     Fired during rotation
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnRotate { get; set; }
+
+    /// <summary>
+    ///     Fired when rotation ends
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnRotateEnd { get; set; }
+
+    /// <summary>
+    ///     Fired when pitch starts
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnPitchStart { get; set; }
+
+    /// <summary>
+    ///     Fired during pitch
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnPitch { get; set; }
+
+    /// <summary>
+    ///     Fired when pitch ends
+    /// </summary>
+    [Parameter]
+    public EventCallback<double> OnPitchEnd { get; set; }
+
+    /// <summary>
+    ///     Fired on map click
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMouseEventArgs> OnClick { get; set; }
+
+    /// <summary>
+    ///     Fired on map double click
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMouseEventArgs> OnDoubleClick { get; set; }
+
+    /// <summary>
+    ///     Fired on map right click
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMouseEventArgs> OnContextMenu { get; set; }
+
+    /// <summary>
+    ///     Fired on mouse move
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMouseEventArgs> OnMouseMove { get; set; }
+
+    /// <summary>
+    ///     Fired when mouse enters map
+    /// </summary>
+    [Parameter]
+    public EventCallback OnMouseEnter { get; set; }
+
+    /// <summary>
+    ///     Fired when mouse leaves map
+    /// </summary>
+    [Parameter]
+    public EventCallback OnMouseLeave { get; set; }
+
+    /// <summary>
+    ///     Fired on touch start
+    /// </summary>
+    [Parameter]
+    public EventCallback<double[]> OnTouchStart { get; set; }
+
+    /// <summary>
+    ///     Fired on touch end
+    /// </summary>
+    [Parameter]
+    public EventCallback<double[]> OnTouchEnd { get; set; }
+
+    /// <summary>
+    ///     Fired on map error
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnError { get; set; }
+
+    /// <summary>
+    ///     Fired when map is idle
+    /// </summary>
+    [Parameter]
+    public EventCallback OnIdle { get; set; }
+
+    /// <summary>
+    ///     Fired when a source is loaded
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnSourceLoaded { get; set; }
+
+    /// <summary>
+    ///     Fired when a style image is missing
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnStyleImageMissing { get; set; }
+
+    /// <summary>
+    ///     Fired on layer click
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapLayerEventArgs> OnLayerClick { get; set; }
+
+    /// <summary>
+    ///     Fired when mouse enters a layer
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnLayerMouseEnter { get; set; }
+
+    /// <summary>
+    ///     Fired when mouse leaves a layer
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnLayerMouseLeave { get; set; }
+
+    /// <summary>
+    ///     Fired on layer mouse move
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapLayerEventArgs> OnLayerMouseMove { get; set; }
+
+    /// <summary>
+    ///     Fired on marker drag start
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMarkerEventArgs> OnMarkerDragStart { get; set; }
+
+    /// <summary>
+    ///     Fired during marker drag
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMarkerEventArgs> OnMarkerDrag { get; set; }
+
+    /// <summary>
+    ///     Fired on marker drag end
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapMarkerEventArgs> OnMarkerDragEnd { get; set; }
+
+    /// <summary>
+    ///     Fired when popup is closed
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnPopupClose { get; set; }
+
+    /// <summary>
+    ///     Fired when fly animation starts
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapFlyEventArgs> OnFlyStart { get; set; }
+
+    /// <summary>
+    ///     Fired when fly animation ends
+    /// </summary>
+    [Parameter]
+    public EventCallback<MapFlyEventArgs> OnFlyEnd { get; set; }
+
+    #endregion
+
     #region JS Invokable Handlers
 
     [JSInvokable]
     public async Task HandleMapLoad()
     {
-        _isLoaded = true;
+        IsLoaded = true;
 
         // Process queued sources
-        while (_sourceQueue.TryDequeue(out var source))
-        {
-            await AddSourceInternalAsync(source);
-        }
+        while (_sourceQueue.TryDequeue(out var source)) await AddSourceInternalAsync(source);
 
         // Process queued layers
-        while (_layerQueue.TryDequeue(out var layer))
-        {
-            await AddLayerInternalAsync(layer);
-        }
+        while (_layerQueue.TryDequeue(out var layer)) await AddLayerInternalAsync(layer);
 
         // Process queued markers
-        while (_markerQueue.TryDequeue(out var marker))
-        {
-            await AddMarkerInternalAsync(marker);
-        }
+        while (_markerQueue.TryDequeue(out var marker)) await AddMarkerInternalAsync(marker);
 
         await OnLoad.InvokeAsync();
     }
 
     [JSInvokable]
-    public async Task HandleMoveStart() => await OnMoveStart.InvokeAsync();
+    public async Task HandleMoveStart()
+    {
+        await OnMoveStart.InvokeAsync();
+    }
 
     [JSInvokable]
     public async Task HandleMove(double[] center, double zoom, double bearing, double pitch)
@@ -593,31 +599,58 @@ public partial class BwMapLibre : IAsyncDisposable
     }
 
     [JSInvokable]
-    public async Task HandleZoomStart(double zoom) => await OnZoomStart.InvokeAsync(zoom);
+    public async Task HandleZoomStart(double zoom)
+    {
+        await OnZoomStart.InvokeAsync(zoom);
+    }
 
     [JSInvokable]
-    public async Task HandleZoom(double zoom) => await OnZoom.InvokeAsync(zoom);
+    public async Task HandleZoom(double zoom)
+    {
+        await OnZoom.InvokeAsync(zoom);
+    }
 
     [JSInvokable]
-    public async Task HandleZoomEnd(double zoom) => await OnZoomEnd.InvokeAsync(zoom);
+    public async Task HandleZoomEnd(double zoom)
+    {
+        await OnZoomEnd.InvokeAsync(zoom);
+    }
 
     [JSInvokable]
-    public async Task HandleRotateStart(double bearing) => await OnRotateStart.InvokeAsync(bearing);
+    public async Task HandleRotateStart(double bearing)
+    {
+        await OnRotateStart.InvokeAsync(bearing);
+    }
 
     [JSInvokable]
-    public async Task HandleRotate(double bearing) => await OnRotate.InvokeAsync(bearing);
+    public async Task HandleRotate(double bearing)
+    {
+        await OnRotate.InvokeAsync(bearing);
+    }
 
     [JSInvokable]
-    public async Task HandleRotateEnd(double bearing) => await OnRotateEnd.InvokeAsync(bearing);
+    public async Task HandleRotateEnd(double bearing)
+    {
+        await OnRotateEnd.InvokeAsync(bearing);
+    }
 
     [JSInvokable]
-    public async Task HandlePitchStart(double pitch) => await OnPitchStart.InvokeAsync(pitch);
+    public async Task HandlePitchStart(double pitch)
+    {
+        await OnPitchStart.InvokeAsync(pitch);
+    }
 
     [JSInvokable]
-    public async Task HandlePitch(double pitch) => await OnPitch.InvokeAsync(pitch);
+    public async Task HandlePitch(double pitch)
+    {
+        await OnPitch.InvokeAsync(pitch);
+    }
 
     [JSInvokable]
-    public async Task HandlePitchEnd(double pitch) => await OnPitchEnd.InvokeAsync(pitch);
+    public async Task HandlePitchEnd(double pitch)
+    {
+        await OnPitchEnd.InvokeAsync(pitch);
+    }
 
     [JSInvokable]
     public async Task HandleClick(double[] lngLat, double[] point)
@@ -661,28 +694,52 @@ public partial class BwMapLibre : IAsyncDisposable
     }
 
     [JSInvokable]
-    public async Task HandleMouseEnter() => await OnMouseEnter.InvokeAsync();
+    public async Task HandleMouseEnter()
+    {
+        await OnMouseEnter.InvokeAsync();
+    }
 
     [JSInvokable]
-    public async Task HandleMouseLeave() => await OnMouseLeave.InvokeAsync();
+    public async Task HandleMouseLeave()
+    {
+        await OnMouseLeave.InvokeAsync();
+    }
 
     [JSInvokable]
-    public async Task HandleTouchStart(double[] lngLat) => await OnTouchStart.InvokeAsync(lngLat);
+    public async Task HandleTouchStart(double[] lngLat)
+    {
+        await OnTouchStart.InvokeAsync(lngLat);
+    }
 
     [JSInvokable]
-    public async Task HandleTouchEnd(double[] lngLat) => await OnTouchEnd.InvokeAsync(lngLat);
+    public async Task HandleTouchEnd(double[] lngLat)
+    {
+        await OnTouchEnd.InvokeAsync(lngLat);
+    }
 
     [JSInvokable]
-    public async Task HandleError(string message) => await OnError.InvokeAsync(message);
+    public async Task HandleError(string message)
+    {
+        await OnError.InvokeAsync(message);
+    }
 
     [JSInvokable]
-    public async Task HandleIdle() => await OnIdle.InvokeAsync();
+    public async Task HandleIdle()
+    {
+        await OnIdle.InvokeAsync();
+    }
 
     [JSInvokable]
-    public async Task HandleSourceLoaded(string sourceId) => await OnSourceLoaded.InvokeAsync(sourceId);
+    public async Task HandleSourceLoaded(string sourceId)
+    {
+        await OnSourceLoaded.InvokeAsync(sourceId);
+    }
 
     [JSInvokable]
-    public async Task HandleStyleImageMissing(string imageId) => await OnStyleImageMissing.InvokeAsync(imageId);
+    public async Task HandleStyleImageMissing(string imageId)
+    {
+        await OnStyleImageMissing.InvokeAsync(imageId);
+    }
 
     [JSInvokable]
     public async Task HandleLayerClick(string layerId, double[] lngLat, object[] features)
@@ -699,10 +756,7 @@ public partial class BwMapLibre : IAsyncDisposable
         await OnLayerClick.InvokeAsync(eventArgs);
 
         // Invoke individual layer's OnClick callback if registered
-        if (handler?.OnClick != null)
-        {
-            await handler.OnClick(eventArgs);
-        }
+        if (handler?.OnClick != null) await handler.OnClick(eventArgs);
     }
 
     [JSInvokable]
@@ -712,9 +766,7 @@ public partial class BwMapLibre : IAsyncDisposable
 
         // Invoke individual layer's OnMouseEnter callback if registered
         if (_layerEventHandlers.TryGetValue(layerId, out var handler) && handler.OnMouseEnter != null)
-        {
             await handler.OnMouseEnter(new MapLayerEventArgs { LayerId = layerId });
-        }
     }
 
     [JSInvokable]
@@ -724,9 +776,7 @@ public partial class BwMapLibre : IAsyncDisposable
 
         // Invoke individual layer's OnMouseLeave callback if registered
         if (_layerEventHandlers.TryGetValue(layerId, out var handler) && handler.OnMouseLeave != null)
-        {
             await handler.OnMouseLeave(new MapLayerEventArgs { LayerId = layerId });
-        }
     }
 
     [JSInvokable]
@@ -791,10 +841,13 @@ public partial class BwMapLibre : IAsyncDisposable
     }
 
     [JSInvokable]
-    public async Task HandlePopupClose(string popupId) => await OnPopupClose.InvokeAsync(popupId);
+    public async Task HandlePopupClose(string popupId)
+    {
+        await OnPopupClose.InvokeAsync(popupId);
+    }
 
     /// <summary>
-    /// Register layer event handlers for click order handling
+    ///     Register layer event handlers for click order handling
     /// </summary>
     public void RegisterLayerEvents(
         string layerId,
@@ -807,23 +860,18 @@ public partial class BwMapLibre : IAsyncDisposable
     }
 
     /// <summary>
-    /// Update layer click order
+    ///     Update layer click order
     /// </summary>
     public async Task UpdateLayerClickOrderAsync(string layerId, int clickOrder)
     {
         if (_layerEventHandlers.TryGetValue(layerId, out var handler))
-        {
             _layerEventHandlers[layerId] = handler with { ClickOrder = clickOrder };
-        }
 
-        if (_mapId != null)
-        {
-            await JS.InvokeVoidAsync("BwMapLibre.updateLayerClickOrder", _mapId, layerId, clickOrder);
-        }
+        if (MapId != null) await JS.InvokeVoidAsync("BwMapLibre.updateLayerClickOrder", MapId, layerId, clickOrder);
     }
 
     /// <summary>
-    /// Unregister layer event handlers
+    ///     Unregister layer event handlers
     /// </summary>
     public void UnregisterLayerEvents(string layerId)
     {
@@ -834,7 +882,6 @@ public partial class BwMapLibre : IAsyncDisposable
     {
         var result = new List<MapFeature>();
         foreach (var feature in features)
-        {
             try
             {
                 var json = JsonSerializer.Serialize(feature);
@@ -844,7 +891,6 @@ public partial class BwMapLibre : IAsyncDisposable
             catch
             {
             }
-        }
 
         return result;
     }
@@ -854,47 +900,40 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Source Methods
 
     /// <summary>
-    /// Add a source to the map
+    ///     Add a source to the map
     /// </summary>
     public async Task AddSourceAsync(MapSource source)
     {
-        if (_isLoaded)
-        {
+        if (IsLoaded)
             await AddSourceInternalAsync(source);
-        }
         else
-        {
             _sourceQueue.Enqueue(source);
-        }
     }
 
     private async Task AddSourceInternalAsync(MapSource source)
     {
-        if (_mapId == null)
-        {
-            return;
-        }
+        if (MapId == null) return;
 
         var sourceSpec = source.ToJsObject();
-        await JS.InvokeVoidAsync("BwMapLibre.addSource", _mapId, source.Id, sourceSpec);
+        await JS.InvokeVoidAsync("BwMapLibre.addSource", MapId, source.Id, sourceSpec);
     }
 
     /// <summary>
-    /// Remove a source from the map
+    ///     Remove a source from the map
     /// </summary>
     public async Task RemoveSourceAsync(string sourceId)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.removeSource", _mapId, sourceId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.removeSource", MapId, sourceId);
     }
 
     /// <summary>
-    /// Update GeoJSON source data
+    ///     Update GeoJSON source data
     /// </summary>
     public async Task SetGeoJsonDataAsync(string sourceId, object data)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setGeoJsonData", _mapId, sourceId, data);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setGeoJsonData", MapId, sourceId, data);
     }
 
     #endregion
@@ -902,11 +941,11 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Layer Methods
 
     /// <summary>
-    /// Add a layer to the map
+    ///     Add a layer to the map
     /// </summary>
     public async Task AddLayerAsync(MapLayer layer, string? beforeId = null)
     {
-        if (_isLoaded)
+        if (IsLoaded)
         {
             await AddLayerInternalAsync(layer, beforeId);
         }
@@ -919,76 +958,73 @@ public partial class BwMapLibre : IAsyncDisposable
 
     private async Task AddLayerInternalAsync(MapLayer layer, string? beforeId = null)
     {
-        if (_mapId == null)
-        {
-            return;
-        }
+        if (MapId == null) return;
 
         var layerSpec = layer.ToJsObject();
-        await JS.InvokeVoidAsync("BwMapLibre.addLayer", _mapId, layerSpec, beforeId ?? layer.BeforeId);
+        await JS.InvokeVoidAsync("BwMapLibre.addLayer", MapId, layerSpec, beforeId ?? layer.BeforeId);
     }
 
     /// <summary>
-    /// Remove a layer from the map
+    ///     Remove a layer from the map
     /// </summary>
     public async Task RemoveLayerAsync(string layerId)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.removeLayer", _mapId, layerId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.removeLayer", MapId, layerId);
     }
 
     /// <summary>
-    /// Set layer visibility
+    ///     Set layer visibility
     /// </summary>
     public async Task SetLayerVisibilityAsync(string layerId, bool visible)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setLayerVisibility", _mapId, layerId, visible);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setLayerVisibility", MapId, layerId, visible);
     }
 
     /// <summary>
-    /// Set layer paint property
+    ///     Set layer paint property
     /// </summary>
     public async Task SetPaintPropertyAsync(string layerId, string name, object value)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setPaintProperty", _mapId, layerId, name, value);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setPaintProperty", MapId, layerId, name, value);
     }
 
     /// <summary>
-    /// Set layer layout property
+    ///     Set layer layout property
     /// </summary>
     public async Task SetLayoutPropertyAsync(string layerId, string name, object value)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setLayoutProperty", _mapId, layerId, name, value);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setLayoutProperty", MapId, layerId, name, value);
     }
 
     /// <summary>
-    /// Set layer filter
+    ///     Set layer filter
     /// </summary>
     public async Task SetFilterAsync(string layerId, object[] filter)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setFilter", _mapId, layerId, filter);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setFilter", MapId, layerId, filter);
     }
 
     /// <summary>
-    /// Move layer to a different position
+    ///     Move layer to a different position
     /// </summary>
     public async Task MoveLayerAsync(string layerId, string? beforeId = null)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.moveLayer", _mapId, layerId, beforeId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.moveLayer", MapId, layerId, beforeId);
     }
 
     /// <summary>
-    /// Set layer zoom range
+    ///     Set layer zoom range
     /// </summary>
     public async Task SetLayerZoomRangeAsync(string layerId, double minZoom, double maxZoom)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setLayerZoomRange", _mapId, layerId, minZoom, maxZoom);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setLayerZoomRange", MapId, layerId, minZoom, maxZoom);
     }
 
     #endregion
@@ -996,21 +1032,18 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Camera Methods
 
     /// <summary>
-    /// Fly to a location
+    ///     Fly to a location
     /// </summary>
     public async Task FlyToAsync(FlyToOptions options)
     {
-        if (_mapId == null)
-        {
-            return;
-        }
+        if (MapId == null) return;
 
         var jsObj = options.ToJsObject();
-        await JS.InvokeVoidAsync("BwMapLibre.flyTo", _mapId, jsObj);
+        await JS.InvokeVoidAsync("BwMapLibre.flyTo", MapId, jsObj);
     }
 
     /// <summary>
-    /// Fly to a location (simple overload)
+    ///     Fly to a location (simple overload)
     /// </summary>
     public async Task FlyToAsync(double[] center, double? zoom = null)
     {
@@ -1018,106 +1051,106 @@ public partial class BwMapLibre : IAsyncDisposable
     }
 
     /// <summary>
-    /// Ease to a location
+    ///     Ease to a location
     /// </summary>
     public async Task EaseToAsync(EaseToOptions options)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.easeTo", _mapId, options.ToJsObject());
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.easeTo", MapId, options.ToJsObject());
     }
 
     /// <summary>
-    /// Jump to a location (no animation)
+    ///     Jump to a location (no animation)
     /// </summary>
     public async Task JumpToAsync(CameraOptions options)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.jumpTo", _mapId, options.ToJsObject());
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.jumpTo", MapId, options.ToJsObject());
     }
 
     /// <summary>
-    /// Fit bounds to show all features
+    ///     Fit bounds to show all features
     /// </summary>
     public async Task FitBoundsAsync(LngLatBounds bounds, FitBoundsOptions? options = null)
     {
-        if (_mapId == null) return;
+        if (MapId == null) return;
         var boundsArray = new[]
         {
             new[] { bounds.Southwest.Lng, bounds.Southwest.Lat }, new[] { bounds.Northeast.Lng, bounds.Northeast.Lat }
         };
-        await JS.InvokeVoidAsync("BwMapLibre.fitBounds", _mapId, boundsArray, options?.ToJsObject());
+        await JS.InvokeVoidAsync("BwMapLibre.fitBounds", MapId, boundsArray, options?.ToJsObject());
     }
 
     /// <summary>
-    /// Pan to a location
+    ///     Pan to a location
     /// </summary>
     public async Task PanToAsync(double[] lngLat)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.panTo", _mapId, lngLat);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.panTo", MapId, lngLat);
     }
 
     /// <summary>
-    /// Pan by pixel offset
+    ///     Pan by pixel offset
     /// </summary>
     public async Task PanByAsync(double[] offset)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.panBy", _mapId, offset);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.panBy", MapId, offset);
     }
 
     /// <summary>
-    /// Zoom in
+    ///     Zoom in
     /// </summary>
     public async Task ZoomInAsync()
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.zoomIn", _mapId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.zoomIn", MapId);
     }
 
     /// <summary>
-    /// Zoom out
+    ///     Zoom out
     /// </summary>
     public async Task ZoomOutAsync()
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.zoomOut", _mapId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.zoomOut", MapId);
     }
 
     /// <summary>
-    /// Zoom to a specific level
+    ///     Zoom to a specific level
     /// </summary>
     public async Task ZoomToAsync(double zoom)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.zoomTo", _mapId, zoom);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.zoomTo", MapId, zoom);
     }
 
     /// <summary>
-    /// Rotate to a bearing
+    ///     Rotate to a bearing
     /// </summary>
     public async Task RotateToAsync(double bearing)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.rotateTo", _mapId, bearing);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.rotateTo", MapId, bearing);
     }
 
     /// <summary>
-    /// Reset north
+    ///     Reset north
     /// </summary>
     public async Task ResetNorthAsync()
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.resetNorth", _mapId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.resetNorth", MapId);
     }
 
     /// <summary>
-    /// Reset north and pitch
+    ///     Reset north and pitch
     /// </summary>
     public async Task ResetNorthPitchAsync()
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.resetNorthPitch", _mapId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.resetNorthPitch", MapId);
     }
 
     #endregion
@@ -1125,96 +1158,96 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Map State
 
     /// <summary>
-    /// Get current center
+    ///     Get current center
     /// </summary>
     public async Task<LngLat?> GetCenterAsync()
     {
-        if (_mapId == null) return null;
-        var result = await JS.InvokeAsync<double[]?>("BwMapLibre.getCenter", _mapId);
+        if (MapId == null) return null;
+        var result = await JS.InvokeAsync<double[]?>("BwMapLibre.getCenter", MapId);
         return result != null ? new LngLat(result[0], result[1]) : null;
     }
 
     /// <summary>
-    /// Set center
+    ///     Set center
     /// </summary>
     public async Task SetCenterAsync(double[] center, bool animate = true)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setCenter", _mapId, center, animate);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setCenter", MapId, center, animate);
     }
 
     /// <summary>
-    /// Get current zoom
+    ///     Get current zoom
     /// </summary>
     public async Task<double?> GetZoomAsync()
     {
-        if (_mapId == null) return null;
-        return await JS.InvokeAsync<double?>("BwMapLibre.getZoom", _mapId);
+        if (MapId == null) return null;
+        return await JS.InvokeAsync<double?>("BwMapLibre.getZoom", MapId);
     }
 
     /// <summary>
-    /// Set zoom
+    ///     Set zoom
     /// </summary>
     public async Task SetZoomAsync(double zoom, bool animate = true)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setZoom", _mapId, zoom, animate);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setZoom", MapId, zoom, animate);
     }
 
     /// <summary>
-    /// Get current bearing
+    ///     Get current bearing
     /// </summary>
     public async Task<double?> GetBearingAsync()
     {
-        if (_mapId == null) return null;
-        return await JS.InvokeAsync<double?>("BwMapLibre.getBearing", _mapId);
+        if (MapId == null) return null;
+        return await JS.InvokeAsync<double?>("BwMapLibre.getBearing", MapId);
     }
 
     /// <summary>
-    /// Set bearing
+    ///     Set bearing
     /// </summary>
     public async Task SetBearingAsync(double bearing, bool animate = true)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setBearing", _mapId, bearing, animate);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setBearing", MapId, bearing, animate);
     }
 
     /// <summary>
-    /// Get current pitch
+    ///     Get current pitch
     /// </summary>
     public async Task<double?> GetPitchAsync()
     {
-        if (_mapId == null) return null;
-        return await JS.InvokeAsync<double?>("BwMapLibre.getPitch", _mapId);
+        if (MapId == null) return null;
+        return await JS.InvokeAsync<double?>("BwMapLibre.getPitch", MapId);
     }
 
     /// <summary>
-    /// Set pitch
+    ///     Set pitch
     /// </summary>
     public async Task SetPitchAsync(double pitch, bool animate = true)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setPitch", _mapId, pitch, animate);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setPitch", MapId, pitch, animate);
     }
 
     /// <summary>
-    /// Get current bounds
+    ///     Get current bounds
     /// </summary>
     public async Task<LngLatBounds?> GetBoundsAsync()
     {
-        if (_mapId == null) return null;
-        var result = await JS.InvokeAsync<double[][]?>("BwMapLibre.getBounds", _mapId);
+        if (MapId == null) return null;
+        var result = await JS.InvokeAsync<double[][]?>("BwMapLibre.getBounds", MapId);
         if (result == null) return null;
         return new LngLatBounds(new LngLat(result[0][0], result[0][1]), new LngLat(result[1][0], result[1][1]));
     }
 
     /// <summary>
-    /// Resize the map
+    ///     Resize the map
     /// </summary>
     public async Task ResizeAsync()
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.resize", _mapId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.resize", MapId);
     }
 
     #endregion
@@ -1222,60 +1255,56 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Marker Methods
 
     /// <summary>
-    /// Add a marker to the map
+    ///     Add a marker to the map
     /// </summary>
     public async Task AddMarkerAsync(MapMarker marker)
     {
-        if (_isLoaded)
-        {
+        if (IsLoaded)
             await AddMarkerInternalAsync(marker);
-        }
         else
-        {
             _markerQueue.Enqueue(marker);
-        }
     }
 
     private async Task AddMarkerInternalAsync(MapMarker marker)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.addMarker", _mapId, marker.ToJsObject());
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.addMarker", MapId, marker.ToJsObject());
     }
 
     /// <summary>
-    /// Remove a marker from the map
+    ///     Remove a marker from the map
     /// </summary>
     public async Task RemoveMarkerAsync(string markerId)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.removeMarker", _mapId, markerId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.removeMarker", MapId, markerId);
     }
 
     /// <summary>
-    /// Set marker position
+    ///     Set marker position
     /// </summary>
     public async Task SetMarkerLngLatAsync(string markerId, double[] lngLat)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setMarkerLngLat", _mapId, markerId, lngLat);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setMarkerLngLat", MapId, markerId, lngLat);
     }
 
     /// <summary>
-    /// Set marker popup
+    ///     Set marker popup
     /// </summary>
     public async Task SetMarkerPopupAsync(string markerId, string html, MapPopupOptions? options = null)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setMarkerPopup", _mapId, markerId, html, options?.ToJsObject());
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setMarkerPopup", MapId, markerId, html, options?.ToJsObject());
     }
 
     /// <summary>
-    /// Toggle marker popup
+    ///     Toggle marker popup
     /// </summary>
     public async Task ToggleMarkerPopupAsync(string markerId)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.toggleMarkerPopup", _mapId, markerId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.toggleMarkerPopup", MapId, markerId);
     }
 
     #endregion
@@ -1283,40 +1312,40 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Popup Methods
 
     /// <summary>
-    /// Add a popup to the map
+    ///     Add a popup to the map
     /// </summary>
     public async Task AddPopupAsync(MapPopup popup)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.addPopup", _mapId, popup.Id,
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.addPopup", MapId, popup.Id,
             new[] { popup.LngLat.Lng, popup.LngLat.Lat }, popup.Html, popup.Options?.ToJsObject());
     }
 
     /// <summary>
-    /// Remove a popup from the map
+    ///     Remove a popup from the map
     /// </summary>
     public async Task RemovePopupAsync(string popupId)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.removePopup", _mapId, popupId);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.removePopup", MapId, popupId);
     }
 
     /// <summary>
-    /// Set popup position
+    ///     Set popup position
     /// </summary>
     public async Task SetPopupLngLatAsync(string popupId, double[] lngLat)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setPopupLngLat", _mapId, popupId, lngLat);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setPopupLngLat", MapId, popupId, lngLat);
     }
 
     /// <summary>
-    /// Set popup HTML content
+    ///     Set popup HTML content
     /// </summary>
     public async Task SetPopupHtmlAsync(string popupId, string html)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setPopupHTML", _mapId, popupId, html);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setPopupHTML", MapId, popupId, html);
     }
 
     #endregion
@@ -1324,50 +1353,50 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Feature Query Methods
 
     /// <summary>
-    /// Query rendered features at a point or within bounds
+    ///     Query rendered features at a point or within bounds
     /// </summary>
     public async Task<List<MapFeature>> QueryRenderedFeaturesAsync(double[]? point = null, string[]? layers = null)
     {
-        if (_mapId == null) return new List<MapFeature>();
+        if (MapId == null) return new List<MapFeature>();
         var options = layers != null ? new { layers } : null;
-        var features = await JS.InvokeAsync<object[]>("BwMapLibre.queryRenderedFeatures", _mapId, point, options);
+        var features = await JS.InvokeAsync<object[]>("BwMapLibre.queryRenderedFeatures", MapId, point, options);
         return ParseFeatures(features);
     }
 
     /// <summary>
-    /// Query source features
+    ///     Query source features
     /// </summary>
     public async Task<List<MapFeature>> QuerySourceFeaturesAsync(string sourceId, string? sourceLayer = null)
     {
-        if (_mapId == null) return new List<MapFeature>();
+        if (MapId == null) return new List<MapFeature>();
         var options = sourceLayer != null ? new { sourceLayer } : null;
-        var features = await JS.InvokeAsync<object[]>("BwMapLibre.querySourceFeatures", _mapId, sourceId, options);
+        var features = await JS.InvokeAsync<object[]>("BwMapLibre.querySourceFeatures", MapId, sourceId, options);
         return ParseFeatures(features);
     }
 
     /// <summary>
-    /// Set feature state
+    ///     Set feature state
     /// </summary>
     public async Task SetFeatureStateAsync(string source, object id, object state, string? sourceLayer = null)
     {
-        if (_mapId == null) return;
+        if (MapId == null) return;
         var feature = sourceLayer != null
             ? new { source, sourceLayer, id }
             : (object)new { source, id };
-        await JS.InvokeVoidAsync("BwMapLibre.setFeatureState", _mapId, feature, state);
+        await JS.InvokeVoidAsync("BwMapLibre.setFeatureState", MapId, feature, state);
     }
 
     /// <summary>
-    /// Remove feature state
+    ///     Remove feature state
     /// </summary>
     public async Task RemoveFeatureStateAsync(string source, object? id = null, string? key = null,
         string? sourceLayer = null)
     {
-        if (_mapId == null) return;
+        if (MapId == null) return;
         var feature = sourceLayer != null
             ? new { source, sourceLayer, id }
             : (object)new { source, id };
-        await JS.InvokeVoidAsync("BwMapLibre.removeFeatureState", _mapId, feature, key);
+        await JS.InvokeVoidAsync("BwMapLibre.removeFeatureState", MapId, feature, key);
     }
 
     #endregion
@@ -1375,39 +1404,39 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Style Methods
 
     /// <summary>
-    /// Set map style
+    ///     Set map style
     /// </summary>
     public async Task SetStyleAsync(string styleUrl)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setStyle", _mapId, styleUrl);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setStyle", MapId, styleUrl);
     }
 
     /// <summary>
-    /// Add an image to the map
+    ///     Add an image to the map
     /// </summary>
     public async Task AddImageAsync(string id, string url, bool sdf = false)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.addImage", _mapId, id, url, new { sdf });
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.addImage", MapId, id, url, new { sdf });
     }
 
     /// <summary>
-    /// Check if image exists
+    ///     Check if image exists
     /// </summary>
     public async Task<bool> HasImageAsync(string id)
     {
-        if (_mapId == null) return false;
-        return await JS.InvokeAsync<bool>("BwMapLibre.hasImage", _mapId, id);
+        if (MapId == null) return false;
+        return await JS.InvokeAsync<bool>("BwMapLibre.hasImage", MapId, id);
     }
 
     /// <summary>
-    /// Remove an image from the map
+    ///     Remove an image from the map
     /// </summary>
     public async Task RemoveImageAsync(string id)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.removeImage", _mapId, id);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.removeImage", MapId, id);
     }
 
     #endregion
@@ -1415,39 +1444,39 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Terrain/Light/Sky/Fog Methods
 
     /// <summary>
-    /// Set terrain
+    ///     Set terrain
     /// </summary>
     public async Task SetTerrainAsync(string source, double exaggeration = 1)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setTerrain", _mapId, new { source, exaggeration });
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setTerrain", MapId, new { source, exaggeration });
     }
 
     /// <summary>
-    /// Set light
+    ///     Set light
     /// </summary>
     public async Task SetLightAsync(object light)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setLight", _mapId, light);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setLight", MapId, light);
     }
 
     /// <summary>
-    /// Set sky
+    ///     Set sky
     /// </summary>
     public async Task SetSkyAsync(object sky)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setSky", _mapId, sky);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setSky", MapId, sky);
     }
 
     /// <summary>
-    /// Set fog
+    ///     Set fog
     /// </summary>
     public async Task SetFogAsync(object fog)
     {
-        if (_mapId == null) return;
-        await JS.InvokeVoidAsync("BwMapLibre.setFog", _mapId, fog);
+        if (MapId == null) return;
+        await JS.InvokeVoidAsync("BwMapLibre.setFog", MapId, fog);
     }
 
     #endregion
@@ -1455,51 +1484,22 @@ public partial class BwMapLibre : IAsyncDisposable
     #region Coordinate Methods
 
     /// <summary>
-    /// Project lng/lat to pixel coordinates
+    ///     Project lng/lat to pixel coordinates
     /// </summary>
     public async Task<double[]?> ProjectAsync(double[] lngLat)
     {
-        if (_mapId == null) return null;
-        return await JS.InvokeAsync<double[]?>("BwMapLibre.project", _mapId, lngLat);
+        if (MapId == null) return null;
+        return await JS.InvokeAsync<double[]?>("BwMapLibre.project", MapId, lngLat);
     }
 
     /// <summary>
-    /// Unproject pixel coordinates to lng/lat
+    ///     Unproject pixel coordinates to lng/lat
     /// </summary>
     public async Task<double[]?> UnprojectAsync(double[] point)
     {
-        if (_mapId == null) return null;
-        return await JS.InvokeAsync<double[]?>("BwMapLibre.unproject", _mapId, point);
+        if (MapId == null) return null;
+        return await JS.InvokeAsync<double[]?>("BwMapLibre.unproject", MapId, point);
     }
 
     #endregion
-
-    #region Export Methods
-
-    /// <summary>
-    /// Export map to data URL (requires preserveDrawingBuffer)
-    /// </summary>
-    public async Task<string?> ToDataUrlAsync()
-    {
-        if (_mapId == null) return null;
-        return await JS.InvokeAsync<string?>("BwMapLibre.toDataURL", _mapId);
-    }
-
-    #endregion
-
-    public async ValueTask DisposeAsync()
-    {
-        try
-        {
-            if (_mapId != null)
-            {
-                await JS.InvokeVoidAsync("BwMapLibre.disposeMap", _mapId);
-            }
-
-            _netRef?.Dispose();
-        }
-        catch
-        {
-        }
-    }
 }

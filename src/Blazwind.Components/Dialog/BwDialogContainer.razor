@@ -1,24 +1,24 @@
 @namespace Blazwind.Components.Dialog
-@using Blazwind.Components.Services
-@using Blazwind.Components.Shared
 @inject DialogService DialogService
+@using Blazwind.Components.Shared
 @implements IDisposable
 
 @foreach (var dialog in DialogService.Dialogs)
 {
     <BwDialog @key="dialog.Id" Id="@dialog.Id.ToString("N")" Title="@dialog.Title" Width="@dialog.Options.Width"
-        Height="@dialog.Options.Height" MaxWidth="@dialog.Options.MaxWidth" ShowClose="@dialog.Options.ShowClose"
-        Class="@dialog.Options.Class" Draggable="@dialog.Options.Draggable" Resizable="@dialog.Options.Resizable"
-        FullScreen="@dialog.Options.FullScreen" IsRaw="@dialog.Options.IsRaw"
-        TitleColor="@(dialog.Options.TitleColor ?? BwColor.Primary)"
-        TitleSize="@(dialog.Options.TitleSize ?? BwSize.Medium)" OnClose="@(() => DialogService.Close(dialog))">
+              Height="@dialog.Options.Height" MaxWidth="@dialog.Options.MaxWidth" ShowClose="@dialog.Options.ShowClose"
+              Class="@dialog.Options.Class" Draggable="@dialog.Options.Draggable" Resizable="@dialog.Options.Resizable"
+              FullScreen="@dialog.Options.FullScreen" IsRaw="@dialog.Options.IsRaw"
+              TitleColor="@(dialog.Options.TitleColor ?? BwColor.Primary)"
+              TitleSize="@(dialog.Options.TitleSize ?? BwSize.Medium)" OnClose="@(() => DialogService.Close(dialog))">
         <CascadingValue Value="dialog" IsFixed="true">
-            <DynamicComponent Type="@dialog.ComponentType" Parameters="@dialog.Parameters" />
+            <DynamicComponent Type="@dialog.ComponentType" Parameters="@dialog.Parameters"/>
         </CascadingValue>
     </BwDialog>
 }
 
 @code {
+
     protected override void OnInitialized()
     {
         DialogService.OnChange += HandleChange;
@@ -33,4 +33,5 @@
     {
         DialogService.OnChange -= HandleChange;
     }
+
 }

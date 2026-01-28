@@ -6,27 +6,27 @@
     var triggerColorClass = $"bw-help-tooltip-trigger-{Color.ToString().ToLower()}";
 }
 
-<div class="@CombineClasses($"bw-help-tooltip")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-help-tooltip")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Trigger Icon *@
-    <button type="button" 
+    <button type="button"
             class="bw-help-tooltip-trigger @triggerColorClass"
             tabindex="-1"
             @onclick="Toggle"
             @onclick:stopPropagation="true">
         <i class="@Icon @IconSizeClass"></i>
     </button>
-    
+
     @* Tooltip/Popover *@
     @if (_isOpen)
     {
         @* Backdrop *@
         <div class="fixed inset-0 z-40" @onclick="Close"></div>
-        
+
         @* Tooltip Content *@
         <div class="bw-help-tooltip-popup @PositionClass @WidthClass">
             @* Arrow *@
             <div class="bw-help-tooltip-arrow @ArrowPositionClass"></div>
-            
+
             @* Header *@
             @if (!string.IsNullOrEmpty(Title))
             {
@@ -41,7 +41,7 @@
                     }
                 </div>
             }
-            
+
             @* Content *@
             <div class="bw-help-tooltip-content">
                 @if (ChildContent != null)
@@ -53,12 +53,12 @@
                     @Content
                 }
             </div>
-            
+
             @* Link *@
             @if (!string.IsNullOrEmpty(LinkText) && !string.IsNullOrEmpty(LinkHref))
             {
                 <div class="bw-help-tooltip-link-section">
-                    <a href="@LinkHref" target="@LinkTarget" 
+                    <a href="@LinkHref" target="@LinkTarget"
                        class="bw-help-tooltip-link">
                         @LinkText
                         <i class="fa-solid fa-external-link-alt text-[10px]"></i>
@@ -70,20 +70,40 @@
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Content { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
-    [Parameter] public string Icon { get; set; } = "fa-solid fa-circle-question";
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Info;
-    [Parameter] public HelpTooltipPosition Position { get; set; } = HelpTooltipPosition.Top;
-    
-    [Parameter] public bool Closable { get; set; } = true;
-    [Parameter] public string? LinkText { get; set; }
-    [Parameter] public string? LinkHref { get; set; }
-    [Parameter] public string LinkTarget { get; set; } = "_blank";
-    
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Content { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; } = "fa-solid fa-circle-question";
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Info;
+
+    [Parameter]
+    public HelpTooltipPosition Position { get; set; } = HelpTooltipPosition.Top;
+
+    [Parameter]
+    public bool Closable { get; set; } = true;
+
+    [Parameter]
+    public string? LinkText { get; set; }
+
+    [Parameter]
+    public string? LinkHref { get; set; }
+
+    [Parameter]
+    public string LinkTarget { get; set; } = "_blank";
+
     private bool _isOpen;
 
     private void Toggle()
@@ -111,7 +131,7 @@
         HelpTooltipPosition.Right => "left-full top-1/2 -translate-y-1/2 ml-2",
         _ => "bottom-full left-1/2 -translate-x-1/2 mb-2"
     };
-    
+
     private string WidthClass => Size switch
     {
         BwSize.Small => "w-48",
@@ -127,4 +147,5 @@
         HelpTooltipPosition.Right => "-left-1.5 top-1/2 -translate-y-1/2 border-b border-l",
         _ => "-bottom-1.5 left-1/2 -translate-x-1/2 border-r border-b"
     };
+
 }

@@ -21,17 +21,17 @@ A component used to add a watermark (text or image) over content.
 
 ## Parameters
 
-| Name | Type | Default | Description |
-|------|-----|------------|----------|
-| `Text` | `string` | - | Watermark text. |
-| `ImageUrl` | `string` | - | URL of the image to use as watermark. |
-| `Rotate` | `int` | `-22` | Rotation angle (degrees). |
-| `Opacity` | `double` | `0.15` | Opacity (0-1). |
-| `FontSize` | `int` | `16` | Text size (px). |
-| `GapX` | `int` | `100` | Horizontal gap distance (px). |
-| `GapY` | `int` | `100` | Vertical gap distance (px). |
-| `Color` | `string` | `"#000"` | Text color. |
-| `ChildContent` | `RenderFragment` | - | The content to be watermarked. |
+| Name           | Type             | Default  | Description                           |
+|----------------|------------------|----------|---------------------------------------|
+| `Text`         | `string`         | -        | Watermark text.                       |
+| `ImageUrl`     | `string`         | -        | URL of the image to use as watermark. |
+| `Rotate`       | `int`            | `-22`    | Rotation angle (degrees).             |
+| `Opacity`      | `double`         | `0.15`   | Opacity (0-1).                        |
+| `FontSize`     | `int`            | `16`     | Text size (px).                       |
+| `GapX`         | `int`            | `100`    | Horizontal gap distance (px).         |
+| `GapY`         | `int`            | `100`    | Vertical gap distance (px).           |
+| `Color`        | `string`         | `"#000"` | Text color.                           |
+| `ChildContent` | `RenderFragment` | -        | The content to be watermarked.        |
 
 ## Examples
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// Map marker options
+///     Map marker options
 /// </summary>
 public class MapMarker
 {
@@ -15,7 +15,8 @@ public class MapMarker
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Color { get; set; }
 
-    [JsonPropertyName("draggable")] public bool Draggable { get; set; }
+    [JsonPropertyName("draggable")]
+    public bool Draggable { get; set; }
 
     [JsonPropertyName("rotation")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -42,28 +43,28 @@ public class MapMarker
     public double[]? Offset { get; set; }
 
     /// <summary>
-    /// HTML content for custom marker
+    ///     HTML content for custom marker
     /// </summary>
     [JsonPropertyName("element")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Element { get; set; }
 
     /// <summary>
-    /// Popup content (HTML)
+    ///     Popup content (HTML)
     /// </summary>
     [JsonPropertyName("popupHtml")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? PopupHtml { get; set; }
 
     /// <summary>
-    /// Popup options
+    ///     Popup options
     /// </summary>
     [JsonPropertyName("popupOptions")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public MapPopupOptions? PopupOptions { get; set; }
 
     /// <summary>
-    /// Converts this marker to a JavaScript-compatible object
+    ///     Converts this marker to a JavaScript-compatible object
     /// </summary>
     public object ToJsObject()
     {
@@ -90,15 +91,18 @@ public class MapMarker
 }
 
 /// <summary>
-/// Popup options
+///     Popup options
 /// </summary>
 public class MapPopupOptions
 {
-    [JsonPropertyName("closeButton")] public bool CloseButton { get; set; } = true;
+    [JsonPropertyName("closeButton")]
+    public bool CloseButton { get; set; } = true;
 
-    [JsonPropertyName("closeOnClick")] public bool CloseOnClick { get; set; } = true;
+    [JsonPropertyName("closeOnClick")]
+    public bool CloseOnClick { get; set; } = true;
 
-    [JsonPropertyName("closeOnMove")] public bool CloseOnMove { get; set; }
+    [JsonPropertyName("closeOnMove")]
+    public bool CloseOnMove { get; set; }
 
     [JsonPropertyName("anchor")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -117,7 +121,7 @@ public class MapPopupOptions
     public string? MaxWidth { get; set; }
 
     /// <summary>
-    /// Converts this options to a JavaScript-compatible object
+    ///     Converts this options to a JavaScript-compatible object
     /// </summary>
     public object ToJsObject()
     {
@@ -138,7 +142,7 @@ public class MapPopupOptions
 }
 
 /// <summary>
-/// Popup model for standalone popups
+///     Popup model for standalone popups
 /// </summary>
 public class MapPopup
 {

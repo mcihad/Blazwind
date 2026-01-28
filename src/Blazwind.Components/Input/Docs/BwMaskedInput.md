@@ -33,7 +33,7 @@ A component that provides formatted data entry such as Phone, Date, and Credit C
 ## Parameters
 
 | Parameter     | Type            | Default  | Description                                                                                 |
-| :------------ | :-------------- | :------- | :------------------------------------------------------------------------------------------ |
+|:--------------|:----------------|:---------|:--------------------------------------------------------------------------------------------|
 | `Value`       | `string`        | `null`   | Input value (two-way binding).                                                              |
 | `Mask`        | `string`        | `""`     | Mask pattern (e.g. `(###) ### ## ##`).                                                      |
 | `Preset`      | `BwMaskPreset?` | `null`   | Predefined masks (`Phone`, `CreditCard`, `Date`, `Time`, `Iban`).                           |
@@ -48,7 +48,7 @@ A component that provides formatted data entry such as Phone, Date, and Credit C
 ## Events
 
 | Event          | Payload  | Description                                             |
-| :------------- | :------- | :------------------------------------------------------ |
+|:---------------|:---------|:--------------------------------------------------------|
 | `ValueChanged` | `string` | Triggered whenever the value changes (two-way binding). |
 | `OnChange`     | `string` | Triggered after the value changes.                      |
 | `OnEnter`      | `null`   | Triggered when the Enter key is pressed.                |
@@ -56,7 +56,7 @@ A component that provides formatted data entry such as Phone, Date, and Credit C
 ## Mask Characters
 
 | Character | Description                                               |
-| :-------- | :-------------------------------------------------------- |
+|:----------|:----------------------------------------------------------|
 | `#`       | Digits only (0–9)                                         |
 | `A`       | Letters only (a–z, A–Z)                                   |
 | `*`       | Letter or digit                                           |

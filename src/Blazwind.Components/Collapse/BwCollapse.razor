@@ -1,9 +1,6 @@
 @namespace Blazwind.Components.Collapse
-@inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
-
-@using System.Text
+@inherits BwBase
 
 @{
     var borderClass = Bordered ? "bw-collapse-bordered" : "";
@@ -41,7 +38,7 @@
 }
 
 <div class="@CombineClasses($"bw-collapse {borderClass}")" style="@Style" id="@Id"
-    @attributes="AdditionalAttributes">
+     @attributes="AdditionalAttributes">
     <div class="bw-collapse-header @headerSizeClass @stateClass" @onclick="Toggle">
         <div class="flex items-center gap-2">
             @if (!string.IsNullOrEmpty(Icon))
@@ -80,19 +77,42 @@
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Extra { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public bool IsExpanded { get; set; } = false;
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public bool Bordered { get; set; } = true;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
 
-    [Parameter] public EventCallback<bool> IsExpandedChanged { get; set; }
-    [Parameter] public EventCallback<bool> OnExpandedChange { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? HeaderTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Extra { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public bool IsExpanded { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public bool Bordered { get; set; } = true;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public EventCallback<bool> IsExpandedChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnExpandedChange { get; set; }
 
     private async Task Toggle()
     {
@@ -102,4 +122,5 @@
         await IsExpandedChanged.InvokeAsync(IsExpanded);
         await OnExpandedChange.InvokeAsync(IsExpanded);
     }
+
 }

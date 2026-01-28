@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Navigation
-@using Microsoft.JSInterop
 @inherits BwBase
 
 @{
@@ -22,7 +21,7 @@
     }
     else
     {
-        <button type="button" 
+        <button type="button"
                 class="bw-nav-group-header"
                 style="padding-left: @(Level * 12 + 12)px"
                 onclick="Blazwind.Nav.toggleGroup('@Id')">
@@ -31,10 +30,11 @@
                 <i class="@Icon bw-nav-group-icon"></i>
             }
             <span class="flex-1">@Title</span>
-            <i data-nav-chevron class="fa-solid fa-chevron-right bw-nav-group-chevron @(_isExpanded ? "rotate-90" : "")"></i>
+            <i data-nav-chevron
+               class="fa-solid fa-chevron-right bw-nav-group-chevron @(_isExpanded ? "rotate-90" : "")"></i>
         </button>
     }
-    
+
     <div data-nav-items class="flex flex-col gap-0.5 mt-0.5" style="display: @(_isExpanded ? "flex" : "none");">
         <CascadingValue Value="this" Name="ParentGroup">
             <CascadingValue Value="Level + 1" Name="Level">
@@ -47,24 +47,39 @@
 </div>
 
 @code {
-    [CascadingParameter(Name = "ParentGroup")] public BwNavMenuGroup? ParentGroup { get; set; }
-    [CascadingParameter(Name = "ParentGroupId")] public string? ParentGroupId { get; set; }
-    [CascadingParameter(Name = "Level")] public int Level { get; set; } = 0;
-    [CascadingParameter(Name = "NavGroupHeaderTemplate")] 
+
+    [CascadingParameter(Name = "ParentGroup")]
+    public BwNavMenuGroup? ParentGroup { get; set; }
+
+    [CascadingParameter(Name = "ParentGroupId")]
+    public string? ParentGroupId { get; set; }
+
+    [CascadingParameter(Name = "Level")]
+    public int Level { get; set; }
+
+    [CascadingParameter(Name = "NavGroupHeaderTemplate")]
     public RenderFragment<BwNavMenuGroupContext>? _cascadedHeaderTemplate { get; set; }
-    
-    [Parameter] public string Title { get; set; } = "";
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public bool DefaultExpanded { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public bool DefaultExpanded { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Custom template for this group's header. Overrides cascaded template.</summary>
-    [Parameter] public RenderFragment<BwNavMenuGroupContext>? HeaderTemplate { get; set; }
-    
+    [Parameter]
+    public RenderFragment<BwNavMenuGroupContext>? HeaderTemplate { get; set; }
+
     private bool _isExpanded;
-    
+
     public string GroupId => Id!;
-    
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -72,12 +87,14 @@
         {
             Id = $"nav-group-{Guid.NewGuid():N}";
         }
+
         _isExpanded = DefaultExpanded;
     }
-    
+
     private void ToggleGroup()
     {
         _isExpanded = !_isExpanded;
         StateHasChanged();
     }
+
 }

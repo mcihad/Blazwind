@@ -1,6 +1,7 @@
 # Grid
 
-A powerful CSS Grid-based layout component supporting XAML/MAUI style `RowDefs` and `ColumnDefs` for proportional or fixed layouts.
+A powerful CSS Grid-based layout component supporting XAML/MAUI style `RowDefs` and `ColumnDefs` for proportional or
+fixed layouts.
 
 ## Features
 
@@ -12,6 +13,7 @@ A powerful CSS Grid-based layout component supporting XAML/MAUI style `RowDefs` 
 ## Usage
 
 ### Simple Proportional Grid (1:2:1)
+
 ```razor
 @using Blazwind.Components.Layout
 
@@ -24,15 +26,16 @@ A powerful CSS Grid-based layout component supporting XAML/MAUI style `RowDefs` 
 
 ### Definition Syntax Reference
 
-| Syntax | CSS Translation | Description |
-| :--- | :--- | :--- |
-| `*` | `1fr` | 1 unit of available flexible space. |
-| `2*` | `2fr` | 2 units of available flexible space. |
-| `Auto` | `auto` | Sized based on the content of the children. |
-| `200px` | `200px` | Fixed pixel width/height. |
-| `10%` | `10%` | Percentage of the parent container. |
+| Syntax  | CSS Translation | Description                                 |
+|:--------|:----------------|:--------------------------------------------|
+| `*`     | `1fr`           | 1 unit of available flexible space.         |
+| `2*`    | `2fr`           | 2 units of available flexible space.        |
+| `Auto`  | `auto`          | Sized based on the content of the children. |
+| `200px` | `200px`         | Fixed pixel width/height.                   |
+| `10%`   | `10%`           | Percentage of the parent container.         |
 
 ### Advanced 2D Layout
+
 Use `BwGridItem` to span multiple rows or columns.
 
 ```razor
@@ -53,25 +56,25 @@ Use `BwGridItem` to span multiple rows or columns.
 
 ### BwGrid
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `RowDefs` | `string?` | `null` | Comma-separated row definitions (e.g., "Auto,*,Auto"). |
-| `ColumnDefs` | `string?` | `null` | Comma-separated column definitions (e.g., "*,2*,100px"). |
-| `Columns` | `int?` | `null` | Shortcut for fixed equal-width columns. Ignored if `ColumnDefs` is set. |
-| `MinItemWidth` | `string` | `"250px"` | Minimum width for auto-fill behavior when no definitions are provided. |
-| `Gap` | `BwSpacing` | `Md` | Standard gap between items. |
-| `ColumnSpacing` | `BwSpacing?` | `null` | Overrides horizontal gap (gap-x). |
-| `RowSpacing` | `BwSpacing?` | `null` | Overrides vertical gap (gap-y). |
-| `Class` | `string?` | `null` | Custom CSS classes. |
-| `Style` | `string?` | `null` | Custom inline CSS styles. |
+| Parameter       | Type         | Default   | Description                                                             |
+|:----------------|:-------------|:----------|:------------------------------------------------------------------------|
+| `RowDefs`       | `string?`    | `null`    | Comma-separated row definitions (e.g., "Auto,*,Auto").                  |
+| `ColumnDefs`    | `string?`    | `null`    | Comma-separated column definitions (e.g., "*,2*,100px").                |
+| `Columns`       | `int?`       | `null`    | Shortcut for fixed equal-width columns. Ignored if `ColumnDefs` is set. |
+| `MinItemWidth`  | `string`     | `"250px"` | Minimum width for auto-fill behavior when no definitions are provided.  |
+| `Gap`           | `BwSpacing`  | `Md`      | Standard gap between items.                                             |
+| `ColumnSpacing` | `BwSpacing?` | `null`    | Overrides horizontal gap (gap-x).                                       |
+| `RowSpacing`    | `BwSpacing?` | `null`    | Overrides vertical gap (gap-y).                                         |
+| `Class`         | `string?`    | `null`    | Custom CSS classes.                                                     |
+| `Style`         | `string?`    | `null`    | Custom inline CSS styles.                                               |
 
 ### BwGridItem
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Row` | `int` | `0` | Starting row index (0-based). |
-| `Column` | `int` | `0` | Starting column index (0-based). |
-| `RowSpan` | `int` | `1` | Number of rows the item should bridge. |
-| `ColumnSpan` | `int` | `1` | Number of columns the item should bridge. |
-| `Class` | `string?` | `null` | Custom CSS classes. |
-| `Style` | `string?` | `null` | Custom inline CSS styles. |
+| Parameter    | Type      | Default | Description                               |
+|:-------------|:----------|:--------|:------------------------------------------|
+| `Row`        | `int`     | `0`     | Starting row index (0-based).             |
+| `Column`     | `int`     | `0`     | Starting column index (0-based).          |
+| `RowSpan`    | `int`     | `1`     | Number of rows the item should bridge.    |
+| `ColumnSpan` | `int`     | `1`     | Number of columns the item should bridge. |
+| `Class`      | `string?` | `null`  | Custom CSS classes.                       |
+| `Style`      | `string?` | `null`  | Custom inline CSS styles.                 |

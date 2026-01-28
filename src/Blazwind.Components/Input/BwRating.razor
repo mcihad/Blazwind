@@ -1,7 +1,6 @@
 @namespace Blazwind.Components.Input
 @using Blazwind.Components.Shared
 @using Microsoft.AspNetCore.Components.Forms
-@using System.Linq.Expressions
 @inherits BwBaseInput<double>
 
 @{
@@ -11,7 +10,7 @@
         BwSize.Large => "text-3xl gap-1.5",
         _ => "text-2xl gap-1"
     };
-    
+
     var (filledColor, emptyColor) = Color switch
     {
         BwColor.Warning => ("text-[var(--bw-color-warning)]", "text-[var(--bw-gray-300)]"),
@@ -26,14 +25,14 @@
     {
         <label class="bw-label mb-1.5">@Label</label>
     }
-    
+
     <div class="flex items-center @sizeClass @(IsReadOnly || IsDisabled ? "" : "cursor-pointer")">
-        @for (int i = 1; i <= MaxValue; i++)
+        @for (var i = 1; i <= MaxValue; i++)
         {
             var starIndex = i;
             var isFilled = Value >= starIndex;
             var isHalf = AllowHalf && Value >= starIndex - 0.5 && Value < starIndex;
-            
+
             <span class="relative transition-transform @(IsReadOnly || IsDisabled ? "" : "hover:scale-110")"
                   @onclick="() => OnStarClick(starIndex)"
                   @onmouseover="() => OnStarHover(starIndex)"
@@ -57,13 +56,13 @@
                 }
             </span>
         }
-        
+
         @if (ShowValue)
         {
             <span class="bw-label ml-2">@Value.ToString("0.#")</span>
         }
     </div>
-    
+
     @if (!string.IsNullOrEmpty(HelperText))
     {
         <p class="bw-helper-text">@HelperText</p>
@@ -71,34 +70,39 @@
 </div>
 
 @code {
-    [CascadingParameter] private EditContext? CascadedEditContextLocal { get; set; }
 
-    
+    [CascadingParameter]
+    private EditContext? CascadedEditContextLocal { get; set; }
 
-    
+
     /// <summary>Maximum rating value (default: 5)</summary>
-    [Parameter] public int MaxValue { get; set; } = 5;
-    
+    [Parameter]
+    public int MaxValue { get; set; } = 5;
+
     /// <summary>Allow half-star ratings</summary>
-    [Parameter] public bool AllowHalf { get; set; }
-    
+    [Parameter]
+    public bool AllowHalf { get; set; }
+
     /// <summary>Display rating value next to stars</summary>
-    [Parameter] public bool ShowValue { get; set; }
-    
+    [Parameter]
+    public bool ShowValue { get; set; }
+
     /// <summary>Icon for filled star</summary>
-    [Parameter] public string FilledIcon { get; set; } = "fa-solid fa-star";
-    
+    [Parameter]
+    public string FilledIcon { get; set; } = "fa-solid fa-star";
+
     /// <summary>Icon for empty star</summary>
-    [Parameter] public string EmptyIcon { get; set; } = "fa-regular fa-star";
-    
+    [Parameter]
+    public string EmptyIcon { get; set; } = "fa-regular fa-star";
+
     /// <summary>Color variant</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Warning;
-    
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Warning;
 
 
     private double? _hoverValue;
     private FieldIdentifier _fieldIdentifier;
-    
+
     protected override void OnInitialized()
     {
         if (CascadedEditContext != null && For != null)
@@ -110,16 +114,16 @@
     private async Task OnStarClick(int starIndex)
     {
         if (IsReadOnly || IsDisabled) return;
-        
-        var newValue = AllowHalf && Value == starIndex - 0.5 ? (double)starIndex : starIndex - 0.5;
+
+        var newValue = AllowHalf && Value == starIndex - 0.5 ? starIndex : starIndex - 0.5;
         if (!AllowHalf) newValue = starIndex;
-        
+
         // Toggle off if clicking the same full value
         // if (Value == starIndex && !AllowHalf)
         // {
         //     newValue = 0;
         // }
-        
+
         Value = Math.Max(0, Math.Min(MaxValue, newValue));
         await ValueChanged.InvokeAsync(Value);
     }
@@ -134,4 +138,5 @@
     {
         _hoverValue = null;
     }
+
 }

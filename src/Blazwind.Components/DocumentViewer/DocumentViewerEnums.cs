@@ -1,7 +1,7 @@
 namespace Blazwind.Components.DocumentViewer;
 
 /// <summary>
-/// Supported document types
+///     Supported document types
 /// </summary>
 public enum DocumentType
 {

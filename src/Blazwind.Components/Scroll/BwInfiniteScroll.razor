@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Scroll
-@using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @inherits BwBase
 
@@ -37,17 +36,29 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? LoadingTemplate { get; set; }
-    [Parameter] public EventCallback OnLoadMore { get; set; }
-    [Parameter] public bool HasMore { get; set; } = true;
-    [Parameter] public string EndMessage { get; set; } = "All content loaded";
-    [Parameter] public int Threshold { get; set; } = 100;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback OnLoadMore { get; set; }
+
+    [Parameter]
+    public bool HasMore { get; set; } = true;
+
+    [Parameter]
+    public string EndMessage { get; set; } = "All content loaded";
+
+    [Parameter]
+    public int Threshold { get; set; } = 100;
     // Removed Class and Style parameters (inherited)
 
     private ElementReference _containerRef;
     private ElementReference _sentinelRef;
-    private bool _isLoading = false;
+    private bool _isLoading;
     private DotNetObjectReference<BwInfiniteScroll>? _dotNetRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -79,7 +90,11 @@
         {
             await JS.InvokeVoidAsync("Blazwind.InfiniteScroll.dispose");
         }
-        catch { }
+        catch
+        {
+        }
+
         _dotNetRef?.Dispose();
     }
+
 }

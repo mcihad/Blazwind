@@ -19,6 +19,7 @@ A navigation component that guides users through a series of steps or a workflow
 ```
 
 ### Variants
+
 The `Variant` parameter supports different styles: `Default`, `Dots`, `Pills`, `Progress`, `Icons`.
 
 ```razor
@@ -28,6 +29,7 @@ The `Variant` parameter supports different styles: `Default`, `Dots`, `Pills`, `
 ```
 
 ### Orientation
+
 Use `Orientation` to switch between `Vertical` and `Horizontal` layouts.
 
 ```razor
@@ -46,22 +48,24 @@ Use `Orientation` to switch between `Vertical` and `Horizontal` layouts.
 ```
 
 ### Alternative Label
+
 Use `AlternativeLabel` to place labels below the step icons (Horizontal mode).
 
 ## API - BwStepper
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `ActiveStep` | `int` | `0` | The index of the currently active step (Two-way binding). |
-| `Variant` | `BwStepperVariant` | `Default` | Visual style: `Default`, `Dots`, `Pills`, `Progress`, `Icons`. |
-| `Orientation` | `BwOrientation` | `Horizontal` | Layout direction: `Horizontal`, `Vertical`. |
-| `Linear` | `bool` | `true` | If true, user must complete steps in order. |
-| `ShowConnectors`| `bool` | `true` | Whether to show lines between steps. |
-| `AlternativeLabel`| `bool` | `false` | Positions labels below the icon (Horizontal only). |
-| `Size` | `BwSize` | `Medium` | Size of the indicators. |
-| `Class` | `string?` | `null` | Custom CSS class. |
+| Parameter          | Type               | Default      | Description                                                    |
+|:-------------------|:-------------------|:-------------|:---------------------------------------------------------------|
+| `ActiveStep`       | `int`              | `0`          | The index of the currently active step (Two-way binding).      |
+| `Variant`          | `BwStepperVariant` | `Default`    | Visual style: `Default`, `Dots`, `Pills`, `Progress`, `Icons`. |
+| `Orientation`      | `BwOrientation`    | `Horizontal` | Layout direction: `Horizontal`, `Vertical`.                    |
+| `Linear`           | `bool`             | `true`       | If true, user must complete steps in order.                    |
+| `ShowConnectors`   | `bool`             | `true`       | Whether to show lines between steps.                           |
+| `AlternativeLabel` | `bool`             | `false`      | Positions labels below the icon (Horizontal only).             |
+| `Size`             | `BwSize`           | `Medium`     | Size of the indicators.                                        |
+| `Class`            | `string?`          | `null`       | Custom CSS class.                                              |
 
 ### See Also
+
 - [StepperItem](Stepper/Docs/BwStepperItem.md)

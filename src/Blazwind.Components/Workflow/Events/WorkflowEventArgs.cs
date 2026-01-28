@@ -3,7 +3,7 @@ using Blazwind.Components.Workflow.Interfaces;
 namespace Blazwind.Components.Workflow.Events;
 
 /// <summary>
-/// Event args for node position changes (after drag)
+///     Event args for node position changes (after drag)
 /// </summary>
 public class NodePositionChangedEventArgs : EventArgs
 {
@@ -13,7 +13,7 @@ public class NodePositionChangedEventArgs : EventArgs
 }
 
 /// <summary>
-/// Event args for node status changes
+///     Event args for node status changes
 /// </summary>
 public class NodeStatusChangedEventArgs : EventArgs
 {
@@ -23,7 +23,7 @@ public class NodeStatusChangedEventArgs : EventArgs
 }
 
 /// <summary>
-/// Event args for node click
+///     Event args for node click
 /// </summary>
 public class NodeClickedEventArgs : EventArgs
 {
@@ -32,7 +32,7 @@ public class NodeClickedEventArgs : EventArgs
 }
 
 /// <summary>
-/// Event args for edge click
+///     Event args for edge click
 /// </summary>
 public class EdgeClickedEventArgs : EventArgs
 {

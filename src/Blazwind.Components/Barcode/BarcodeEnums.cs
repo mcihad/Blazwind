@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Barcode;
 
 /// <summary>
-/// Supported barcode formats
+///     Supported barcode formats
 /// </summary>
 public enum BarcodeFormat
 {
@@ -28,7 +28,7 @@ public enum BarcodeFormat
 }
 
 /// <summary>
-/// Barcode render type
+///     Barcode render type
 /// </summary>
 public enum BarcodeRenderType
 {

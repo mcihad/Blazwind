@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.Range
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@using System.Globalization
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 @{
@@ -34,7 +35,7 @@
 
                 @* Active Range *@
                 <div class="bw-active-range absolute h-2 rounded-full @fillClass"
-                    style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
+                     style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
                 </div>
 
                 @* Start Thumb *@
@@ -80,19 +81,43 @@
 </div>
 
 @code {
-    [Parameter] public double Min { get; set; } = 0;
-    [Parameter] public double Max { get; set; } = 100;
-    [Parameter] public double Step { get; set; } = 1;
-    [Parameter] public double Start { get; set; } = 0;
-    [Parameter] public double End { get; set; } = 100;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public bool ShowValues { get; set; } = true;
-    [Parameter] public bool ShowSelection { get; set; } = true;
-    [Parameter] public bool ShowTooltip { get; set; } = true;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public string? Format { get; set; }
+
+    [Parameter]
+    public double Min { get; set; }
+
+    [Parameter]
+    public double Max { get; set; } = 100;
+
+    [Parameter]
+    public double Step { get; set; } = 1;
+
+    [Parameter]
+    public double Start { get; set; }
+
+    [Parameter]
+    public double End { get; set; } = 100;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool ShowValues { get; set; } = true;
+
+    [Parameter]
+    public bool ShowSelection { get; set; } = true;
+
+    [Parameter]
+    public bool ShowTooltip { get; set; } = true;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public string? Format { get; set; }
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public EventCallback<RangeChangedEventArgs<double>> OnRangeChanged { get; set; }
+    [Parameter]
+    public EventCallback<RangeChangedEventArgs<double>> OnRangeChanged { get; set; }
 
     private string _elementId = "";
     private DotNetObjectReference<BwRange>? _dotNetRef;
@@ -110,7 +135,10 @@
 
     private bool IsDragging => _isDraggingStart || _isDraggingEnd;
 
-    protected override bool ShouldRender() => !IsDragging;
+    protected override bool ShouldRender()
+    {
+        return !IsDragging;
+    }
 
     protected override void OnInitialized()
     {
@@ -135,10 +163,10 @@
     {
         if (IsDragging) return;
 
-        bool paramsChanged = Math.Abs(Start - _prevStart) > double.Epsilon ||
-        Math.Abs(End - _prevEnd) > double.Epsilon ||
-        Math.Abs(Min - _prevMin) > double.Epsilon ||
-        Math.Abs(Max - _prevMax) > double.Epsilon;
+        var paramsChanged = Math.Abs(Start - _prevStart) > double.Epsilon ||
+                            Math.Abs(End - _prevEnd) > double.Epsilon ||
+                            Math.Abs(Min - _prevMin) > double.Epsilon ||
+                            Math.Abs(Max - _prevMax) > double.Epsilon;
 
         if (!paramsChanged) return;
 
@@ -157,8 +185,8 @@
     {
         if (Max > Min)
         {
-            _startPercent = ((_currentStart - Min) / (Max - Min)) * 100;
-            _endPercent = ((_currentEnd - Min) / (Max - Min)) * 100;
+            _startPercent = (_currentStart - Min) / (Max - Min) * 100;
+            _endPercent = (_currentEnd - Min) / (Max - Min) * 100;
         }
     }
 
@@ -168,7 +196,7 @@
         {
             _dotNetRef = DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("Blazwind.RangeSlider.initialize", _elementId, _dotNetRef, Min, Max, Step, _startPercent,
-            _endPercent);
+                _endPercent);
         }
     }
 
@@ -214,13 +242,20 @@
         StateHasChanged();
     }
 
-    private double SnapToStep(double value) => Math.Round(value / Step) * Step;
+    private double SnapToStep(double value)
+    {
+        return Math.Round(value / Step) * Step;
+    }
 
-    private string FormatValue(double value) => string.IsNullOrEmpty(Format) ? value.ToString("N0") :
-    value.ToString(Format);
+    private string FormatValue(double value)
+    {
+        return string.IsNullOrEmpty(Format) ? value.ToString("N0") : value.ToString(Format);
+    }
 
-    private string GetInvariantPercent(double value) =>
-    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    private string GetInvariantPercent(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -228,8 +263,11 @@
         {
             await JS.InvokeVoidAsync("Blazwind.RangeSlider.dispose", _elementId);
         }
-        catch { }
+        catch
+        {
+        }
 
         _dotNetRef?.Dispose();
     }
+
 }

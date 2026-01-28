@@ -1,6 +1,7 @@
 # Input (Text Input)
 
-This is the basic component used to receive text-based data from the user. It uses the `BwBaseInput` infrastructure and supports all standard form features.
+This is the basic component used to receive text-based data from the user. It uses the `BwBaseInput` infrastructure and
+supports all standard form features.
 
 ## Features
 
@@ -73,7 +74,7 @@ Helper texts can be displayed below the field (`Inline`) or with a question mark
 ## BwInput Parameters
 
 | Parameter       | Type                       | Default   | Description                                                    |
-| :-------------- | :------------------------- | :-------- | :------------------------------------------------------------- |
+|:----------------|:---------------------------|:----------|:---------------------------------------------------------------|
 | `Value`         | `string`                   | `null`    | Input value (supports two-way binding).                        |
 | `Label`         | `string`                   | `null`    | Field label.                                                   |
 | `Placeholder`   | `string`                   | `null`    | Placeholder text.                                              |
@@ -97,7 +98,7 @@ Helper texts can be displayed below the field (`Inline`) or with a question mark
 ## Events
 
 | Event          | Payload           | Description                                                        |
-| :------------- | :---------------- | :----------------------------------------------------------------- |
+|:---------------|:------------------|:-------------------------------------------------------------------|
 | `ValueChanged` | `string`          | Triggered whenever the value changes (two-way binding).            |
 | `OnChange`     | `string`          | Triggered when the value changes and the field loses focus (blur). |
 | `OnInput`      | `ChangeEventArgs` | Triggered on every keystroke (native input event).                 |

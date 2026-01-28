@@ -1,14 +1,15 @@
-@namespace Blazwind.Components.Calendar
+@using System.Globalization
 @using Blazwind.Components.Shared
+@namespace Blazwind.Components.Calendar
 
 @{
-    var culture = new System.Globalization.CultureInfo("tr-TR");
+    var culture = new CultureInfo("tr-TR");
     var upcomingEvents = Events?
         .Where(e => e.StartTime.Date >= SelectedDate.Date)
         .OrderBy(e => e.StartTime)
         .GroupBy(e => e.StartTime.Date)
         .Take(14) // 2 weeks agenda
-        .ToList() ?? new();
+        .ToList() ?? new List<IGrouping<DateTime, CalendarEvent>>();
 }
 
 <div class="bw-calendar-agenda">
@@ -17,8 +18,10 @@
         @* Empty State - Premium Design *@
         <div class="flex flex-col items-center justify-center h-full text-center px-8 py-16">
             <div class="relative">
-                <div class="absolute inset-0 rounded-full blur-2xl scale-150" style="background-color: color-mix(in srgb, var(--bw-color-primary) 10%, transparent);"></div>
-                <div class="bw-calendar-agenda-empty-icon relative" style="box-shadow: 0 20px 25px -5px color-mix(in srgb, var(--bw-color-primary) 20%, transparent);">
+                <div class="absolute inset-0 rounded-full blur-2xl scale-150"
+                     style="background-color: color-mix(in srgb, var(--bw-color-primary) 10%, transparent);"></div>
+                <div class="bw-calendar-agenda-empty-icon relative"
+                     style="box-shadow: 0 20px 25px -5px color-mix(in srgb, var(--bw-color-primary) 20%, transparent);">
                     <i class="fa-regular fa-calendar-check text-4xl text-white"></i>
                 </div>
             </div>
@@ -37,28 +40,32 @@
                 var isToday = date == DateTime.Today;
                 var isTomorrow = date == DateTime.Today.AddDays(1);
                 var isThisWeek = date <= DateTime.Today.AddDays(7);
-                
+
                 var dateTitle = isToday ? "Bugün" : isTomorrow ? "Yarın" : date.ToString("d MMMM, dddd", culture);
-                
+
                 <div class="relative">
                     @* Date Header - Modern Glass Style *@
                     <div class="bw-calendar-agenda-date-header backdrop-blur-sm">
                         <div class="flex items-center gap-4">
                             @* Date Badge *@
                             <div class="flex-shrink-0 w-16 sm:w-20">
-                                <div class="@(isToday ? "bw-calendar-agenda-date-badge bw-calendar-agenda-date-badge-today" : "bw-calendar-agenda-date-badge")">
-                                    <div class="@(isToday ? "bw-calendar-agenda-date-month bw-calendar-agenda-date-month-today" : "bw-calendar-agenda-date-month")">
+                                <div
+                                    class="@(isToday ? "bw-calendar-agenda-date-badge bw-calendar-agenda-date-badge-today" : "bw-calendar-agenda-date-badge")">
+                                    <div
+                                        class="@(isToday ? "bw-calendar-agenda-date-month bw-calendar-agenda-date-month-today" : "bw-calendar-agenda-date-month")">
                                         @date.ToString("MMM", culture).ToUpper()
                                     </div>
-                                    <div class="@(isToday ? "bw-calendar-agenda-date-day bw-calendar-agenda-date-day-today" : "bw-calendar-agenda-date-day")">
+                                    <div
+                                        class="@(isToday ? "bw-calendar-agenda-date-day bw-calendar-agenda-date-day-today" : "bw-calendar-agenda-date-day")">
                                         @date.Day
                                     </div>
-                                    <div class="@(isToday ? "bw-calendar-agenda-date-weekday bw-calendar-agenda-date-weekday-today" : "bw-calendar-agenda-date-weekday")">
+                                    <div
+                                        class="@(isToday ? "bw-calendar-agenda-date-weekday bw-calendar-agenda-date-weekday-today" : "bw-calendar-agenda-date-weekday")">
                                         @date.ToString("ddd", culture)
                                     </div>
                                 </div>
                             </div>
-                            
+
                             @* Day Title & Count *@
                             <div class="flex-1 min-w-0">
                                 <h3 class="bw-calendar-agenda-day-title">
@@ -70,7 +77,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     @* Events List - Premium Cards *@
                     <div class="ml-20 sm:ml-24 space-y-3">
                         @foreach (var calendarEvent in dayGroup.OrderBy(e => e.StartTime))
@@ -78,22 +85,22 @@
                             var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
                             var eventColor = calendarEvent.Color ?? calendar?.Color ?? "#3B82F6";
                             var isPast = calendarEvent.EndTime < DateTime.Now;
-                            
+
                             // Convert hex to rgba for background
                             var r = Convert.ToInt32(eventColor.Substring(1, 2), 16);
                             var g = Convert.ToInt32(eventColor.Substring(3, 2), 16);
                             var b = Convert.ToInt32(eventColor.Substring(5, 2), 16);
                             var bgColor = $"rgba({r}, {g}, {b}, 0.08)";
                             var borderColor = $"rgba({r}, {g}, {b}, 0.25)";
-                            
+
                             <div class="bw-calendar-agenda-event @(isPast ? "bw-calendar-agenda-event-past" : "")"
                                  style="background: @bgColor; border-color: @borderColor;"
                                  @onclick="() => HandleEventClicked(calendarEvent)">
-                                
+
                                 @* Color Accent Bar *@
-                                <div class="absolute left-0 top-0 bottom-0 w-1.5" 
+                                <div class="absolute left-0 top-0 bottom-0 w-1.5"
                                      style="background: @eventColor;"></div>
-                                
+
                                 <div class="p-4 pl-5">
                                     <div class="flex items-start justify-between gap-4">
                                         @* Main Content *@
@@ -113,19 +120,19 @@
                                                         <i class="fa-regular fa-clock text-[10px] mr-1.5 opacity-70"></i>
                                                         @calendarEvent.StartTime.ToString("HH:mm") - @calendarEvent.EndTime.ToString("HH:mm")
                                                     </span>
-                                                    
+
                                                     @* Duration *@
                                                     <span class="bw-calendar-agenda-duration">
                                                         (@(calendarEvent.DurationMinutes) dk)
                                                     </span>
                                                 }
                                             </div>
-                                            
+
                                             @* Title *@
                                             <h4 class="bw-calendar-agenda-event-title">
                                                 @calendarEvent.Title
                                             </h4>
-                                            
+
                                             @* Description *@
                                             @if (!string.IsNullOrEmpty(calendarEvent.Description))
                                             {
@@ -133,7 +140,7 @@
                                                     @calendarEvent.Description
                                                 </p>
                                             }
-                                            
+
                                             @* Meta Info *@
                                             @if (!string.IsNullOrEmpty(calendarEvent.Location) || calendar != null)
                                             {
@@ -145,18 +152,19 @@
                                                             @calendarEvent.Location
                                                         </span>
                                                     }
-                                                    
+
                                                     @if (calendar != null)
                                                     {
                                                         <span class="bw-calendar-agenda-event-meta">
-                                                            <span class="w-2 h-2 rounded-full mr-1.5" style="background-color: @calendar.Color"></span>
+                                                            <span class="w-2 h-2 rounded-full mr-1.5"
+                                                                  style="background-color: @calendar.Color"></span>
                                                             @calendar.Name
                                                         </span>
                                                     }
                                                 </div>
                                             }
                                         </div>
-                                        
+
                                         @* Arrow Icon *@
                                         <div class="flex-shrink-0 bw-calendar-agenda-arrow">
                                             <i class="fa-solid fa-chevron-right"></i>
@@ -168,7 +176,7 @@
                     </div>
                 </div>
             }
-            
+
             @* Load More Indicator *@
             <div class="bw-calendar-agenda-footer">
                 Son 2 haftadaki etkinlikler gösteriliyor
@@ -178,14 +186,25 @@
 </div>
 
 @code {
-    [Parameter] public DateTime SelectedDate { get; set; }
-    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
-    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
-    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
-    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
-    
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarEvent>? Events { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarInfo>? Calendars { get; set; }
+
+    [Parameter]
+    public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+
     private async Task HandleEventClicked(CalendarEvent calendarEvent)
     {
         await OnEventClicked.InvokeAsync(calendarEvent);
     }
+
 }

@@ -1,25 +1,25 @@
 @namespace Blazwind.Components.Chat
-@using Blazwind.Components.Shared
-@inherits BwBase
 @using Blazwind.Components.Avatar
 @using Blazwind.Components.Button
-@using Blazwind.Components.Input
+@using Blazwind.Components.Card
 @using Blazwind.Components.Layout
 @using Blazwind.Components.Mentions
-@using Blazwind.Components.Card
-@using Microsoft.AspNetCore.Components.Web
+@using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 
-<BwCard Class="@CombineClasses($"bw-chat")" style="@($"height: {Height}; display: flex; flex-direction: column; {Style}")" BodyClass="p-0 flex-1 flex flex-col min-h-0" id="@Id" AdditionalAttributes="AdditionalAttributes">
+<BwCard Class="@CombineClasses("bw-chat")"
+        style="@($"height: {Height}; display: flex; flex-direction: column; {Style}")"
+        BodyClass="p-0 flex-1 flex flex-col min-h-0" id="@Id" AdditionalAttributes="AdditionalAttributes">
     @* Header *@
     @if (ShowHeader && Participant != null)
     {
         <BwRow Class="bw-chat-header px-4 py-3" Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-            <BwAvatar Name="@Participant.Name" 
-                      Src="@Participant.Avatar" 
+            <BwAvatar Name="@Participant.Name"
+                      Src="@Participant.Avatar"
                       Size="BwSize.Medium"
-                      StatusColor="@(Participant.IsOnline ? BwColor.Success : null)" />
+                      StatusColor="@(Participant.IsOnline ? BwColor.Success : null)"/>
             <BwColumn Spacing="BwSpacing.None" Class="flex-1 min-w-0">
                 <span class="font-medium text-gray-900 dark:text-gray-100 text-sm">@Participant.Name</span>
                 <span class="text-xs text-gray-500 dark:text-gray-400">
@@ -55,7 +55,8 @@
             @if (!lastDate.HasValue || message.Timestamp.Date != lastDate.Value.Date)
             {
                 <BwRow MainAxisAlignment="BwMainAxisAlignment.Center" Class="my-4">
-                    <span class="text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm">
+                    <span
+                        class="text-xs text-gray-400 dark:text-gray-500 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm">
                         @FormatDateHeader(message.Timestamp)
                     </span>
                 </BwRow>
@@ -72,15 +73,15 @@
             else
             {
                 @* Regular message *@
-                <BwRow MainAxisAlignment="@(message.IsOwn ? BwMainAxisAlignment.End : BwMainAxisAlignment.Start)" 
+                <BwRow MainAxisAlignment="@(message.IsOwn ? BwMainAxisAlignment.End : BwMainAxisAlignment.Start)"
                        CrossAxisAlignment="BwCrossAxisAlignment.End"
                        Spacing="BwSpacing.Sm"
                        Wrap="false">
                     @if (!message.IsOwn && ShowAvatars)
                     {
-                        <BwAvatar Name="@message.SenderName" 
-                                  Src="@message.SenderAvatar" 
-                                  Size="BwSize.Small" />
+                        <BwAvatar Name="@message.SenderName"
+                                  Src="@message.SenderAvatar"
+                                  Size="BwSize.Small"/>
                     }
                     <BwColumn Spacing="BwSpacing.None" Class="max-w-[70%]">
                         @if (!message.IsOwn && ShowSenderName)
@@ -94,7 +95,8 @@
                                 <BwColumn Spacing="BwSpacing.Xs" Class="mb-2">
                                     @foreach (var attachment in message.Attachments)
                                     {
-                                        <BwRow Spacing="BwSpacing.Sm" Class="p-2 bg-white/20 rounded text-sm" Wrap="false">
+                                        <BwRow Spacing="BwSpacing.Sm" Class="p-2 bg-white/20 rounded text-sm"
+                                               Wrap="false">
                                             <i class="fa-solid fa-paperclip"></i>
                                             <span class="truncate">@attachment.Name</span>
                                         </BwRow>
@@ -104,7 +106,8 @@
                             @* Message content *@
                             <p class="text-sm whitespace-pre-wrap break-words">@message.Content</p>
                             @* Time *@
-                            <BwRow MainAxisAlignment="BwMainAxisAlignment.End" Spacing="BwSpacing.Xs" Class="mt-1" Wrap="false">
+                            <BwRow MainAxisAlignment="BwMainAxisAlignment.End" Spacing="BwSpacing.Xs" Class="mt-1"
+                                   Wrap="false">
                                 <span class="text-[10px] @(message.IsOwn ? "text-white/70" : "text-gray-400")">
                                     @message.Timestamp.ToString("HH:mm")
                                 </span>
@@ -117,9 +120,9 @@
                     </BwColumn>
                     @if (message.IsOwn && ShowAvatars)
                     {
-                        <BwAvatar Name="@message.SenderName" 
-                                  Src="@message.SenderAvatar" 
-                                  Size="BwSize.Small" />
+                        <BwAvatar Name="@message.SenderName"
+                                  Src="@message.SenderAvatar"
+                                  Size="BwSize.Small"/>
                     }
                 </BwRow>
             }
@@ -129,7 +132,8 @@
     @* Empty State *@
     @if (Messages.Count == 0)
     {
-        <BwColumn MainAxisAlignment="BwMainAxisAlignment.Center" CrossAxisAlignment="BwCrossAxisAlignment.Center" Class="flex-1 bw-chat-messages">
+        <BwColumn MainAxisAlignment="BwMainAxisAlignment.Center" CrossAxisAlignment="BwCrossAxisAlignment.Center"
+                  Class="flex-1 bw-chat-messages">
             <i class="fa-regular fa-comments text-4xl text-gray-300 dark:text-gray-600 mb-2"></i>
             <span class="text-sm text-gray-400 dark:text-gray-500">Henüz mesaj yok</span>
         </BwColumn>
@@ -138,31 +142,32 @@
     @* Input Area *@
     @if (ShowInput)
     {
-        <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.End" Wrap="false" Class="bw-chat-input-area px-4 py-3">
+        <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.End" Wrap="false"
+               Class="bw-chat-input-area px-4 py-3">
             @if (ShowAttachButton)
             {
-                <BwButton Variant="BwVariant.Ghost" 
-                          Size="BwSize.Small" 
+                <BwButton Variant="BwVariant.Ghost"
+                          Size="BwSize.Small"
                           Icon="fa-solid fa-paperclip"
-                          OnClick="HandleAttachClick" 
-                          Class="mb-1.5" />
+                          OnClick="HandleAttachClick"
+                          Class="mb-1.5"/>
             }
-            
+
             <BwMentions @bind-Value="_inputText"
                         Mentions="Mentions"
                         Placeholder="Mesaj yazın..."
                         Rows="1"
                         Size="BwSize.Medium"
                         Class="flex-1"
-                        OnKeyDown="HandleKeyDown" />
+                        OnKeyDown="HandleKeyDown"/>
 
-            <BwButton Variant="BwVariant.Filled" 
-                      Color="BwColor.Primary" 
-                      Size="BwSize.Small" 
+            <BwButton Variant="BwVariant.Filled"
+                      Color="BwColor.Primary"
+                      Size="BwSize.Small"
                       Icon="fa-solid fa-paper-plane"
                       OnClick="HandleSend"
-                      Disabled="@string.IsNullOrWhiteSpace(_inputText)" 
-                      Class="mb-1.5" />
+                      Disabled="@string.IsNullOrWhiteSpace(_inputText)"
+                      Class="mb-1.5"/>
         </BwRow>
     }
 </BwCard>
@@ -171,22 +176,48 @@
     private ElementReference _messagesContainer;
     private string _inputText = "";
 
-    [Parameter] public List<ChatMessage> Messages { get; set; } = new();
-    [Parameter] public ChatParticipant? Participant { get; set; }
-    [Parameter] public string Height { get; set; } = "500px";
-    [Parameter] public string InputPlaceholder { get; set; } = "Mesaj yazın...";
-    [Parameter] public bool ShowHeader { get; set; } = true;
-    [Parameter] public bool ShowInput { get; set; } = true;
-    [Parameter] public bool ShowAvatars { get; set; } = true;
-    [Parameter] public bool ShowSenderName { get; set; } = false;
-    [Parameter] public bool ShowAttachButton { get; set; } = true;
-    [Parameter] public bool ShowReadStatus { get; set; } = true;
-    [Parameter] public RenderFragment? HeaderContent { get; set; }
+    [Parameter]
+    public List<ChatMessage> Messages { get; set; } = new();
+
+    [Parameter]
+    public ChatParticipant? Participant { get; set; }
+
+    [Parameter]
+    public string Height { get; set; } = "500px";
+
+    [Parameter]
+    public string InputPlaceholder { get; set; } = "Mesaj yazın...";
+
+    [Parameter]
+    public bool ShowHeader { get; set; } = true;
+
+    [Parameter]
+    public bool ShowInput { get; set; } = true;
+
+    [Parameter]
+    public bool ShowAvatars { get; set; } = true;
+
+    [Parameter]
+    public bool ShowSenderName { get; set; }
+
+    [Parameter]
+    public bool ShowAttachButton { get; set; } = true;
+
+    [Parameter]
+    public bool ShowReadStatus { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; }
 
 
-    [Parameter] public EventCallback<string> OnSend { get; set; }
-    [Parameter] public List<BwMentionItem> Mentions { get; set; } = new();
-    [Parameter] public EventCallback OnAttachClick { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSend { get; set; }
+
+    [Parameter]
+    public List<BwMentionItem> Mentions { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnAttachClick { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -210,14 +241,16 @@
                 })()
             ");
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     private string GetMessageBubbleClass(bool isOwn)
     {
         // Base bubble class is 'bw-chat-bubble-base' if defined, or we can use combined
-        return isOwn 
-            ? "bw-chat-bubble-base bw-chat-bubble-own" 
+        return isOwn
+            ? "bw-chat-bubble-base bw-chat-bubble-own"
             : "bw-chat-bubble-base bw-chat-bubble-other";
     }
 
@@ -236,10 +269,10 @@
         {
             var text = _inputText;
             // Clear input first
-            _inputText = ""; 
+            _inputText = "";
             // Trigger UI update to clear textarea
             StateHasChanged();
-            
+
             await OnSend.InvokeAsync(text);
             await ScrollToBottomAsync();
         }
@@ -257,4 +290,5 @@
     {
         await OnAttachClick.InvokeAsync();
     }
+
 }

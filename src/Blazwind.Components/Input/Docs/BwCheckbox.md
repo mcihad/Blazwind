@@ -34,7 +34,7 @@ A component used for binary (boolean) state selection.
 ## Parameters
 
 | Parameter      | Type                     | Default   | Description                                                                 |
-| :------------- | :----------------------- | :-------- | :-------------------------------------------------------------------------- |
+|:---------------|:-------------------------|:----------|:----------------------------------------------------------------------------|
 | `Value`        | `bool`                   | `false`   | Selection state (two-way binding).                                          |
 | `Label`        | `string`                 | `null`    | Label text displayed next to the checkbox.                                  |
 | `ChildContent` | `RenderFragment`         | `null`    | Custom content that can replace the label.                                  |
@@ -50,7 +50,7 @@ A component used for binary (boolean) state selection.
 ## Events
 
 | Event              | Payload | Description                                         |
-| :----------------- | :------ | :-------------------------------------------------- |
+|:-------------------|:--------|:----------------------------------------------------|
 | `ValueChanged`     | `bool`  | Triggered when the value changes (two-way binding). |
 | `IsCheckedChanged` | `bool`  | Triggered at the same time as `ValueChanged`.       |
 | `OnChange`         | `bool`  | Triggered after the change.                         |

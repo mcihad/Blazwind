@@ -67,7 +67,7 @@ You can define how data is displayed using the `ItemText` function.
 ## Parameters
 
 | Parameter       | Type                                     | Default       | Description                                   |
-| :-------------- | :--------------------------------------- | :------------ | :-------------------------------------------- |
+|:----------------|:-----------------------------------------|:--------------|:----------------------------------------------|
 | `Value`         | `TItem`                                  | -             | Selected item (single selection).             |
 | `SelectedItems` | `List<TItem>`                            | `null`        | Selected items (multiple selection).          |
 | `Items`         | `IEnumerable<TItem>`                     | `null`        | Static data source.                           |
@@ -85,7 +85,7 @@ You can define how data is displayed using the `ItemText` function.
 ## Events
 
 | Event                  | Payload       | Description                                              |
-| :--------------------- | :------------ | :------------------------------------------------------- |
+|:-----------------------|:--------------|:---------------------------------------------------------|
 | `ValueChanged`         | `TItem`       | Triggered when the selection changes (single selection). |
 | `SelectedItemsChanged` | `List<TItem>` | Triggered when selections change (multiple selection).   |
 | `OnCreateNew`          | `string`      | Triggered when a new item is created.                    |

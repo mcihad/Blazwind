@@ -22,25 +22,26 @@
     var arrowClasses = Placement switch
     {
         BwPlacement.Top or BwPlacement.TopStart or BwPlacement.TopEnd =>
-        "bottom-[-4px] left-1/2 -translate-x-1/2 rotate-45",
+            "bottom-[-4px] left-1/2 -translate-x-1/2 rotate-45",
         BwPlacement.Left or BwPlacement.LeftStart or BwPlacement.LeftEnd =>
-        "right-[-4px] top-1/2 -translate-y-1/2 rotate-45",
+            "right-[-4px] top-1/2 -translate-y-1/2 rotate-45",
         BwPlacement.Right or BwPlacement.RightStart or BwPlacement.RightEnd =>
-        "left-[-4px] top-1/2 -translate-y-1/2 rotate-45",
+            "left-[-4px] top-1/2 -translate-y-1/2 rotate-45",
         _ => "top-[-4px] left-1/2 -translate-x-1/2 rotate-45" // Bottom
     };
-    
+
     // Using string matching with CSS
     // The placement affects positioning (layout), which is fine to keep as Tailwind utilities if they are purely layout.
     // However, user wants "Theme Support". Colors are the main thing.
-    
+
     var colorClass = Color.ToString().ToLower();
     if (Color == BwColor.Dark) colorClass = "default"; // Mapping 'Dark' (default enum) to 'default' class or 'dark' class
     else if (Color == BwColor.Light) colorClass = "light";
 }
 
-<div class="bw-tooltip-trigger" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
-    @onfocus="HandleFocus" @onblur="HandleBlur">
+<div class="bw-tooltip-trigger" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave"
+     @onfocus="HandleFocus" @onblur="HandleBlur">
     <div class="inline-block">
         @ChildContent
     </div>
@@ -62,17 +63,39 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public BwPlacement Placement { get; set; } = BwPlacement.Top;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Dark;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public bool ShowArrow { get; set; } = true;
-    [Parameter] public bool Disabled { get; set; }
-    [Parameter] public int ShowDelay { get; set; } = 100;
-    [Parameter] public int HideDelay { get; set; } = 0;
-    [Parameter] public TooltipTrigger Trigger { get; set; } = TooltipTrigger.Hover;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public BwPlacement Placement { get; set; } = BwPlacement.Top;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Dark;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public bool ShowArrow { get; set; } = true;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public int ShowDelay { get; set; } = 100;
+
+    [Parameter]
+    public int HideDelay { get; set; }
+
+    [Parameter]
+    public TooltipTrigger Trigger { get; set; } = TooltipTrigger.Hover;
     // Removed Class parameter (inherited)
 
     private bool _isVisible;
@@ -94,7 +117,9 @@
             _isVisible = true;
             StateHasChanged();
         }
-        catch (TaskCanceledException) { }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     private async Task HandleMouseLeave()
@@ -110,7 +135,9 @@
             _isVisible = false;
             StateHasChanged();
         }
-        catch (TaskCanceledException) { }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     private void HandleFocus()
@@ -143,4 +170,5 @@
         Focus,
         Both
     }
+
 }

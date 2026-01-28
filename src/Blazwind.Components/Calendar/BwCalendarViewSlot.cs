@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Components;
 using Blazwind.Components.Shared;
+using Microsoft.AspNetCore.Components;
 
 namespace Blazwind.Components.Calendar;
 
 /// <summary>
-/// Base class for calendar view slot configurations
+///     Base class for calendar view slot configurations
 /// </summary>
 public abstract class BwCalendarViewSlotBase : ComponentBase
 {
@@ -23,28 +23,28 @@ public abstract class BwCalendarViewSlotBase : ComponentBase
 }
 
 /// <summary>
-/// Configuration slot for Week view
+///     Configuration slot for Week view
 /// </summary>
 public class BwWeekViewSlot : BwCalendarViewSlotBase
 {
 }
 
 /// <summary>
-/// Configuration slot for Month view
+///     Configuration slot for Month view
 /// </summary>
 public class BwMonthViewSlot : BwCalendarViewSlotBase
 {
 }
 
 /// <summary>
-/// Configuration slot for Day view
+///     Configuration slot for Day view
 /// </summary>
 public class BwDayViewSlot : BwCalendarViewSlotBase
 {
 }
 
 /// <summary>
-/// Configuration slot for Agenda view
+///     Configuration slot for Agenda view
 /// </summary>
 public class BwAgendaViewSlot : BwCalendarViewSlotBase
 {

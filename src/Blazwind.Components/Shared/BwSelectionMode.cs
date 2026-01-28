@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Selection mode for lists, tables, etc.
+///     Selection mode for lists, tables, etc.
 /// </summary>
 public enum BwSelectionMode
 {

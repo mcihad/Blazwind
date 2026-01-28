@@ -32,7 +32,7 @@ The component natively supports commonly used helper functions.
 ## Parameters
 
 | Parameter            | Type             | Default  | Description                                            |
-| :------------------- | :--------------- | :------- | :----------------------------------------------------- |
+|:---------------------|:-----------------|:---------|:-------------------------------------------------------|
 | `Value`              | `string`         | `null`   | Input value (two-way binding).                         |
 | `Label`              | `string`         | `null`   | Field label.                                           |
 | `Placeholder`        | `string`         | `null`   | Placeholder text.                                      |
@@ -52,7 +52,7 @@ The component natively supports commonly used helper functions.
 ## Events
 
 | Event            | Payload  | Description                                 |
-| :--------------- | :------- | :------------------------------------------ |
+|:-----------------|:---------|:--------------------------------------------|
 | `ValueChanged`   | `string` | Triggered when the value changes.           |
 | `OnClick`        | `void`   | Triggered when the input field is clicked.  |
 | `OnEnterPressed` | `void`   | Triggered when the Enter key is pressed.    |

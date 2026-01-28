@@ -6,14 +6,14 @@
     var colorClass = $"bw-stat-card-{Color.ToString().ToLower()}";
     var iconClass = $"bw-card-icon-{Color.ToString().ToLower()}";
     var iconBgClass = $"bw-card-icon-bg-{Color.ToString().ToLower()}";
-    
+
     var trendClass = Trend switch
     {
         BwTrend.Up => "bw-stat-card-trend-up",
         BwTrend.Down => "bw-stat-card-trend-down",
         _ => "bw-stat-card-trend-neutral"
     };
-    
+
     var trendIcon = Trend switch
     {
         BwTrend.Up => "fa-solid fa-arrow-up",
@@ -27,7 +27,7 @@
         <div class="flex-1">
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">@Title</p>
             <p class="bw-stat-card-value">@Value</p>
-            
+
             @if (!string.IsNullOrEmpty(TrendValue))
             {
                 <div class="bw-stat-card-trend @trendClass">
@@ -43,7 +43,7 @@
                 </div>
             }
         </div>
-        
+
         @if (!string.IsNullOrEmpty(Icon))
         {
             <div class="bw-card-icon-wrapper @iconBgClass">
@@ -51,7 +51,7 @@
             </div>
         }
     </div>
-    
+
     @if (ChildContent != null)
     {
         <div class="bw-stat-card-footer">
@@ -61,12 +61,29 @@
 </div>
 
 @code {
-    [Parameter] public string Title { get; set; } = "";
-    [Parameter] public string Value { get; set; } = "";
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? TrendValue { get; set; }
-    [Parameter] public string? TrendDescription { get; set; }
-    [Parameter] public BwTrend Trend { get; set; } = BwTrend.Neutral;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? TrendValue { get; set; }
+
+    [Parameter]
+    public string? TrendDescription { get; set; }
+
+    [Parameter]
+    public BwTrend Trend { get; set; } = BwTrend.Neutral;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
 }

@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Components;
 using Blazwind.Components.Drawer;
+using Microsoft.AspNetCore.Components;
 
 namespace Blazwind.Components.Services;
 
 /// <summary>
-/// Service for managing drawer instances
+///     Service for managing drawer instances
 /// </summary>
 public class DrawerService
 {
@@ -15,7 +15,7 @@ public class DrawerService
     public event Action? OnChange;
 
     /// <summary>
-    /// Show a drawer with a dynamic Razor component
+    ///     Show a drawer with a dynamic Razor component
     /// </summary>
     public Task<DrawerResult> ShowAsync<TComponent>(
         string? title = null,
@@ -26,7 +26,7 @@ public class DrawerService
     }
 
     /// <summary>
-    /// Show a drawer with a dynamic Razor component and return strongly-typed result
+    ///     Show a drawer with a dynamic Razor component and return strongly-typed result
     /// </summary>
     public async Task<DrawerResult<TResult>> ShowAsync<TComponent, TResult>(
         string? title = null,
@@ -35,16 +35,10 @@ public class DrawerService
     {
         var result = await ShowAsync<TComponent>(title, parameters, options);
 
-        if (result.Canceled)
-        {
-            return DrawerResult.Cancel<TResult>();
-        }
+        if (result.Canceled) return DrawerResult.Cancel<TResult>();
 
         // Try to cast data
-        if (result.Data is TResult typedData)
-        {
-            return DrawerResult.Ok(typedData);
-        }
+        if (result.Data is TResult typedData) return DrawerResult.Ok(typedData);
 
         // Handle value types or nulls
         try
@@ -58,7 +52,7 @@ public class DrawerService
     }
 
     /// <summary>
-    /// Show a drawer with a component type
+    ///     Show a drawer with a component type
     /// </summary>
     public Task<DrawerResult> ShowAsync(
         string? title,
@@ -84,7 +78,7 @@ public class DrawerService
     }
 
     /// <summary>
-    /// Close drawer with result
+    ///     Close drawer with result
     /// </summary>
     public void Close(DrawerInstance instance, DrawerResult? result = null)
     {
@@ -98,7 +92,7 @@ public class DrawerService
     }
 
     /// <summary>
-    /// Close drawer with a strongly-typed result. Converts DrawerResult&lt;T&gt; to DrawerResult internally.
+    ///     Close drawer with a strongly-typed result. Converts DrawerResult&lt;T&gt; to DrawerResult internally.
     /// </summary>
     public void Close<T>(DrawerInstance instance, DrawerResult<T> result)
     {
@@ -109,44 +103,34 @@ public class DrawerService
     }
 
     /// <summary>
-    /// Close the topmost drawer with a result
+    ///     Close the topmost drawer with a result
     /// </summary>
     public void Close(object? data = null)
     {
         var topDrawer = _drawers.LastOrDefault();
-        if (topDrawer != null)
-        {
-            Close(topDrawer, data != null ? DrawerResult.Ok(data) : DrawerResult.Cancel());
-        }
+        if (topDrawer != null) Close(topDrawer, data != null ? DrawerResult.Ok(data) : DrawerResult.Cancel());
     }
 
     /// <summary>
-    /// Close a drawer and return OK with data
+    ///     Close a drawer and return OK with data
     /// </summary>
     public void CloseWithResult(object? data)
     {
         var topDrawer = _drawers.LastOrDefault();
-        if (topDrawer != null)
-        {
-            Close(topDrawer, DrawerResult.Ok(data));
-        }
+        if (topDrawer != null) Close(topDrawer, DrawerResult.Ok(data));
     }
 
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    private void NotifyStateChanged()
+    {
+        OnChange?.Invoke();
+    }
 }
 
 /// <summary>
-/// Internal class representing a drawer instance
+///     Internal class representing a drawer instance
 /// </summary>
 public class DrawerInstance
 {
-    public Guid Id { get; } = Guid.NewGuid();
-    public string? Title { get; }
-    public Type ComponentType { get; }
-    public Dictionary<string, object>? Parameters { get; }
-    public DrawerOptions Options { get; }
-    internal TaskCompletionSource<DrawerResult> TaskCompletionSource { get; }
-
     public DrawerInstance(
         string? title,
         Type componentType,
@@ -160,4 +144,11 @@ public class DrawerInstance
         Options = options;
         TaskCompletionSource = tcs;
     }
+
+    public Guid Id { get; } = Guid.NewGuid();
+    public string? Title { get; }
+    public Type ComponentType { get; }
+    public Dictionary<string, object>? Parameters { get; }
+    public DrawerOptions Options { get; }
+    internal TaskCompletionSource<DrawerResult> TaskCompletionSource { get; }
 }

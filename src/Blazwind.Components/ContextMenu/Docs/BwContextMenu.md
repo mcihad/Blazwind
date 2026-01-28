@@ -1,6 +1,7 @@
 # BwContextMenu
 
-A customizable right-click (context) menu component that can be attached to any component or HTML element. It features smart positioning to prevent overflow beyond the viewport.
+A customizable right-click (context) menu component that can be attached to any component or HTML element. It features
+smart positioning to prevent overflow beyond the viewport.
 
 ## Features
 
@@ -13,6 +14,7 @@ A customizable right-click (context) menu component that can be attached to any 
 ## Usage
 
 ### Attaching to an Area
+
 ```razor
 <BwContextMenu>
     <ChildContent>
@@ -30,6 +32,7 @@ A customizable right-click (context) menu component that can be attached to any 
 ```
 
 ### Programmatic Usage
+
 Useful for external triggers like clicking on a map marker or a custom canvas element.
 
 ```razor
@@ -53,27 +56,28 @@ Useful for external triggers like clicking on a map marker or a custom canvas el
 
 ### BwContextMenu Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `ChildContent` | `RenderFragment?` | `null` | The clickable area that triggers the menu. |
-| `MenuContent` | `RenderFragment?` | `null` | The menu items (`BwContextMenuItem`). |
-| `Class` | `string?` | `null` | CSS classes for the container. |
-| `Style` | `string?` | `null` | Inline styles for the container. |
+| Parameter      | Type              | Default | Description                                |
+|----------------|-------------------|---------|--------------------------------------------|
+| `ChildContent` | `RenderFragment?` | `null`  | The clickable area that triggers the menu. |
+| `MenuContent`  | `RenderFragment?` | `null`  | The menu items (`BwContextMenuItem`).      |
+| `Class`        | `string?`         | `null`  | CSS classes for the container.             |
+| `Style`        | `string?`         | `null`  | Inline styles for the container.           |
 
 ### BwContextMenuItem Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Text` | `string?` | `null` | The text label of the menu item. |
-| `Icon` | `string?` | `null` | FontAwesome icon class. |
-| `IsDivider` | `bool` | `false` | If true, renders a horizontal separator line. |
-| `CloseOnClick` | `bool` | `true` | Whether the menu should close after clicking this item. |
-| `OnClick` | `EventCallback` | `null` | The callback triggered when clicked. |
-| `SubMenu` | `RenderFragment?` | `null` | Nested menu content. |
+| Parameter      | Type              | Default | Description                                             |
+|----------------|-------------------|---------|---------------------------------------------------------|
+| `Text`         | `string?`         | `null`  | The text label of the menu item.                        |
+| `Icon`         | `string?`         | `null`  | FontAwesome icon class.                                 |
+| `IsDivider`    | `bool`            | `false` | If true, renders a horizontal separator line.           |
+| `CloseOnClick` | `bool`            | `true`  | Whether the menu should close after clicking this item. |
+| `OnClick`      | `EventCallback`   | `null`  | The callback triggered when clicked.                    |
+| `SubMenu`      | `RenderFragment?` | `null`  | Nested menu content.                                    |
 
 ## Examples
 
 ### List Integration
+
 You can wrap list items to provide unique actions for each entry.
 
 ```razor

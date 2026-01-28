@@ -1,8 +1,6 @@
 @namespace Blazwind.Components.Barcode
-@using Blazwind.Components.Shared
-@using Microsoft.AspNetCore.Components.Web
-@inherits BwBase
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 
 <div class="@CombineClasses("bw-barcode")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -10,7 +8,7 @@
     {
         <label class="block text-sm font-medium text-gray-700 mb-1">@Label</label>
     }
-    
+
     @if (RenderAs == BarcodeRenderType.Svg)
     {
         <svg @ref="_element" class="block"></svg>
@@ -24,85 +22,98 @@
 @code {
     private ElementReference _element;
     private bool _isInitialized;
-    
+
     #region Parameters
-    
+
     /// <summary>
-    /// CSS class
+    ///     CSS class
     /// </summary>
-    
     /// <summary>
-    /// Label text
+    ///     Label text
     /// </summary>
-    [Parameter] public string? Label { get; set; }
-    
+    [Parameter]
+    public string? Label { get; set; }
+
     /// <summary>
-    /// Barcode value
+    ///     Barcode value
     /// </summary>
-    [Parameter] public string Value { get; set; } = "";
-    
+    [Parameter]
+    public string Value { get; set; } = "";
+
     /// <summary>
-    /// Barcode format
+    ///     Barcode format
     /// </summary>
-    [Parameter] public BarcodeFormat Format { get; set; } = BarcodeFormat.CODE128;
-    
+    [Parameter]
+    public BarcodeFormat Format { get; set; } = BarcodeFormat.CODE128;
+
     /// <summary>
-    /// Render type (SVG or Canvas)
+    ///     Render type (SVG or Canvas)
     /// </summary>
-    [Parameter] public BarcodeRenderType RenderAs { get; set; } = BarcodeRenderType.Svg;
-    
+    [Parameter]
+    public BarcodeRenderType RenderAs { get; set; } = BarcodeRenderType.Svg;
+
     /// <summary>
-    /// Bar width in pixels
+    ///     Bar width in pixels
     /// </summary>
-    [Parameter] public int Width { get; set; } = 2;
-    
+    [Parameter]
+    public int Width { get; set; } = 2;
+
     /// <summary>
-    /// Barcode height in pixels
+    ///     Barcode height in pixels
     /// </summary>
-    [Parameter] public int Height { get; set; } = 100;
-    
+    [Parameter]
+    public int Height { get; set; } = 100;
+
     /// <summary>
-    /// Show value text below barcode
+    ///     Show value text below barcode
     /// </summary>
-    [Parameter] public bool DisplayValue { get; set; } = true;
-    
+    [Parameter]
+    public bool DisplayValue { get; set; } = true;
+
     /// <summary>
-    /// Custom text to display (instead of value)
+    ///     Custom text to display (instead of value)
     /// </summary>
-    [Parameter] public string? Text { get; set; }
-    
+    [Parameter]
+    public string? Text { get; set; }
+
     /// <summary>
-    /// Font family for text
+    ///     Font family for text
     /// </summary>
-    [Parameter] public string Font { get; set; } = "monospace";
-    
+    [Parameter]
+    public string Font { get; set; } = "monospace";
+
     /// <summary>
-    /// Font size for text
+    ///     Font size for text
     /// </summary>
-    [Parameter] public int FontSize { get; set; } = 14;
-    
+    [Parameter]
+    public int FontSize { get; set; } = 14;
+
     /// <summary>
-    /// Text alignment
+    ///     Text alignment
     /// </summary>
-    [Parameter] public string TextAlign { get; set; } = "center";
-    
+    [Parameter]
+    public string TextAlign { get; set; } = "center";
+
     /// <summary>
-    /// Background color
+    ///     Background color
     /// </summary>
-    [Parameter] public string Background { get; set; } = "#ffffff";
-    
+    [Parameter]
+    public string Background { get; set; } = "#ffffff";
+
     /// <summary>
-    /// Line (bar) color
+    ///     Line (bar) color
     /// </summary>
-    [Parameter] public string LineColor { get; set; } = "#000000";
-    
+    [Parameter]
+    public string LineColor { get; set; } = "#000000";
+
     /// <summary>
-    /// Margin around barcode
+    ///     Margin around barcode
     /// </summary>
-    [Parameter] public int Margin { get; set; } = 10;
-    
+    [Parameter]
+    public int Margin { get; set; } = 10;
+
     #endregion
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender || !_isInitialized)
@@ -111,7 +122,7 @@
             _isInitialized = true;
         }
     }
-    
+
     protected override async Task OnParametersSetAsync()
     {
         if (_isInitialized)
@@ -119,11 +130,11 @@
             await GenerateBarcodeAsync();
         }
     }
-    
+
     private async Task GenerateBarcodeAsync()
     {
         if (string.IsNullOrEmpty(Value)) return;
-        
+
         try
         {
             var options = new Dictionary<string, object>
@@ -144,7 +155,7 @@
             {
                 options.Add("text", Text);
             }
-            
+
             await JS.InvokeVoidAsync("Blazwind.Barcode.generate", _element, Value, options);
         }
         catch (Exception ex)
@@ -152,12 +163,13 @@
             Console.WriteLine($"[BwBarcode] Error generating barcode: {ex.Message}");
         }
     }
-    
+
     /// <summary>
-    /// Export barcode as Data URL
+    ///     Export barcode as Data URL
     /// </summary>
     public async Task<string> ToDataUrlAsync()
     {
         return await JS.InvokeAsync<string>("Blazwind.Barcode.toDataURL", _element);
     }
+
 }

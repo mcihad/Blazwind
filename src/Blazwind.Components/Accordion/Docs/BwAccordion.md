@@ -28,25 +28,25 @@ A collapsible panel component used for organizing content and saving vertical sp
 
 ### BwAccordion
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `ChildContent` | `RenderFragment` | - | The content of the accordion (a list of `BwAccordionItem` components). |
-| `AllowMultiple` | `bool` | `false` | If `true`, multiple panels can stay open simultaneously. |
-| `DefaultOpenIndex` | `int?` | `null` | The 0-based index of the panel to be open by default. |
-| `Variant` | `BwVariant` | `BwVariant.Outline` | The visual style. Options: `Outline`, `Ghost`, `Filled`. |
-| `Color` | `BwColor` | `BwColor.Primary` | The color theme of the active (expanded) panel header. |
-| `Size` | `BwSize` | `BwSize.Medium` | The overall size of the component. Options: `ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`. |
+| Name               | Type             | Default             | Description                                                                                         |
+|--------------------|------------------|---------------------|-----------------------------------------------------------------------------------------------------|
+| `ChildContent`     | `RenderFragment` | -                   | The content of the accordion (a list of `BwAccordionItem` components).                              |
+| `AllowMultiple`    | `bool`           | `false`             | If `true`, multiple panels can stay open simultaneously.                                            |
+| `DefaultOpenIndex` | `int?`           | `null`              | The 0-based index of the panel to be open by default.                                               |
+| `Variant`          | `BwVariant`      | `BwVariant.Outline` | The visual style. Options: `Outline`, `Ghost`, `Filled`.                                            |
+| `Color`            | `BwColor`        | `BwColor.Primary`   | The color theme of the active (expanded) panel header.                                              |
+| `Size`             | `BwSize`         | `BwSize.Medium`     | The overall size of the component. Options: `ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`. |
 
 ### BwAccordionItem
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `Title` | `string` | - | The title text of the panel. |
-| `TitleTemplate` | `RenderFragment` | - | A custom template for the header title (overrides `Title`). |
-| `Icon` | `string` | - | CSS class for an icon to be displayed to the left of the title. |
-| `Badge` | `RenderFragment` | - | A fragment to be displayed as a badge to the right of the title. |
-| `IsDisabled` | `bool` | `false` | If `true`, the panel cannot be expanded or collapsed. |
-| `ChildContent` | `RenderFragment` | - | The content to be displayed when the panel is expanded. |
+| Name            | Type             | Default | Description                                                      |
+|-----------------|------------------|---------|------------------------------------------------------------------|
+| `Title`         | `string`         | -       | The title text of the panel.                                     |
+| `TitleTemplate` | `RenderFragment` | -       | A custom template for the header title (overrides `Title`).      |
+| `Icon`          | `string`         | -       | CSS class for an icon to be displayed to the left of the title.  |
+| `Badge`         | `RenderFragment` | -       | A fragment to be displayed as a badge to the right of the title. |
+| `IsDisabled`    | `bool`           | `false` | If `true`, the panel cannot be expanded or collapsed.            |
+| `ChildContent`  | `RenderFragment` | -       | The content to be displayed when the panel is expanded.          |
 
 ## Examples
 

@@ -1,10 +1,12 @@
 # BwButtonGroup
 
-A container for grouping multiple buttons together horizontally or vertically. Ideal for segmented controls, toolbars, and pagination.
+A container for grouping multiple buttons together horizontally or vertically. Ideal for segmented controls, toolbars,
+and pagination.
 
 ## Examples
 
 ### Horizontal Grouping (Default)
+
 Buttons are aligned horizontally. By default, they are attached to each other.
 
 ```razor
@@ -16,6 +18,7 @@ Buttons are aligned horizontally. By default, they are attached to each other.
 ```
 
 ### Vertical Grouping
+
 Align buttons vertically using the `Orientation` parameter.
 
 ```razor
@@ -27,6 +30,7 @@ Align buttons vertically using the `Orientation` parameter.
 ```
 
 ### Attached vs Gap
+
 Toggle between merged buttons or buttons with a small gap using `IsAttached`.
 
 ```razor
@@ -44,6 +48,7 @@ Toggle between merged buttons or buttons with a small gap using `IsAttached`.
 ```
 
 ### Full Width
+
 Make the group span the entire width of its container.
 
 ```razor
@@ -55,14 +60,14 @@ Make the group span the entire width of its container.
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `ChildContent` | `RenderFragment?` | `null` | The buttons to be grouped together. |
-| `Orientation` | `BwOrientation` | `Horizontal` | Direction of the group (`Horizontal`, `Vertical`). |
-| `IsAttached` | `bool` | `true` | If `true`, buttons touch each other with shared borders. |
-| `IsFullWidth` | `bool` | `false` | If `true`, the container takes up the full width. |
-| `Size` | `BwSize` | `Medium` | Default size for buttons in the group (if buttons don't override). |
-| `Color` | `BwColor` | `Primary` | Default color for buttons in the group. |
-| `Variant` | `BwVariant` | `Filled` | Default variant for buttons in the group. |
-| `Class` | `string?` | `null` | Additional CSS classes for the container. |
-| `Style` | `string?` | `null` | Inline CSS styles. |
+| Parameter      | Type              | Default      | Description                                                        |
+|----------------|-------------------|--------------|--------------------------------------------------------------------|
+| `ChildContent` | `RenderFragment?` | `null`       | The buttons to be grouped together.                                |
+| `Orientation`  | `BwOrientation`   | `Horizontal` | Direction of the group (`Horizontal`, `Vertical`).                 |
+| `IsAttached`   | `bool`            | `true`       | If `true`, buttons touch each other with shared borders.           |
+| `IsFullWidth`  | `bool`            | `false`      | If `true`, the container takes up the full width.                  |
+| `Size`         | `BwSize`          | `Medium`     | Default size for buttons in the group (if buttons don't override). |
+| `Color`        | `BwColor`         | `Primary`    | Default color for buttons in the group.                            |
+| `Variant`      | `BwVariant`       | `Filled`     | Default variant for buttons in the group.                          |
+| `Class`        | `string?`         | `null`       | Additional CSS classes for the container.                          |
+| `Style`        | `string?`         | `null`       | Inline CSS styles.                                                 |

@@ -22,11 +22,11 @@ Use `BwExpanded` inside a `BwFlex`, `BwRow`, or any flexbox container to push su
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Expanded` | `bool` | `false` | If true, applies `flex-1` class. |
-| `Flex` | `int` | `0` | Custom flex-grow value. Use this to create proportional space (e.g., `Flex="2"` takes twice as much space as default). |
-| `Class` | `string?` | `null` | Custom CSS classes. |
+| Parameter  | Type      | Default | Description                                                                                                            |
+|:-----------|:----------|:--------|:-----------------------------------------------------------------------------------------------------------------------|
+| `Expanded` | `bool`    | `false` | If true, applies `flex-1` class.                                                                                       |
+| `Flex`     | `int`     | `0`     | Custom flex-grow value. Use this to create proportional space (e.g., `Flex="2"` takes twice as much space as default). |
+| `Class`    | `string?` | `null`  | Custom CSS classes.                                                                                                    |
 
 ### Proportional Expansion Example
 

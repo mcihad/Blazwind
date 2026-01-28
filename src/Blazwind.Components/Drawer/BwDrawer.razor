@@ -1,8 +1,8 @@
 @namespace Blazwind.Components.Drawer
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inherits BwBase
 @inject IJSRuntime JS
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 @{
@@ -38,7 +38,7 @@
         BwDirection.Bottom => "cursor-n-resize",
         _ => ""
     };
-    
+
     // Color variant class
     var colorClass = Options.Color switch
     {
@@ -63,7 +63,7 @@
      style="@sizeStyle"
      @onkeydown="HandleKeyDown"
      tabindex="-1" @attributes="AdditionalAttributes">
-    
+
     @* Resize Handle *@
     @if (Options.Resizable)
     {
@@ -104,12 +104,20 @@
 
 @code {
 
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public DrawerOptions Options { get; set; } = DrawerOptions.Default;
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Footer { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter]
+    public string? Title { get; set; }
 
+    [Parameter]
+    public DrawerOptions Options { get; set; } = DrawerOptions.Default;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -137,7 +145,7 @@
     private string GetSizeStyle()
     {
         var isHorizontal = Options.Position == BwDirection.Left || Options.Position == BwDirection.Right;
-        
+
         // Custom size overrides
         if (isHorizontal && !string.IsNullOrEmpty(Options.Width))
             return $"width: {Options.Width};";
@@ -193,7 +201,6 @@
 
     private void StartResize(MouseEventArgs e)
     {
-
         // JS interop for resize would go here
     }
 
@@ -201,4 +208,5 @@
     {
         return ValueTask.CompletedTask;
     }
+
 }

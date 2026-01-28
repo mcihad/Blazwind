@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Animation easing constants
+///     Animation easing constants
 /// </summary>
 public static class ChartAnimationEasing
 {

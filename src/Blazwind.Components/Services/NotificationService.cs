@@ -15,7 +15,7 @@ public class NotificationItem
     public string? Title { get; set; }
     public NotificationType Type { get; set; } = NotificationType.Info;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public bool IsRead { get; set; } = false;
+    public bool IsRead { get; set; }
     public string? Link { get; set; }
 }
 
@@ -23,10 +23,10 @@ public class NotificationService
 {
     private readonly List<NotificationItem> _notifications = new();
 
-    public event Action? OnNotificationsChanged;
-
     public IReadOnlyList<NotificationItem> Notifications => _notifications.AsReadOnly();
     public int UnreadCount => _notifications.Count(n => !n.IsRead);
+
+    public event Action? OnNotificationsChanged;
 
     public void Add(string message, NotificationType type = NotificationType.Info, string? title = null)
     {
@@ -39,10 +39,25 @@ public class NotificationService
         OnNotificationsChanged?.Invoke();
     }
 
-    public void AddInfo(string message) => Add(message, NotificationType.Info);
-    public void AddSuccess(string message) => Add(message, NotificationType.Success);
-    public void AddWarning(string message) => Add(message, NotificationType.Warning);
-    public void AddError(string message) => Add(message, NotificationType.Error);
+    public void AddInfo(string message)
+    {
+        Add(message);
+    }
+
+    public void AddSuccess(string message)
+    {
+        Add(message, NotificationType.Success);
+    }
+
+    public void AddWarning(string message)
+    {
+        Add(message, NotificationType.Warning);
+    }
+
+    public void AddError(string message)
+    {
+        Add(message, NotificationType.Error);
+    }
 
     public void MarkAsRead(string id)
     {
@@ -56,10 +71,7 @@ public class NotificationService
 
     public void MarkAllAsRead()
     {
-        foreach (var notification in _notifications)
-        {
-            notification.IsRead = true;
-        }
+        foreach (var notification in _notifications) notification.IsRead = true;
 
         OnNotificationsChanged?.Invoke();
     }

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Range;
 
 /// <summary>
-/// Step unit for date range components
+///     Step unit for date range components
 /// </summary>
 public enum DateStepUnit
 {
@@ -13,7 +13,7 @@ public enum DateStepUnit
 }
 
 /// <summary>
-/// Date range preset for quick selection
+///     Date range preset for quick selection
 /// </summary>
 public class DateRangePreset
 {
@@ -23,7 +23,7 @@ public class DateRangePreset
 }
 
 /// <summary>
-/// Range value changed event arguments
+///     Range value changed event arguments
 /// </summary>
 public class RangeChangedEventArgs<T>
 {
@@ -34,7 +34,7 @@ public class RangeChangedEventArgs<T>
 }
 
 /// <summary>
-/// Brush selection changed event arguments
+///     Brush selection changed event arguments
 /// </summary>
 public class BrushChangedEventArgs<T>
 {

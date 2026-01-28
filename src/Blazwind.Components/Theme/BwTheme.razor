@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Theme
-@using Microsoft.JSInterop
-@inject Services.IThemeService ThemeService
+@inject IThemeService ThemeService
 @inject IJSRuntime JS
+@using Microsoft.JSInterop
 @implements IDisposable
 
 @* Theme wrapper - applies theme class based on ThemeService state *@
@@ -12,43 +12,44 @@
 </div>
 
 @code {
+
     /// <summary>
-    /// Content to render within theme scope.
+    ///     Content to render within theme scope.
     /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
-    /// Optional ID for the theme wrapper element.
+    ///     Optional ID for the theme wrapper element.
     /// </summary>
     [Parameter]
     public string? Id { get; set; }
 
     /// <summary>
-    /// Additional CSS classes to apply.
+    ///     Additional CSS classes to apply.
     /// </summary>
     [Parameter]
     public string? Class { get; set; }
 
     /// <summary>
-    /// Inline styles to apply.
+    ///     Inline styles to apply.
     /// </summary>
     [Parameter]
     public string? Style { get; set; }
 
     /// <summary>
-    /// Additional HTML attributes.
+    ///     Additional HTML attributes.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>
-    /// Gets whether dark mode is active.
+    ///     Gets whether dark mode is active.
     /// </summary>
     public bool DarkModeActive => ThemeService.IsDarkMode;
 
     /// <summary>
-    /// Gets the current theme name.
+    ///     Gets the current theme name.
     /// </summary>
     public string CurrentTheme => ThemeService.CurrentTheme;
 
@@ -75,4 +76,5 @@
     {
         ThemeService.OnThemeChanged -= HandleThemeChanged;
     }
+
 }

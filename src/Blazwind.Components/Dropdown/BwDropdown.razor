@@ -4,7 +4,8 @@
 @inherits BwBase
 @inject IJSRuntime JS
 
-<div @ref="_triggerRef" class="@CombineClasses("relative inline-block text-left")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div @ref="_triggerRef" class="@CombineClasses("relative inline-block text-left")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     <div @onclick="Toggle">
         @TriggerContent
     </div>
@@ -16,40 +17,49 @@
 
         @* Menu *@
         <div class="bw-dropdown-menu @AlignmentClass @ComputedVPositionClass">
-             <div role="menu" aria-orientation="vertical">
-                 <CascadingValue Value="this">
-                     @ChildContent
-                 </CascadingValue>
-             </div>
+            <div role="menu" aria-orientation="vertical">
+                <CascadingValue Value="this">
+                    @ChildContent
+                </CascadingValue>
+            </div>
         </div>
     }
 </div>
 
 @code {
-    [Parameter] public RenderFragment? TriggerContent { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwDirection Alignment { get; set; } = BwDirection.Right;
-    
+
+    [Parameter]
+    public RenderFragment? TriggerContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwDirection Alignment { get; set; } = BwDirection.Right;
+
     /// <summary>
-    /// Vertical position: Top (opens above trigger), Bottom (opens below trigger), or Auto (automatically flips based on viewport)
+    ///     Vertical position: Top (opens above trigger), Bottom (opens below trigger), or Auto (automatically flips based on
+    ///     viewport)
     /// </summary>
-    [Parameter] public BwDirection VPosition { get; set; } = BwDirection.Auto;
-    
+    [Parameter]
+    public BwDirection VPosition { get; set; } = BwDirection.Auto;
+
     /// <summary>
-    /// Approximate height of dropdown menu for auto-flip calculation (default: 200px)
+    ///     Approximate height of dropdown menu for auto-flip calculation (default: 200px)
     /// </summary>
-    [Parameter] public int EstimatedMenuHeight { get; set; } = 200;
-    
+    [Parameter]
+    public int EstimatedMenuHeight { get; set; } = 200;
+
     private ElementReference _triggerRef;
     private bool _shouldOpenUp;
-    
+
     public bool IsOpen { get; private set; }
-    
+
     // Default is right-0, origin-top-right
-    private string AlignmentClass => Alignment == BwDirection.Left 
-        ? "left-0 origin-top-left" 
+    private string AlignmentClass => Alignment == BwDirection.Left
+        ? "left-0 origin-top-left"
         : "right-0 origin-top-right";
-    
+
     // Computed vertical position based on VPosition parameter or auto-detection
     private string ComputedVPositionClass
     {
@@ -70,7 +80,7 @@
         {
             await CheckViewportPosition();
         }
-        
+
         IsOpen = !IsOpen;
         StateHasChanged();
     }
@@ -82,10 +92,10 @@
             var result = await JS.InvokeAsync<double[]>("Blazwind.Dropdown.getPosition", _triggerRef);
             if (result != null && result.Length >= 3)
             {
-                var bottom = result[0];      // element bottom position
+                var bottom = result[0]; // element bottom position
                 var viewportHeight = result[1]; // viewport height
-                var top = result[2];         // element top position
-                
+                var top = result[2]; // element top position
+
                 var bottomSpace = viewportHeight - bottom;
                 _shouldOpenUp = bottomSpace < EstimatedMenuHeight && top > EstimatedMenuHeight;
             }
@@ -101,4 +111,5 @@
         IsOpen = false;
         StateHasChanged();
     }
+
 }

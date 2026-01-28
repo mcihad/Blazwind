@@ -8,10 +8,10 @@
 @{
     var colorName = Color.ToString().ToLower();
     var buttonClasses = "bw-btn bw-btn-small transition-all";
-    var defaultClass = Variant == BwVariant.Filled 
-        ? $"bw-btn-filled-{colorName}" 
+    var defaultClass = Variant == BwVariant.Filled
+        ? $"bw-btn-filled-{colorName}"
         : $"bw-btn-outline-{colorName}";
-    var stateClasses = _copied 
+    var stateClasses = _copied
         ? "bw-btn-filled-success" // Copied state: success
         : defaultClass;
 }
@@ -47,58 +47,70 @@
 </button>
 
 @code {
+
     /// <summary>Text content to copy to clipboard</summary>
-    [Parameter, EditorRequired] public string Content { get; set; } = "";
-    
+    [Parameter][EditorRequired]
+    public string Content { get; set; } = "";
+
     /// <summary>Button color theme</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
-    
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Secondary;
+
     /// <summary>Button variant (Filled or Outline)</summary>
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
-    
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Outline;
+
     /// <summary>Button text</summary>
-    [Parameter] public string Text { get; set; } = "Copy";
-    
+    [Parameter]
+    public string Text { get; set; } = "Copy";
+
     /// <summary>Text shown after copying</summary>
-    [Parameter] public string CopiedText { get; set; } = "Copied";
-    
+    [Parameter]
+    public string CopiedText { get; set; } = "Copied";
+
     /// <summary>Button icon</summary>
-    [Parameter] public string Icon { get; set; } = "fa-regular fa-copy";
-    
+    [Parameter]
+    public string Icon { get; set; } = "fa-regular fa-copy";
+
     /// <summary>Tooltip text</summary>
-    [Parameter] public string Tooltip { get; set; } = "Copy to clipboard";
-    
+    [Parameter]
+    public string Tooltip { get; set; } = "Copy to clipboard";
+
     /// <summary>Tooltip after copying</summary>
-    [Parameter] public string CopiedTooltip { get; set; } = "Copied!";
-    
+    [Parameter]
+    public string CopiedTooltip { get; set; } = "Copied!";
+
     /// <summary>Show text label</summary>
-    [Parameter] public bool ShowText { get; set; } = true;
-    
+    [Parameter]
+    public bool ShowText { get; set; } = true;
+
     /// <summary>Duration to show copied state (ms)</summary>
-    [Parameter] public int CopiedDuration { get; set; } = 2000;
-    
+    [Parameter]
+    public int CopiedDuration { get; set; } = 2000;
+
     /// <summary>Callback when content is copied</summary>
-    [Parameter] public EventCallback OnCopied { get; set; }
-    
-    private bool _copying = false;
-    private bool _copied = false;
-    
+    [Parameter]
+    public EventCallback OnCopied { get; set; }
+
+    private bool _copying;
+    private bool _copied;
+
     private async Task HandleCopy()
     {
         if (_copying || string.IsNullOrEmpty(Content)) return;
-        
+
         _copying = true;
         StateHasChanged();
-        
+
         try
         {
             await JS.InvokeVoidAsync("navigator.clipboard.writeText", Content);
             _copied = true;
             _copying = false;
             StateHasChanged();
-            
+
             await OnCopied.InvokeAsync();
-            
+
             // Reset after duration
             await Task.Delay(CopiedDuration);
             _copied = false;
@@ -111,4 +123,5 @@
             StateHasChanged();
         }
     }
+
 }

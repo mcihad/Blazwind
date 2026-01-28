@@ -9,24 +9,45 @@
 </CascadingValue>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public ToolbarOrientation Orientation { get; set; } = ToolbarOrientation.Horizontal;
-    [Parameter] public ToolbarPosition Position { get; set; } = ToolbarPosition.None;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
-    [Parameter] public bool Rounded { get; set; } = true;
-    [Parameter] public bool Shadow { get; set; } = true;
-    [Parameter] public bool Glass { get; set; } = true;
-    [Parameter] public int Offset { get; set; } = 16;
-    
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public ToolbarOrientation Orientation { get; set; } = ToolbarOrientation.Horizontal;
+
+    [Parameter]
+    public ToolbarPosition Position { get; set; } = ToolbarPosition.None;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Secondary;
+
+    [Parameter]
+    public bool Rounded { get; set; } = true;
+
+    [Parameter]
+    public bool Shadow { get; set; } = true;
+
+    [Parameter]
+    public bool Glass { get; set; } = true;
+
+    [Parameter]
+    public int Offset { get; set; } = 16;
+
     /// <summary>Allow items to wrap on multiple lines</summary>
-    [Parameter] public bool Wrap { get; set; } = false;
-    
+    [Parameter]
+    public bool Wrap { get; set; }
+
     /// <summary>Max width constraint (e.g. "100%", "400px")</summary>
-    [Parameter] public string? MaxWidth { get; set; }
+    [Parameter]
+    public string? MaxWidth { get; set; }
 
     public bool IsAtBottom => Position is ToolbarPosition.Bottom or ToolbarPosition.BottomLeft or
-    ToolbarPosition.BottomRight;
+        ToolbarPosition.BottomRight;
+
     public bool IsAtTop => Position is ToolbarPosition.Top or ToolbarPosition.TopLeft or ToolbarPosition.TopRight;
     public bool IsAtRight => Position is ToolbarPosition.Right or ToolbarPosition.TopRight or ToolbarPosition.BottomRight;
     public bool IsVertical => Orientation == ToolbarOrientation.Vertical;
@@ -78,14 +99,15 @@
 
     private string PositionClass => Position switch
     {
-        ToolbarPosition.Top => $"top-4 left-1/2 -translate-x-1/2",
-        ToolbarPosition.Bottom => $"bottom-4 left-1/2 -translate-x-1/2",
-        ToolbarPosition.Left => $"left-4 top-1/2 -translate-y-1/2",
-        ToolbarPosition.Right => $"right-4 top-1/2 -translate-y-1/2",
-        ToolbarPosition.TopLeft => $"top-4 left-4",
-        ToolbarPosition.TopRight => $"top-4 right-4",
-        ToolbarPosition.BottomLeft => $"bottom-4 left-4",
-        ToolbarPosition.BottomRight => $"bottom-4 right-4",
+        ToolbarPosition.Top => "top-4 left-1/2 -translate-x-1/2",
+        ToolbarPosition.Bottom => "bottom-4 left-1/2 -translate-x-1/2",
+        ToolbarPosition.Left => "left-4 top-1/2 -translate-y-1/2",
+        ToolbarPosition.Right => "right-4 top-1/2 -translate-y-1/2",
+        ToolbarPosition.TopLeft => "top-4 left-4",
+        ToolbarPosition.TopRight => "top-4 right-4",
+        ToolbarPosition.BottomLeft => "bottom-4 left-4",
+        ToolbarPosition.BottomRight => "bottom-4 right-4",
         _ => ""
     };
+
 }

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Position options for fixed/absolute positioned elements
+///     Position options for fixed/absolute positioned elements
 /// </summary>
 public enum BwPosition
 {

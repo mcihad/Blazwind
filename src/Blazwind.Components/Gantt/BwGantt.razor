@@ -1,17 +1,17 @@
 @namespace Blazwind.Components.Gantt
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Avatar
-@using Blazwind.Components.Button
-@using Blazwind.Components.Card
-@using Blazwind.Components.ContextMenu
-@using Blazwind.Components.Layout
-@using Microsoft.JSInterop
-@using System.Globalization
 @inherits BwBase
 @inject IJSRuntime JS
+@using System.Globalization
+@using Blazwind.Components.Avatar
+@using Blazwind.Components.Card
+@using Blazwind.Components.ContextMenu
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
-<BwCard Class="@CombineClasses($"bw-gantt overflow-hidden {(_isFullScreen ? "bw-gantt fullscreen" : "")}")" Style="@(_isFullScreen ? "z-index: 9999;" : Style)" BodyClass="p-0" Id="@Id" AdditionalAttributes="@AdditionalAttributes">
+<BwCard Class="@CombineClasses($"bw-gantt overflow-hidden {(_isFullScreen ? "bw-gantt fullscreen" : "")}")"
+        Style="@(_isFullScreen ? "z-index: 9999;" : Style)" BodyClass="p-0" Id="@Id"
+        AdditionalAttributes="@AdditionalAttributes">
     @* Header - Modern Toolbar *@
     <div class="bw-gantt-header">
         @* Title Section *@
@@ -23,7 +23,7 @@
                 @Title
             </div>
         </div>
-        
+
         @* Controls Container *@
         <div class="bw-gantt-controls">
             @* View Mode Switcher (Segmented Control Style) *@
@@ -41,7 +41,7 @@
                     Ay
                 </button>
             </div>
-            
+
             @* Actions Group *@
             <div class="bw-gantt-actions">
                 <button class="bw-gantt-action-btn"
@@ -52,9 +52,9 @@
                         @onclick="ZoomIn" title="Yakınlaş">
                     <i class="fa-solid fa-plus text-xs"></i>
                 </button>
-                
+
                 <div class="bw-gantt-action-divider"></div>
-                
+
                 <button class="bw-gantt-action-btn @(_isFullScreen ? "active" : "")"
                         @onclick="ToggleFullScreen" title="@(_isFullScreen ? "Küçült" : "Tam Ekran")">
                     <i class="@(_isFullScreen ? "fa-solid fa-compress" : "fa-solid fa-expand") text-xs"></i>
@@ -74,22 +74,23 @@
                     @* Task List Header *@
                     <div class="bw-gantt-task-list-header">
                         <span>Görevler</span>
-                        <button type="button" class="bw-gantt-task-list-toggle" 
+                        <button type="button" class="bw-gantt-task-list-toggle"
                                 @onclick="ToggleTaskList" title="Görev listesini gizle">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
                     </div>
                     @* Task List Items - fixed height rows *@
-                    @{ int taskIndex = 0; }
+                    @{ var taskIndex = 0; }
                     @foreach (var task in FlatTasks)
                     {
                         var isHovered = _hoveredTaskId == task.Id;
                         var currentTask = task;
-                        <div class="bw-gantt-task-row @(task.ParentId != null ? "child" : "") @(isHovered ? "hovered" : "")"
-                             data-task-index="@taskIndex"
-                             @onclick="() => HandleTaskClick(task)"
-                             @onmouseenter="() => _hoveredTaskId = task.Id"
-                             @onmouseleave="() => _hoveredTaskId = null">
+                        <div
+                            class="bw-gantt-task-row @(task.ParentId != null ? "child" : "") @(isHovered ? "hovered" : "")"
+                            data-task-index="@taskIndex"
+                            @onclick="() => HandleTaskClick(task)"
+                            @onmouseenter="() => _hoveredTaskId = task.Id"
+                            @onmouseleave="() => _hoveredTaskId = null">
                             @if (TaskItemTemplate != null)
                             {
                                 @TaskItemTemplate(currentTask)
@@ -106,20 +107,24 @@
                                 }
                                 else
                                 {
-                                    <i class="fa-solid fa-circle text-xs" style="color: @(task.Color ?? "var(--bw-color-primary)")"></i>
+                                    <i class="fa-solid fa-circle text-xs"
+                                       style="color: @(task.Color ?? "var(--bw-color-primary)")"></i>
                                 }
-                                <span class="bw-gantt-task-title @(task.Status == GanttTaskStatus.Completed ? "completed" : "")">
+
+                                <span
+                                    class="bw-gantt-task-title @(task.Status == GanttTaskStatus.Completed ? "completed" : "")">
                                     @task.Title
                                 </span>
                                 @if (!string.IsNullOrEmpty(task.AssigneeAvatar) || !string.IsNullOrEmpty(task.AssigneeName))
                                 {
-                                    <BwAvatar Name="@task.AssigneeName" Src="@task.AssigneeAvatar" Size="BwSize.ExtraSmall" />
+                                    <BwAvatar Name="@task.AssigneeName" Src="@task.AssigneeAvatar"
+                                              Size="BwSize.ExtraSmall"/>
                                 }
                             }
                         </div>
                         taskIndex++;
                     }
-                    
+
                     @* Resize Handle *@
                     @if (TaskListResizable)
                     {
@@ -134,7 +139,7 @@
                 @* Collapsed state - show expand button *@
                 <div class="bw-gantt-task-list-collapsed">
                     <div class="bw-gantt-task-list-collapsed-header">
-                        <button type="button" class="bw-gantt-task-list-toggle" 
+                        <button type="button" class="bw-gantt-task-list-toggle"
                                 @onclick="ToggleTaskList" title="Görev listesini göster">
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
@@ -148,116 +153,119 @@
             }
 
 
-        @* Timeline (Right Panel) *@
-        <div class="bw-gantt-timeline">
-            @* Timeline Header - same height as task list header *@
-            <div class="bw-gantt-timeline-header relative">
-                @foreach (var period in TimelinePeriods)
-                {
-                    <div class="bw-gantt-timeline-cell"
-                         style="width: @(GetColumnWidth())px;">
-                        @period
-                    </div>
-                }
-                
-                @* Today Marker in Header *@
-                @if (ShowTodayIndicator && TodayOffset >= 0)
-                {
-                    <div class="bw-gantt-today-marker"
-                         style="left: @(TodayOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))px;">
-                        <div class="bw-gantt-today-dot"></div>
-                    </div>
-                }
-            </div>
-
-            @* Timeline Grid - with @ref for JS interop *@
-            <div @ref="_timelineContainer" class="bw-gantt-grid" style="width: @(TimelinePeriods.Count * GetColumnWidth())px; height: @(FlatTasks.Count * 32)px;">
-                @* Row Backgrounds with Grid Pattern *@
-                <div class="absolute inset-0 pointer-events-none">
-                    @{ int rowBgIndex = 0; }
-                    @foreach (var task in FlatTasks)
-                    {
-                        var isRowHovered = _hoveredTaskId == task.Id;
-                        <div class="bw-gantt-row-bg @(isRowHovered ? "hovered" : (rowBgIndex % 2 == 0 ? "even" : "odd"))"
-                             style="top: @(rowBgIndex * 32)px; height: 32px;"></div>
-                        rowBgIndex++;
-                    }
-                </div>
-                
-                @* Dependency Lines (SVG Overlay) *@
-                <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" style="overflow: visible;">
-                    <defs>
-                        <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
-                            <polygon points="0 0, 6 2, 0 4" fill="currentColor" class="text-gray-400" />
-                        </marker>
-                    </defs>
-                    @foreach (var dep in CalculateDependencies())
-                    {
-                        <path d="@dep.Path" 
-                              data-from="@dep.FromId" 
-                              data-to="@dep.ToId"
-                              stroke="currentColor" 
-                              stroke-width="1.5" 
-                              fill="none" 
-                              class="bw-gantt-dependency-line text-gray-400" 
-                              marker-end="url(#arrowhead)" />
-                    }
-                </svg>
-                
-                @* Vertical Grid Lines *@
-                <div class="bw-gantt-grid-lines">
+            @* Timeline (Right Panel) *@
+            <div class="bw-gantt-timeline">
+                @* Timeline Header - same height as task list header *@
+                <div class="bw-gantt-timeline-header relative">
                     @foreach (var period in TimelinePeriods)
                     {
-                        <div class="bw-gantt-grid-line" style="width: @(GetColumnWidth())px;"></div>
+                        <div class="bw-gantt-timeline-cell"
+                             style="width: @(GetColumnWidth())px;">
+                            @period
+                        </div>
+                    }
+
+                    @* Today Marker in Header *@
+                    @if (ShowTodayIndicator && TodayOffset >= 0)
+                    {
+                        <div class="bw-gantt-today-marker"
+                             style="left: @(TodayOffset.ToString("F2", CultureInfo.InvariantCulture))px;">
+                            <div class="bw-gantt-today-dot"></div>
+                        </div>
                     }
                 </div>
 
-                @* Today Line (Body) *@
-                @if (ShowTodayIndicator && TodayOffset >= 0)
-                {
-                    <div class="absolute top-0 bottom-0 z-0 pointer-events-none"
-                         style="left: @(TodayOffset.ToString("F2", System.Globalization.CultureInfo.InvariantCulture))px;">
-                        <div class="bw-gantt-today-line"></div>
+                @* Timeline Grid - with @ref for JS interop *@
+                <div @ref="_timelineContainer" class="bw-gantt-grid"
+                     style="width: @(TimelinePeriods.Count * GetColumnWidth())px; height: @(FlatTasks.Count * 32)px;">
+                    @* Row Backgrounds with Grid Pattern *@
+                    <div class="absolute inset-0 pointer-events-none">
+                        @{ var rowBgIndex = 0; }
+                        @foreach (var task in FlatTasks)
+                        {
+                            var isRowHovered = _hoveredTaskId == task.Id;
+                            <div
+                                class="bw-gantt-row-bg @(isRowHovered ? "hovered" : rowBgIndex % 2 == 0 ? "even" : "odd")"
+                                style="top: @(rowBgIndex * 32)px; height: 32px;"></div>
+                            rowBgIndex++;
+                        }
                     </div>
-                }
 
-                @* Task Bars *@
-                @{
-                    int rowIndex = 0;
-                }
-                @foreach (var task in FlatTasks)
-                {
-                    var barStyle = GetTaskBarStyle(task, rowIndex);
-                    var taskLocal = task;
-                    
-                    @* Task bar container with data-task-id for JS *@
-                    @if (ContextMenuTemplate != null)
+                    @* Dependency Lines (SVG Overlay) *@
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" style="overflow: visible;">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                                <polygon points="0 0, 6 2, 0 4" fill="currentColor" class="text-gray-400"/>
+                            </marker>
+                        </defs>
+                        @foreach (var dep in CalculateDependencies())
+                        {
+                            <path d="@dep.Path"
+                                  data-from="@dep.FromId"
+                                  data-to="@dep.ToId"
+                                  stroke="currentColor"
+                                  stroke-width="1.5"
+                                  fill="none"
+                                  class="bw-gantt-dependency-line text-gray-400"
+                                  marker-end="url(#arrowhead)"/>
+                        }
+                    </svg>
+
+                    @* Vertical Grid Lines *@
+                    <div class="bw-gantt-grid-lines">
+                        @foreach (var period in TimelinePeriods)
+                        {
+                            <div class="bw-gantt-grid-line" style="width: @(GetColumnWidth())px;"></div>
+                        }
+                    </div>
+
+                    @* Today Line (Body) *@
+                    @if (ShowTodayIndicator && TodayOffset >= 0)
                     {
-                        <BwContextMenu Class="@($"bw-gantt-bar {(Editable ? "editable" : "")}")" 
-                                       Style="@barStyle"
-                                       @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))"
-                                       data-task-id="@task.Id">
-                            <ChildContent>
-                                @RenderTaskBar(taskLocal)
-                            </ChildContent>
-                            <MenuContent>
-                                @ContextMenuTemplate(taskLocal)
-                            </MenuContent>
-                        </BwContextMenu>
-                    }
-                    else
-                    {
-                        <div class="bw-gantt-bar @(Editable ? "editable" : "")" 
-                             style="@barStyle"
-                             data-task-id="@task.Id"
-                             @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
-                             @RenderTaskBar(taskLocal)
+                        <div class="absolute top-0 bottom-0 z-0 pointer-events-none"
+                             style="left: @(TodayOffset.ToString("F2", CultureInfo.InvariantCulture))px;">
+                            <div class="bw-gantt-today-line"></div>
                         </div>
                     }
-                    rowIndex++;
-                }
+
+                    @* Task Bars *@
+                    @{
+                        var rowIndex = 0;
+                    }
+                    @foreach (var task in FlatTasks)
+                    {
+                        var barStyle = GetTaskBarStyle(task, rowIndex);
+                        var taskLocal = task;
+
+                        @* Task bar container with data-task-id for JS *@
+                        @if (ContextMenuTemplate != null)
+                        {
+                            <BwContextMenu Class="@($"bw-gantt-bar {(Editable ? "editable" : "")}")"
+                                           Style="@barStyle"
+                                           @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))"
+                                           data-task-id="@task.Id">
+                                <ChildContent>
+                                    @RenderTaskBar(taskLocal)
+                                </ChildContent>
+                                <MenuContent>
+                                    @ContextMenuTemplate(taskLocal)
+                                </MenuContent>
+                            </BwContextMenu>
+                        }
+                        else
+                        {
+                            <div class="bw-gantt-bar @(Editable ? "editable" : "")"
+                                 style="@barStyle"
+                                 data-task-id="@task.Id"
+                                 @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
+                                @RenderTaskBar(taskLocal)
+                            </div>
+                        }
+
+                        rowIndex++;
+                    }
+                </div>
             </div>
-        </div>
         </div>
     </div>
 </BwCard>

@@ -4,7 +4,7 @@
 
 @{
     var positionClass = Position == BwDirection.Left ? "bw-sidebar-left" : "bw-sidebar-right";
-    
+
     var colorClass = Color switch
     {
         BwColor.Dark => "bw-sidebar-dark",
@@ -14,13 +14,13 @@
 }
 
 @* Mobile Overlay *@
-<div id="bw-sidebar-overlay" 
+<div id="bw-sidebar-overlay"
      class="bw-sidebar-overlay"
      onclick="Blazwind.Sidebar.close()">
 </div>
 
 @* Sidebar *@
-<aside id="bw-sidebar" 
+<aside id="bw-sidebar"
        class="@CombineClasses("bw-sidebar", positionClass, colorClass, Width)"
        @attributes="AdditionalAttributes">
     <CascadingValue Value="Color">
@@ -29,9 +29,17 @@
 </aside>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public string Width { get; set; } = "w-72";
-    [Parameter] public BwDirection Position { get; set; } = BwDirection.Left;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Light;
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Width { get; set; } = "w-72";
+
+    [Parameter]
+    public BwDirection Position { get; set; } = BwDirection.Left;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Light;
+
 }

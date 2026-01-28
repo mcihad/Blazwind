@@ -1,5 +1,4 @@
 @using Blazwind.Components.Shared
-@using Microsoft.AspNetCore.Components.Rendering
 @inherits BwBase
 
 @{
@@ -10,7 +9,7 @@
         builder.AddAttribute(2, "style", Style);
         builder.AddAttribute(3, "onclick", OnClick);
         builder.AddMultipleAttributes(4, AdditionalAttributes);
-        builder.AddContent(5, ChildContent ?? (RenderFragment)(b => b.AddContent(6, Text)));
+        builder.AddContent(5, ChildContent ?? (b => b.AddContent(6, Text)));
         builder.CloseElement();
     };
 }
@@ -18,23 +17,52 @@
 @content
 
 @code {
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwTypographyTag Tag { get; set; } = BwTypographyTag.Span;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwFontWeight Weight { get; set; } = BwFontWeight.Normal;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public bool IsTruncated { get; set; }
-    [Parameter] public int? LineClamp { get; set; }
-    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwTypographyTag Tag { get; set; } = BwTypographyTag.Span;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwFontWeight Weight { get; set; } = BwFontWeight.Normal;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public bool IsTruncated { get; set; }
+
+    [Parameter]
+    public int? LineClamp { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     // New Features
-    [Parameter] public bool Bold { get; set; } // Shortcut for Weight=Bold
-    [Parameter] public bool Italic { get; set; }
-    [Parameter] public bool Underline { get; set; }
-    [Parameter] public bool Strikethrough { get; set; }
-    [Parameter] public BwAlignment? Align { get; set; }
-    [Parameter] public BwTextTransform? Transform { get; set; }
+    [Parameter]
+    public bool Bold { get; set; } // Shortcut for Weight=Bold
+
+    [Parameter]
+    public bool Italic { get; set; }
+
+    [Parameter]
+    public bool Underline { get; set; }
+
+    [Parameter]
+    public bool Strikethrough { get; set; }
+
+    [Parameter]
+    public BwAlignment? Align { get; set; }
+
+    [Parameter]
+    public BwTextTransform? Transform { get; set; }
 
     private string AllClasses => string.Join(" ", new[]
     {
@@ -54,30 +82,30 @@
     private string SizeClasses => Size switch
     {
         BwSize.ExtraSmall => "text-xs",
-        BwSize.Small      => "text-sm",
-        BwSize.Medium     => "text-base",
-        BwSize.Large      => "text-lg",
+        BwSize.Small => "text-sm",
+        BwSize.Medium => "text-base",
+        BwSize.Large => "text-lg",
         BwSize.ExtraLarge => "text-xl",
-        _                 => "text-base"
+        _ => "text-base"
     };
 
-    private string WeightClasses 
+    private string WeightClasses
     {
         get
         {
             if (Bold) return "font-bold";
             return Weight switch
             {
-                BwFontWeight.Thin       => "font-thin",
+                BwFontWeight.Thin => "font-thin",
                 BwFontWeight.Extralight => "font-extralight",
-                BwFontWeight.Light      => "font-light",
-                BwFontWeight.Normal     => "font-normal",
-                BwFontWeight.Medium     => "font-medium",
-                BwFontWeight.Semibold   => "font-semibold",
-                BwFontWeight.Bold       => "font-bold",
-                BwFontWeight.Extrabold  => "font-extrabold",
-                BwFontWeight.Black      => "font-black",
-                _                       => "font-normal"
+                BwFontWeight.Light => "font-light",
+                BwFontWeight.Normal => "font-normal",
+                BwFontWeight.Medium => "font-medium",
+                BwFontWeight.Semibold => "font-semibold",
+                BwFontWeight.Bold => "font-bold",
+                BwFontWeight.Extrabold => "font-extrabold",
+                BwFontWeight.Black => "font-black",
+                _ => "font-normal"
             };
         }
     }
@@ -91,7 +119,7 @@
         BwAlignment.Right => "text-right",
         _ => ""
     };
-    
+
     private string TransformClasses => Transform switch
     {
         BwTextTransform.Uppercase => "uppercase",
@@ -99,7 +127,7 @@
         BwTextTransform.Capitalize => "capitalize",
         _ => ""
     };
-    
+
     private string DecorationClasses
     {
         get
@@ -118,17 +146,18 @@
         {
             return (IsTruncated, LineClamp) switch
             {
-                (true, null)               => "truncate",
-                (false, null)              => "",
-                (_, 1)                     => "line-clamp-1",
-                (_, 2)                     => "line-clamp-2",
-                (_, 3)                     => "line-clamp-3",
-                (_, 4)                     => "line-clamp-4",
-                (_, 5)                     => "line-clamp-5",
-                (_, 6)                     => "line-clamp-6",
-                _ when LineClamp is > 0    => $"line-clamp-{LineClamp}",
-                _                          => ""
+                (true, null) => "truncate",
+                (false, null) => "",
+                (_, 1) => "line-clamp-1",
+                (_, 2) => "line-clamp-2",
+                (_, 3) => "line-clamp-3",
+                (_, 4) => "line-clamp-4",
+                (_, 5) => "line-clamp-5",
+                (_, 6) => "line-clamp-6",
+                _ when LineClamp is > 0 => $"line-clamp-{LineClamp}",
+                _ => ""
             };
         }
     }
+
 }

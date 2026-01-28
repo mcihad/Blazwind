@@ -3,14 +3,10 @@ using System.Text.Json.Serialization;
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// Represents a LngLat coordinate
+///     Represents a LngLat coordinate
 /// </summary>
 public class LngLat
 {
-    [JsonPropertyName("lng")] public double Lng { get; set; }
-
-    [JsonPropertyName("lat")] public double Lat { get; set; }
-
     public LngLat()
     {
     }
@@ -21,21 +17,33 @@ public class LngLat
         Lat = lat;
     }
 
-    public double[] ToArray() => new[] { Lng, Lat };
+    [JsonPropertyName("lng")]
+    public double Lng { get; set; }
 
-    public static LngLat FromArray(double[] arr) => new(arr[0], arr[1]);
+    [JsonPropertyName("lat")]
+    public double Lat { get; set; }
 
-    public override string ToString() => $"[{Lng}, {Lat}]";
+    public double[] ToArray()
+    {
+        return new[] { Lng, Lat };
+    }
+
+    public static LngLat FromArray(double[] arr)
+    {
+        return new LngLat(arr[0], arr[1]);
+    }
+
+    public override string ToString()
+    {
+        return $"[{Lng}, {Lat}]";
+    }
 }
 
 /// <summary>
-/// Represents a bounding box
+///     Represents a bounding box
 /// </summary>
 public class LngLatBounds
 {
-    public LngLat Southwest { get; set; } = new();
-    public LngLat Northeast { get; set; } = new();
-
     public LngLatBounds()
     {
     }
@@ -52,19 +60,26 @@ public class LngLatBounds
         Northeast = new LngLat(neLng, neLat);
     }
 
-    public double[][] ToArray() => new[]
+    public LngLat Southwest { get; set; } = new();
+    public LngLat Northeast { get; set; } = new();
+
+    public double[][] ToArray()
     {
-        Southwest.ToArray(),
-        Northeast.ToArray()
-    };
+        return new[]
+        {
+            Southwest.ToArray(),
+            Northeast.ToArray()
+        };
+    }
 }
 
 /// <summary>
-/// Camera position options
+///     Camera position options
 /// </summary>
 public class CameraOptions
 {
-    [JsonIgnore] public LngLat? Center { get; set; }
+    [JsonIgnore]
+    public LngLat? Center { get; set; }
 
     [JsonPropertyName("zoom")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -78,7 +93,8 @@ public class CameraOptions
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? Pitch { get; set; }
 
-    [JsonIgnore] public LngLat? Around { get; set; }
+    [JsonIgnore]
+    public LngLat? Around { get; set; }
 
     [JsonPropertyName("padding")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -107,21 +123,25 @@ public class CameraOptions
 }
 
 /// <summary>
-/// Padding options for camera
+///     Padding options for camera
 /// </summary>
 public class PaddingOptions
 {
-    [JsonPropertyName("top")] public int Top { get; set; }
+    [JsonPropertyName("top")]
+    public int Top { get; set; }
 
-    [JsonPropertyName("bottom")] public int Bottom { get; set; }
+    [JsonPropertyName("bottom")]
+    public int Bottom { get; set; }
 
-    [JsonPropertyName("left")] public int Left { get; set; }
+    [JsonPropertyName("left")]
+    public int Left { get; set; }
 
-    [JsonPropertyName("right")] public int Right { get; set; }
+    [JsonPropertyName("right")]
+    public int Right { get; set; }
 }
 
 /// <summary>
-/// Animation options
+///     Animation options
 /// </summary>
 public class AnimationOptions
 {
@@ -143,7 +163,7 @@ public class AnimationOptions
 }
 
 /// <summary>
-/// FlyTo options
+///     FlyTo options
 /// </summary>
 public class FlyToOptions : CameraOptions
 {
@@ -187,7 +207,7 @@ public class FlyToOptions : CameraOptions
 }
 
 /// <summary>
-/// EaseTo options
+///     EaseTo options
 /// </summary>
 public class EaseToOptions : CameraOptions
 {
@@ -216,7 +236,7 @@ public class EaseToOptions : CameraOptions
 }
 
 /// <summary>
-/// FitBounds options
+///     FitBounds options
 /// </summary>
 public class FitBoundsOptions
 {

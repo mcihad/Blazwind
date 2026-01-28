@@ -1,6 +1,6 @@
-namespace Blazwind.Components.List;
-
 using Blazwind.Components.Shared;
+
+namespace Blazwind.Components.List;
 
 /// <summary>Interface for non-generic access to BwList</summary>
 public interface IBwListParent

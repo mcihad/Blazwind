@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart series types (ECharts series.type)
+///     Chart series types (ECharts series.type)
 /// </summary>
 public static class ChartSeriesType
 {

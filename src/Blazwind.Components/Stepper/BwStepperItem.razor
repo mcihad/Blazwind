@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.Stepper
-@using Blazwind.Components.Shared
 @implements IDisposable
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 @{
@@ -13,10 +13,10 @@
     var variant = parent?.Variant ?? BwStepperVariant.Default;
     var isFirst = parent?.IsFirstStep(stepIndex) ?? true;
     var isLast = parent?.IsLastStep(stepIndex) ?? true;
-    
+
     // State class
     var stateClass = IsError ? "error" : isCompleted ? "completed" : isActive ? "active" : "pending";
-    
+
     // Connector state - based on whether the step before this connector is completed
     var leftConnectorState = stepIndex > 0 && (parent?.IsStepCompleted(stepIndex - 1) ?? false) ? "completed" : "";
     var rightConnectorState = isCompleted ? "completed" : "";
@@ -35,7 +35,7 @@
             {
                 <div class="flex-1 min-h-[16px]"></div>
             }
-            
+
             <button type="button"
                     class="bw-stepper-indicator @stateClass"
                     disabled="@IsDisabled"
@@ -65,7 +65,7 @@
                     @(stepIndex + 1)
                 }
             </button>
-            
+
             @if (showConnectors && !isLast)
             {
                 <div class="bw-stepper-connector @rightConnectorState"></div>
@@ -75,7 +75,7 @@
                 <div class="flex-1 min-h-[16px]"></div>
             }
         </div>
-        
+
         <div class="bw-stepper-content-col">
             <button type="button"
                     class="text-left bg-transparent border-0 cursor-pointer p-0"
@@ -91,7 +91,7 @@
                     <span class="bw-stepper-optional">İsteğe bağlı</span>
                 }
             </button>
-            
+
             @if (isActive && ChildContent != null)
             {
                 <div class="bw-stepper-content">
@@ -115,7 +115,7 @@ else if (variant != BwStepperVariant.Progress)
             {
                 <div class="bw-stepper-connector-placeholder"></div>
             }
-            
+
             <button type="button"
                     class="bw-stepper-indicator @stateClass"
                     disabled="@IsDisabled"
@@ -145,7 +145,7 @@ else if (variant != BwStepperVariant.Progress)
                     @(stepIndex + 1)
                 }
             </button>
-            
+
             @if (showConnectors && !isLast)
             {
                 <div class="bw-stepper-connector @rightConnectorState"></div>
@@ -155,7 +155,7 @@ else if (variant != BwStepperVariant.Progress)
                 <div class="bw-stepper-connector-placeholder"></div>
             }
         </div>
-        
+
         @* Row 2: Label (below indicator) *@
         @if (parent?.AlternativeLabel ?? true)
         {
@@ -171,48 +171,59 @@ else if (variant != BwStepperVariant.Progress)
 }
 
 @code {
-    [CascadingParameter] public BwStepper? ParentStepper { get; set; }
-    
+
+    [CascadingParameter]
+    public BwStepper? ParentStepper { get; set; }
+
     /// <summary>Step title</summary>
-    [Parameter, EditorRequired] public string Title { get; set; } = "";
-    
+    [Parameter][EditorRequired]
+    public string Title { get; set; } = "";
+
     /// <summary>Optional description</summary>
-    [Parameter] public string? Description { get; set; }
-    
+    [Parameter]
+    public string? Description { get; set; }
+
     /// <summary>Custom icon (overrides number)</summary>
-    [Parameter] public string? Icon { get; set; }
-    
+    [Parameter]
+    public string? Icon { get; set; }
+
     /// <summary>Custom step indicator content</summary>
-    [Parameter] public RenderFragment? IconContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? IconContent { get; set; }
+
     /// <summary>Mark as optional step</summary>
-    [Parameter] public bool IsOptional { get; set; }
-    
+    [Parameter]
+    public bool IsOptional { get; set; }
+
     /// <summary>Error state</summary>
-    [Parameter] public bool IsError { get; set; }
-    
+    [Parameter]
+    public bool IsError { get; set; }
+
     /// <summary>Cannot navigate to this step</summary>
-    [Parameter] public bool IsDisabled { get; set; }
-    
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
     /// <summary>Color override</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     /// <summary>Step content (for wizard mode)</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     private int _stepIndex;
-    
+
     protected override void OnInitialized()
     {
         ParentStepper?.RegisterStep(this);
         _stepIndex = ParentStepper?.GetStepIndex(this) ?? 0;
     }
-    
+
     protected override void OnParametersSet()
     {
         _stepIndex = ParentStepper?.GetStepIndex(this) ?? 0;
     }
-    
+
     private async Task HandleClick()
     {
         if (ParentStepper != null && !IsDisabled)
@@ -220,9 +231,10 @@ else if (variant != BwStepperVariant.Progress)
             await ParentStepper.GoToStep(_stepIndex);
         }
     }
-    
+
     public void Dispose()
     {
         ParentStepper?.UnregisterStep(this);
     }
+
 }

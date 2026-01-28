@@ -1,7 +1,6 @@
 @namespace Blazwind.Components.Marquee
-@inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
+@inherits BwBase
 
 @{
     var baseClasses = "flex overflow-hidden";
@@ -13,8 +12,8 @@
 }
 
 <div class="@CombineClasses(baseClasses, directionClasses, pauseContainerClass)"
-    style="--marquee-duration: @animationDuration; --marquee-direction: @animationDirection; @Style" id="@Id"
-    @attributes="AdditionalAttributes">
+     style="--marquee-duration: @animationDuration; --marquee-direction: @animationDirection; @Style" id="@Id"
+     @attributes="AdditionalAttributes">
 
     <div
         class="bw-marquee-content @(Direction == BwDirection.Vertical ? "bw-marquee-vertical" : "bw-marquee-horizontal")">
@@ -23,7 +22,8 @@
 
     @if (Clone)
     {
-        <div class="bw-marquee-content @(Direction == BwDirection.Vertical ? "bw-marquee-vertical" : "bw-marquee-horizontal")"
+        <div
+            class="bw-marquee-content @(Direction == BwDirection.Vertical ? "bw-marquee-vertical" : "bw-marquee-horizontal")"
             aria-hidden="true">
             @ChildContent
         </div>
@@ -31,10 +31,23 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public int Duration { get; set; } = 20;
-    [Parameter] public bool Reverse { get; set; } = false;
-    [Parameter] public bool PauseOnHover { get; set; } = true;
-    [Parameter] public bool Clone { get; set; } = true;
-    [Parameter] public BwDirection Direction { get; set; } = BwDirection.Horizontal;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public int Duration { get; set; } = 20;
+
+    [Parameter]
+    public bool Reverse { get; set; }
+
+    [Parameter]
+    public bool PauseOnHover { get; set; } = true;
+
+    [Parameter]
+    public bool Clone { get; set; } = true;
+
+    [Parameter]
+    public BwDirection Direction { get; set; } = BwDirection.Horizontal;
+
 }

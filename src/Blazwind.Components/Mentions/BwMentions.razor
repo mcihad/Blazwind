@@ -1,29 +1,28 @@
 @namespace Blazwind.Components.Mentions
-@inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
-@using Microsoft.AspNetCore.Components.Web
+@inherits BwBase
 
 <div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     <textarea @ref="_textareaRef"
-        class="@CombineClasses("bw-mentions-textarea", GetSizeClass(), GetVariantClass(), GetFocusClass())"
-        placeholder="@Placeholder" disabled="@IsDisabled" rows="@Rows" @bind="_internalValue" @bind:event="oninput"
-        @onkeydown="HandleKeyDown" @onkeydown:preventDefault="_preventKeyDown"
-        @onblur="HandleBlur"></textarea>
+              class="@CombineClasses("bw-mentions-textarea", GetSizeClass(), GetVariantClass(), GetFocusClass())"
+              placeholder="@Placeholder" disabled="@IsDisabled" rows="@Rows" @bind="_internalValue"
+              @bind:event="oninput"
+              @onkeydown="HandleKeyDown" @onkeydown:preventDefault="_preventKeyDown"
+              @onblur="HandleBlur"></textarea>
 
     @if (_showSuggestions && _filteredMentions.Any())
     {
         <div class="bw-mentions-dropdown"
-            style="bottom: 100%; left: 0; margin-bottom: 4px;">
+             style="bottom: 100%; left: 0; margin-bottom: 4px;">
             @foreach (var mention in _filteredMentions)
             {
                 var isSelected = _selectedIndex == _filteredMentions.IndexOf(mention);
                 <button type="button"
-                    class="@($"bw-mentions-item {(isSelected ? "bw-mentions-item-selected" : "")}")"
-                    @onmousedown="() => SelectMention(mention)" @onmousedown:preventDefault>
+                        class="@($"bw-mentions-item {(isSelected ? "bw-mentions-item-selected" : "")}")"
+                        @onmousedown="() => SelectMention(mention)" @onmousedown:preventDefault>
                     @if (!string.IsNullOrEmpty(mention.Avatar))
                     {
-                        <img src="@mention.Avatar" alt="@mention.Label" class="bw-mentions-item-avatar" />
+                        <img src="@mention.Avatar" alt="@mention.Label" class="bw-mentions-item-avatar"/>
                     }
                     else
                     {
@@ -45,25 +44,48 @@
 </div>
 
 @code {
-    [Parameter] public string Value { get; set; } = "";
-    [Parameter] public EventCallback<string> ValueChanged { get; set; }
-    [Parameter] public string Placeholder { get; set; } = "Bir şeyler yazın... @ ile bahsedin";
-    [Parameter] public string Prefix { get; set; } = "@";
-    [Parameter] public int Rows { get; set; } = 3;
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public List<BwMentionItem> Mentions { get; set; } = new();
-    [Parameter] public EventCallback<BwMentionItem> OnMention { get; set; } = new();
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
 
-    [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Bir şeyler yazın... @ ile bahsedin";
+
+    [Parameter]
+    public string Prefix { get; set; } = "@";
+
+    [Parameter]
+    public int Rows { get; set; } = 3;
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public List<BwMentionItem> Mentions { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<BwMentionItem> OnMention { get; set; }
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Outline;
+
+    [Parameter]
+    public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
 
     private ElementReference _textareaRef;
-    private bool _showSuggestions = false;
-    private bool _preventKeyDown = false;
+    private bool _showSuggestions;
+    private bool _preventKeyDown;
     private string _searchQuery = "";
-    private int _selectedIndex = 0;
+    private int _selectedIndex;
     private int _mentionStartPos = -1;
     private List<BwMentionItem> _filteredMentions = new();
 
@@ -78,29 +100,38 @@
         }
     }
 
-    private string GetSizeClass() => Size switch
+    private string GetSizeClass()
     {
-        BwSize.Small => "bw-mentions-size-small",
-        BwSize.Large => "bw-mentions-size-large",
-        _ => "bw-mentions-size-medium"
-    };
+        return Size switch
+        {
+            BwSize.Small => "bw-mentions-size-small",
+            BwSize.Large => "bw-mentions-size-large",
+            _ => "bw-mentions-size-medium"
+        };
+    }
 
-    private string GetVariantClass() => Variant switch
+    private string GetVariantClass()
     {
-        BwVariant.Filled => "bw-mentions-variant-filled",
-        BwVariant.Ghost => "bw-mentions-variant-ghost",
-        _ => "bw-mentions-variant-outline"
-    };
+        return Variant switch
+        {
+            BwVariant.Filled => "bw-mentions-variant-filled",
+            BwVariant.Ghost => "bw-mentions-variant-ghost",
+            _ => "bw-mentions-variant-outline"
+        };
+    }
 
-    private string GetFocusClass() => Color switch
+    private string GetFocusClass()
     {
-        BwColor.Success => "bw-mentions-focus-success",
-        BwColor.Danger => "bw-mentions-focus-danger",
-        BwColor.Warning => "bw-mentions-focus-warning",
-        BwColor.Info => "bw-mentions-focus-info",
-        BwColor.Secondary => "bw-mentions-focus-secondary",
-        _ => "bw-mentions-focus-primary"
-    };
+        return Color switch
+        {
+            BwColor.Success => "bw-mentions-focus-success",
+            BwColor.Danger => "bw-mentions-focus-danger",
+            BwColor.Warning => "bw-mentions-focus-warning",
+            BwColor.Info => "bw-mentions-focus-info",
+            BwColor.Secondary => "bw-mentions-focus-secondary",
+            _ => "bw-mentions-focus-primary"
+        };
+    }
 
     private void CheckForMentionTrigger(string text)
     {
@@ -114,11 +145,11 @@
                 _searchQuery = textAfterAt.ToLower();
                 _mentionStartPos = lastAtIndex;
                 _filteredMentions = Mentions
-                .Where(m => string.IsNullOrEmpty(_searchQuery) ||
-                m.Label?.ToLower().Contains(_searchQuery) == true ||
-                m.Value?.ToLower().Contains(_searchQuery) == true)
-                .Take(10)
-                .ToList();
+                    .Where(m => string.IsNullOrEmpty(_searchQuery) ||
+                                m.Label?.ToLower().Contains(_searchQuery) == true ||
+                                m.Value?.ToLower().Contains(_searchQuery) == true)
+                    .Take(10)
+                    .ToList();
                 _showSuggestions = _filteredMentions.Any();
                 _selectedIndex = 0;
             }
@@ -145,13 +176,15 @@
                 _preventKeyDown = true;
                 return;
             }
-            else if (e.Key == "ArrowUp")
+
+            if (e.Key == "ArrowUp")
             {
                 _selectedIndex = Math.Max(_selectedIndex - 1, 0);
                 _preventKeyDown = true;
                 return;
             }
-            else if (e.Key == "Enter" || e.Key == "Tab")
+
+            if (e.Key == "Enter" || e.Key == "Tab")
             {
                 if (_selectedIndex >= 0 && _selectedIndex < _filteredMentions.Count)
                 {
@@ -167,7 +200,7 @@
                 return;
             }
         }
-        
+
         // Bubble up normal keys
         await OnKeyDown.InvokeAsync(e);
     }
@@ -198,4 +231,5 @@
         _mentionStartPos = -1;
         StateHasChanged();
     }
+
 }

@@ -1,6 +1,7 @@
 # BwDrawer
 
-A sliding side panel component that can emerge from any of the four sides of the viewport. It is ideal for navigation menus, advanced filters, and detailed record forms.
+A sliding side panel component that can emerge from any of the four sides of the viewport. It is ideal for navigation
+menus, advanced filters, and detailed record forms.
 
 ## Features
 
@@ -13,11 +14,13 @@ A sliding side panel component that can emerge from any of the four sides of the
 ## Setup
 
 The `DrawerService` is included automatically when registering Blazwind:
+
 ```csharp
 builder.Services.AddBlazwind();
 ```
 
 Ensure the container is present in your `MainLayout.razor`:
+
 ```razor
 <BwDrawerContainer />
 ```
@@ -25,6 +28,7 @@ Ensure the container is present in your `MainLayout.razor`:
 ## Usage
 
 ### Programmatic Navigation Menu
+
 ```csharp
 @inject DrawerService DrawerService
 
@@ -36,6 +40,7 @@ private async Task OpenNav()
 ```
 
 ### Form with Data Result
+
 ```csharp
 private async Task OpenFilter()
 {
@@ -53,21 +58,22 @@ private async Task OpenFilter()
 
 ### DrawerOptions
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `Position` | `BwDirection`| `Right` | `Left`, `Right`, `Top`, or `Bottom`. |
-| `Size` | `BwSize` | `Medium` | Preset size (`Small`, `Medium`, `Large`, `ExtraLarge`, `Full`). |
-| `Width` | `string?` | `null` | Specific CSS width (Left/Right only). |
-| `Height` | `string?` | `null` | Specific CSS height (Top/Bottom only). |
-| `Resizable`| `bool` | `false` | Enables edge-dragging to resize. |
-| `MinSize` | `string?` | `null` | Minimum size limit for resizing (e.g., `"200px"`). |
-| `MaxSize` | `string?` | `null` | Maximum size limit for resizing. |
-| `ShowOverlay`| `bool` | `true` | Dims the background content. |
-| `CloseOnOverlayClick`| `bool` | `true` | Closes when the dimmed area is clicked. |
-| `ShowClose`| `bool` | `true` | Displays the 'X' button in the header. |
-| `Color` | `BwColor`| `Secondary` | Theme base for the header and borders. |
+| Property              | Type          | Default     | Description                                                     |
+|-----------------------|---------------|-------------|-----------------------------------------------------------------|
+| `Position`            | `BwDirection` | `Right`     | `Left`, `Right`, `Top`, or `Bottom`.                            |
+| `Size`                | `BwSize`      | `Medium`    | Preset size (`Small`, `Medium`, `Large`, `ExtraLarge`, `Full`). |
+| `Width`               | `string?`     | `null`      | Specific CSS width (Left/Right only).                           |
+| `Height`              | `string?`     | `null`      | Specific CSS height (Top/Bottom only).                          |
+| `Resizable`           | `bool`        | `false`     | Enables edge-dragging to resize.                                |
+| `MinSize`             | `string?`     | `null`      | Minimum size limit for resizing (e.g., `"200px"`).              |
+| `MaxSize`             | `string?`     | `null`      | Maximum size limit for resizing.                                |
+| `ShowOverlay`         | `bool`        | `true`      | Dims the background content.                                    |
+| `CloseOnOverlayClick` | `bool`        | `true`      | Closes when the dimmed area is clicked.                         |
+| `ShowClose`           | `bool`        | `true`      | Displays the 'X' button in the header.                          |
+| `Color`               | `BwColor`     | `Secondary` | Theme base for the header and borders.                          |
 
 ## Controlling from Inside
+
 Inside the rendered component, you can access the drawer instance via a `CascadingParameter`:
 
 ```razor

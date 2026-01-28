@@ -26,7 +26,7 @@ In all input components, the `For` parameter binds to the `EditContext` to enabl
 The table below shows which components fully support the common features.
 
 | Component         | `For` (Validation)    | `LabelPosition`              | `Density` |
-| ----------------- | --------------------- | ---------------------------- | --------- |
+|-------------------|-----------------------|------------------------------|-----------|
 | BwInput           | ✓                     | ✓ (Top/Left/Floating/Hidden) | ✓         |
 | BwSelect          | ✓                     | ✓ (Top/Left/Hidden)          | ✓         |
 | BwTextarea        | ✓                     | ✓ (Top/Left/Hidden)          | ✓         |
@@ -65,7 +65,7 @@ Controls label position. Cascaded from `BwForm` or overridden on the component.
 ### Values
 
 | Value      | Description                                         |
-| ---------- | --------------------------------------------------- |
+|------------|-----------------------------------------------------|
 | `Top`      | Label on top (default)                              |
 | `Left`     | Label on the left, width controlled by `LabelWidth` |
 | `Floating` | Material-style floating label                       |
@@ -87,7 +87,7 @@ Controls form spacing. Cascaded from `BwForm`.
 ### Values
 
 | Value     | Margin | Usage                     |
-| --------- | ------ | ------------------------- |
+|-----------|--------|---------------------------|
 | `Compact` | `mb-2` | Dense forms (50+ fields)  |
 | `Normal`  | `mb-4` | Standard forms            |
 | `Relaxed` | `mb-6` | Spacious, relaxed spacing |
@@ -99,7 +99,7 @@ Controls form spacing. Cascaded from `BwForm`.
 Standard parameters available in all input components:
 
 | Parameter    | Type      | Description            |
-| ------------ | --------- | ---------------------- |
+|--------------|-----------|------------------------|
 | `Label`      | `string?` | Field label            |
 | `HelperText` | `string?` | Helper text            |
 | `Error`      | `string?` | Manual error message   |

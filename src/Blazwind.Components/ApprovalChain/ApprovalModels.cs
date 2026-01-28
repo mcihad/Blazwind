@@ -1,7 +1,7 @@
 namespace Blazwind.Components.ApprovalChain;
 
 /// <summary>
-/// Approval step status
+///     Approval step status
 /// </summary>
 public enum ApprovalStatus
 {
@@ -12,7 +12,7 @@ public enum ApprovalStatus
 }
 
 /// <summary>
-/// Approval chain direction
+///     Approval chain direction
 /// </summary>
 public enum ApprovalDirection
 {
@@ -21,7 +21,7 @@ public enum ApprovalDirection
 }
 
 /// <summary>
-/// Approval priority level
+///     Approval priority level
 /// </summary>
 public enum ApprovalPriority
 {
@@ -31,77 +31,77 @@ public enum ApprovalPriority
 }
 
 /// <summary>
-/// Represents an approval step
+///     Represents an approval step
 /// </summary>
 public class ApprovalStep
 {
     /// <summary>
-    /// Unique identifier
+    ///     Unique identifier
     /// </summary>
     public string Id { get; set; } = "";
 
     /// <summary>
-    /// Step title/label
+    ///     Step title/label
     /// </summary>
     public string Title { get; set; } = "";
 
     /// <summary>
-    /// Description/details for the step
+    ///     Description/details for the step
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Approver name
+    ///     Approver name
     /// </summary>
     public string? ApproverName { get; set; }
 
     /// <summary>
-    /// Approver role/title
+    ///     Approver role/title
     /// </summary>
     public string? ApproverRole { get; set; }
 
     /// <summary>
-    /// Approver avatar URL
+    ///     Approver avatar URL
     /// </summary>
     public string? ApproverAvatar { get; set; }
 
     /// <summary>
-    /// Step status
+    ///     Step status
     /// </summary>
     public ApprovalStatus Status { get; set; } = ApprovalStatus.Pending;
 
     /// <summary>
-    /// Approval/rejection date
+    ///     Approval/rejection date
     /// </summary>
     public DateTime? Date { get; set; }
 
     /// <summary>
-    /// Comment/note
+    ///     Comment/note
     /// </summary>
     public string? Comment { get; set; }
 
     /// <summary>
-    /// Icon class (FontAwesome)
+    ///     Icon class (FontAwesome)
     /// </summary>
     public string? Icon { get; set; }
 
     /// <summary>
-    /// Priority level
+    ///     Priority level
     /// </summary>
     public ApprovalPriority Priority { get; set; } = ApprovalPriority.Normal;
 
     /// <summary>
-    /// Due date for this step
+    ///     Due date for this step
     /// </summary>
     public DateTime? DueDate { get; set; }
 
     /// <summary>
-    /// Whether this step requires digital signature
+    ///     Whether this step requires digital signature
     /// </summary>
     public bool RequiresSignature { get; set; }
 
     /// <summary>
-    /// Attached document count
+    ///     Attached document count
     /// </summary>
     public int AttachmentCount { get; set; }
 }

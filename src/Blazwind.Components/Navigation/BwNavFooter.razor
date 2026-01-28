@@ -1,48 +1,60 @@
 @namespace Blazwind.Components.Navigation
-@using Microsoft.AspNetCore.Components
 @inherits BwBase
 
-<div class="@CombineClasses("bw-nav-footer")" 
+<div class="@CombineClasses("bw-nav-footer")"
      style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (AvatarContent != null)
     {
-         @AvatarContent
+        @AvatarContent
     }
     else if (!string.IsNullOrEmpty(AvatarUrl))
     {
-         <img src="@AvatarUrl" alt="@Title" class="bw-nav-footer-avatar" />
+        <img src="@AvatarUrl" alt="@Title" class="bw-nav-footer-avatar"/>
     }
     else if (!string.IsNullOrEmpty(Icon))
     {
-         <div class="bw-nav-footer-icon-container">
-             <i class="@Icon"></i>
-         </div>
+        <div class="bw-nav-footer-icon-container">
+            <i class="@Icon"></i>
+        </div>
     }
 
     <div class="flex-1 min-w-0">
-         @if (!string.IsNullOrEmpty(Title))
-         {
-             <div class="bw-nav-footer-title">@Title</div>
-         }
-         @if (!string.IsNullOrEmpty(Subtitle))
-         {
-             <div class="bw-nav-footer-subtitle">@Subtitle</div>
-         }
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <div class="bw-nav-footer-title">@Title</div>
+        }
+        @if (!string.IsNullOrEmpty(Subtitle))
+        {
+            <div class="bw-nav-footer-subtitle">@Subtitle</div>
+        }
     </div>
 
     @if (ChildContent != null)
     {
-         <div class="flex items-center gap-1">
-             @ChildContent
-         </div>
+        <div class="flex items-center gap-1">
+            @ChildContent
+        </div>
     }
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? AvatarUrl { get; set; }
-    [Parameter] public RenderFragment? AvatarContent { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? AvatarUrl { get; set; }
+
+    [Parameter]
+    public RenderFragment? AvatarContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
 }

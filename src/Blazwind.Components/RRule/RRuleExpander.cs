@@ -1,14 +1,14 @@
-namespace Blazwind.Components.RRule;
-
 using Blazwind.Components.Shared;
 
+namespace Blazwind.Components.RRule;
+
 /// <summary>
-/// RRule occurrence expander - generates event instances within a date range
+///     RRule occurrence expander - generates event instances within a date range
 /// </summary>
 public static class RRuleExpander
 {
     /// <summary>
-    /// Expand a recurring event into individual occurrences within the given date range
+    ///     Expand a recurring event into individual occurrences within the given date range
     /// </summary>
     /// <param name="masterEvent">The master recurring event</param>
     /// <param name="rangeStart">Start of the visible date range</param>
@@ -51,7 +51,6 @@ public static class RRuleExpander
 
                 // Only yield if occurrence is within visible range
                 if (occurrenceEnd >= rangeStart && occurrenceStart <= rangeEnd)
-                {
                     yield return new CalendarEvent
                     {
                         Id = $"{masterEvent.Id}_{occurrenceStart:yyyyMMdd}",
@@ -68,7 +67,6 @@ public static class RRuleExpander
                         RecurrenceRule = masterEvent.RecurrenceRule,
                         RecurrenceMasterId = masterEvent.Id
                     };
-                }
 
                 occurrenceCount++;
             }
@@ -78,7 +76,7 @@ public static class RRuleExpander
     }
 
     /// <summary>
-    /// Expand all recurring events in a collection
+    ///     Expand all recurring events in a collection
     /// </summary>
     public static IEnumerable<CalendarEvent> ExpandAll(
         IEnumerable<CalendarEvent> events,
@@ -86,23 +84,15 @@ public static class RRuleExpander
         DateTime rangeEnd)
     {
         foreach (var evt in events)
-        {
             if (evt.IsRecurring && !string.IsNullOrEmpty(evt.RecurrenceRule) &&
                 string.IsNullOrEmpty(evt.RecurrenceMasterId))
-            {
                 // Master event: expand it
                 foreach (var occurrence in ExpandRecurrence(evt, rangeStart, rangeEnd))
-                {
                     yield return occurrence;
-                }
-            }
             else if (string.IsNullOrEmpty(evt.RecurrenceMasterId))
-            {
                 // Non-recurring event: return as-is
                 yield return evt;
-            }
-            // Skip already-expanded instances (have RecurrenceMasterId)
-        }
+        // Skip already-expanded instances (have RecurrenceMasterId)
     }
 
     private static bool ShouldOccurOnDate(DateTime date, DateTime originalStart, RRuleOptions options)
@@ -133,7 +123,7 @@ public static class RRuleExpander
             return false;
 
         // Check interval (every N weeks)
-        var weeksDiff = (int)((date - originalStart.Date).Days / 7);
+        var weeksDiff = (date - originalStart.Date).Days / 7;
         return weeksDiff % options.Interval == 0 ||
                (options.ByDays.Count > 0 && IsInSameIntervalWeek(date, originalStart, options.Interval));
     }
@@ -143,7 +133,7 @@ public static class RRuleExpander
         // Calculate week number from original start
         var startOfWeek = originalStart.AddDays(-(int)originalStart.DayOfWeek);
         var dateStartOfWeek = date.AddDays(-(int)date.DayOfWeek);
-        var weeksDiff = (int)((dateStartOfWeek - startOfWeek).Days / 7);
+        var weeksDiff = (dateStartOfWeek - startOfWeek).Days / 7;
         return weeksDiff >= 0 && weeksDiff % interval == 0;
     }
 
@@ -154,14 +144,10 @@ public static class RRuleExpander
         var monthsDiff = (date.Year - originalStart.Year) * 12 + (date.Month - originalStart.Month);
         if (monthsDiff % options.Interval != 0) return false;
 
-        if (options.MonthlyType == RRuleMonthlyType.DayOfMonth)
-        {
-            return date.Day == options.ByMonthDay;
-        }
-        else // WeekdayOfMonth
-        {
-            return date.DayOfWeek == options.ByWeekDay && GetWeekOfMonth(date) == options.BySetPos;
-        }
+        if (options.MonthlyType == RRuleMonthlyType.DayOfMonth) return date.Day == options.ByMonthDay;
+
+        // WeekdayOfMonth
+        return date.DayOfWeek == options.ByWeekDay && GetWeekOfMonth(date) == options.BySetPos;
     }
 
     private static bool CheckYearlyOccurrence(DateTime date, DateTime originalStart, RRuleOptions options)

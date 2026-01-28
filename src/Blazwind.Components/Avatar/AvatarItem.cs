@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Avatar;
 
 /// <summary>
-/// Avatar item for avatar group component
+///     Avatar item for avatar group component
 /// </summary>
 public class AvatarItem
 {

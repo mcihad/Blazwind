@@ -1,8 +1,8 @@
 @namespace Blazwind.Components.Layout
-@using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses("flex-1 flex items-center justify-between h-full relative z-50")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("flex-1 flex items-center justify-between h-full relative z-50")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     <!-- Left Section -->
     <div class="flex items-center gap-4">
         @LeftContent
@@ -15,6 +15,11 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? LeftContent { get; set; }
-    [Parameter] public RenderFragment? RightContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeftContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? RightContent { get; set; }
+
 }

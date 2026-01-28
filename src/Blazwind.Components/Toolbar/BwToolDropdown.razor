@@ -1,12 +1,13 @@
 @namespace Blazwind.Components.Toolbar
+@inject IJSRuntime JS
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
-@inject IJSRuntime JS
 @inherits BwBase
 
-<div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @ref="_containerRef">
+<div class="@CombineClasses("relative")" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     @ref="_containerRef">
     <button type="button" class="@ButtonClasses" disabled="@Disabled" title="@Tooltip" @onclick="Toggle"
-        @onmouseenter="Open" @onmouseleave="StartCloseTimer">
+            @onmouseenter="Open" @onmouseleave="StartCloseTimer">
         @if (!string.IsNullOrEmpty(Icon))
         {
             <i class="@Icon @IconSizeClass"></i>
@@ -28,14 +29,27 @@
 </div>
 
 @code {
-    [CascadingParameter] public BwToolbar? Toolbar { get; set; }
 
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Tooltip { get; set; }
-    [Parameter] public bool Disabled { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
+    [CascadingParameter]
+    public BwToolbar? Toolbar { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Tooltip { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Secondary;
 
     private ElementReference _containerRef;
     private bool _isOpen;
@@ -47,7 +61,7 @@
     private bool OpenUpward => _openUpward || (Toolbar?.IsAtBottom ?? false);
     private bool AlignRight => _alignRight || (Toolbar?.IsAtRight ?? false);
 
-    private string ChevronRotation => _isOpen ? (OpenUpward ? "" : "rotate-180") : "";
+    private string ChevronRotation => _isOpen ? OpenUpward ? "" : "rotate-180" : "";
 
     private string ButtonClasses
     {
@@ -65,7 +79,10 @@
         }
     }
 
-    private string SizeClasses(BwSize size) => size.ToString().ToLower();
+    private string SizeClasses(BwSize size)
+    {
+        return size.ToString().ToLower();
+    }
 
     private string IconSizeClass => (Toolbar?.Size ?? BwSize.Medium) switch
     {
@@ -94,9 +111,11 @@
                 {
                     return $"{baseClasses} right-full top-0 mr-2";
                 }
+
                 return $"{baseClasses} left-full top-0 ml-2";
             }
-            else if (OpenUpward)
+
+            if (OpenUpward)
             {
                 var horizontalAlign = AlignRight ? "right-0" : "left-0";
                 return $"{baseClasses} {horizontalAlign} bottom-full mb-2";
@@ -106,7 +125,7 @@
                 var horizontalAlign = AlignRight ? "right-0" : "left-0";
                 return $"{baseClasses} {horizontalAlign} top-full mt-2";
             }
-            
+
             // Note: The positioning classes (right-full, top-0, etc.) are standard Tailwind utilities 
             // and don't need to be themed unless calculating positions dynamically becomes complex.
             // Keeping layout utilities is generally fine as they are not theming (colors/shapes).
@@ -151,7 +170,9 @@
             _isOpen = false;
             await InvokeAsync(StateHasChanged);
         }
-        catch (TaskCanceledException) { }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     private void CancelCloseTimer()
@@ -173,4 +194,5 @@
             }
         }
     }
+
 }

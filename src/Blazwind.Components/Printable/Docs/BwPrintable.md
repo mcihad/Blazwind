@@ -1,10 +1,12 @@
 # Printable
 
-A component wrapper designed for preparing and printing document-style content. It handles page sizes, orientations, and provides a built-in print preview experience.
+A component wrapper designed for preparing and printing document-style content. It handles page sizes, orientations, and
+provides a built-in print preview experience.
 
 ## Examples
 
 ### Basic Report
+
 ```razor
 <BwPrintable Title="Sales Report" ShowBorder="true">
     <div class="p-4">
@@ -15,6 +17,7 @@ A component wrapper designed for preparing and printing document-style content. 
 ```
 
 ### Institutional Letter
+
 Using header and footer templates.
 
 ```razor
@@ -40,34 +43,34 @@ Using header and footer templates.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Title` | `string?` | `null` | Document title (used as file name in some browsers). |
-| `PageSize` | `PrintPageSize` | `A4` | Standards: `A4`, `A5`, `Letter`, `Legal`. |
-| `Orientation` | `PrintOrientation`| `Portrait` | Direction: `Portrait` (vertical) or `Landscape` (horizontal). |
-| `Margin` | `string` | `20mm` | CSS margin for the print area. |
-| `ShowToolbar` | `bool` | `true` | Show the print action bar above the content. |
-| `PrintButtonText`| `string` | `Yazdır` | Label for the default print button. |
-| `ShowBorder` | `bool` | `false` | Show a dashed border on screen to indicate the print area. |
-| `ShowPageNumbers`| `bool` | `false` | Enable browser-level page numbering. |
-| `PrintAreaClass` | `string?` | `null` | CSS class for the inner print area. |
-| `CustomStyles` | `string?` | `null` | Custom CSS injected specifically for printing. |
+| Parameter         | Type               | Default    | Description                                                   |
+|:------------------|:-------------------|:-----------|:--------------------------------------------------------------|
+| `Title`           | `string?`          | `null`     | Document title (used as file name in some browsers).          |
+| `PageSize`        | `PrintPageSize`    | `A4`       | Standards: `A4`, `A5`, `Letter`, `Legal`.                     |
+| `Orientation`     | `PrintOrientation` | `Portrait` | Direction: `Portrait` (vertical) or `Landscape` (horizontal). |
+| `Margin`          | `string`           | `20mm`     | CSS margin for the print area.                                |
+| `ShowToolbar`     | `bool`             | `true`     | Show the print action bar above the content.                  |
+| `PrintButtonText` | `string`           | `Yazdır`   | Label for the default print button.                           |
+| `ShowBorder`      | `bool`             | `false`    | Show a dashed border on screen to indicate the print area.    |
+| `ShowPageNumbers` | `bool`             | `false`    | Enable browser-level page numbering.                          |
+| `PrintAreaClass`  | `string?`          | `null`     | CSS class for the inner print area.                           |
+| `CustomStyles`    | `string?`          | `null`     | Custom CSS injected specifically for printing.                |
 
 ### Render Fragments (Slots)
 
-| Slot | Description |
-| :--- | :--- |
-| `ChildContent` | The main content to be printed. |
-| `HeaderTemplate`| Content displayed at the top of every printed page. |
-| `FooterTemplate`| Content displayed at the bottom of every printed page. |
-| `ToolbarContent`| Additional buttons or controls for the print toolbar. |
+| Slot             | Description                                            |
+|:-----------------|:-------------------------------------------------------|
+| `ChildContent`   | The main content to be printed.                        |
+| `HeaderTemplate` | Content displayed at the top of every printed page.    |
+| `FooterTemplate` | Content displayed at the bottom of every printed page. |
+| `ToolbarContent` | Additional buttons or controls for the print toolbar.  |
 
 ### Methods
 
-| Method | Signature | Description |
-| :--- | :--- | :--- |
-| `PrintAsync` | `Task PrintAsync()` | Programmatically triggers the print dialog. |
-| `GetHtmlAsync` | `Task<string> GetHtmlAsync()`| Returns the HTML content of the print area. |
+| Method         | Signature                     | Description                                 |
+|:---------------|:------------------------------|:--------------------------------------------|
+| `PrintAsync`   | `Task PrintAsync()`           | Programmatically triggers the print dialog. |
+| `GetHtmlAsync` | `Task<string> GetHtmlAsync()` | Returns the HTML content of the print area. |
 
 ## Print Helper CSS Classes
 
@@ -81,7 +84,9 @@ The following classes can be used within your content to control print behavior:
 ## Enums
 
 ### PrintPageSize
+
 `A4`, `A5`, `Letter`, `Legal`
 
 ### PrintOrientation
+
 `Portrait` (Default), `Landscape`

@@ -31,31 +31,31 @@ Radio butonların daha modern bir alternatifi olan segmented kontrol bileşeni.
 
 ### BwSegmented
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Value` | `object` | - | Seçili seçenek değeri (Two-way binding). |
-| `Options` | `List<SegmentedOption>` | `new()` | Seçenek listesi. |
-| `Color` | `BwColor` | `Primary` | Seçili durumdaki renk. |
-| `Size` | `BwSize` | `Medium` | Boyut (`Small`, `Medium`, `Large`). |
-| `Variant` | `BwVariant` | `Filled` | Görünüm varyantı (`Filled`, `Outline`, `Ghost`). |
-| `IsDisabled` | `bool` | `false` | Tüm bileşeni devre dışı bırakır. |
-| `Class` | `string` | `null` | Ek CSS sınıfları. |
+| Parametre    | Tip                     | Varsayılan | Açıklama                                         |
+|:-------------|:------------------------|:-----------|:-------------------------------------------------|
+| `Value`      | `object`                | -          | Seçili seçenek değeri (Two-way binding).         |
+| `Options`    | `List<SegmentedOption>` | `new()`    | Seçenek listesi.                                 |
+| `Color`      | `BwColor`               | `Primary`  | Seçili durumdaki renk.                           |
+| `Size`       | `BwSize`                | `Medium`   | Boyut (`Small`, `Medium`, `Large`).              |
+| `Variant`    | `BwVariant`             | `Filled`   | Görünüm varyantı (`Filled`, `Outline`, `Ghost`). |
+| `IsDisabled` | `bool`                  | `false`    | Tüm bileşeni devre dışı bırakır.                 |
+| `Class`      | `string`                | `null`     | Ek CSS sınıfları.                                |
 
 ### SegmentedOption
 
-| Özellik | Tip | Açıklama |
-| :--- | :--- | :--- |
-| `Label` | `string` | Buton metni. |
-| `Value` | `object` | Seçildiğinde atanacak değer. |
-| `Icon` | `string` | Metnin yanındaki ikon (isteğe bağlı). |
-| `IsDisabled` | `bool` | Seçeneği devre dışı bırakır (isteğe bağlı). |
+| Özellik      | Tip      | Açıklama                                    |
+|:-------------|:---------|:--------------------------------------------|
+| `Label`      | `string` | Buton metni.                                |
+| `Value`      | `object` | Seçildiğinde atanacak değer.                |
+| `Icon`       | `string` | Metnin yanındaki ikon (isteğe bağlı).       |
+| `IsDisabled` | `bool`   | Seçeneği devre dışı bırakır (isteğe bağlı). |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `ValueChanged` | `object` | Seçim değiştiğinde tetiklenir (Two-way binding). |
-| `OnChange` | `SegmentedOption` | Seçim sonrası seçilen öğe nesnesiyle tetiklenir. |
+| Olay           | Paylaşım (Payload) | Açıklama                                         |
+|:---------------|:-------------------|:-------------------------------------------------|
+| `ValueChanged` | `object`           | Seçim değiştiğinde tetiklenir (Two-way binding). |
+| `OnChange`     | `SegmentedOption`  | Seçim sonrası seçilen öğe nesnesiyle tetiklenir. |
 
 ## Örnekler
 

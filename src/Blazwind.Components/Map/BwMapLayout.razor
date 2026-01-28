@@ -9,24 +9,28 @@
     // Removed Class and Style parameters (inherited)
 
     /// <summary>
-    /// Whether to fill the entire viewport
+    ///     Whether to fill the entire viewport
     /// </summary>
-    [Parameter] public bool Fullscreen { get; set; } = true;
+    [Parameter]
+    public bool Fullscreen { get; set; } = true;
 
     /// <summary>
-    /// Fixed height when not fullscreen (CSS value)
+    ///     Fixed height when not fullscreen (CSS value)
     /// </summary>
-    [Parameter] public string? Height { get; set; }
+    [Parameter]
+    public string? Height { get; set; }
 
     /// <summary>
-    /// Fixed width when not fullscreen (CSS value)
+    ///     Fixed width when not fullscreen (CSS value)
     /// </summary>
-    [Parameter] public string? Width { get; set; }
+    [Parameter]
+    public string? Width { get; set; }
 
     /// <summary>
-    /// Content (should contain BwMapLibre component)
+    ///     Content (should contain BwMapLibre component)
     /// </summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     private string ComputedClass => CombineClasses("bw-map-layout", Fullscreen ? "bw-map-layout--fullscreen" : null);
 
@@ -59,4 +63,5 @@
             return string.Join("; ", styles);
         }
     }
+
 }

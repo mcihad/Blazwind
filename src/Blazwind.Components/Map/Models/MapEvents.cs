@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// Map events that can be subscribed to
+///     Map events that can be subscribed to
 /// </summary>
 public class MapEventArgs
 {
@@ -11,15 +11,17 @@ public class MapEventArgs
 }
 
 /// <summary>
-/// Mouse event arguments
+///     Mouse event arguments
 /// </summary>
 public class MapMouseEventArgs : MapEventArgs
 {
     public LngLat LngLat { get; set; } = new(0, 0);
 
-    [JsonPropertyName("point")] public double[] Point { get; set; } = new[] { 0.0, 0.0 };
+    [JsonPropertyName("point")]
+    public double[] Point { get; set; } = new[] { 0.0, 0.0 };
 
-    [JsonPropertyName("clientPoint")] public double[] ClientPoint { get; set; } = new[] { 0.0, 0.0 };
+    [JsonPropertyName("clientPoint")]
+    public double[] ClientPoint { get; set; } = new[] { 0.0, 0.0 };
 
     [JsonPropertyName("originalEvent")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -27,19 +29,21 @@ public class MapMouseEventArgs : MapEventArgs
 }
 
 /// <summary>
-/// Layer click event arguments
+///     Layer click event arguments
 /// </summary>
 public class MapLayerEventArgs : MapEventArgs
 {
-    [JsonPropertyName("layerId")] public string LayerId { get; set; } = string.Empty;
+    [JsonPropertyName("layerId")]
+    public string LayerId { get; set; } = string.Empty;
 
     public LngLat LngLat { get; set; } = new(0, 0);
 
-    [JsonPropertyName("features")] public List<MapFeature> Features { get; set; } = new();
+    [JsonPropertyName("features")]
+    public List<MapFeature> Features { get; set; } = new();
 }
 
 /// <summary>
-/// Map feature from query results
+///     Map feature from query results
 /// </summary>
 public class MapFeature
 {
@@ -47,7 +51,8 @@ public class MapFeature
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Id { get; set; }
 
-    [JsonPropertyName("type")] public string Type { get; set; } = "Feature";
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = "Feature";
 
     [JsonPropertyName("geometry")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -71,61 +76,71 @@ public class MapFeature
 }
 
 /// <summary>
-/// GeoJSON geometry
+///     GeoJSON geometry
 /// </summary>
 public class MapFeatureGeometry
 {
-    [JsonPropertyName("type")] public string Type { get; set; } = "Point";
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = "Point";
 
-    [JsonPropertyName("coordinates")] public object Coordinates { get; set; } = new double[] { 0.0, 0.0 };
+    [JsonPropertyName("coordinates")]
+    public object Coordinates { get; set; } = new[] { 0.0, 0.0 };
 }
 
 /// <summary>
-/// Move event arguments
+///     Move event arguments
 /// </summary>
 public class MapMoveEventArgs : MapEventArgs
 {
     public LngLat Center { get; set; } = new(0, 0);
 
-    [JsonPropertyName("zoom")] public double Zoom { get; set; }
+    [JsonPropertyName("zoom")]
+    public double Zoom { get; set; }
 
-    [JsonPropertyName("bearing")] public double Bearing { get; set; }
+    [JsonPropertyName("bearing")]
+    public double Bearing { get; set; }
 
-    [JsonPropertyName("pitch")] public double Pitch { get; set; }
+    [JsonPropertyName("pitch")]
+    public double Pitch { get; set; }
 }
 
 /// <summary>
-/// Zoom event arguments
+///     Zoom event arguments
 /// </summary>
 public class MapZoomEventArgs : MapEventArgs
 {
-    [JsonPropertyName("zoom")] public double Zoom { get; set; }
+    [JsonPropertyName("zoom")]
+    public double Zoom { get; set; }
 }
 
 /// <summary>
-/// Rotate event arguments
+///     Rotate event arguments
 /// </summary>
 public class MapRotateEventArgs : MapEventArgs
 {
-    [JsonPropertyName("bearing")] public double Bearing { get; set; }
+    [JsonPropertyName("bearing")]
+    public double Bearing { get; set; }
 }
 
 /// <summary>
-/// Pitch event arguments
+///     Pitch event arguments
 /// </summary>
 public class MapPitchEventArgs : MapEventArgs
 {
-    [JsonPropertyName("pitch")] public double Pitch { get; set; }
+    [JsonPropertyName("pitch")]
+    public double Pitch { get; set; }
 }
 
 /// <summary>
-/// Data event arguments
+///     Data event arguments
 /// </summary>
 public class MapDataEventArgs : MapEventArgs
 {
-    [JsonPropertyName("dataType")] public string DataType { get; set; } = string.Empty;
+    [JsonPropertyName("dataType")]
+    public string DataType { get; set; } = string.Empty;
 
-    [JsonPropertyName("isSourceLoaded")] public bool IsSourceLoaded { get; set; }
+    [JsonPropertyName("isSourceLoaded")]
+    public bool IsSourceLoaded { get; set; }
 
     [JsonPropertyName("sourceId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -137,19 +152,21 @@ public class MapDataEventArgs : MapEventArgs
 }
 
 /// <summary>
-/// Error event arguments
+///     Error event arguments
 /// </summary>
 public class MapErrorEventArgs : MapEventArgs
 {
-    [JsonPropertyName("error")] public MapError Error { get; set; } = new();
+    [JsonPropertyName("error")]
+    public MapError Error { get; set; } = new();
 }
 
 /// <summary>
-/// Map error
+///     Map error
 /// </summary>
 public class MapError
 {
-    [JsonPropertyName("message")] public string Message { get; set; } = string.Empty;
+    [JsonPropertyName("message")]
+    public string Message { get; set; } = string.Empty;
 
     [JsonPropertyName("status")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -161,47 +178,49 @@ public class MapError
 }
 
 /// <summary>
-/// Marker drag event arguments
+///     Marker drag event arguments
 /// </summary>
 public class MapMarkerEventArgs : MapEventArgs
 {
-    [JsonPropertyName("markerId")] public string MarkerId { get; set; } = string.Empty;
+    [JsonPropertyName("markerId")]
+    public string MarkerId { get; set; } = string.Empty;
 
     public LngLat LngLat { get; set; } = new(0, 0);
 }
 
 /// <summary>
-/// Draw event arguments
+///     Draw event arguments
 /// </summary>
 public class MapDrawEventArgs : MapEventArgs
 {
-    [JsonPropertyName("features")] public List<MapFeature> Features { get; set; } = new();
+    [JsonPropertyName("features")]
+    public List<MapFeature> Features { get; set; } = new();
 }
 
 /// <summary>
-/// Enhanced layer click event arguments with click order priority
+///     Enhanced layer click event arguments with click order priority
 /// </summary>
 public class MapLayerClickEventArgs : MapLayerEventArgs
 {
     /// <summary>
-    /// Click order/priority of the clicked layer (higher = top priority)
+    ///     Click order/priority of the clicked layer (higher = top priority)
     /// </summary>
     [JsonPropertyName("clickOrder")]
     public int ClickOrder { get; set; }
 }
 
 /// <summary>
-/// Fly animation event arguments
+///     Fly animation event arguments
 /// </summary>
 public class MapFlyEventArgs : MapEventArgs
 {
     /// <summary>
-    /// Target center of the fly animation
+    ///     Target center of the fly animation
     /// </summary>
     public LngLat? TargetCenter { get; set; }
 
     /// <summary>
-    /// Target zoom level
+    ///     Target zoom level
     /// </summary>
     [JsonPropertyName("targetZoom")]
     public double? TargetZoom { get; set; }

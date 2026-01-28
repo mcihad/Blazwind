@@ -1,5 +1,5 @@
-@using Blazwind.Components.Shared
 @namespace Blazwind.Components.List
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 @{
@@ -9,7 +9,7 @@
 
     // Use theme classes
     var baseClass = "bw-list-item";
-    
+
     if (isInteractive)
     {
         baseClass += " is-interactive";
@@ -19,40 +19,46 @@
     {
         baseClass += " is-selected";
     }
-    
-    var dragClass = ParentList?.EnableSorting == true ? "bw-draggable cursor-move" : (isSelectable ? "cursor-pointer" : "");
+
+    var dragClass = ParentList?.EnableSorting == true ? "bw-draggable cursor-move" : isSelectable ? "cursor-pointer" : "";
 }
 
-<div class="@CombineClasses(baseClass, dragClass)" 
+<div class="@CombineClasses(baseClass, dragClass)"
      id="@Id" style="@Style" @attributes="AdditionalAttributes"
-     data-index="@EffectiveIndex" 
+     data-index="@EffectiveIndex"
      @onclick="HandleClick">
-     
+
     @if (ParentList?.EnableSorting == true)
     {
         <div class="bw-list-handle handle">
             <i class="fa-solid fa-grip-vertical"></i>
         </div>
     }
-    
+
     @if (isSelectable)
     {
         <div class="mr-3 flex items-center justify-center">
-             @if (ParentList?.SelectionMode == BwSelectionMode.Multiple)
-             {
-                 <div class="bw-list-selection-indicator multiple @(isSelected ? "is-selected" : "")">
-                     @if (isSelected) { <i class="fa-solid fa-check text-[10px]"></i> }
-                 </div>
-             }
-             else
-             {
-                 <div class="bw-list-selection-indicator single @(isSelected ? "is-selected" : "")">
-                      @if (isSelected) { <div class="bw-list-selection-dot"></div> }
-                 </div>
-             }
+            @if (ParentList?.SelectionMode == BwSelectionMode.Multiple)
+            {
+                <div class="bw-list-selection-indicator multiple @(isSelected ? "is-selected" : "")">
+                    @if (isSelected)
+                    {
+                        <i class="fa-solid fa-check text-[10px]"></i>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="bw-list-selection-indicator single @(isSelected ? "is-selected" : "")">
+                    @if (isSelected)
+                    {
+                        <div class="bw-list-selection-dot"></div>
+                    }
+                </div>
+            }
         </div>
     }
-    
+
     <div class="bw-list-content">
         @if (ChildContent != null)
         {
@@ -73,7 +79,7 @@
                         <i class="@Icon"></i>
                     </div>
                 }
-                
+
                 <div class="flex flex-col min-w-0 flex-1">
                     @if (!string.IsNullOrEmpty(Title))
                     {
@@ -84,7 +90,7 @@
                         <span class="bw-list-description">@Description</span>
                     }
                 </div>
-                
+
                 @if (EndContent != null)
                 {
                     <div class="ml-auto shrink-0">
@@ -94,7 +100,7 @@
             </div>
         }
     </div>
-    
+
     @if (Actions != null)
     {
         <div class="bw-list-actions" @onclick:stopPropagation>
@@ -104,23 +110,40 @@
 </div>
 
 @code {
-    [CascadingParameter] public IBwListParent? ParentList { get; set; }
-    [CascadingParameter(Name = "CurrentItemIndex")] public int? CascadedIndex { get; set; }
-    
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Actions { get; set; }
-    
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public RenderFragment? LeadingContent { get; set; }
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Description { get; set; }
-    [Parameter] public RenderFragment? EndContent { get; set; }
-    
-    [Parameter] public int Index { get; set; } // Required for sorting
-    
+
+    [CascadingParameter]
+    public IBwListParent? ParentList { get; set; }
+
+    [CascadingParameter(Name = "CurrentItemIndex")]
+    public int? CascadedIndex { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public RenderFragment? LeadingContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public RenderFragment? EndContent { get; set; }
+
+    [Parameter]
+    public int Index { get; set; } // Required for sorting
+
     /// <summary>Effective index: uses cascaded if available, otherwise parameter</summary>
     private int EffectiveIndex => CascadedIndex ?? Index;
-    
+
     private async Task HandleClick()
     {
         if (ParentList != null)
@@ -128,4 +151,5 @@
             await ParentList.ToggleSelection(EffectiveIndex);
         }
     }
+
 }

@@ -41,6 +41,7 @@ Günlük aktivite verisi üzerinde saat aralığı seçimi yapan bileşen. 24 sa
 ```
 
 ### Özelleştirilmiş Görünüm
+
 ```razor
 <BwTimeRangeBrush Data="serverLoad" 
                   Label="Sunucu Yükü"
@@ -51,6 +52,7 @@ Günlük aktivite verisi üzerinde saat aralığı seçimi yapan bileşen. 24 sa
 ```
 
 ### Karşılaştırma Görünümü
+
 ```razor
 <div class="space-y-4">
     <BwTimeRangeBrush Data="weekdayActivity" Label="Hafta İçi" Color="BwColor.Primary" />
@@ -63,27 +65,27 @@ Günlük aktivite verisi üzerinde saat aralığı seçimi yapan bileşen. 24 sa
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Data` | `List<TimeActivityPoint>` | `null` | Zaman bazlı aktivite veri noktaları. |
-| `MinTime` | `TimeSpan` | `00:00` | Zaman çizelgesinin başlangıç saati. |
-| `MaxTime` | `TimeSpan` | `24:00` | Zaman çizelgesinin bitiş saati. |
-| `StartTime` | `TimeSpan` | `09:00` | Başlangıç seçili saat. |
-| `EndTime` | `TimeSpan` | `17:00` | Bitiş seçili saat. |
-| `Step` | `TimeSpan` | `15 dk` | Seçim adım hassasiyeti. |
-| `Color` | `BwColor` | `Primary` | Fırça ve grafik vurgu rengi. |
-| `Height` | `int` | `60` | Bileşen yüksekliği (px). |
-| `ShowActivityChart` | `bool` | `true` | Aktivite grafik önizlemesini gösterir. |
-| `ShowTimeScale` | `bool` | `true` | Alt kısımdaki saat işaretçilerini gösterir. |
-| `ShowQuarterMarks` | `bool` | `true` | Çeyrek saat işaretçilerini gösterir. |
-| `ShowSelectedRange` | `bool` | `true` | Seçili aralık özetini gösterir. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Presets` | `List<TimeBrushPreset>` | `null` | Hızlı seçim seçenekleri. |
+| Parametre           | Tip                       | Varsayılan | Açıklama                                    |
+|:--------------------|:--------------------------|:-----------|:--------------------------------------------|
+| `Data`              | `List<TimeActivityPoint>` | `null`     | Zaman bazlı aktivite veri noktaları.        |
+| `MinTime`           | `TimeSpan`                | `00:00`    | Zaman çizelgesinin başlangıç saati.         |
+| `MaxTime`           | `TimeSpan`                | `24:00`    | Zaman çizelgesinin bitiş saati.             |
+| `StartTime`         | `TimeSpan`                | `09:00`    | Başlangıç seçili saat.                      |
+| `EndTime`           | `TimeSpan`                | `17:00`    | Bitiş seçili saat.                          |
+| `Step`              | `TimeSpan`                | `15 dk`    | Seçim adım hassasiyeti.                     |
+| `Color`             | `BwColor`                 | `Primary`  | Fırça ve grafik vurgu rengi.                |
+| `Height`            | `int`                     | `60`       | Bileşen yüksekliği (px).                    |
+| `ShowActivityChart` | `bool`                    | `true`     | Aktivite grafik önizlemesini gösterir.      |
+| `ShowTimeScale`     | `bool`                    | `true`     | Alt kısımdaki saat işaretçilerini gösterir. |
+| `ShowQuarterMarks`  | `bool`                    | `true`     | Çeyrek saat işaretçilerini gösterir.        |
+| `ShowSelectedRange` | `bool`                    | `true`     | Seçili aralık özetini gösterir.             |
+| `Label`             | `string`                  | `null`     | Alan etiketi.                               |
+| `Presets`           | `List<TimeBrushPreset>`   | `null`     | Hızlı seçim seçenekleri.                    |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
+| Olay             | Paylaşım (Payload)                | Açıklama                                 |
+|:-----------------|:----------------------------------|:-----------------------------------------|
 | `OnBrushChanged` | `BrushChangedEventArgs<TimeSpan>` | Fırça alanı her değiştiğinde tetiklenir. |
 
 ## Yardımcı Sınıflar
@@ -104,8 +106,10 @@ public class TimeBrushPreset
 ```
 
 ## Kullanım Senaryoları
+
 - **Sunucu İzleme:** CPU, bellek kullanımı saatlik görünümü
 - **Web Analitiği:** Ziyaretçi yoğunluğu saatlik dağılımı
 - **Çalışan Aktivitesi:** Mesai saatleri analizi
 - **Müşteri Hizmetleri:** Çağrı yoğunluğu analizi
+
 ```

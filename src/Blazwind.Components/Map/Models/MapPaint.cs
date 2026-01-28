@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// Paint properties for fill layers
+///     Paint properties for fill layers
 /// </summary>
 public class FillPaint
 {
@@ -37,7 +37,7 @@ public class FillPaint
 }
 
 /// <summary>
-/// Paint properties for line layers
+///     Paint properties for line layers
 /// </summary>
 public class LinePaint
 {
@@ -79,7 +79,7 @@ public class LinePaint
 }
 
 /// <summary>
-/// Paint properties for circle layers
+///     Paint properties for circle layers
 /// </summary>
 public class CirclePaint
 {
@@ -125,7 +125,7 @@ public class CirclePaint
 }
 
 /// <summary>
-/// Paint properties for symbol layers
+///     Paint properties for symbol layers
 /// </summary>
 public class SymbolPaint
 {
@@ -171,7 +171,7 @@ public class SymbolPaint
 }
 
 /// <summary>
-/// Layout properties for symbol layers
+///     Layout properties for symbol layers
 /// </summary>
 public class SymbolLayout
 {
@@ -249,7 +249,7 @@ public class SymbolLayout
 }
 
 /// <summary>
-/// Paint properties for heatmap layers
+///     Paint properties for heatmap layers
 /// </summary>
 public class HeatmapPaint
 {
@@ -275,7 +275,7 @@ public class HeatmapPaint
 }
 
 /// <summary>
-/// Paint properties for fill-extrusion layers
+///     Paint properties for fill-extrusion layers
 /// </summary>
 public class FillExtrusionPaint
 {
@@ -313,7 +313,7 @@ public class FillExtrusionPaint
 }
 
 /// <summary>
-/// Paint properties for raster layers
+///     Paint properties for raster layers
 /// </summary>
 public class RasterPaint
 {

@@ -19,6 +19,7 @@ A comprehensive data grid component for listing, sorting, filtering, and paging 
 ```
 
 ### Pagination
+
 Enable client-side pagination using `EnablePagination="true"`.
 
 ```razor
@@ -28,6 +29,7 @@ Enable client-side pagination using `EnablePagination="true"`.
 ```
 
 ### Selection
+
 Use `SelectionMode` to enable row selection (`Single` or `Multiple`).
 Access selected items via `SelectedItems` (Two-way binding).
 
@@ -40,15 +42,18 @@ Access selected items via `SelectedItems` (Two-way binding).
 ```
 
 ### Column Selector
+
 Enable the `ShowColumnSelector="true"` parameter to let users toggle column visibility at runtime.
 
 ### Styling
-*   **Compact**: Reduces cell padding (`true`/`false`).
-*   **Bordered**: Adds borders to the table and cells (`true`/`false`).
-*   **Hoverable**: Highlights rows on mouse hover (`true`/`false`).
-*   **Striped**: Adds zebra striping to rows (`true`/`false`).
-*   **IsLoading**: Shows a loading overlay (`true`/`false`).
-*   **LoadingContent**: Custom content for the loading overlay (`RenderFragment`).
+
+* **Compact**: Reduces cell padding (`true`/`false`).
+* **Bordered**: Adds borders to the table and cells (`true`/`false`).
+* **Hoverable**: Highlights rows on mouse hover (`true`/`false`).
+* **Striped**: Adds zebra striping to rows (`true`/`false`).
+* **IsLoading**: Shows a loading overlay (`true`/`false`).
+* **LoadingContent**: Custom content for the loading overlay (`RenderFragment`).
 
 ### Columns
+
 For column details, see [TableColumn](Table/Docs/BwTableColumn.md).

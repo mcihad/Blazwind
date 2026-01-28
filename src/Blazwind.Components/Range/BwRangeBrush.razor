@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.Range
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@using System.Globalization
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 @{
@@ -32,12 +33,12 @@
         @* Brush Track *@
         <div class="bw-brush-track">
             @* Inactive areas (grayed out) *@
-            <div class="bw-brush-inactive left-0" style="width: @GetInvariantPercent(_startPercent)%;"></div>
-            <div class="bw-brush-inactive right-0" style="width: @GetInvariantPercent(100 - _endPercent)%;"></div>
+            <div class="bw-brush-inactive left-0" style="width: @GetInvariantPercent(CurrentStartPercent)%;"></div>
+            <div class="bw-brush-inactive right-0" style="width: @GetInvariantPercent(100 - CurrentEndPercent)%;"></div>
 
             @* Selection Brush *@
             <div class="bw-brush-selection @brushFillClass"
-                style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
+                 style="left: @GetInvariantPercent(CurrentStartPercent)%; width: @GetInvariantPercent(CurrentEndPercent - CurrentStartPercent)%;">
 
                 @* Left Handle *@
                 <div class="bw-brush-handle-left @handleClass">
@@ -91,35 +92,68 @@
 </div>
 
 @code {
-    [Parameter] public double Min { get; set; } = 0;
-    [Parameter] public double Max { get; set; } = 100;
-    [Parameter] public double Step { get; set; } = 1;
-    [Parameter] public double Start { get; set; } = 20;
-    [Parameter] public double End { get; set; } = 80;
-    [Parameter] public double StartPercent { get; set; } = 0;
-    [Parameter] public double EndPercent { get; set; } = 100;
-    [Parameter] public double MinWidthPercent { get; set; } = 5;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Format { get; set; }
-    [Parameter] public bool ShowValues { get; set; } = true;
-    [Parameter] public bool ShowScale { get; set; } = true;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public double Min { get; set; }
+
+    [Parameter]
+    public double Max { get; set; } = 100;
+
+    [Parameter]
+    public double Step { get; set; } = 1;
+
+    [Parameter]
+    public double Start { get; set; } = 20;
+
+    [Parameter]
+    public double End { get; set; } = 80;
+
+    [Parameter]
+    public double StartPercent { get; set; }
+
+    [Parameter]
+    public double EndPercent { get; set; } = 100;
+
+    [Parameter]
+    public double MinWidthPercent { get; set; } = 5;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Format { get; set; }
+
+    [Parameter]
+    public bool ShowValues { get; set; } = true;
+
+    [Parameter]
+    public bool ShowScale { get; set; } = true;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public EventCallback<BrushChangedEventArgs<double>> OnBrushChanged { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<BrushChangedEventArgs<double>> OnBrushChanged { get; set; }
 
     private string _elementId = "";
     private DotNetObjectReference<BwRangeBrush>? _dotNetRef;
-    private double _startPercent;
-    private double _endPercent;
     private bool _isDragging;
 
-    private double CurrentStartPercent => _startPercent;
-    private double CurrentEndPercent => _endPercent;
-    private double CurrentStart => Min + (Max - Min) * (_startPercent / 100);
-    private double CurrentEnd => Min + (Max - Min) * (_endPercent / 100);
+    private double CurrentStartPercent { get; set; }
 
-    protected override bool ShouldRender() => !_isDragging;
+    private double CurrentEndPercent { get; set; }
+
+    private double CurrentStart => Min + (Max - Min) * (CurrentStartPercent / 100);
+    private double CurrentEnd => Min + (Max - Min) * (CurrentEndPercent / 100);
+
+    protected override bool ShouldRender()
+    {
+        return !_isDragging;
+    }
 
     private double _prevStart;
     private double _prevEnd;
@@ -136,13 +170,13 @@
     {
         if (StartPercent > 0 || EndPercent < 100)
         {
-            _startPercent = StartPercent;
-            _endPercent = EndPercent;
+            CurrentStartPercent = StartPercent;
+            CurrentEndPercent = EndPercent;
         }
         else
         {
-            _startPercent = ((Start - Min) / (Max - Min)) * 100;
-            _endPercent = ((End - Min) / (Max - Min)) * 100;
+            CurrentStartPercent = (Start - Min) / (Max - Min) * 100;
+            CurrentEndPercent = (End - Min) / (Max - Min) * 100;
         }
 
         _prevStart = Start;
@@ -157,10 +191,10 @@
         if (_isDragging) return;
 
         // Check if parameters actually changed
-        bool startChanged = Math.Abs(Start - _prevStart) > double.Epsilon;
-        bool endChanged = Math.Abs(End - _prevEnd) > double.Epsilon;
-        bool startPercentChanged = Math.Abs(StartPercent - _prevStartPercent) > double.Epsilon;
-        bool endPercentChanged = Math.Abs(EndPercent - _prevEndPercent) > double.Epsilon;
+        var startChanged = Math.Abs(Start - _prevStart) > double.Epsilon;
+        var endChanged = Math.Abs(End - _prevEnd) > double.Epsilon;
+        var startPercentChanged = Math.Abs(StartPercent - _prevStartPercent) > double.Epsilon;
+        var endPercentChanged = Math.Abs(EndPercent - _prevEndPercent) > double.Epsilon;
 
         if (!startChanged && !endChanged && !startPercentChanged && !endPercentChanged) return;
 
@@ -168,13 +202,13 @@
         // Priority: StartPercent/EndPercent if changed, then Start/End
         if (startPercentChanged || endPercentChanged)
         {
-            _startPercent = StartPercent;
-            _endPercent = EndPercent;
+            CurrentStartPercent = StartPercent;
+            CurrentEndPercent = EndPercent;
         }
         else if (startChanged || endChanged)
         {
-            _startPercent = ((Start - Min) / (Max - Min)) * 100;
-            _endPercent = ((End - Min) / (Max - Min)) * 100;
+            CurrentStartPercent = (Start - Min) / (Max - Min) * 100;
+            CurrentEndPercent = (End - Min) / (Max - Min) * 100;
         }
 
         // Update tracking variables
@@ -189,8 +223,8 @@
         if (firstRender)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
-            MinWidthPercent);
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, CurrentStartPercent, CurrentEndPercent,
+                MinWidthPercent);
         }
     }
 
@@ -211,8 +245,8 @@
     [JSInvokable]
     public async Task HandleBrushChanged(double startPercent, double endPercent)
     {
-        _startPercent = Math.Round(startPercent, 2);
-        _endPercent = Math.Round(endPercent, 2);
+        CurrentStartPercent = Math.Round(startPercent, 2);
+        CurrentEndPercent = Math.Round(endPercent, 2);
 
         // Snap to step
         var start = SnapToStep(CurrentStart);
@@ -224,14 +258,17 @@
             End = end,
             Min = Min,
             Max = Max,
-            StartPercent = _startPercent,
-            EndPercent = _endPercent
+            StartPercent = CurrentStartPercent,
+            EndPercent = CurrentEndPercent
         });
 
         await InvokeAsync(StateHasChanged);
     }
 
-    private double SnapToStep(double value) => Math.Round(value / Step) * Step;
+    private double SnapToStep(double value)
+    {
+        return Math.Round(value / Step) * Step;
+    }
 
     private string FormatValue(double value)
     {
@@ -245,8 +282,10 @@
         return string.IsNullOrEmpty(Format) ? range.ToString("N0") : range.ToString(Format);
     }
 
-    private string GetInvariantPercent(double value) =>
-    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    private string GetInvariantPercent(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -254,8 +293,11 @@
         {
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
         }
-        catch { }
+        catch
+        {
+        }
 
         _dotNetRef?.Dispose();
     }
+
 }

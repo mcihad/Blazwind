@@ -1,6 +1,6 @@
-@namespace Blazwind.Components.Calendar
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@namespace Blazwind.Components.Calendar
 
 @inject IJSRuntime JS
 
@@ -9,11 +9,11 @@
     var slotHeight = 48; // px
     var dayEvents = Events?
         .Where(e => e.StartTime.Date == SelectedDate.Date && !e.IsAllDay)
-        .ToList() ?? new();
+        .ToList() ?? new List<CalendarEvent>();
     var allDayEvents = Events?
         .Where(e => e.StartTime.Date == SelectedDate.Date && e.IsAllDay)
-        .ToList() ?? new();
-        
+        .ToList() ?? new List<CalendarEvent>();
+
     // Empty slot filtering
     var visibleSlots = Enumerable.Range(0, slotCount).ToList();
     if (HideEmptySlots && dayEvents.Any())
@@ -28,16 +28,17 @@
                 filledHours.Add(m / SlotMinutes);
             }
         }
+
         visibleSlots = visibleSlots.Where(s => filledHours.Contains(s) || filledHours.Contains(s - 1) || filledHours.Contains(s + 1)).ToList();
     }
 }
 
-<div id="@containerId" 
+<div id="@containerId"
      class="relative flex flex-col h-full"
      data-start-hour="@StartHour"
      data-slot-minutes="@SlotMinutes"
      data-slot-height="@slotHeight">
-    
+
     @* All Day Events *@
     @if (allDayEvents.Any())
     {
@@ -47,27 +48,28 @@
                 @foreach (var calendarEvent in allDayEvents)
                 {
                     var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
-                    <BwCalendarEvent Event="@calendarEvent" 
-                                     CalendarColor="@calendar?.Color" 
+                    <BwCalendarEvent Event="@calendarEvent"
+                                     CalendarColor="@calendar?.Color"
                                      Compact="true"
                                      EventTemplate="@EventTemplate"
-                                     OnClick="@OnEventClicked" />
+                                     OnClick="@OnEventClicked"/>
                 }
             </div>
         </div>
     }
-    
+
     @* Time Grid *@
     <div class="flex-1 overflow-y-auto relative">
         @* Current Time Indicator *@
         @if (SelectedDate.Date == DateTime.Today)
         {
-            <div class="bw-time-indicator absolute left-0 right-0 z-20 pointer-events-none flex items-center" style="display: none;">
+            <div class="bw-time-indicator absolute left-0 right-0 z-20 pointer-events-none flex items-center"
+                 style="display: none;">
                 <div class="bw-calendar-time-indicator-dot ml-14 sm:ml-16"></div>
                 <div class="bw-calendar-time-indicator-line"></div>
             </div>
         }
-        
+
         <div class="relative min-h-full">
             @foreach (var slotIndex in visibleSlots)
             {
@@ -77,11 +79,11 @@
                 var timeStr = $"{hour:D2}:{minutePart:D2}";
                 var slotStart = SelectedDate.Date.AddMinutes(minute);
                 var slotEnd = slotStart.AddMinutes(SlotMinutes);
-                
+
                 <div class="flex bw-calendar-timegrid-slot relative group cursor-pointer"
                      style="height: @(slotHeight)px;"
                      @onclick="() => HandleSlotClick(slotStart, slotEnd)">
-                    
+
                     @* Time Label *@
                     <div class="bw-calendar-time-label">
                         @if (minutePart == 0)
@@ -89,13 +91,13 @@
                             <span class="font-medium">@timeStr</span>
                         }
                     </div>
-                    
+
                     @* Slot Area *@
                     <div class="flex-1 relative bw-calendar-slot-divider">
                     </div>
                 </div>
             }
-            
+
             @* Events (Overlay) *@
             <div class="absolute left-16 sm:left-18 right-1 top-0 select-none">
                 @foreach (var calendarEvent in dayEvents)
@@ -103,18 +105,18 @@
                     var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
                     var startMinute = (calendarEvent.StartTime.Hour - StartHour) * 60 + calendarEvent.StartTime.Minute;
                     var endMinute = (calendarEvent.EndTime.Hour - StartHour) * 60 + calendarEvent.EndTime.Minute;
-                    var top = (startMinute * slotHeight) / (double)SlotMinutes;
-                    var height = Math.Max(slotHeight, ((endMinute - startMinute) * slotHeight) / (double)SlotMinutes);
-                    
-                    <div class="absolute left-1 right-1 bw-event-container" 
+                    var top = startMinute * slotHeight / (double)SlotMinutes;
+                    var height = Math.Max(slotHeight, (endMinute - startMinute) * slotHeight / (double)SlotMinutes);
+
+                    <div class="absolute left-1 right-1 bw-event-container"
                          style="top: @(top)px; height: @(height)px;">
-                        <BwCalendarEvent Event="@calendarEvent" 
+                        <BwCalendarEvent Event="@calendarEvent"
                                          CalendarColor="@calendar?.Color"
                                          AllowResize="@AllowResize"
                                          StyleOverride="height: 100%;"
                                          EventTemplate="@EventTemplate"
                                          OnClick="@OnEventClicked"
-                                         OnResizeStart="@HandleResizeStart" />
+                                         OnResizeStart="@HandleResizeStart"/>
                     </div>
                 }
             </div>
@@ -123,22 +125,48 @@
 </div>
 
 @code {
-    [Parameter] public DateTime SelectedDate { get; set; }
-    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
-    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
-    [Parameter] public int SlotMinutes { get; set; } = 30;
-    [Parameter] public int StartHour { get; set; } = 7;
-    [Parameter] public int EndHour { get; set; } = 22;
-    [Parameter] public bool HideEmptySlots { get; set; }
-    [Parameter] public bool AllowDrag { get; set; } = true;
-    [Parameter] public bool AllowResize { get; set; } = true;
-    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
-    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
-    [Parameter] public EventCallback<(DateTime Start, DateTime End)> OnSlotSelected { get; set; }
-    [Parameter] public EventCallback<CalendarEvent> OnEventChanged { get; set; }
-    
-    private string containerId = $"bw-calendar-day-{Guid.NewGuid():N}";
-    
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarEvent>? Events { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarInfo>? Calendars { get; set; }
+
+    [Parameter]
+    public int SlotMinutes { get; set; } = 30;
+
+    [Parameter]
+    public int StartHour { get; set; } = 7;
+
+    [Parameter]
+    public int EndHour { get; set; } = 22;
+
+    [Parameter]
+    public bool HideEmptySlots { get; set; }
+
+    [Parameter]
+    public bool AllowDrag { get; set; } = true;
+
+    [Parameter]
+    public bool AllowResize { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<(DateTime Start, DateTime End)> OnSlotSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarEvent> OnEventChanged { get; set; }
+
+    private readonly string containerId = $"bw-calendar-day-{Guid.NewGuid():N}";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && SelectedDate.Date == DateTime.Today)
@@ -147,15 +175,16 @@
             await JS.InvokeVoidAsync("Blazwind.Calendar.scrollToNow", containerId);
         }
     }
-    
+
     private async Task HandleSlotClick(DateTime start, DateTime end)
     {
         await OnSlotSelected.InvokeAsync((start, end));
     }
 
-    
+
     private async Task HandleResizeStart((string EventId, double ClientY) args)
     {
         await JS.InvokeVoidAsync("Blazwind.Calendar.startResize", args.EventId, args.ClientY, 48, SlotMinutes);
     }
+
 }

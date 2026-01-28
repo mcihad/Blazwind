@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
-@using Blazwind.Components.HelpTooltip
 @using System.Globalization
+@using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<TimeSpan?>
 
 @{
@@ -29,10 +29,11 @@
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                     {
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                     }
                 </div>
             }
+
             <input type="time"
                    class="@baseClass @sizeClass @stateClass @disabledClass"
                    value="@(Value?.ToString(@"hh\:mm"))"
@@ -41,14 +42,15 @@
                    @onchange="HandleTimeChange"
                    @onfocus="HandleFocusEvent"
                    @onblur="HandleBlurEvent"
-                   @attributes="AdditionalAttributes" />
+                   @attributes="AdditionalAttributes"/>
             break;
-            
+
         case BwLabelPosition.Left:
             <div class="flex items-start gap-3">
                 @if (HasLabel)
                 {
-                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0"
+                         style="width: @LabelWidth; min-width: @LabelWidth;">
                         <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
@@ -58,7 +60,7 @@
                         </label>
                         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                         {
-                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                         }
                     </div>
                 }
@@ -70,11 +72,11 @@
                            readonly="@IsReadOnly"
                            @onchange="HandleTimeChange"
                            @onfocus="HandleFocusEvent"
-                           @onblur="HandleBlurEvent" />
+                           @onblur="HandleBlurEvent"/>
                 </div>
             </div>
             break;
-            
+
         default:
             <input type="time"
                    class="@baseClass @sizeClass @stateClass @disabledClass"
@@ -83,10 +85,10 @@
                    readonly="@IsReadOnly"
                    @onchange="HandleTimeChange"
                    @onfocus="HandleFocusEvent"
-                   @onblur="HandleBlurEvent" />
+                   @onblur="HandleBlurEvent"/>
             break;
     }
-    
+
     @* Error/Helper Messages *@
     @if (HasError)
     {
@@ -102,11 +104,14 @@
 </div>
 
 @code {
+
     /// <summary>Culture for time formatting (default: Turkish)</summary>
-    [Parameter] public CultureInfo Culture { get; set; } = new CultureInfo("tr-TR");
-    
+    [Parameter]
+    public CultureInfo Culture { get; set; } = new("tr-TR");
+
     /// <summary>Time format (24h default for Turkey)</summary>
-    [Parameter] public string Format { get; set; } = "HH:mm";
+    [Parameter]
+    public string Format { get; set; } = "HH:mm";
 
     private async Task HandleTimeChange(ChangeEventArgs e)
     {
@@ -118,16 +123,16 @@
         {
             Value = null;
         }
-        
+
         await ValueChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);
-        
+
         if (CascadedEditContext != null && For != null)
         {
             CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
         }
     }
-    
+
     private async Task HandleFocusEvent(FocusEventArgs e)
     {
         IsFocused = true;
@@ -139,4 +144,5 @@
         IsFocused = false;
         await HandleBlur(e);
     }
+
 }

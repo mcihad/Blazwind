@@ -4,7 +4,7 @@
 
 @{
     var baseClasses = "fixed z-30 flex flex-col-reverse items-center gap-3";
-    
+
     var positionClasses = Position switch
     {
         BwPosition.BottomLeft => "bottom-6 left-6",
@@ -12,14 +12,14 @@
         BwPosition.TopLeft => "top-6 left-6 flex-col",
         _ => "bottom-6 right-6"
     };
-    
+
     var sizeClasses = Size switch
     {
         BwSize.Small => Mini ? "w-10 h-10 text-lg" : "w-10 h-10 text-lg",
         BwSize.Large => "w-[72px] h-[72px] text-3xl",
         _ => Mini ? "w-10 h-10 text-lg" : "w-14 h-14 text-2xl"
     };
-    
+
     var colorClass = Color switch
     {
         BwColor.Success => "bw-fab-success",
@@ -29,7 +29,7 @@
         BwColor.Secondary => "bw-fab-secondary",
         _ => "bw-fab-primary"
     };
-    
+
     var extendedClasses = Extended ? "w-auto px-5 gap-2 rounded-full" : "";
     var iconRotation = _isOpen ? "rotate-45" : "";
 }
@@ -41,8 +41,8 @@
             @SpeedDialItems
         </div>
     }
-    
-    <button type="button" 
+
+    <button type="button"
             class="@CombineClasses("bw-fab", colorClass, sizeClasses, extendedClasses)"
             disabled="@IsDisabled"
             @onclick="HandleClick">
@@ -51,7 +51,7 @@
         {
             <span class="text-sm font-medium whitespace-nowrap">@Label</span>
         }
-        
+
         @if (BadgeContent != null)
         {
             <div class="absolute -top-1 -right-1">
@@ -62,28 +62,50 @@
 </div>
 
 @code {
-    [Parameter] public string Icon { get; set; } = "fa-solid fa-plus";
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public RenderFragment? BadgeContent { get; set; }
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwPosition Position { get; set; } = BwPosition.BottomRight;
-    [Parameter] public bool Extended { get; set; } = false;
-    [Parameter] public bool Mini { get; set; } = false;
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    
-    [Parameter] public RenderFragment? SpeedDialItems { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
-    
-    private bool _isOpen = false;
-    
+
+    [Parameter]
+    public string Icon { get; set; } = "fa-solid fa-plus";
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public RenderFragment? BadgeContent { get; set; }
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwPosition Position { get; set; } = BwPosition.BottomRight;
+
+    [Parameter]
+    public bool Extended { get; set; }
+
+    [Parameter]
+    public bool Mini { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public RenderFragment? SpeedDialItems { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private bool _isOpen;
+
     private async Task HandleClick()
     {
         if (SpeedDialItems != null)
         {
             _isOpen = !_isOpen;
         }
-        
+
         await OnClick.InvokeAsync();
     }
+
 }

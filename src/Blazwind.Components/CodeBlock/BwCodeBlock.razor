@@ -1,8 +1,6 @@
 @namespace Blazwind.Components.CodeBlock
-@inherits BwBase
-@using Blazwind.Components.Shared
-@using Blazwind.Components
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 
 @{
@@ -14,7 +12,7 @@
 }
 
 <div class="@CombineClasses($"bw-code-block {themeClass}")" style="@Style" id="@Id"
-    @attributes="AdditionalAttributes">
+     @attributes="AdditionalAttributes">
     @if (ShowHeader)
     {
         <div class="bw-code-header">
@@ -41,7 +39,7 @@
                 @if (ShowCopyButton)
                 {
                     <button type="button" class="bw-code-copy-btn" title="Kodu kopyala"
-                        @onclick="CopyToClipboard">
+                            @onclick="CopyToClipboard">
                         <i class="@(_copied ? "fa-solid fa-check text-green-500" : "fa-solid fa-copy")"></i>
                     </button>
                 }
@@ -51,36 +49,55 @@
 
     <div class="relative">
         <pre class="bw-code-content @(ShowLineNumbers ? "bw-code-content-numbered" : "")"><code>@if (ShowLineNumbers)
-{
-        var lines = GetLines();
-        for (int i = 0; i < lines.Length; i++)
-        {
-                var lineNum = i + 1;
-                var isHighlighted = HighlightLines?.Contains(lineNum) == true;
-                var lineClass = isHighlighted ? "bw-code-line-highlight" : "";
-                <div class="@lineClass bw-code-line"><span class="bw-code-line-number">@lineNum</span><span>@lines[i]</span></div>
-        }
-}
-else
-{
-        @Code
-}
+                {
+                    var lines = GetLines();
+                    for (var i = 0; i < lines.Length; i++)
+                    {
+                        var lineNum = i + 1;
+                        var isHighlighted = HighlightLines?.Contains(lineNum) == true;
+                        var lineClass = isHighlighted ? "bw-code-line-highlight" : "";
+                        <div class="@lineClass bw-code-line"><span
+                                class="bw-code-line-number">@lineNum</span><span>@lines[i]</span></div>
+                    }
+                }
+                else
+                {
+                    @Code
+                }
 </code></pre>
     </div>
 </div>
 
 @code {
-    [Parameter] public string Code { get; set; } = "";
-    [Parameter] public string? Language { get; set; }
-    [Parameter] public string? FileName { get; set; }
-    [Parameter] public string Theme { get; set; } = "dark";
-    [Parameter] public bool ShowHeader { get; set; } = true;
-    [Parameter] public bool ShowLineNumbers { get; set; } = true;
-    [Parameter] public bool ShowCopyButton { get; set; } = true;
-    [Parameter] public bool ShowDots { get; set; } = true;
-    [Parameter] public int[]? HighlightLines { get; set; }
 
-    private bool _copied = false;
+    [Parameter]
+    public string Code { get; set; } = "";
+
+    [Parameter]
+    public string? Language { get; set; }
+
+    [Parameter]
+    public string? FileName { get; set; }
+
+    [Parameter]
+    public string Theme { get; set; } = "dark";
+
+    [Parameter]
+    public bool ShowHeader { get; set; } = true;
+
+    [Parameter]
+    public bool ShowLineNumbers { get; set; } = true;
+
+    [Parameter]
+    public bool ShowCopyButton { get; set; } = true;
+
+    [Parameter]
+    public bool ShowDots { get; set; } = true;
+
+    [Parameter]
+    public int[]? HighlightLines { get; set; }
+
+    private bool _copied;
 
     private string[] GetLines()
     {
@@ -99,6 +116,9 @@ else
             _copied = false;
             StateHasChanged();
         }
-        catch { }
+        catch
+        {
+        }
     }
+
 }

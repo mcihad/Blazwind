@@ -3,72 +3,85 @@
 @implements IAsyncDisposable
 
 @code {
-    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+
+    [CascadingParameter]
+    public BwMapLibre? ParentMap { get; set; }
 
     #region Required Parameters
 
     /// <summary>
-    /// Unique popup identifier
+    ///     Unique popup identifier
     /// </summary>
-    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Popup position [longitude, latitude]
+    ///     Popup position [longitude, latitude]
     /// </summary>
-    [Parameter, EditorRequired] public double[] LngLat { get; set; } = [0, 0];
+    [Parameter][EditorRequired]
+    public double[] LngLat { get; set; } = [0, 0];
 
     /// <summary>
-    /// HTML content for popup
+    ///     HTML content for popup
     /// </summary>
-    [Parameter, EditorRequired] public string Html { get; set; } = "";
+    [Parameter][EditorRequired]
+    public string Html { get; set; } = "";
 
     #endregion
 
     #region Options
 
     /// <summary>
-    /// Whether to show close button
+    ///     Whether to show close button
     /// </summary>
-    [Parameter] public bool CloseButton { get; set; } = true;
+    [Parameter]
+    public bool CloseButton { get; set; } = true;
 
     /// <summary>
-    /// Whether to close popup on map click
+    ///     Whether to close popup on map click
     /// </summary>
-    [Parameter] public bool CloseOnClick { get; set; } = true;
+    [Parameter]
+    public bool CloseOnClick { get; set; } = true;
 
     /// <summary>
-    /// Whether to close popup on map move
+    ///     Whether to close popup on map move
     /// </summary>
-    [Parameter] public bool CloseOnMove { get; set; }
+    [Parameter]
+    public bool CloseOnMove { get; set; }
 
     /// <summary>
-    /// Anchor position
+    ///     Anchor position
     /// </summary>
-    [Parameter] public string? Anchor { get; set; }
+    [Parameter]
+    public string? Anchor { get; set; }
 
     /// <summary>
-    /// Offset from anchor
+    ///     Offset from anchor
     /// </summary>
-    [Parameter] public object? Offset { get; set; }
+    [Parameter]
+    public object? Offset { get; set; }
 
     /// <summary>
-    /// CSS class name
+    ///     CSS class name
     /// </summary>
-    [Parameter] public string? ClassName { get; set; }
+    [Parameter]
+    public string? ClassName { get; set; }
 
     /// <summary>
-    /// Maximum width (CSS value)
+    ///     Maximum width (CSS value)
     /// </summary>
-    [Parameter] public string? MaxWidth { get; set; }
+    [Parameter]
+    public string? MaxWidth { get; set; }
 
     #endregion
 
     #region Events
 
     /// <summary>
-    /// Fired when popup is closed
+    ///     Fired when popup is closed
     /// </summary>
-    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter]
+    public EventCallback OnClose { get; set; }
 
     #endregion
 
@@ -108,7 +121,7 @@
     }
 
     /// <summary>
-    /// Update popup position
+    ///     Update popup position
     /// </summary>
     public async Task SetLngLatAsync(double[] lngLat)
     {
@@ -120,7 +133,7 @@
     }
 
     /// <summary>
-    /// Update popup content
+    ///     Update popup content
     /// </summary>
     public async Task SetHtmlAsync(string html)
     {
@@ -139,7 +152,10 @@
             {
                 await ParentMap.RemovePopupAsync(Id);
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
+
 }

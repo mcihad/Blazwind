@@ -1,6 +1,7 @@
 # BwConfetti 🎊
 
-A canvas-based celebration animation component. Perfect for celebrating successful form submissions, achievements, or milestones with a burst of customizable particles.
+A canvas-based celebration animation component. Perfect for celebrating successful form submissions, achievements, or
+milestones with a burst of customizable particles.
 
 ## Features
 
@@ -13,6 +14,7 @@ A canvas-based celebration animation component. Perfect for celebrating successf
 ## Usage
 
 ### Simple Trigger
+
 ```razor
 <BwConfetti @ref="_confetti" />
 
@@ -29,6 +31,7 @@ A canvas-based celebration animation component. Perfect for celebrating successf
 ```
 
 ### Auto-launch on Success
+
 ```razor
 @if (_showSuccess)
 {
@@ -41,15 +44,15 @@ A canvas-based celebration animation component. Perfect for celebrating successf
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `ParticleCount` | `int` | `100` | The number of confetti pieces to launch. |
-| `Duration` | `int` | `3000` | How long the animation lasts in milliseconds. |
-| `Gravity` | `double` | `0.3` | How quickly the particles fall. |
-| `Spread` | `int` | `70` | The angle of the confetti burst. |
-| `Colors` | `string[]?` | `null` | Array of hex color strings for custom themes. |
-| `AutoLaunch` | `bool` | `false` | If true, launches immediately after rendering. |
-| `TriggerElementId` | `string?` | `null` | The ID of an HTML element to use as the burst origin. |
+| Parameter          | Type        | Default | Description                                           |
+|--------------------|-------------|---------|-------------------------------------------------------|
+| `ParticleCount`    | `int`       | `100`   | The number of confetti pieces to launch.              |
+| `Duration`         | `int`       | `3000`  | How long the animation lasts in milliseconds.         |
+| `Gravity`          | `double`    | `0.3`   | How quickly the particles fall.                       |
+| `Spread`           | `int`       | `70`    | The angle of the confetti burst.                      |
+| `Colors`           | `string[]?` | `null`  | Array of hex color strings for custom themes.         |
+| `AutoLaunch`       | `bool`      | `false` | If true, launches immediately after rendering.        |
+| `TriggerElementId` | `string?`   | `null`  | The ID of an HTML element to use as the burst origin. |
 
 ### Public Methods
 
@@ -59,6 +62,7 @@ A canvas-based celebration animation component. Perfect for celebrating successf
 ## Examples
 
 ### Level-Up / Achievement Style
+
 ```razor
 <BwConfetti @ref="_trophyConfetti" 
             ParticleCount="250" 
@@ -67,6 +71,7 @@ A canvas-based celebration animation component. Perfect for celebrating successf
 ```
 
 ### Localized Burst (From a Button)
+
 ```razor
 <BwButton Id="my-btn" OnClick="LaunchFromMe">Launch Here</BwButton>
 <BwConfetti @ref="_localized" TriggerElementId="my-btn" />

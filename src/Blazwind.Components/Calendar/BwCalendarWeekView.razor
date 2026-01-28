@@ -1,11 +1,12 @@
-@namespace Blazwind.Components.Calendar
+@using System.Globalization
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@namespace Blazwind.Components.Calendar
 
 @inject IJSRuntime JS
 
 @{
-    var culture = new System.Globalization.CultureInfo("tr-TR");
+    var culture = new CultureInfo("tr-TR");
     var slotCount = (EndHour - StartHour) * 60 / SlotMinutes;
     var slotHeight = 48; // px
     var weekDays = Enumerable.Range(0, 7).Select(i => WeekStart.AddDays(i)).ToList();
@@ -13,7 +14,7 @@
 }
 
 <div id="@containerId" class="relative flex flex-col h-full" data-start-hour="@StartHour"
-    data-slot-minutes="@SlotMinutes" data-slot-height="@slotHeight">
+     data-slot-minutes="@SlotMinutes" data-slot-height="@slotHeight">
 
     @* Time Grid - with horizontal scroll on mobile *@
     <div class="flex-1 overflow-y-auto overflow-x-auto relative">
@@ -49,7 +50,7 @@
         @if (weekDays.Any(d => d.Date == DateTime.Today))
         {
             <div class="bw-time-indicator absolute left-0 right-0 z-20 pointer-events-none flex items-center"
-                style="display: none;">
+                 style="display: none;">
                 <div class="bw-calendar-time-indicator-dot ml-14"></div>
                 <div class="bw-calendar-time-indicator-line"></div>
             </div>
@@ -82,7 +83,7 @@
                         var slotEnd = slotStart.AddMinutes(SlotMinutes);
 
                         <div class="@colClass"
-                            @onclick="() => HandleSlotClick(slotStart, slotEnd)">
+                             @onclick="() => HandleSlotClick(slotStart, slotEnd)">
                         </div>
                     }
                 </div>
@@ -97,8 +98,8 @@
                 @foreach (var (day, dayIndex) in weekDays.Select((d, i) => (d, i)))
                 {
                     var dayEvents = Events?
-                    .Where(e => e.StartTime.Date == day.Date && !e.IsAllDay)
-                    .ToList() ?? new();
+                        .Where(e => e.StartTime.Date == day.Date && !e.IsAllDay)
+                        .ToList() ?? new List<CalendarEvent>();
 
                     <div class="flex-1 relative" style="@(dayIndex > 0 ? "border-left: 1px solid transparent;" : "")">
                         @foreach (var calendarEvent in dayEvents)
@@ -106,19 +107,22 @@
                             var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
                             var startMinute = (calendarEvent.StartTime.Hour - StartHour) * 60 + calendarEvent.StartTime.Minute;
                             var endMinute = (calendarEvent.EndTime.Hour - StartHour) * 60 + calendarEvent.EndTime.Minute;
-                            var top = (startMinute * slotHeight) / (double)SlotMinutes;
-                            var height = Math.Max(slotHeight / 2, ((endMinute - startMinute) * slotHeight) /
-                            (double)SlotMinutes);
+                            var top = startMinute * slotHeight / (double)SlotMinutes;
+                            var height = Math.Max(slotHeight / 2, (endMinute - startMinute) * slotHeight /
+                                                                  (double)SlotMinutes);
 
-                            <div @key="@($"{calendarEvent.Id}-{calendarEvent.StartTime.Ticks}-{calendarEvent.EndTime.Ticks}")"
+                            <div
+                                @key="@($"{calendarEvent.Id}-{calendarEvent.StartTime.Ticks}-{calendarEvent.EndTime.Ticks}")"
                                 class="absolute inset-x-0 pointer-events-auto px-0.5 bw-event-container"
                                 style="top: @(top)px; height: @(height)px;">
                                 <BwCalendarEvent Event="@calendarEvent" CalendarColor="@calendar?.Color"
-                                    Compact="@(height < 40)" AllowDrag="@AllowDrag" AllowResize="@AllowResize"
-                                    DayIndex="@dayIndex" SlotHeight="@slotHeight" SlotMinutes="@SlotMinutes"
-                                    StyleOverride="height: 100%;" OnClick="@OnEventClicked"
-                                    EventTemplate="@EventTemplate"
-                                    OnResizeStart="@HandleResizeStart" />
+                                                 Compact="@(height < 40)" AllowDrag="@AllowDrag"
+                                                 AllowResize="@AllowResize"
+                                                 DayIndex="@dayIndex" SlotHeight="@slotHeight"
+                                                 SlotMinutes="@SlotMinutes"
+                                                 StyleOverride="height: 100%;" OnClick="@OnEventClicked"
+                                                 EventTemplate="@EventTemplate"
+                                                 OnResizeStart="@HandleResizeStart"/>
                             </div>
                         }
                     </div>
@@ -129,30 +133,58 @@
 </div>
 
 @code {
-    [Parameter] public DateTime SelectedDate { get; set; }
-    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
-    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
-    [Parameter] public int SlotMinutes { get; set; } = 30;
-    [Parameter] public int StartHour { get; set; } = 7;
-    [Parameter] public int EndHour { get; set; } = 22;
-    [Parameter] public bool HideEmptySlots { get; set; }
-    [Parameter] public bool AllowDrag { get; set; } = true;
-    [Parameter] public bool AllowResize { get; set; } = true;
-    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
-    
-    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
-    [Parameter] public EventCallback<(DateTime Start, DateTime End)> OnSlotSelected { get; set; }
-    [Parameter] public EventCallback<(string EventId, double ClientY)> OnResizeStart { get; set; }
-    [Parameter] public Guid ParentInstanceId { get; set; }
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarEvent>? Events { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarInfo>? Calendars { get; set; }
+
+    [Parameter]
+    public int SlotMinutes { get; set; } = 30;
+
+    [Parameter]
+    public int StartHour { get; set; } = 7;
+
+    [Parameter]
+    public int EndHour { get; set; } = 22;
+
+    [Parameter]
+    public bool HideEmptySlots { get; set; }
+
+    [Parameter]
+    public bool AllowDrag { get; set; } = true;
+
+    [Parameter]
+    public bool AllowResize { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<(DateTime Start, DateTime End)> OnSlotSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<(string EventId, double ClientY)> OnResizeStart { get; set; }
+
+    [Parameter]
+    public Guid ParentInstanceId { get; set; }
 
     private async Task HandleSlotClick(DateTime start, DateTime end)
     {
         await OnSlotSelected.InvokeAsync((start, end));
     }
-    
-    [Parameter] public EventCallback<CalendarEvent> OnEventChanged { get; set; }
 
-    private string containerId = $"bw-calendar-week-{Guid.NewGuid():N}";
+    [Parameter]
+    public EventCallback<CalendarEvent> OnEventChanged { get; set; }
+
+    private readonly string containerId = $"bw-calendar-week-{Guid.NewGuid():N}";
 
     // Monday-starting week
     private DateTime WeekStart => SelectedDate.AddDays(-(((int)SelectedDate.DayOfWeek + 6) % 7));
@@ -170,4 +202,5 @@
     {
         await JS.InvokeVoidAsync("Blazwind.Calendar.startResize", args.EventId, args.ClientY, 48, SlotMinutes);
     }
+
 }

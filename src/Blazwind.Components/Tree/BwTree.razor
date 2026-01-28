@@ -1,15 +1,16 @@
 @namespace Blazwind.Components.Tree
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Input
 @typeparam TItem
+@using Blazwind.Components.Input
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 <div class="@CombineClasses("bw-tree", _containerClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (ShowSearch)
     {
         <div class="mb-3">
-            <BwInput Placeholder="Search..." IconLeft="fa-solid fa-search" Size="BwSize.Small" @bind-Value="_searchQuery"
-                @bind-Value:after="OnSearchChanged" />
+            <BwInput Placeholder="Search..." IconLeft="fa-solid fa-search" Size="BwSize.Small"
+                     @bind-Value="_searchQuery"
+                     @bind-Value:after="OnSearchChanged"/>
         </div>
     }
 
@@ -32,11 +33,12 @@
             @foreach (var node in _filteredNodes)
             {
                 <BwTreeNode TItem="TItem" Node="node" Level="0" SelectionMode="SelectionMode" Selectable="Selectable"
-                    CascadeSelection="CascadeSelection" Draggable="Draggable" ShowChildCount="ShowChildCount"
-                    OnNodeClick="HandleNodeClick" OnNodeToggle="HandleNodeToggle" OnSelectionChanged="HandleSelectionChanged"
-                    OnRowClick="HandleRowClick" SelectedNodes="_selectedNodes" ClickedNode="_clickedNode"
-                    SearchQuery="_searchQuery" NodeTemplate="NodeTemplate" ColumnsTemplate="ColumnsTemplate"
-                    ShowTableMode="ShowTableMode" />
+                            CascadeSelection="CascadeSelection" Draggable="Draggable" ShowChildCount="ShowChildCount"
+                            OnNodeClick="HandleNodeClick" OnNodeToggle="HandleNodeToggle"
+                            OnSelectionChanged="HandleSelectionChanged"
+                            OnRowClick="HandleRowClick" SelectedNodes="_selectedNodes" ClickedNode="_clickedNode"
+                            SearchQuery="_searchQuery" NodeTemplate="NodeTemplate" ColumnsTemplate="ColumnsTemplate"
+                            ShowTableMode="ShowTableMode"/>
             }
         }
         else
@@ -50,33 +52,65 @@
 </div>
 
 @code {
-    [Parameter] public List<TreeNode<TItem>> Nodes { get; set; } = new();
-    [Parameter] public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
-    [Parameter] public bool Selectable { get; set; } = false;
-    [Parameter] public bool CascadeSelection { get; set; } = false;
-    [Parameter] public bool Draggable { get; set; } = false;
-    [Parameter] public bool ShowSearch { get; set; } = false;
-    [Parameter] public bool ShowToolbar { get; set; } = false;
-    [Parameter] public bool ShowTableMode { get; set; } = false;
-    [Parameter] public bool ShowChildCount { get; set; } = false;
+
+    [Parameter]
+    public List<TreeNode<TItem>> Nodes { get; set; } = new();
+
+    [Parameter]
+    public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
+
+    [Parameter]
+    public bool Selectable { get; set; }
+
+    [Parameter]
+    public bool CascadeSelection { get; set; }
+
+    [Parameter]
+    public bool Draggable { get; set; }
+
+    [Parameter]
+    public bool ShowSearch { get; set; }
+
+    [Parameter]
+    public bool ShowToolbar { get; set; }
+
+    [Parameter]
+    public bool ShowTableMode { get; set; }
+
+    [Parameter]
+    public bool ShowChildCount { get; set; }
     // Removed Class parameter (inherited)
 
     /// <summary>
-    /// Async callback for lazy loading children when a node is expanded
+    ///     Async callback for lazy loading children when a node is expanded
     /// </summary>
-    [Parameter] public Func<TreeNode<TItem>, Task<List<TreeNode<TItem>>>>? OnLoadChildren { get; set; }
+    [Parameter]
+    public Func<TreeNode<TItem>, Task<List<TreeNode<TItem>>>>? OnLoadChildren { get; set; }
 
-    [Parameter] public RenderFragment<TreeNode<TItem>>? NodeTemplate { get; set; }
-    [Parameter] public RenderFragment<TreeNode<TItem>>? ColumnsTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<TreeNode<TItem>>? NodeTemplate { get; set; }
 
-    [Parameter] public EventCallback<TreeNode<TItem>> OnNodeClick { get; set; }
-    [Parameter] public EventCallback<TreeNode<TItem>> OnNodeExpand { get; set; }
-    [Parameter] public EventCallback<List<TreeNode<TItem>>> SelectedNodesChanged { get; set; }
-    [Parameter] public List<TreeNode<TItem>> SelectedNodes { get; set; } = new();
+    [Parameter]
+    public RenderFragment<TreeNode<TItem>>? ColumnsTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeNode<TItem>> OnNodeClick { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeNode<TItem>> OnNodeExpand { get; set; }
+
+    [Parameter]
+    public EventCallback<List<TreeNode<TItem>>> SelectedNodesChanged { get; set; }
+
+    [Parameter]
+    public List<TreeNode<TItem>> SelectedNodes { get; set; } = new();
 
     // For single row click selection (Selectable mode)
-    [Parameter] public TreeNode<TItem>? ClickedNode { get; set; }
-    [Parameter] public EventCallback<TreeNode<TItem>> ClickedNodeChanged { get; set; }
+    [Parameter]
+    public TreeNode<TItem>? ClickedNode { get; set; }
+
+    [Parameter]
+    public EventCallback<TreeNode<TItem>> ClickedNodeChanged { get; set; }
 
     private HashSet<TreeNode<TItem>> _selectedNodes = new();
     private TreeNode<TItem>? _clickedNode;
@@ -179,6 +213,7 @@
         {
             await OnNodeExpand.InvokeAsync(node);
         }
+
         StateHasChanged();
     }
 
@@ -255,4 +290,5 @@
             SetExpandedRecursive(node.Children, expanded);
         }
     }
+
 }

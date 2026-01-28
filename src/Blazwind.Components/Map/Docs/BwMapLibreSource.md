@@ -1,10 +1,12 @@
 # Map Source
 
-Component for adding data sources to a MapLibre map. Supports Vector tiles, Raster tiles, GeoJSON, WMS, and other source types.
+Component for adding data sources to a MapLibre map. Supports Vector tiles, Raster tiles, GeoJSON, WMS, and other source
+types.
 
 ## Examples
 
 ### Vector Tile Source
+
 Verify data from a vector tile server like Martin.
 
 ```razor
@@ -19,6 +21,7 @@ Verify data from a vector tile server like Martin.
 ```
 
 ### GeoJSON Source (URL)
+
 Fetch data from a remote GeoJSON file.
 
 ```razor
@@ -29,6 +32,7 @@ Fetch data from a remote GeoJSON file.
 ```
 
 ### GeoJSON Source (Inline Data)
+
 Provide GeoJSON data directly using a C# object.
 
 ```razor
@@ -56,6 +60,7 @@ Provide GeoJSON data directly using a C# object.
 ```
 
 ### Clustering
+
 Enable clustering for a GeoJSON point source.
 
 ```razor
@@ -69,6 +74,7 @@ Enable clustering for a GeoJSON point source.
 ```
 
 ### WMS Raster Source
+
 Use the `WmsSourceHelper` to easily create a WMS source.
 
 ```razor
@@ -90,25 +96,25 @@ Use the `WmsSourceHelper` to easily create a WMS source.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Id` | `string` | Auto-generated | Unique source identifier. |
-| `Type` | `string` | `vector` | Source type: `vector`, `raster`, `raster-dem`, `geojson`, `image`, `video`. |
-| `Tiles` | `List<string>?` | `null` | Array of tile URL templates (for vector/raster). |
-| `Url` | `string?` | `null` | URL to a TileJSON or style resource. |
-| `Data` | `object?` | `null` | GeoJSON data (object or URL string). |
-| `TileSize` | `int?` | `512` | Tile size in pixels. |
-| `MinZoom` | `int?` | `null` | Minimum zoom level for the source. |
-| `MaxZoom` | `int?` | `null` | Maximum zoom level for the source. |
-| `Cluster` | `bool?` | `null` | Whether to cluster points (GeoJSON only). |
-| `ClusterRadius`| `int?` | `50` | Cluster radius in pixels. |
-| `ClusterMaxZoom`| `int?` | `null` | Maximum zoom to cluster points at. |
-| `Attribution` | `string?` | `null` | Attribution HTML text. |
+| Parameter        | Type            | Default        | Description                                                                 |
+|:-----------------|:----------------|:---------------|:----------------------------------------------------------------------------|
+| `Id`             | `string`        | Auto-generated | Unique source identifier.                                                   |
+| `Type`           | `string`        | `vector`       | Source type: `vector`, `raster`, `raster-dem`, `geojson`, `image`, `video`. |
+| `Tiles`          | `List<string>?` | `null`         | Array of tile URL templates (for vector/raster).                            |
+| `Url`            | `string?`       | `null`         | URL to a TileJSON or style resource.                                        |
+| `Data`           | `object?`       | `null`         | GeoJSON data (object or URL string).                                        |
+| `TileSize`       | `int?`          | `512`          | Tile size in pixels.                                                        |
+| `MinZoom`        | `int?`          | `null`         | Minimum zoom level for the source.                                          |
+| `MaxZoom`        | `int?`          | `null`         | Maximum zoom level for the source.                                          |
+| `Cluster`        | `bool?`         | `null`         | Whether to cluster points (GeoJSON only).                                   |
+| `ClusterRadius`  | `int?`          | `50`           | Cluster radius in pixels.                                                   |
+| `ClusterMaxZoom` | `int?`          | `null`         | Maximum zoom to cluster points at.                                          |
+| `Attribution`    | `string?`       | `null`         | Attribution HTML text.                                                      |
 
 ### Methods
 
-| Method | Description |
-| :--- | :--- |
+| Method                 | Description                                 |
+|:-----------------------|:--------------------------------------------|
 | `SetDataAsync(object)` | Update GeoJSON data for an existing source. |
 
 ### Source Helpers

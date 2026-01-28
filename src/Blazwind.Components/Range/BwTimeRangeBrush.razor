@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.Range
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@using System.Globalization
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 @{
@@ -26,9 +27,10 @@
         <div class="h-8 flex items-end gap-px mb-1">
             @foreach (var (point, index) in Data.Select((v, i) => (v, i)))
             {
-                var height = MaxValue > 0 ? (point.Value / MaxValue) * 100 : 0;
+                var height = MaxValue > 0 ? point.Value / MaxValue * 100 : 0;
                 var isInRange = IsTimeInRange(point.Time);
-                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? barActiveClass : "bg-gray-200 dark:bg-gray-700")"
+                <div
+                    class="flex-1 rounded-t transition-all duration-150 @(isInRange ? barActiveClass : "bg-gray-200 dark:bg-gray-700")"
                     style="height: @(Math.Max(2, height))%;" title="@point.Time.ToString(@"hh\:mm") - @point.Value">
                 </div>
             }
@@ -43,7 +45,7 @@
 
         @* Selection Brush *@
         <div class="bw-brush-selection @brushFillClass"
-            style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
+             style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left @handleClass">
@@ -112,9 +114,9 @@
             @foreach (var preset in Presets)
             {
                 <button type="button"
-                    class="px-2 py-1 text-xs font-medium rounded-md transition-all
+                        class="px-2 py-1 text-xs font-medium rounded-md transition-all
                                                                @(IsPresetActive(preset) ? presetActiveClass : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300")"
-                    @onclick="() => ApplyPreset(preset)">
+                        @onclick="() => ApplyPreset(preset)">
                     @preset.Label
                 </button>
             }
@@ -123,27 +125,55 @@
 </div>
 
 @code {
-    [Parameter] public TimeSpan MinTime { get; set; } = TimeSpan.Zero;
-    [Parameter] public TimeSpan MaxTime { get; set; } = TimeSpan.FromHours(24);
-    [Parameter] public TimeSpan StartTime { get; set; } = TimeSpan.FromHours(9);
-    [Parameter] public TimeSpan EndTime { get; set; } = TimeSpan.FromHours(17);
-    [Parameter] public TimeSpan Step { get; set; } = TimeSpan.FromMinutes(15);
-    [Parameter] public double MinWidthPercent { get; set; } = 5;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public bool ShowSelectedRange { get; set; } = true;
-    [Parameter] public bool ShowTimeScale { get; set; } = true;
-    [Parameter] public bool ShowQuarterMarks { get; set; } = true;
-    [Parameter] public bool ShowActivityChart { get; set; } = true;
-    [Parameter] public List<TimeActivityPoint>? Data { get; set; }
-    [Parameter] public List<TimeBrushPreset>? Presets { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public TimeSpan MinTime { get; set; } = TimeSpan.Zero;
+
+    [Parameter]
+    public TimeSpan MaxTime { get; set; } = TimeSpan.FromHours(24);
+
+    [Parameter]
+    public TimeSpan StartTime { get; set; } = TimeSpan.FromHours(9);
+
+    [Parameter]
+    public TimeSpan EndTime { get; set; } = TimeSpan.FromHours(17);
+
+    [Parameter]
+    public TimeSpan Step { get; set; } = TimeSpan.FromMinutes(15);
+
+    [Parameter]
+    public double MinWidthPercent { get; set; } = 5;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool ShowSelectedRange { get; set; } = true;
+
+    [Parameter]
+    public bool ShowTimeScale { get; set; } = true;
+
+    [Parameter]
+    public bool ShowQuarterMarks { get; set; } = true;
+
+    [Parameter]
+    public bool ShowActivityChart { get; set; } = true;
+
+    [Parameter]
+    public List<TimeActivityPoint>? Data { get; set; }
+
+    [Parameter]
+    public List<TimeBrushPreset>? Presets { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public EventCallback<BrushChangedEventArgs<TimeSpan>> OnBrushChanged { get; set; }
+    [Parameter]
+    public EventCallback<BrushChangedEventArgs<TimeSpan>> OnBrushChanged { get; set; }
 
     private string _elementId = "";
     private DotNetObjectReference<BwTimeRangeBrush>? _dotNetRef;
-    private double _startPercent;
-    private double _endPercent;
 
     private bool _isDragging;
 
@@ -152,15 +182,22 @@
     private TimeSpan _prevMin;
     private TimeSpan _prevMax;
 
-    private double StartPercent => _startPercent;
-    private double EndPercent => _endPercent;
+    private double StartPercent { get; set; }
+
+    private double EndPercent { get; set; }
+
     private double TotalMinutes => (MaxTime - MinTime).TotalMinutes;
-    private TimeSpan CurrentStartTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (_startPercent /
-    100))));
-    private TimeSpan CurrentEndTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (_endPercent / 100))));
+
+    private TimeSpan CurrentStartTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (StartPercent /
+                                                                                                     100))));
+
+    private TimeSpan CurrentEndTime => SnapToStep(MinTime.Add(TimeSpan.FromMinutes(TotalMinutes * (EndPercent / 100))));
     private double MaxValue => Data?.Max(x => x.Value) ?? 0;
 
-    protected override bool ShouldRender() => !_isDragging;
+    protected override bool ShouldRender()
+    {
+        return !_isDragging;
+    }
 
     private string DurationText
     {
@@ -183,8 +220,8 @@
     {
         if (TotalMinutes > 0)
         {
-            _startPercent = ((StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
-            _endPercent = ((EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+            StartPercent = (StartTime - MinTime).TotalMinutes / TotalMinutes * 100;
+            EndPercent = (EndTime - MinTime).TotalMinutes / TotalMinutes * 100;
         }
 
         _prevStart = StartTime;
@@ -197,17 +234,17 @@
     {
         if (_isDragging) return;
 
-        bool paramsChanged = StartTime != _prevStart ||
-        EndTime != _prevEnd ||
-        MinTime != _prevMin ||
-        MaxTime != _prevMax;
+        var paramsChanged = StartTime != _prevStart ||
+                            EndTime != _prevEnd ||
+                            MinTime != _prevMin ||
+                            MaxTime != _prevMax;
 
         if (!paramsChanged) return;
 
         if (TotalMinutes > 0)
         {
-            _startPercent = ((StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
-            _endPercent = ((EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+            StartPercent = (StartTime - MinTime).TotalMinutes / TotalMinutes * 100;
+            EndPercent = (EndTime - MinTime).TotalMinutes / TotalMinutes * 100;
         }
 
         _prevStart = StartTime;
@@ -234,16 +271,16 @@
         if (firstRender)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
-            MinWidthPercent);
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, StartPercent, EndPercent,
+                MinWidthPercent);
         }
     }
 
     [JSInvokable]
     public async Task HandleBrushChanged(double startPercent, double endPercent)
     {
-        _startPercent = Math.Round(startPercent, 2);
-        _endPercent = Math.Round(endPercent, 2);
+        StartPercent = Math.Round(startPercent, 2);
+        EndPercent = Math.Round(endPercent, 2);
 
         await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<TimeSpan>
         {
@@ -251,8 +288,8 @@
             End = CurrentEndTime,
             Min = MinTime,
             Max = MaxTime,
-            StartPercent = _startPercent,
-            EndPercent = _endPercent
+            StartPercent = StartPercent,
+            EndPercent = EndPercent
         });
 
         await InvokeAsync(StateHasChanged);
@@ -262,10 +299,10 @@
     {
         if (TotalMinutes <= 0) return;
 
-        _startPercent = ((preset.StartTime - MinTime).TotalMinutes / TotalMinutes) * 100;
-        _endPercent = ((preset.EndTime - MinTime).TotalMinutes / TotalMinutes) * 100;
+        StartPercent = (preset.StartTime - MinTime).TotalMinutes / TotalMinutes * 100;
+        EndPercent = (preset.EndTime - MinTime).TotalMinutes / TotalMinutes * 100;
 
-        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, _startPercent, _endPercent);
+        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, StartPercent, EndPercent);
 
         await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<TimeSpan>
         {
@@ -273,22 +310,22 @@
             End = preset.EndTime,
             Min = MinTime,
             Max = MaxTime,
-            StartPercent = _startPercent,
-            EndPercent = _endPercent
+            StartPercent = StartPercent,
+            EndPercent = EndPercent
         });
     }
 
     private bool IsPresetActive(TimeBrushPreset preset)
     {
         return Math.Abs((CurrentStartTime - preset.StartTime).TotalMinutes) < Step.TotalMinutes &&
-        Math.Abs((CurrentEndTime - preset.EndTime).TotalMinutes) < Step.TotalMinutes;
+               Math.Abs((CurrentEndTime - preset.EndTime).TotalMinutes) < Step.TotalMinutes;
     }
 
     private bool IsTimeInRange(TimeSpan time)
     {
         if (TotalMinutes <= 0) return false;
-        var percent = ((time - MinTime).TotalMinutes / TotalMinutes) * 100;
-        return percent >= _startPercent && percent <= _endPercent;
+        var percent = (time - MinTime).TotalMinutes / TotalMinutes * 100;
+        return percent >= StartPercent && percent <= EndPercent;
     }
 
     private TimeSpan SnapToStep(TimeSpan time)
@@ -298,8 +335,10 @@
         return TimeSpan.FromMinutes(totalMinutes);
     }
 
-    private string GetInvariantPercent(double value) =>
-    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    private string GetInvariantPercent(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -307,7 +346,9 @@
         {
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
         }
-        catch { }
+        catch
+        {
+        }
 
         _dotNetRef?.Dispose();
     }
@@ -324,4 +365,5 @@
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
     }
+
 }

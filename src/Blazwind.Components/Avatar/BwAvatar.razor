@@ -6,7 +6,7 @@
     <div class="bw-avatar-container" aria-label="@Name">
         @if (!string.IsNullOrEmpty(Src))
         {
-            <img src="@Src" alt="@Name" class="bw-avatar-img" />
+            <img src="@Src" alt="@Name" class="bw-avatar-img"/>
         }
         else
         {
@@ -21,10 +21,18 @@
 </div>
 
 @code {
-    [Parameter] public string? Src { get; set; }
-    [Parameter] public string? Name { get; set; }
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor? StatusColor { get; set; }
+
+    [Parameter]
+    public string? Src { get; set; }
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor? StatusColor { get; set; }
 
     private string SizeClass => Size switch
     {
@@ -53,7 +61,7 @@
                 BwColor.Info => "bw-avatar-status-info",
                 _ => "bw-avatar-status-secondary"
             };
-            
+
             return $"{baseClass} {colorClass}";
         }
     }
@@ -66,4 +74,5 @@
         if (parts.Length == 1) return parts[0][0].ToString().ToUpper();
         return $"{parts[0][0]}{parts[^1][0]}".ToUpper();
     }
+
 }

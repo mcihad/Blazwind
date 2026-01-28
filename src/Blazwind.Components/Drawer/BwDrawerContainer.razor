@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Drawer
-@using Blazwind.Components.Services
 @inject DrawerService DrawerService
 @implements IDisposable
 
@@ -12,13 +11,14 @@
               OnClose="@(() => DrawerService.Close(drawer))">
         <ChildContent>
             <CascadingValue Value="drawer" IsFixed="true">
-                <DynamicComponent Type="@drawer.ComponentType" Parameters="@drawer.Parameters" />
+                <DynamicComponent Type="@drawer.ComponentType" Parameters="@drawer.Parameters"/>
             </CascadingValue>
         </ChildContent>
     </BwDrawer>
 }
 
 @code {
+
     protected override void OnInitialized()
     {
         DrawerService.OnChange += HandleChange;
@@ -33,4 +33,5 @@
     {
         DrawerService.OnChange -= HandleChange;
     }
+
 }

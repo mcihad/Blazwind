@@ -4,7 +4,8 @@ A service for dynamically loading (lazy loading) JavaScript and CSS files.
 
 ## Purpose
 
-Useful for loading large JavaScript libraries (like MapLibre, ECharts, PDF.js, etc.) only when they are needed by a specific component, rather than loading them globally on every page load.
+Useful for loading large JavaScript libraries (like MapLibre, ECharts, PDF.js, etc.) only when they are needed by a
+specific component, rather than loading them globally on every page load.
 
 ## Examples
 
@@ -75,13 +76,13 @@ public partial class BwMapLibre : IAsyncDisposable
 
 ## API
 
-| Method | Signature | Description |
-|---|---|---|
-| `LoadScriptAsync` | `Task<bool> LoadScriptAsync(string src)` | Loads a JavaScript file. |
-| `LoadStyleAsync` | `Task<bool> LoadStyleAsync(string href)` | Loads a CSS file. |
-| `LoadScriptAndStyleAsync` | `Task LoadScriptAndStyleAsync(string scriptSrc, string styleSrc)` | Loads both in parallel. |
-| `IsScriptLoaded` | `bool IsScriptLoaded(string src)` | Checks if the script is loaded. |
-| `IsStyleLoaded` | `bool IsStyleLoaded(string href)` | Checks if the style is loaded. |
+| Method                    | Signature                                                         | Description                     |
+|---------------------------|-------------------------------------------------------------------|---------------------------------|
+| `LoadScriptAsync`         | `Task<bool> LoadScriptAsync(string src)`                          | Loads a JavaScript file.        |
+| `LoadStyleAsync`          | `Task<bool> LoadStyleAsync(string href)`                          | Loads a CSS file.               |
+| `LoadScriptAndStyleAsync` | `Task LoadScriptAndStyleAsync(string scriptSrc, string styleSrc)` | Loads both in parallel.         |
+| `IsScriptLoaded`          | `bool IsScriptLoaded(string src)`                                 | Checks if the script is loaded. |
+| `IsStyleLoaded`           | `bool IsStyleLoaded(string href)`                                 | Checks if the style is loaded.  |
 
 ## Features
 
@@ -93,11 +94,13 @@ public partial class BwMapLibre : IAsyncDisposable
 ## When to Use?
 
 ✅ **Use When:**
+
 - Using large external libraries (100KB+).
 - Components are not used on every page.
 - Using heavy components like Maps, Charts, PDF Viewers.
 
 ❌ **Do Not Use When:**
+
 - Loading core Blazwind styles and scripts (loaded by default).
 - Small helper functions.
 - Critical/Core components required immediately.

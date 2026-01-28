@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Graph layout constants
+///     Graph layout constants
 /// </summary>
 public static class ChartGraphLayout
 {

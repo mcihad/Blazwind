@@ -5,7 +5,7 @@
 @{
     var totalPages = PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
     var pages = GetVisiblePages(totalPages);
-    
+
     // Size classes
     var sizeClass = Size switch
     {
@@ -13,15 +13,16 @@
         BwSize.Large => "h-11 min-w-11 px-4 text-base",
         _ => "h-9 min-w-9 px-3 text-sm"
     };
-    
+
     var baseButtonClass = $"bw-pagination-btn {sizeClass}";
 }
 
-<nav class="@CombineClasses("flex items-center gap-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes" aria-label="Pagination">
+<nav class="@CombineClasses("flex items-center gap-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     aria-label="Pagination">
     @* Info Display - Left side (Hide in Compact/Mobile if Responsive) *@
     @if (ShowInfo)
     {
-        <div class="bw-pagination-info @(Compact ? "hidden" : (Responsive ? "hidden md:block" : ""))">
+        <div class="bw-pagination-info @(Compact ? "hidden" : Responsive ? "hidden md:block" : "")">
             @{
                 var start = TotalItems > 0 ? (CurrentPage - 1) * PageSize + 1 : 0;
                 var end = Math.Min(CurrentPage * PageSize, TotalItems);
@@ -38,7 +39,7 @@
     @* Page Size Selector (Hide in Compact/Mobile if Responsive) *@
     @if (ShowPageSizeSelector)
     {
-        <div class="flex items-center gap-2 @(Compact ? "hidden" : (Responsive ? "hidden md:flex" : ""))">
+        <div class="flex items-center gap-2 @(Compact ? "hidden" : Responsive ? "hidden md:flex" : "")">
             <select class="bw-pagination-select"
                     @onchange="OnPageSizeChange">
                 @foreach (var size in PageSizeOptions)
@@ -50,7 +51,7 @@
     }
 
     @* STANDARD NAVIGATION (Hidden heavily on Mobile if Responsive, or hidden if Compact) *@
-    <div class="items-center gap-1 @(Compact ? "hidden" : (Responsive ? "hidden md:flex" : "flex"))">
+    <div class="items-center gap-1 @(Compact ? "hidden" : Responsive ? "hidden md:flex" : "flex")">
         @* First Button *@
         @if (ShowFirstLast)
         {
@@ -65,10 +66,10 @@
 
         @* Previous Button *@
         <button type="button"
-                    class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
-                    disabled="@(CurrentPage <= 1)"
-                    title="Önceki sayfa"
-                    @onclick="() => GoToPage(CurrentPage - 1)">
+                class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
+                disabled="@(CurrentPage <= 1)"
+                title="Önceki sayfa"
+                @onclick="() => GoToPage(CurrentPage - 1)">
             <i class="fa-solid fa-chevron-left text-xs"></i>
         </button>
 
@@ -93,10 +94,10 @@
 
         @* Next Button *@
         <button type="button"
-                    class="@baseButtonClass @(CurrentPage >= totalPages ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
-                    disabled="@(CurrentPage >= totalPages)"
-                    title="Sonraki sayfa"
-                    @onclick="() => GoToPage(CurrentPage + 1)">
+                class="@baseButtonClass @(CurrentPage >= totalPages ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
+                disabled="@(CurrentPage >= totalPages)"
+                title="Sonraki sayfa"
+                @onclick="() => GoToPage(CurrentPage + 1)">
             <i class="fa-solid fa-chevron-right text-xs"></i>
         </button>
 
@@ -114,7 +115,7 @@
     </div>
 
     @* COMPACT / MOBILE NAVIGATION (Visible only if Compact OR (Responsive AND Mobile)) *@
-    <div class="items-center gap-2 @(Compact ? "flex" : (Responsive ? "flex md:hidden" : "hidden"))">
+    <div class="items-center gap-2 @(Compact ? "flex" : Responsive ? "flex md:hidden" : "hidden")">
         @* First Button *@
         <button type="button"
                 class="@baseButtonClass @(CurrentPage <= 1 ? "bw-pagination-btn-disabled" : "bw-pagination-btn-nav")"
@@ -135,12 +136,12 @@
 
         @* Input / Total *@
         <div class="bw-pagination-compact-input">
-            <input type="number" 
-                   min="1" 
+            <input type="number"
+                   min="1"
                    max="@totalPages"
                    value="@CurrentPage"
                    class="w-8 text-center bg-transparent border-none p-0 text-sm font-medium focus:ring-0 appearance-none [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
-                   @onchange="OnInputPageChange" />
+                   @onchange="OnInputPageChange"/>
             <span class="text-sm opacity-60">/ @totalPages</span>
         </div>
 
@@ -165,32 +166,56 @@
 </nav>
 
 @code {
-    [Parameter] public int TotalItems { get; set; }
-    [Parameter] public int PageSize { get; set; } = 10;
-    [Parameter] public int CurrentPage { get; set; } = 1;
-    [Parameter] public int MaxVisiblePages { get; set; } = 5;
-    [Parameter] public bool ShowFirstLast { get; set; } = true;
-    [Parameter] public bool ShowPageSizeSelector { get; set; } = false;
-    [Parameter] public bool ShowInfo { get; set; } = true;
-    [Parameter] public int[] PageSizeOptions { get; set; } = new[] { 10, 25, 50, 100 };
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public int TotalItems { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+
+    [Parameter]
+    public int CurrentPage { get; set; } = 1;
+
+    [Parameter]
+    public int MaxVisiblePages { get; set; } = 5;
+
+    [Parameter]
+    public bool ShowFirstLast { get; set; } = true;
+
+    [Parameter]
+    public bool ShowPageSizeSelector { get; set; }
+
+    [Parameter]
+    public bool ShowInfo { get; set; } = true;
+
+    [Parameter]
+    public int[] PageSizeOptions { get; set; } = new[] { 10, 25, 50, 100 };
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
     // Removed Class parameter (inherited)
-    
-    [Parameter] public bool Compact { get; set; } = false;
-    [Parameter] public bool Responsive { get; set; } = true;
-    
-    [Parameter] public EventCallback<int> CurrentPageChanged { get; set; }
-    [Parameter] public EventCallback<int> PageSizeChanged { get; set; }
+
+    [Parameter]
+    public bool Compact { get; set; }
+
+    [Parameter]
+    public bool Responsive { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<int> CurrentPageChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageSizeChanged { get; set; }
 
     private async Task GoToPage(int page)
     {
         var totalPages = PageSize > 0 ? (int)Math.Ceiling(TotalItems / (double)PageSize) : 0;
         if (page < 1 || page > totalPages || page == CurrentPage) return;
-        
+
         CurrentPage = page;
         await CurrentPageChanged.InvokeAsync(page);
     }
-    
+
     private async Task OnInputPageChange(ChangeEventArgs e)
     {
         if (int.TryParse(e.Value?.ToString(), out var page))
@@ -217,7 +242,7 @@
 
         if (totalPages <= MaxVisiblePages)
         {
-            for (int i = 1; i <= totalPages; i++)
+            for (var i = 1; i <= totalPages; i++)
                 pages.Add(i);
             return pages;
         }
@@ -241,7 +266,7 @@
             if (start > 2) pages.Add(-1); // Ellipsis
         }
 
-        for (int i = start; i <= end; i++)
+        for (var i = start; i <= end; i++)
             pages.Add(i);
 
         if (end < totalPages)
@@ -252,4 +277,5 @@
 
         return pages;
     }
+
 }

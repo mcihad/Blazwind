@@ -1,7 +1,7 @@
 namespace Blazwind.Components.HelpTooltip;
 
 /// <summary>
-/// Help tooltip position
+///     Help tooltip position
 /// </summary>
 public enum HelpTooltipPosition
 {

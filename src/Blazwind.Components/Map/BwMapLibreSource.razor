@@ -7,170 +7,201 @@
 </CascadingValue>
 
 @code {
-    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+
+    [CascadingParameter]
+    public BwMapLibre? ParentMap { get; set; }
 
     #region Required Parameters
 
     /// <summary>
-    /// Unique source identifier
+    ///     Unique source identifier
     /// </summary>
-    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Source type: vector, raster, raster-dem, geojson, image, video, canvas
+    ///     Source type: vector, raster, raster-dem, geojson, image, video, canvas
     /// </summary>
-    [Parameter] public string Type { get; set; } = MapSourceType.Vector;
+    [Parameter]
+    public string Type { get; set; } = MapSourceType.Vector;
 
     /// <summary>
-    /// Nested content (Layers)
+    ///     Nested content (Layers)
     /// </summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     #endregion
 
     #region Tile Sources (Vector, Raster, Raster-DEM)
 
     /// <summary>
-    /// URL to TileJSON resource
+    ///     URL to TileJSON resource
     /// </summary>
-    [Parameter] public string? Url { get; set; }
+    [Parameter]
+    public string? Url { get; set; }
 
     /// <summary>
-    /// Array of tile URLs with {z}, {x}, {y} placeholders
+    ///     Array of tile URLs with {z}, {x}, {y} placeholders
     /// </summary>
-    [Parameter] public List<string>? Tiles { get; set; }
+    [Parameter]
+    public List<string>? Tiles { get; set; }
 
     /// <summary>
-    /// Tile size in pixels (default: 512)
+    ///     Tile size in pixels (default: 512)
     /// </summary>
-    [Parameter] public int? TileSize { get; set; }
+    [Parameter]
+    public int? TileSize { get; set; }
 
     /// <summary>
-    /// Minimum zoom level (0-22)
+    ///     Minimum zoom level (0-22)
     /// </summary>
-    [Parameter] public int? MinZoom { get; set; }
+    [Parameter]
+    public int? MinZoom { get; set; }
 
     /// <summary>
-    /// Maximum zoom level (0-22)
+    ///     Maximum zoom level (0-22)
     /// </summary>
-    [Parameter] public int? MaxZoom { get; set; }
+    [Parameter]
+    public int? MaxZoom { get; set; }
 
     /// <summary>
-    /// Tile scheme: xyz or tms
+    ///     Tile scheme: xyz or tms
     /// </summary>
-    [Parameter] public string? Scheme { get; set; }
+    [Parameter]
+    public string? Scheme { get; set; }
 
     /// <summary>
-    /// Bounds [west, south, east, north]
+    ///     Bounds [west, south, east, north]
     /// </summary>
-    [Parameter] public double[]? Bounds { get; set; }
+    [Parameter]
+    public double[]? Bounds { get; set; }
 
     /// <summary>
-    /// Attribution HTML
+    ///     Attribution HTML
     /// </summary>
-    [Parameter] public string? Attribution { get; set; }
+    [Parameter]
+    public string? Attribution { get; set; }
 
     #endregion
 
     #region GeoJSON Source
 
     /// <summary>
-    /// GeoJSON data (object) or URL to GeoJSON file (string)
+    ///     GeoJSON data (object) or URL to GeoJSON file (string)
     /// </summary>
-    [Parameter] public object? Data { get; set; }
+    [Parameter]
+    public object? Data { get; set; }
 
     /// <summary>
-    /// Whether to generate IDs for features
+    ///     Whether to generate IDs for features
     /// </summary>
-    [Parameter] public bool? GenerateId { get; set; }
+    [Parameter]
+    public bool? GenerateId { get; set; }
 
     /// <summary>
-    /// Property name to use as feature ID
+    ///     Property name to use as feature ID
     /// </summary>
-    [Parameter] public string? PromoteId { get; set; }
+    [Parameter]
+    public string? PromoteId { get; set; }
 
     /// <summary>
-    /// Max zoom level for clustering (default: source maxzoom)
+    ///     Max zoom level for clustering (default: source maxzoom)
     /// </summary>
-    [Parameter] public int? ClusterMaxZoom { get; set; }
+    [Parameter]
+    public int? ClusterMaxZoom { get; set; }
 
     /// <summary>
-    /// Radius for clustering points (default: 50)
+    ///     Radius for clustering points (default: 50)
     /// </summary>
-    [Parameter] public int? ClusterRadius { get; set; }
+    [Parameter]
+    public int? ClusterRadius { get; set; }
 
     /// <summary>
-    /// Whether to cluster points
+    ///     Whether to cluster points
     /// </summary>
-    [Parameter] public bool? Cluster { get; set; }
+    [Parameter]
+    public bool? Cluster { get; set; }
 
     /// <summary>
-    /// Cluster properties (aggregated properties for clusters)
+    ///     Cluster properties (aggregated properties for clusters)
     /// </summary>
-    [Parameter] public Dictionary<string, object>? ClusterProperties { get; set; }
+    [Parameter]
+    public Dictionary<string, object>? ClusterProperties { get; set; }
 
     /// <summary>
-    /// Buffer around tiles for rendering (default: 128)
+    ///     Buffer around tiles for rendering (default: 128)
     /// </summary>
-    [Parameter] public int? Buffer { get; set; }
+    [Parameter]
+    public int? Buffer { get; set; }
 
     /// <summary>
-    /// Douglas-Peucker simplification tolerance
+    ///     Douglas-Peucker simplification tolerance
     /// </summary>
-    [Parameter] public double? Tolerance { get; set; }
+    [Parameter]
+    public double? Tolerance { get; set; }
 
     /// <summary>
-    /// Whether to calculate line metrics
+    ///     Whether to calculate line metrics
     /// </summary>
-    [Parameter] public bool? LineMetrics { get; set; }
+    [Parameter]
+    public bool? LineMetrics { get; set; }
 
     #endregion
 
     #region Image/Video Source
 
     /// <summary>
-    /// Image/Video URL
+    ///     Image/Video URL
     /// </summary>
-    [Parameter] public string? ImageUrl { get; set; }
+    [Parameter]
+    public string? ImageUrl { get; set; }
 
     /// <summary>
-    /// Video URLs (multiple formats)
+    ///     Video URLs (multiple formats)
     /// </summary>
-    [Parameter] public List<string>? VideoUrls { get; set; }
+    [Parameter]
+    public List<string>? VideoUrls { get; set; }
 
     /// <summary>
-    /// Coordinates for image/video corners [[lng, lat], ...]
+    ///     Coordinates for image/video corners [[lng, lat], ...]
     /// </summary>
-    [Parameter] public double[][]? Coordinates { get; set; }
+    [Parameter]
+    public double[][]? Coordinates { get; set; }
 
     #endregion
 
     #region Raster-DEM Specific
 
     /// <summary>
-    /// Encoding for raster-dem: terrarium, mapbox, custom
+    ///     Encoding for raster-dem: terrarium, mapbox, custom
     /// </summary>
-    [Parameter] public string? Encoding { get; set; }
+    [Parameter]
+    public string? Encoding { get; set; }
 
     /// <summary>
-    /// Red factor for custom encoding
+    ///     Red factor for custom encoding
     /// </summary>
-    [Parameter] public double? RedFactor { get; set; }
+    [Parameter]
+    public double? RedFactor { get; set; }
 
     /// <summary>
-    /// Blue factor for custom encoding
+    ///     Blue factor for custom encoding
     /// </summary>
-    [Parameter] public double? BlueFactor { get; set; }
+    [Parameter]
+    public double? BlueFactor { get; set; }
 
     /// <summary>
-    /// Green factor for custom encoding
+    ///     Green factor for custom encoding
     /// </summary>
-    [Parameter] public double? GreenFactor { get; set; }
+    [Parameter]
+    public double? GreenFactor { get; set; }
 
     /// <summary>
-    /// Base shift for custom encoding
+    ///     Base shift for custom encoding
     /// </summary>
-    [Parameter] public double? BaseShift { get; set; }
+    [Parameter]
+    public double? BaseShift { get; set; }
 
     #endregion
 
@@ -223,7 +254,7 @@
     }
 
     /// <summary>
-    /// Update GeoJSON data
+    ///     Update GeoJSON data
     /// </summary>
     public async Task SetDataAsync(object data)
     {
@@ -242,7 +273,10 @@
             {
                 await ParentMap.RemoveSourceAsync(Id);
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
+
 }

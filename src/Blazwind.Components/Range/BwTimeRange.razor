@@ -21,9 +21,9 @@
                 <i
                     class="fa-regular fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
                 <input type="time" min="@Min?.ToString(@"hh\:mm")" max="@End?.ToString(@"hh\:mm")"
-                    step="@((int)Step.TotalSeconds)" value="@Start?.ToString(@"hh\:mm")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
+                       step="@((int)Step.TotalSeconds)" value="@Start?.ToString(@"hh\:mm")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
                               bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
-                              text-gray-900 dark:text-white @focusClass" @onchange="HandleStartChange" />
+                              text-gray-900 dark:text-white @focusClass" @onchange="HandleStartChange"/>
             </div>
         </div>
 
@@ -38,9 +38,9 @@
                 <i
                     class="fa-regular fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
                 <input type="time" min="@Start?.ToString(@"hh\:mm")" max="@Max?.ToString(@"hh\:mm")"
-                    step="@((int)Step.TotalSeconds)" value="@End?.ToString(@"hh\:mm")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
+                       step="@((int)Step.TotalSeconds)" value="@End?.ToString(@"hh\:mm")" class="w-full pl-10 pr-3 py-2.5 text-sm border rounded-lg focus:ring-2 focus:outline-none transition-all
                               bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600
-                              text-gray-900 dark:text-white @focusClass" @onchange="HandleEndChange" />
+                              text-gray-900 dark:text-white @focusClass" @onchange="HandleEndChange"/>
             </div>
         </div>
     </div>
@@ -60,29 +60,54 @@
     @if (ShowPresets)
     {
         <div class="mt-3 flex flex-wrap gap-2">
-            <button type="button" class="@GetPresetClass("morning")" @onclick='() => ApplyPreset("morning")'>Sabah</button>
+            <button type="button" class="@GetPresetClass("morning")" @onclick='() => ApplyPreset("morning")'>Sabah
+            </button>
             <button type="button" class="@GetPresetClass("noon")" @onclick='() => ApplyPreset("noon")'>Öğle</button>
             <button type="button" class="@GetPresetClass("afternoon")" @onclick='() => ApplyPreset("afternoon")'>Öğleden
-                Sonra</button>
-            <button type="button" class="@GetPresetClass("evening")" @onclick='() => ApplyPreset("evening")'>Akşam</button>
-            <button type="button" class="@GetPresetClass("work")" @onclick='() => ApplyPreset("work")'>Mesai Saati</button>
-            <button type="button" class="@GetPresetClass("allday")" @onclick='() => ApplyPreset("allday")'>Tüm Gün</button>
+                Sonra
+            </button>
+            <button type="button" class="@GetPresetClass("evening")" @onclick='() => ApplyPreset("evening")'>Akşam
+            </button>
+            <button type="button" class="@GetPresetClass("work")" @onclick='() => ApplyPreset("work")'>Mesai Saati
+            </button>
+            <button type="button" class="@GetPresetClass("allday")" @onclick='() => ApplyPreset("allday")'>Tüm Gün
+            </button>
         </div>
     }
 </div>
 
 @code {
-    [Parameter] public TimeSpan? Min { get; set; } = TimeSpan.Zero;
-    [Parameter] public TimeSpan? Max { get; set; } = new TimeSpan(23, 59, 59);
-    [Parameter] public TimeSpan Step { get; set; } = TimeSpan.FromMinutes(15);
-    [Parameter] public TimeSpan? Start { get; set; }
-    [Parameter] public TimeSpan? End { get; set; }
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public bool ShowDuration { get; set; } = true;
-    [Parameter] public bool ShowPresets { get; set; } = true;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public TimeSpan? Min { get; set; } = TimeSpan.Zero;
+
+    [Parameter]
+    public TimeSpan? Max { get; set; } = new TimeSpan(23, 59, 59);
+
+    [Parameter]
+    public TimeSpan Step { get; set; } = TimeSpan.FromMinutes(15);
+
+    [Parameter]
+    public TimeSpan? Start { get; set; }
+
+    [Parameter]
+    public TimeSpan? End { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool ShowDuration { get; set; } = true;
+
+    [Parameter]
+    public bool ShowPresets { get; set; } = true;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public EventCallback<RangeChangedEventArgs<TimeSpan?>> OnRangeChanged { get; set; }
+    [Parameter]
+    public EventCallback<RangeChangedEventArgs<TimeSpan?>> OnRangeChanged { get; set; }
 
     private string _activePreset = "";
 
@@ -147,6 +172,7 @@
             var minutes = duration.Minutes;
             return minutes > 0 ? $"{hours} saat {minutes} dk" : $"{hours} saat";
         }
+
         return $"{(int)duration.TotalMinutes} dakika";
     }
 
@@ -158,6 +184,8 @@
         {
             return baseClass + $"bw-range-preset-active-{colorName}";
         }
+
         return baseClass;
     }
+
 }

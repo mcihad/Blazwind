@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Table;
 
 /// <summary>
-/// Represents the current state of a BwTable for server-side operations.
+///     Represents the current state of a BwTable for server-side operations.
 /// </summary>
 public class BwTableState
 {

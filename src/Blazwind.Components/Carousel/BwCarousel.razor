@@ -1,9 +1,7 @@
 @namespace Blazwind.Components.Carousel
 @inherits BwBase
-@using Blazwind.Components.Shared
-@using Blazwind.Components
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
+@using Microsoft.JSInterop
 @implements IDisposable
 
 @{
@@ -16,8 +14,8 @@
         {
             var isActive = index == _currentIndex;
             var slideClasses = isActive
-            ? "opacity-100 z-10"
-            : "opacity-0 z-0 absolute inset-0";
+                ? "opacity-100 z-10"
+                : "opacity-0 z-0 absolute inset-0";
             var transition = Fade ? "transition-opacity duration-500" : "transition-transform duration-500";
 
             <div class="w-full @slideClasses @transition">
@@ -27,7 +25,7 @@
                 }
                 else if (item is string imageUrl)
                 {
-                    <img src="@imageUrl" alt="Slide @(index + 1)" class="w-full h-full object-cover" />
+                    <img src="@imageUrl" alt="Slide @(index + 1)" class="w-full h-full object-cover"/>
                 }
             </div>
         }
@@ -36,14 +34,14 @@
     @if (ShowArrows && Items.Count > 1)
     {
         <button type="button"
-            class="bw-carousel-control left-4"
-            @onclick="Previous">
+                class="bw-carousel-control left-4"
+                @onclick="Previous">
             <i class="fa-solid fa-chevron-left"></i>
         </button>
 
         <button type="button"
-            class="bw-carousel-control right-4"
-            @onclick="Next">
+                class="bw-carousel-control right-4"
+                @onclick="Next">
             <i class="fa-solid fa-chevron-right"></i>
         </button>
     }
@@ -51,14 +49,14 @@
     @if (ShowIndicators && Items.Count > 1)
     {
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            @for (int i = 0; i < Items.Count; i++)
+            @for (var i = 0; i < Items.Count; i++)
             {
                 var index = i;
                 var isActive = index == _currentIndex;
                 var activeClass = isActive ? "bw-carousel-indicator-active w-8" : "w-2 hover:bg-white/75";
 
                 <button type="button" class="bw-carousel-indicator @activeClass"
-                    @onclick="() => GoTo(index)">
+                        @onclick="() => GoTo(index)">
                 </button>
             }
         </div>
@@ -66,21 +64,40 @@
 </div>
 
 @code {
-    [Parameter] public List<object> Items { get; set; } = new();
-    [Parameter] public RenderFragment<object>? ItemTemplate { get; set; }
-    [Parameter] public bool AutoPlay { get; set; } = false;
-    [Parameter] public int Interval { get; set; } = 5000;
-    [Parameter] public bool ShowArrows { get; set; } = true;
-    [Parameter] public bool ShowIndicators { get; set; } = true;
-    [Parameter] public bool Fade { get; set; } = true;
-    [Parameter] public bool PauseOnHover { get; set; } = true;
-    [Parameter] public bool Loop { get; set; } = true;
 
-    [Parameter] public EventCallback<int> OnSlideChange { get; set; }
+    [Parameter]
+    public List<object> Items { get; set; } = new();
 
-    private int _currentIndex = 0;
+    [Parameter]
+    public RenderFragment<object>? ItemTemplate { get; set; }
+
+    [Parameter]
+    public bool AutoPlay { get; set; }
+
+    [Parameter]
+    public int Interval { get; set; } = 5000;
+
+    [Parameter]
+    public bool ShowArrows { get; set; } = true;
+
+    [Parameter]
+    public bool ShowIndicators { get; set; } = true;
+
+    [Parameter]
+    public bool Fade { get; set; } = true;
+
+    [Parameter]
+    public bool PauseOnHover { get; set; } = true;
+
+    [Parameter]
+    public bool Loop { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<int> OnSlideChange { get; set; }
+
+    private int _currentIndex;
     private Timer? _timer;
-    private bool _isPaused = false;
+    private bool _isPaused;
 
     protected override void OnInitialized()
     {
@@ -141,11 +158,19 @@
         }
     }
 
-    public void Pause() => _isPaused = true;
-    public void Resume() => _isPaused = false;
+    public void Pause()
+    {
+        _isPaused = true;
+    }
+
+    public void Resume()
+    {
+        _isPaused = false;
+    }
 
     public void Dispose()
     {
         _timer?.Dispose();
     }
+
 }

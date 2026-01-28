@@ -1,10 +1,12 @@
 # Result
 
-A component used to give feedback to the user about the result of an action or the state of the system (Success, Error, Unauthorized, etc.). It can be used as a full-page result or within a container.
+A component used to give feedback to the user about the result of an action or the state of the system (Success, Error,
+Unauthorized, etc.). It can be used as a full-page result or within a container.
 
 ## Examples
 
 ### Basic Success
+
 ```razor
 <BwResult Status="BwResultStatus.Success"
           Title="Submission Successful"
@@ -12,6 +14,7 @@ A component used to give feedback to the user about the result of an action or t
 ```
 
 ### 404 Page Not Found
+
 ```razor
 <BwResult Status="BwResultStatus.NotFound404"
           Title="404"
@@ -23,6 +26,7 @@ A component used to give feedback to the user about the result of an action or t
 ```
 
 ### Detailed Error Message
+
 ```razor
 <BwResult Status="BwResultStatus.Error"
           Title="Submission Failed"
@@ -42,24 +46,25 @@ A component used to give feedback to the user about the result of an action or t
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Status` | `BwResultStatus` | `Info` | Predefined status type (`Success`, `Error`, `Info`, `Warning`, `NotFound404`, `Forbidden403`, `InternalError500`). |
-| `Title` | `string?` | `null` | Primary header text. |
-| `Subtitle` | `string?` | `null` | Descriptive sub-text below the title. |
-| `Class` | `string?` | `null` | Additional CSS class for the container. |
+| Parameter  | Type             | Default | Description                                                                                                        |
+|:-----------|:-----------------|:--------|:-------------------------------------------------------------------------------------------------------------------|
+| `Status`   | `BwResultStatus` | `Info`  | Predefined status type (`Success`, `Error`, `Info`, `Warning`, `NotFound404`, `Forbidden403`, `InternalError500`). |
+| `Title`    | `string?`        | `null`  | Primary header text.                                                                                               |
+| `Subtitle` | `string?`        | `null`  | Descriptive sub-text below the title.                                                                              |
+| `Class`    | `string?`        | `null`  | Additional CSS class for the container.                                                                            |
 
 ### Render Fragments (Slots)
 
-| Slot | Description |
-| :--- | :--- |
-| `Icon` | Custom icon to override the predefined status icon. |
-| `Extra` | Area for action buttons or links below the description. |
-| `ChildContent`| Detailed content area shown within a styled box (useful for error logs). |
+| Slot           | Description                                                              |
+|:---------------|:-------------------------------------------------------------------------|
+| `Icon`         | Custom icon to override the predefined status icon.                      |
+| `Extra`        | Area for action buttons or links below the description.                  |
+| `ChildContent` | Detailed content area shown within a styled box (useful for error logs). |
 
 ## Enums
 
 ### BwResultStatus
+
 `Success`, `Error`, `Info`, `Warning`, `NotFound404`, `Forbidden403`, `InternalError500`
 
 ## Features

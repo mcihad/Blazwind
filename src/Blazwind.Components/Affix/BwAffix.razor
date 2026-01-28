@@ -1,32 +1,42 @@
 @namespace Blazwind.Components.Affix
 @inherits BwBase
-@using Blazwind.Components.Shared
-@using Blazwind.Components
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
+@using System.Globalization
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 <div id="@($"{_elementId}-placeholder")" style="@(_isAffixed ? $"height: {_originalHeight}px;" : "display: none;")">
 </div>
 <div class="@CombineClasses(_isAffixed ? "bw-affixed" : "bw-affix")"
-    style="@(_isAffixed? GetAffixedStyle() : "") @Style" id="@_elementId" @attributes="AdditionalAttributes">
+     style="@(_isAffixed ? GetAffixedStyle() : "") @Style" id="@_elementId" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public int OffsetTop { get; set; } = 0;
-    [Parameter] public int OffsetBottom { get; set; } = 0;
-    [Parameter] public bool UseBottom { get; set; } = false;
-    [Parameter] public string? Target { get; set; }
 
-    [Parameter] public EventCallback<bool> OnChange { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
-    private bool _isAffixed = false;
-    private double _originalHeight = 0;
-    private double _originalWidth = 0;
-    private double _initialTop = 0;
-    private double _initialLeft = 0;
+    [Parameter]
+    public int OffsetTop { get; set; }
+
+    [Parameter]
+    public int OffsetBottom { get; set; }
+
+    [Parameter]
+    public bool UseBottom { get; set; }
+
+    [Parameter]
+    public string? Target { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnChange { get; set; }
+
+    private readonly bool _isAffixed = false;
+    private double _originalHeight;
+    private double _originalWidth;
+    private double _initialTop;
+    private double _initialLeft;
     private DotNetObjectReference<BwAffix>? _dotNetRef;
     private string _elementId = "";
 
@@ -62,11 +72,11 @@ return [0, 0, 0, 0];
 var offsetTop = {OffsetTop};
 var offsetBottom = {OffsetBottom};
 var useBottom = {(UseBottom ? "true" : "false")};
-var initialTop = {_initialTop.ToString(System.Globalization.CultureInfo.InvariantCulture)};
-var initialLeft = {_initialLeft.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+var initialTop = {_initialTop.ToString(CultureInfo.InvariantCulture)};
+var initialLeft = {_initialLeft.ToString(CultureInfo.InvariantCulture)};
 var elementId = '{_elementId}';
-var originalHeight = {_originalHeight.ToString(System.Globalization.CultureInfo.InvariantCulture)};
-var originalWidth = {_originalWidth.ToString(System.Globalization.CultureInfo.InvariantCulture)};
+var originalHeight = {_originalHeight.ToString(CultureInfo.InvariantCulture)};
+var originalWidth = {_originalWidth.ToString(CultureInfo.InvariantCulture)};
 var lastAffixed = false;
 
 function checkAffix() {{
@@ -125,6 +135,7 @@ window.removeEventListener('scroll', checkAffix);
         {
             return $"bottom: {OffsetBottom}px; left: {_initialLeft}px; width: {_originalWidth}px;";
         }
+
         return $"top: {OffsetTop}px; left: {_initialLeft}px; width: {_originalWidth}px;";
     }
 
@@ -134,7 +145,11 @@ window.removeEventListener('scroll', checkAffix);
         {
             await JS.InvokeVoidAsync("eval", $"if(window['bwAffix_{_elementId}_cleanup']) window['bwAffix_{_elementId}_cleanup']();");
         }
-        catch { }
+        catch
+        {
+        }
+
         _dotNetRef?.Dispose();
     }
+
 }

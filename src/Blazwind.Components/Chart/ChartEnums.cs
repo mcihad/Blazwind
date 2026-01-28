@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart type
+///     Chart type
 /// </summary>
 public enum ChartType
 {
@@ -25,7 +25,7 @@ public enum ChartType
 }
 
 /// <summary>
-/// Chart theme
+///     Chart theme
 /// </summary>
 public enum ChartTheme
 {

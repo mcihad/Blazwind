@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Blazwind.Components.DataGrid.Models;
 using Blazwind.Components.DataGrid.Services;
 using Blazwind.Components.Shared;
@@ -9,66 +8,67 @@ namespace Blazwind.Components.DataGrid;
 
 public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : notnull
 {
-    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
 
     #region Parameters
 
     /// <summary>
-    /// Data items to display
+    ///     Data items to display
     /// </summary>
     [Parameter]
     public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
 
     /// <summary>
-    /// Column definitions (as child content)
+    ///     Column definitions (as child content)
     /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
-    /// Columns container (alternative to ChildContent)
+    ///     Columns container (alternative to ChildContent)
     /// </summary>
     [Parameter]
     public RenderFragment? Columns { get; set; }
 
     /// <summary>
-    /// Toolbar content
+    ///     Toolbar content
     /// </summary>
     [Parameter]
     public RenderFragment? ToolbarContent { get; set; }
 
     /// <summary>
-    /// Footer content
+    ///     Footer content
     /// </summary>
     [Parameter]
     public RenderFragment? FooterContent { get; set; }
 
     /// <summary>
-    /// Context menu content
+    ///     Context menu content
     /// </summary>
     [Parameter]
     public RenderFragment<TItem>? ContextMenuContent { get; set; }
 
     /// <summary>
-    /// Detail row template (expandable rows)
+    ///     Detail row template (expandable rows)
     /// </summary>
     [Parameter]
     public RenderFragment<TItem>? DetailRowTemplate { get; set; }
 
     /// <summary>
-    /// Empty state content
+    ///     Empty state content
     /// </summary>
     [Parameter]
     public RenderFragment? EmptyContent { get; set; }
 
     /// <summary>
-    /// Loading state content
+    ///     Loading state content
     /// </summary>
     [Parameter]
     public RenderFragment? LoadingContent { get; set; }
 
     /// <summary>
-    /// Key selector for items (used for selection, expansion tracking)
+    ///     Key selector for items (used for selection, expansion tracking)
     /// </summary>
     [Parameter]
     public Func<TItem, object>? KeySelector { get; set; }
@@ -77,186 +77,184 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
     #region Appearance Parameters
 
-
-
     /// <summary>
-    /// Grid height (e.g., "400px", "100%")
+    ///     Grid height (e.g., "400px", "100%")
     /// </summary>
     [Parameter]
     public string? Height { get; set; }
 
     /// <summary>
-    /// Enable striped rows
+    ///     Enable striped rows
     /// </summary>
     [Parameter]
     public bool Striped { get; set; } = true;
 
     /// <summary>
-    /// Enable hover effect on rows
+    ///     Enable hover effect on rows
     /// </summary>
     [Parameter]
     public bool Hoverable { get; set; } = true;
 
     /// <summary>
-    /// Enable borders
+    ///     Enable borders
     /// </summary>
     [Parameter]
-    public bool Bordered { get; set; } = false;
+    public bool Bordered { get; set; }
 
     /// <summary>
-    /// Compact mode (smaller padding)
+    ///     Compact mode (smaller padding)
     /// </summary>
     [Parameter]
-    public bool Compact { get; set; } = false;
+    public bool Compact { get; set; }
 
     /// <summary>
-    /// Custom row class function
+    ///     Custom row class function
     /// </summary>
     [Parameter]
     public Func<TItem, string>? RowClass { get; set; }
 
     /// <summary>
-    /// Custom row style function
+    ///     Custom row style function
     /// </summary>
     [Parameter]
     public Func<TItem, string>? RowStyle { get; set; }
 
     /// <summary>
-    /// Custom CSS class for selected rows (overrides default blue background)
+    ///     Custom CSS class for selected rows (overrides default blue background)
     /// </summary>
     [Parameter]
     public string? SelectedRowClass { get; set; }
 
     /// <summary>
-    /// Sets a minimum width for the grid table to enable horizontal scrolling (e.g., "1200px")
+    ///     Sets a minimum width for the grid table to enable horizontal scrolling (e.g., "1200px")
     /// </summary>
     [Parameter]
     public string? TableMinWidth { get; set; }
 
     /// <summary>
-    /// If true, sets the table min-width to "max-content", causing it to expand based on content
+    ///     If true, sets the table min-width to "max-content", causing it to expand based on content
     /// </summary>
     [Parameter]
     public bool AutoFit { get; set; }
 
     /// <summary>
-    /// Enable compact pagination mode (useful for mobile or small areas)
+    ///     Enable compact pagination mode (useful for mobile or small areas)
     /// </summary>
     [Parameter]
-    public bool CompactPagination { get; set; } = false;
+    public bool CompactPagination { get; set; }
 
     #endregion
 
     #region Feature Toggles
 
     /// <summary>
-    /// Enable sorting
+    ///     Enable sorting
     /// </summary>
     [Parameter]
     public bool EnableSorting { get; set; } = true;
 
     /// <summary>
-    /// Enable multi-column sorting (Ctrl+Click)
+    ///     Enable multi-column sorting (Ctrl+Click)
     /// </summary>
     [Parameter]
-    public bool EnableMultiSort { get; set; } = false;
+    public bool EnableMultiSort { get; set; }
 
     /// <summary>
-    /// Enable filtering
+    ///     Enable filtering
     /// </summary>
     [Parameter]
-    public bool EnableFiltering { get; set; } = false;
+    public bool EnableFiltering { get; set; }
 
     /// <summary>
-    /// Enable global search
+    ///     Enable global search
     /// </summary>
     [Parameter]
-    public bool EnableSearch { get; set; } = false;
+    public bool EnableSearch { get; set; }
 
     /// <summary>
-    /// Enable pagination
+    ///     Enable pagination
     /// </summary>
     [Parameter]
     public bool EnablePagination { get; set; } = true;
 
     /// <summary>
-    /// Enable column visibility toggle
+    ///     Enable column visibility toggle
     /// </summary>
     [Parameter]
-    public bool EnableColumnToggle { get; set; } = false;
+    public bool EnableColumnToggle { get; set; }
 
     /// <summary>
-    /// Enable column reordering (drag & drop)
+    ///     Enable column reordering (drag & drop)
     /// </summary>
     [Parameter]
-    public bool EnableColumnReorder { get; set; } = false;
+    public bool EnableColumnReorder { get; set; }
 
     /// <summary>
-    /// Filter mode (Row or Menu)
+    ///     Filter mode (Row or Menu)
     /// </summary>
     [Parameter]
     public FilterMode FilterMode { get; set; } = FilterMode.Row;
 
     /// <summary>
-    /// Enable column resizing
+    ///     Enable column resizing
     /// </summary>
     [Parameter]
-    public bool EnableColumnResize { get; set; } = false;
+    public bool EnableColumnResize { get; set; }
 
     /// <summary>
-    /// Enable export functionality
+    ///     Enable export functionality
     /// </summary>
     [Parameter]
-    public bool EnableExport { get; set; } = false;
+    public bool EnableExport { get; set; }
 
     /// <summary>
-    /// Enable context menu
+    ///     Enable context menu
     /// </summary>
     [Parameter]
-    public bool EnableContextMenu { get; set; } = false;
+    public bool EnableContextMenu { get; set; }
 
     /// <summary>
-    /// Enable row expansion
+    ///     Enable row expansion
     /// </summary>
     [Parameter]
-    public bool EnableRowExpansion { get; set; } = false;
+    public bool EnableRowExpansion { get; set; }
 
     /// <summary>
-    /// Enable virtualization for large datasets
+    ///     Enable virtualization for large datasets
     /// </summary>
     [Parameter]
-    public bool EnableVirtualization { get; set; } = false;
+    public bool EnableVirtualization { get; set; }
 
     #endregion
 
     #region Selection Parameters
 
     /// <summary>
-    /// Selection mode (None, Single, Multiple)
+    ///     Selection mode (None, Single, Multiple)
     /// </summary>
     [Parameter]
     public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
 
     /// <summary>
-    /// Selected items
+    ///     Selected items
     /// </summary>
     [Parameter]
     public IEnumerable<TItem> SelectedItems { get; set; } = Enumerable.Empty<TItem>();
 
     /// <summary>
-    /// Selected items changed callback
+    ///     Selected items changed callback
     /// </summary>
     [Parameter]
     public EventCallback<IEnumerable<TItem>> SelectedItemsChanged { get; set; }
 
     /// <summary>
-    /// Row click callback
+    ///     Row click callback
     /// </summary>
     [Parameter]
     public EventCallback<TItem> OnRowClick { get; set; }
 
     /// <summary>
-    /// Row double-click callback
+    ///     Row double-click callback
     /// </summary>
     [Parameter]
     public EventCallback<TItem> OnRowDoubleClick { get; set; }
@@ -266,37 +264,37 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     #region Pagination Parameters
 
     /// <summary>
-    /// Current page (1-based)
+    ///     Current page (1-based)
     /// </summary>
     [Parameter]
     public int CurrentPage { get; set; } = 1;
 
     /// <summary>
-    /// Current page changed callback
+    ///     Current page changed callback
     /// </summary>
     [Parameter]
     public EventCallback<int> CurrentPageChanged { get; set; }
 
     /// <summary>
-    /// Page size
+    ///     Page size
     /// </summary>
     [Parameter]
     public int PageSize { get; set; } = 10;
 
     /// <summary>
-    /// Page size changed callback
+    ///     Page size changed callback
     /// </summary>
     [Parameter]
     public EventCallback<int> PageSizeChanged { get; set; }
 
     /// <summary>
-    /// Available page sizes
+    ///     Available page sizes
     /// </summary>
     [Parameter]
     public int[] PageSizeOptions { get; set; } = { 10, 25, 50, 100 };
 
     /// <summary>
-    /// Total items (for server-side pagination)
+    ///     Total items (for server-side pagination)
     /// </summary>
     [Parameter]
     public int? TotalItems { get; set; }
@@ -306,35 +304,35 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     #region Server-Side Parameters
 
     /// <summary>
-    /// Enable server-side operations
+    ///     Enable server-side operations
     /// </summary>
     [Parameter]
-    public bool ServerSide { get; set; } = false;
+    public bool ServerSide { get; set; }
 
     /// <summary>
-    /// State changed callback (for server-side operations)
+    ///     State changed callback (for server-side operations)
     /// </summary>
     [Parameter]
     public EventCallback<DataGridState> OnStateChanged { get; set; }
 
     /// <summary>
-    /// Loading state
+    ///     Loading state
     /// </summary>
     [Parameter]
-    public bool IsLoading { get; set; } = false;
+    public bool IsLoading { get; set; }
 
     #endregion
 
     #region Export Parameters
 
     /// <summary>
-    /// Available exporters
+    ///     Available exporters
     /// </summary>
     [Parameter]
     public IEnumerable<IDataGridExporter>? Exporters { get; set; }
 
     /// <summary>
-    /// Export requested callback
+    ///     Export requested callback
     /// </summary>
     [Parameter]
     public EventCallback<ExportOptions> OnExportRequested { get; set; }
@@ -344,31 +342,31 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     #region State Persistence Parameters
 
     /// <summary>
-    /// Unique key for state storage. When set, grid state will be persisted.
+    ///     Unique key for state storage. When set, grid state will be persisted.
     /// </summary>
     [Parameter]
     public string? StateStorageKey { get; set; }
 
     /// <summary>
-    /// State storage implementation. If null, uses LocalStorage if StateStorageKey is set.
+    ///     State storage implementation. If null, uses LocalStorage if StateStorageKey is set.
     /// </summary>
     [Parameter]
     public IGridStateStorage? StateStorage { get; set; }
 
     /// <summary>
-    /// Whether to auto-save state on column changes (resize, visibility, order)
+    ///     Whether to auto-save state on column changes (resize, visibility, order)
     /// </summary>
     [Parameter]
     public bool AutoSaveState { get; set; } = true;
 
     /// <summary>
-    /// Callback when state is saved
+    ///     Callback when state is saved
     /// </summary>
     [Parameter]
     public EventCallback<GridViewState> OnStateSaved { get; set; }
 
     /// <summary>
-    /// Callback when state is loaded
+    ///     Callback when state is loaded
     /// </summary>
     [Parameter]
     public EventCallback<GridViewState> OnStateLoaded { get; set; }
@@ -377,29 +375,29 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
     #region Private Fields
 
-    private List<BwDataGridColumn<TItem>> _columns = new();
+    private readonly List<BwDataGridColumn<TItem>> _columns = new();
     private HashSet<TItem> _selectedItems = new();
-    private HashSet<string> _expandedKeys = new();
-    private List<SortDescriptor> _sorts = new();
-    private List<FilterDescriptor> _filters = new();
+    private readonly HashSet<string> _expandedKeys = new();
+    private readonly List<SortDescriptor> _sorts = new();
+    private readonly List<FilterDescriptor> _filters = new();
     private string _searchQuery = "";
     private string _columnSearchQuery = "";
-    private bool _showColumnSelector = false;
+    private bool _showColumnSelector;
     private DotNetObjectReference<BwDataGrid<TItem>>? _dotNetRef;
 
     // Context menu state
-    private bool _showContextMenu = false;
-    private double _contextMenuX = 0;
-    private double _contextMenuY = 0;
+    private bool _showContextMenu;
+    private double _contextMenuX;
+    private double _contextMenuY;
     private TItem? _contextMenuItem;
 
     // Export menu state
-    private bool _showExportMenu = false;
+    private bool _showExportMenu;
 
     // Internal pagination state (to prevent parameter override on re-render)
     private int _currentPageSize;
     private int _currentPage;
-    private bool _paginationInitialized = false;
+    private bool _paginationInitialized;
 
     #endregion
 
@@ -407,11 +405,8 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
     protected override void OnInitialized()
     {
-        if (string.IsNullOrEmpty(Id))
-        {
-            Id = $"bw-datagrid-{Guid.NewGuid():N}";
-        }
-        
+        if (string.IsNullOrEmpty(Id)) Id = $"bw-datagrid-{Guid.NewGuid():N}";
+
         _selectedItems = new HashSet<TItem>(SelectedItems);
         _dotNetRef = DotNetObjectReference.Create(this);
     }
@@ -440,13 +435,9 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-        {
             try
             {
-                if (EnableColumnReorder || EnableColumnResize || EnableContextMenu)
-                {
-                    await InitializeJsFeatures();
-                }
+                if (EnableColumnReorder || EnableColumnResize || EnableContextMenu) await InitializeJsFeatures();
 
                 // Initialize state storage and load saved state
                 await InitializeStateStorage();
@@ -455,7 +446,6 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             {
                 // JS may not be fully ready; safe to ignore
             }
-        }
     }
 
     public async ValueTask DisposeAsync()
@@ -490,56 +480,32 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     {
         var items = Items ?? Enumerable.Empty<TItem>();
 
-        if (ServerSide)
-        {
-            return items;
-        }
+        if (ServerSide) return items;
 
         // Apply search
-        if (!string.IsNullOrWhiteSpace(_searchQuery))
-        {
-            items = ApplySearch(items, _searchQuery);
-        }
+        if (!string.IsNullOrWhiteSpace(_searchQuery)) items = ApplySearch(items, _searchQuery);
 
         // Apply filters
-        if (_filters.Any())
-        {
-            items = ApplyFilters(items);
-        }
+        if (_filters.Any()) items = ApplyFilters(items);
 
         // Apply sorting
-        if (_sorts.Any())
-        {
-            items = ApplySorting(items);
-        }
+        if (_sorts.Any()) items = ApplySorting(items);
 
         // Apply pagination
-        if (EnablePagination)
-        {
-            items = items.Skip((_currentPage - 1) * _currentPageSize).Take(_currentPageSize);
-        }
+        if (EnablePagination) items = items.Skip((_currentPage - 1) * _currentPageSize).Take(_currentPageSize);
 
         return items;
     }
 
     private int GetTotalItemCount()
     {
-        if (TotalItems.HasValue)
-        {
-            return TotalItems.Value;
-        }
+        if (TotalItems.HasValue) return TotalItems.Value;
 
         var items = Items ?? Enumerable.Empty<TItem>();
 
-        if (!string.IsNullOrWhiteSpace(_searchQuery))
-        {
-            items = ApplySearch(items, _searchQuery);
-        }
+        if (!string.IsNullOrWhiteSpace(_searchQuery)) items = ApplySearch(items, _searchQuery);
 
-        if (_filters.Any())
-        {
-            items = ApplyFilters(items);
-        }
+        if (_filters.Any()) items = ApplyFilters(items);
 
         return items.Count();
     }
@@ -553,10 +519,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             foreach (var column in _columns.Where(c => c.Visible && c.Field != null))
             {
                 var value = column.GetRawValue(item);
-                if (value?.ToString()?.ToLower().Contains(lowerQuery) == true)
-                {
-                    return true;
-                }
+                if (value?.ToString()?.ToLower().Contains(lowerQuery) == true) return true;
             }
 
             return false;
@@ -588,10 +551,8 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             if (filterValue is DateTime dtFilter) filterValue = dtFilter.Date;
         }
 
-        if (value == null && filter.Operator != FilterOperator.IsNull && filter.Operator != FilterOperator.IsNotNull)
-        {
-            return false;
-        }
+        if (value == null && filter.Operator != FilterOperator.IsNull &&
+            filter.Operator != FilterOperator.IsNotNull) return false;
 
         return filter.Operator switch
         {
@@ -626,19 +587,12 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
         var typeB = b.GetType();
 
         // Handle DateOnly vs DateTime
-        if (a is DateOnly dateA && b is DateTime dateB)
-        {
-            return dateA.CompareTo(DateOnly.FromDateTime(dateB));
-        }
+        if (a is DateOnly dateA && b is DateTime dateB) return dateA.CompareTo(DateOnly.FromDateTime(dateB));
 
-        if (a is DateTime dtA && b is DateOnly dateOnlyB)
-        {
-            return DateOnly.FromDateTime(dtA).CompareTo(dateOnlyB);
-        }
+        if (a is DateTime dtA && b is DateOnly dateOnlyB) return DateOnly.FromDateTime(dtA).CompareTo(dateOnlyB);
 
         // Handle Numerics (convert to decimal for safety)
         if (IsNumeric(typeA) && IsNumeric(typeB))
-        {
             try
             {
                 var decA = Convert.ToDecimal(a);
@@ -649,10 +603,8 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             {
                 // Fallback
             }
-        }
 
         if (a is IComparable comparableA && b is IComparable)
-        {
             try
             {
                 // Try converting B to A's type
@@ -675,7 +627,6 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
                     // Fallback to string comparison
                 }
             }
-        }
 
         return string.Compare(a.ToString(), b.ToString(), StringComparison.OrdinalIgnoreCase);
     }
@@ -701,17 +652,13 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             if (column?.Field == null) continue;
 
             if (orderedItems == null)
-            {
                 orderedItems = sort.Direction == SortDirection.Ascending
                     ? items.OrderBy(column.GetRawValue)
                     : items.OrderByDescending(column.GetRawValue);
-            }
             else
-            {
                 orderedItems = sort.Direction == SortDirection.Ascending
                     ? orderedItems.ThenBy(column.GetRawValue)
                     : orderedItems.ThenByDescending(column.GetRawValue);
-            }
         }
 
         return orderedItems ?? items;
@@ -734,13 +681,9 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             if (existingSort != null)
             {
                 if (existingSort.Direction == SortDirection.Ascending)
-                {
                     existingSort.Direction = SortDirection.Descending;
-                }
                 else
-                {
                     _sorts.Remove(existingSort);
-                }
             }
             else
             {
@@ -758,13 +701,9 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             if (existingSort != null && _sorts.Count == 1)
             {
                 if (existingSort.Direction == SortDirection.Ascending)
-                {
                     existingSort.Direction = SortDirection.Descending;
-                }
                 else
-                {
                     _sorts.Clear();
-                }
             }
             else
             {
@@ -851,13 +790,9 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
         else
         {
             if (_selectedItems.Contains(item))
-            {
                 _selectedItems.Remove(item);
-            }
             else
-            {
                 _selectedItems.Add(item);
-            }
         }
 
         await SelectedItemsChanged.InvokeAsync(_selectedItems);
@@ -872,25 +807,20 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
         var currentViewItems = GetProcessedItems().ToList();
 
         if (selectAll)
-        {
             foreach (var item in currentViewItems)
-            {
                 _selectedItems.Add(item);
-            }
-        }
         else
-        {
             // Only remove items that are in the current page
             foreach (var item in currentViewItems)
-            {
                 _selectedItems.Remove(item);
-            }
-        }
 
         await SelectedItemsChanged.InvokeAsync(_selectedItems);
     }
 
-    private bool IsItemSelected(TItem item) => _selectedItems.Contains(item);
+    private bool IsItemSelected(TItem item)
+    {
+        return _selectedItems.Contains(item);
+    }
 
     private bool IsAllSelected()
     {
@@ -898,7 +828,10 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
         return processedItems.Any() && processedItems.All(i => _selectedItems.Contains(i));
     }
 
-    private bool IsAnySelected() => _selectedItems.Any();
+    private bool IsAnySelected()
+    {
+        return _selectedItems.Any();
+    }
 
     #endregion
 
@@ -928,27 +861,23 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
     private string GetItemKey(TItem item)
     {
-        if (KeySelector != null)
-        {
-            return KeySelector(item)?.ToString() ?? item.GetHashCode().ToString();
-        }
+        if (KeySelector != null) return KeySelector(item)?.ToString() ?? item.GetHashCode().ToString();
 
         return item.GetHashCode().ToString();
     }
 
-    private bool IsRowExpanded(TItem item) => _expandedKeys.Contains(GetItemKey(item));
+    private bool IsRowExpanded(TItem item)
+    {
+        return _expandedKeys.Contains(GetItemKey(item));
+    }
 
     private void ToggleRowExpansion(TItem item)
     {
         var key = GetItemKey(item);
         if (_expandedKeys.Contains(key))
-        {
             _expandedKeys.Remove(key);
-        }
         else
-        {
             _expandedKeys.Add(key);
-        }
     }
 
     #endregion
@@ -1026,27 +955,20 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     };
 
     /// <summary>
-    /// Get all available exporters (built-in + custom)
+    ///     Get all available exporters (built-in + custom)
     /// </summary>
     private IEnumerable<IDataGridExporter> GetAllExporters()
     {
         // Return built-in exporters first, then any custom exporters
-        foreach (var exporter in _builtInExporters)
-        {
-            yield return exporter;
-        }
+        foreach (var exporter in _builtInExporters) yield return exporter;
 
         if (Exporters != null)
-        {
             foreach (var exporter in Exporters)
-            {
                 yield return exporter;
-            }
-        }
     }
 
     /// <summary>
-    /// Export data using the specified exporter
+    ///     Export data using the specified exporter
     /// </summary>
     private async Task ExportData(IDataGridExporter exporter)
     {
@@ -1056,21 +978,12 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             var items = Items ?? Enumerable.Empty<TItem>();
 
             // Apply filters if enabled
-            if (!string.IsNullOrWhiteSpace(_searchQuery))
-            {
-                items = ApplySearch(items, _searchQuery);
-            }
+            if (!string.IsNullOrWhiteSpace(_searchQuery)) items = ApplySearch(items, _searchQuery);
 
-            if (_filters.Any())
-            {
-                items = ApplyFilters(items);
-            }
+            if (_filters.Any()) items = ApplyFilters(items);
 
             // Apply sorting
-            if (_sorts.Any())
-            {
-                items = ApplySorting(items);
-            }
+            if (_sorts.Any()) items = ApplySorting(items);
 
             // Get exportable columns
             var columnDefs = _columns
@@ -1167,15 +1080,12 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Export data by file format extension (xlsx, csv, tsv, json)
+    ///     Export data by file format extension (xlsx, csv, tsv, json)
     /// </summary>
     private async Task ExportByFormat(string format)
     {
         var exporter = GetAllExporters().FirstOrDefault(e => e.FileExtension == format);
-        if (exporter != null)
-        {
-            await ExportData(exporter);
-        }
+        if (exporter != null) await ExportData(exporter);
     }
 
     #endregion
@@ -1212,14 +1122,11 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
     private async Task NotifyStateChanged()
     {
-        if (ServerSide && OnStateChanged.HasDelegate)
-        {
-            await OnStateChanged.InvokeAsync(GetState());
-        }
+        if (ServerSide && OnStateChanged.HasDelegate) await OnStateChanged.InvokeAsync(GetState());
     }
 
     /// <summary>
-    /// Refresh the grid data (call after server-side data is loaded)
+    ///     Refresh the grid data (call after server-side data is loaded)
     /// </summary>
     public void Refresh()
     {
@@ -1227,7 +1134,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Clear all filters
+    ///     Clear all filters
     /// </summary>
     public async Task ClearFilters()
     {
@@ -1239,7 +1146,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Clear all sorting
+    ///     Clear all sorting
     /// </summary>
     public async Task ClearSorting()
     {
@@ -1249,7 +1156,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Clear selection
+    ///     Clear selection
     /// </summary>
     public async Task ClearSelection()
     {
@@ -1272,7 +1179,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             var retryDelay = 100;
             var blazwindAvailable = false;
 
-            for (int i = 0; i < maxRetries; i++)
+            for (var i = 0; i < maxRetries; i++)
             {
                 blazwindAvailable = await JS.InvokeAsync<bool>("eval", "typeof window.Blazwind !== 'undefined'");
                 if (blazwindAvailable) break;
@@ -1287,7 +1194,6 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
             // Initialize column resize if enabled
             if (EnableColumnResize)
-            {
                 await JS.InvokeVoidAsync("Blazwind.ColumnResize.initColumnResize", _dotNetRef, new
                 {
                     containerId = Id,
@@ -1295,16 +1201,13 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
                     maxWidth = 500,
                     autoFit = AutoFit
                 });
-            }
 
             // Initialize column drag/reorder if enabled
             if (EnableColumnReorder)
-            {
                 await JS.InvokeVoidAsync("Blazwind.ColumnDrag.initColumnDrag", _dotNetRef, new
                 {
                     containerId = Id
                 });
-            }
         }
         catch (JSException ex)
         {
@@ -1321,20 +1224,11 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
         var oldIndex = column.Order;
 
         foreach (var col in _columns)
-        {
             if (col == column)
-            {
                 col.Order = newIndex;
-            }
             else if (oldIndex < newIndex && col.Order > oldIndex && col.Order <= newIndex)
-            {
                 col.Order--;
-            }
-            else if (oldIndex > newIndex && col.Order >= newIndex && col.Order < oldIndex)
-            {
-                col.Order++;
-            }
-        }
+            else if (oldIndex > newIndex && col.Order >= newIndex && col.Order < oldIndex) col.Order++;
 
         StateHasChanged();
         _ = TrySaveStateAsync();
@@ -1378,7 +1272,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Loads grid state from storage.
+    ///     Loads grid state from storage.
     /// </summary>
     public async Task LoadStateAsync()
     {
@@ -1410,14 +1304,12 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
             {
                 _sorts.Clear();
                 foreach (var sortConfig in state.Sorts)
-                {
                     _sorts.Add(new SortDescriptor
                     {
                         Field = sortConfig.Field,
                         Direction = sortConfig.Ascending ? SortDirection.Ascending : SortDirection.Descending,
                         Priority = sortConfig.Priority
                     });
-                }
             }
 
             // Apply pagination
@@ -1437,7 +1329,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Saves current grid state to storage.
+    ///     Saves current grid state to storage.
     /// </summary>
     public async Task SaveStateAsync()
     {
@@ -1456,7 +1348,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Gets the current grid view state.
+    ///     Gets the current grid view state.
     /// </summary>
     public GridViewState GetCurrentViewState()
     {
@@ -1482,7 +1374,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
     }
 
     /// <summary>
-    /// Clears saved state from storage.
+    ///     Clears saved state from storage.
     /// </summary>
     public async Task ClearSavedStateAsync()
     {
@@ -1492,10 +1384,7 @@ public partial class BwDataGrid<TItem> : BwBase, IAsyncDisposable where TItem : 
 
     private async Task TrySaveStateAsync()
     {
-        if (AutoSaveState && !string.IsNullOrEmpty(StateStorageKey))
-        {
-            await SaveStateAsync();
-        }
+        if (AutoSaveState && !string.IsNullOrEmpty(StateStorageKey)) await SaveStateAsync();
     }
 
     #endregion

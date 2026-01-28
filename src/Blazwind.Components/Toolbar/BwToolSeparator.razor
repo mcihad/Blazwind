@@ -1,11 +1,12 @@
 @namespace Blazwind.Components.Toolbar
-@using Blazwind.Components.Shared
 @inherits BwBase
 
 <div class="@CombineClasses(SeparatorClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes"></div>
 
 @code {
-    [CascadingParameter] public BwToolbar? Toolbar { get; set; }
+
+    [CascadingParameter]
+    public BwToolbar? Toolbar { get; set; }
 
     private bool IsVertical => Toolbar?.IsVertical ?? false;
 

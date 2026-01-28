@@ -14,7 +14,7 @@
     };
 }
 
-<button type="button" 
+<button type="button"
         class="@CombineClasses("bw-fab-item", colorClass)"
         style="@Style" id="@Id" @attributes="AdditionalAttributes"
         disabled="@IsDisabled"
@@ -28,10 +28,23 @@
 </button>
 
 @code {
-    [Parameter] public string Icon { get; set; } = "fa-solid fa-star";
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Tooltip { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; } = "fa-solid fa-star";
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Tooltip { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Secondary;
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
 }

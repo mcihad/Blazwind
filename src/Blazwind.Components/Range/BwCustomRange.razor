@@ -1,9 +1,10 @@
 @namespace Blazwind.Components.Range
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
 @typeparam TValue
 @implements IAsyncDisposable
+@using System.Globalization
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 @{
@@ -35,7 +36,7 @@
 
         @* Selection Brush *@
         <div class="bw-brush-selection @brushFillClass"
-            style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
+             style="left: @GetInvariantPercent(_startPercent)%; width: @GetInvariantPercent(_endPercent - _startPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left @handleClass">
@@ -44,7 +45,7 @@
 
             @* Center Grip Pattern *@
             <div class="bw-brush-grip">
-                @for (int i = 0; i < 3; i++)
+                @for (var i = 0; i < 3; i++)
                 {
                     <div class="bw-brush-grip-bar"></div>
                 }
@@ -98,23 +99,55 @@
 </div>
 
 @code {
-    [Parameter] public double StartPercent { get; set; } = 20;
-    [Parameter] public double EndPercent { get; set; } = 80;
-    [Parameter] public double MinWidthPercent { get; set; } = 5;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public bool ShowValues { get; set; } = true;
-    [Parameter] public bool ShowScale { get; set; } = true;
-    [Parameter] public List<string>? ScaleLabels { get; set; }
-    [Parameter] public Func<double, string>? FormatStart { get; set; }
-    [Parameter] public Func<double, string>? FormatEnd { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment<(double Start, double End)>? ValueTemplate { get; set; }
-    [Parameter] public RenderFragment? Actions { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public double StartPercent { get; set; } = 20;
+
+    [Parameter]
+    public double EndPercent { get; set; } = 80;
+
+    [Parameter]
+    public double MinWidthPercent { get; set; } = 5;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public bool ShowValues { get; set; } = true;
+
+    [Parameter]
+    public bool ShowScale { get; set; } = true;
+
+    [Parameter]
+    public List<string>? ScaleLabels { get; set; }
+
+    [Parameter]
+    public Func<double, string>? FormatStart { get; set; }
+
+    [Parameter]
+    public Func<double, string>? FormatEnd { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<(double Start, double End)>? ValueTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public EventCallback<(double StartPercent, double EndPercent)> OnBrushChanged { get; set; }
-    [Parameter] public EventCallback<(TValue Start, TValue End)> OnValueChanged { get; set; }
-    [Parameter] public Func<double, TValue>? ConvertFromPercent { get; set; }
+    [Parameter]
+    public EventCallback<(double StartPercent, double EndPercent)> OnBrushChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<(TValue Start, TValue End)> OnValueChanged { get; set; }
+
+    [Parameter]
+    public Func<double, TValue>? ConvertFromPercent { get; set; }
 
     private string _elementId = "";
     private DotNetObjectReference<BwCustomRange<TValue>>? _dotNetRef;
@@ -126,7 +159,10 @@
     private double _prevStart;
     private double _prevEnd;
 
-    protected override bool ShouldRender() => !_isDragging;
+    protected override bool ShouldRender()
+    {
+        return !_isDragging;
+    }
 
     protected override void OnInitialized()
     {
@@ -147,8 +183,8 @@
     {
         if (_isDragging) return;
 
-        bool paramsChanged = Math.Abs(StartPercent - _prevStart) > double.Epsilon ||
-        Math.Abs(EndPercent - _prevEnd) > double.Epsilon;
+        var paramsChanged = Math.Abs(StartPercent - _prevStart) > double.Epsilon ||
+                            Math.Abs(EndPercent - _prevEnd) > double.Epsilon;
 
         if (!paramsChanged) return;
 
@@ -165,7 +201,7 @@
         {
             _dotNetRef = DotNetObjectReference.Create(this);
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
-            MinWidthPercent);
+                MinWidthPercent);
         }
     }
 
@@ -209,8 +245,10 @@
         StateHasChanged();
     }
 
-    private string GetInvariantPercent(double value) =>
-    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    private string GetInvariantPercent(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -218,8 +256,11 @@
         {
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
         }
-        catch { }
+        catch
+        {
+        }
 
         _dotNetRef?.Dispose();
     }
+
 }

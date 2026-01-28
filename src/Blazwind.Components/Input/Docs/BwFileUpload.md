@@ -31,7 +31,7 @@ A drag-and-drop–enabled file upload area.
 ## Parameters
 
 | Parameter     | Type                 | Default | Description                                   |
-| :------------ | :------------------- | :------ | :-------------------------------------------- |
+|:--------------|:---------------------|:--------|:----------------------------------------------|
 | `Files`       | `List<IBrowserFile>` | `new()` | Selected files (two-way binding).             |
 | `Accept`      | `string`             | `null`  | Accepted file extensions (e.g., `.jpg,.pdf`). |
 | `MaxFileSize` | `long?`              | `null`  | Maximum file size (in bytes).                 |
@@ -45,6 +45,6 @@ A drag-and-drop–enabled file upload area.
 ## Events
 
 | Event            | Payload                       | Description                                            |
-| :--------------- | :---------------------------- | :----------------------------------------------------- |
+|:-----------------|:------------------------------|:-------------------------------------------------------|
 | `FilesChanged`   | `List<IBrowserFile>`          | Triggered whenever the file list changes (add/remove). |
 | `OnFileSelected` | `IReadOnlyList<IBrowserFile>` | Triggered only when new files are selected.            |

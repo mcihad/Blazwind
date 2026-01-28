@@ -1,6 +1,7 @@
 # BwDocumentViewer
 
-A high-performance document and image viewer. Specifically designed for Enterprise Document Management (EDM) systems, it supports PDFs and various image formats with built-in editing tools.
+A high-performance document and image viewer. Specifically designed for Enterprise Document Management (EDM) systems, it
+supports PDFs and various image formats with built-in editing tools.
 
 ## Features
 
@@ -13,6 +14,7 @@ A high-performance document and image viewer. Specifically designed for Enterpri
 ## Usage
 
 ### Simple PDF Viewer
+
 ```razor
 <BwDocumentViewer Url="https://example.com/report.pdf" 
                   Type="DocumentType.Pdf" 
@@ -20,6 +22,7 @@ A high-performance document and image viewer. Specifically designed for Enterpri
 ```
 
 ### Image Editor Mode
+
 ```razor
 <BwDocumentViewer Url="https://example.com/identity-card.jpg" 
                   Type="DocumentType.Jpeg" 
@@ -37,25 +40,25 @@ A high-performance document and image viewer. Specifically designed for Enterpri
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Url` | `string?` | `null` | The source URL of the document. |
-| `Data` | `string?` | `null` | Base64 string data (alternative to `Url`). |
-| `Type` | `DocumentType` | `Pdf` | The format: `Pdf`, `Png`, `Jpeg`, `Gif`, `Webp`. |
-| `Height` | `string` | `"600px"` | Visual height of the viewer container. |
-| `InitialZoom` | `double` | `1.0` | Initial zoom level for images. |
-| `ShowToolbar` | `bool` | `true` | Whether to display the control bar. |
-| `ShowDownloadButton` | `bool` | `true` | Show/hide the download anchor. |
-| `ShowPrintButton` | `bool` | `true` | Show/hide the printer trigger. |
-| `ShowFullscreenButton`| `bool` | `true` | Show/hide the fullscreen toggle. |
+| Parameter              | Type           | Default   | Description                                      |
+|------------------------|----------------|-----------|--------------------------------------------------|
+| `Url`                  | `string?`      | `null`    | The source URL of the document.                  |
+| `Data`                 | `string?`      | `null`    | Base64 string data (alternative to `Url`).       |
+| `Type`                 | `DocumentType` | `Pdf`     | The format: `Pdf`, `Png`, `Jpeg`, `Gif`, `Webp`. |
+| `Height`               | `string`       | `"600px"` | Visual height of the viewer container.           |
+| `InitialZoom`          | `double`       | `1.0`     | Initial zoom level for images.                   |
+| `ShowToolbar`          | `bool`         | `true`    | Whether to display the control bar.              |
+| `ShowDownloadButton`   | `bool`         | `true`    | Show/hide the download anchor.                   |
+| `ShowPrintButton`      | `bool`         | `true`    | Show/hide the printer trigger.                   |
+| `ShowFullscreenButton` | `bool`         | `true`    | Show/hide the fullscreen toggle.                 |
 
 ### Event Callbacks
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `OnLoad` | `int` | Triggered when the document is ready (sends page count). |
-| `OnSave` | `string` | Triggered when the 'Save' button is clicked (sends modified Base64). |
-| `OnError` | `string` | Triggered if document loading fails. |
+| Event     | Payload  | Description                                                          |
+|-----------|----------|----------------------------------------------------------------------|
+| `OnLoad`  | `int`    | Triggered when the document is ready (sends page count).             |
+| `OnSave`  | `string` | Triggered when the 'Save' button is clicked (sends modified Base64). |
+| `OnError` | `string` | Triggered if document loading fails.                                 |
 
 ## Methods (Public)
 
@@ -70,4 +73,5 @@ A high-performance document and image viewer. Specifically designed for Enterpri
 
 - **PDFs**: Rendered via an `<iframe>` targeting the direct URL or Base64 data.
 - **Images**: Enhanced with CSS transforms and filters for high-speed manipulation.
-- **Editing**: When clicking 'Save', the component uses JS to draw the current image state (with transforms) onto a hidden `<canvas>` and exports the new data.
+- **Editing**: When clicking 'Save', the component uses JS to draw the current image state (with transforms) onto a
+  hidden `<canvas>` and exports the new data.

@@ -11,7 +11,7 @@
         1 => "grow",
         _ => "" // Özel değerler inline style ile
     };
-    
+
     // Flex Shrink - sadece standart değerler
     var shrinkClass = Shrink switch
     {
@@ -20,7 +20,7 @@
         1 => "shrink",
         _ => "" // Özel değerler inline style ile
     };
-    
+
     // Flex Basis - standart Tailwind değerleri
     var basisClass = Basis switch
     {
@@ -53,7 +53,7 @@
         "11/12" => "basis-11/12",
         _ => "" // Özel değerler inline style ile
     };
-    
+
     // Align Self
     var alignSelfClass = AlignSelf switch
     {
@@ -66,7 +66,7 @@
         null => "",
         _ => ""
     };
-    
+
     // Order - standart Tailwind değerleri
     var orderClass = Order switch
     {
@@ -88,59 +88,67 @@
         12 => "order-12",
         _ => "" // Özel değerler inline style ile
     };
-    
+
     // Inline style for non-standard values
     var styleList = new List<string>();
-    
+
     if (Grow.HasValue && Grow.Value > 1)
         styleList.Add($"flex-grow: {Grow.Value}");
-    
+
     if (Shrink.HasValue && Shrink.Value > 1)
         styleList.Add($"flex-shrink: {Shrink.Value}");
-    
+
     if (!string.IsNullOrEmpty(Basis) && string.IsNullOrEmpty(basisClass))
         styleList.Add($"flex-basis: {Basis}");
-    
+
     if (Order.HasValue && string.IsNullOrEmpty(orderClass))
         styleList.Add($"order: {Order.Value}");
-    
+
     var inlineStyle = styleList.Count > 0 ? string.Join("; ", styleList) : null;
 }
 
-<div class="@CombineClasses(growClass, shrinkClass, basisClass, alignSelfClass, orderClass)" style="@($"{inlineStyle} {Style}")" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses(growClass, shrinkClass, basisClass, alignSelfClass, orderClass)"
+     style="@($"{inlineStyle} {Style}")" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
+
     /// <summary>
-    /// Child content
+    ///     Child content
     /// </summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>
-    /// Flex grow factor. 0 = don't grow, 1 = grow to fill
+    ///     Flex grow factor. 0 = don't grow, 1 = grow to fill
     /// </summary>
-    [Parameter] public int? Grow { get; set; }
-    
+    [Parameter]
+    public int? Grow { get; set; }
+
     /// <summary>
-    /// Flex shrink factor. 0 = don't shrink, 1 = shrink if needed
+    ///     Flex shrink factor. 0 = don't shrink, 1 = shrink if needed
     /// </summary>
-    [Parameter] public int? Shrink { get; set; }
-    
+    [Parameter]
+    public int? Shrink { get; set; }
+
     /// <summary>
-    /// Flex basis. Use "auto", "0", fractions like "1/2", "1/3", or custom values like "200px"
+    ///     Flex basis. Use "auto", "0", fractions like "1/2", "1/3", or custom values like "200px"
     /// </summary>
-    [Parameter] public string? Basis { get; set; }
-    
+    [Parameter]
+    public string? Basis { get; set; }
+
     /// <summary>
-    /// Override alignment for this specific item
+    ///     Override alignment for this specific item
     /// </summary>
-    [Parameter] public BwAlignSelf? AlignSelf { get; set; }
-    
+    [Parameter]
+    public BwAlignSelf? AlignSelf { get; set; }
+
     /// <summary>
-    /// Visual order. Use -9999 for first, 9999 for last, or any number 1-12
+    ///     Visual order. Use -9999 for first, 9999 for last, or any number 1-12
     /// </summary>
-    [Parameter] public int? Order { get; set; }
-    
+    [Parameter]
+    public int? Order { get; set; }
+
 
 }

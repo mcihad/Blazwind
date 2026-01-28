@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
 @using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<bool>
 
 @{
@@ -10,17 +10,17 @@
         BwSize.Large => ("bw-switch-track-large", "bw-switch-thumb-large"),
         _ => ("bw-switch-track-medium", "bw-switch-thumb-medium")
     };
-    
+
     var trackSize = sizeConfig.Item1;
     var thumbSize = sizeConfig.Item2;
-    
+
     var labelSizeClass = Size switch
     {
         BwSize.Small => "bw-label-small",
         BwSize.Large => "bw-label-large",
         _ => ""
     };
-    
+
     var colorClass = Color switch
     {
         BwColor.Success => "bw-switch-success",
@@ -45,7 +45,7 @@
                 @attributes="AdditionalAttributes">
             <span class="bw-switch-thumb @thumbSize"></span>
         </button>
-        
+
         @if (HasLabel)
         {
             <span class="bw-label @labelSizeClass select-none">
@@ -56,18 +56,18 @@
                 }
             </span>
         }
-        
+
         @if (ChildContent != null)
         {
             <span class="bw-label @labelSizeClass select-none">@ChildContent</span>
         }
-        
+
         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
         {
-            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
         }
     </label>
-    
+
     @* Error/Helper Messages *@
     @if (HasError)
     {
@@ -83,35 +83,40 @@
 </div>
 
 @code {
+
     /// <summary>Color scheme for the switch</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     /// <summary>Custom content to display as label</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Alias for Value - checked state</summary>
-    [Parameter] 
-    public bool IsChecked 
-    { 
-        get => Value; 
-        set => Value = value; 
+    [Parameter]
+    public bool IsChecked
+    {
+        get => Value;
+        set => Value = value;
     }
-    
+
     /// <summary>Callback when checked state changes</summary>
-    [Parameter] public EventCallback<bool> IsCheckedChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsCheckedChanged { get; set; }
 
     private async Task Toggle()
     {
         if (IsDisabled) return;
-        
+
         Value = !Value;
         await ValueChanged.InvokeAsync(Value);
         await IsCheckedChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);
-        
+
         if (CascadedEditContext != null && For != null)
         {
             CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
         }
     }
+
 }

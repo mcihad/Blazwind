@@ -1,17 +1,15 @@
 @namespace Blazwind.Components.Navigation
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Badge
 @inject NavigationManager NavigationManager
 @inherits BwBase
 
 @{
-    var isActive = ParentNav?.ActiveItemId == _itemId || 
+    var isActive = ParentNav?.ActiveItemId == _itemId ||
                    (!string.IsNullOrEmpty(Href) && NavigationManager.Uri.EndsWith(Href));
     var itemClass = isActive ? "bw-bottom-nav-item bw-bottom-nav-item-active" : "bw-bottom-nav-item";
     var disabledClass = IsDisabled ? "bw-bottom-nav-item-disabled" : "";
 }
 
-<a href="@Href" 
+<a href="@Href"
    class="@CombineClasses(itemClass, disabledClass)"
    style="@Style" id="@Id" @attributes="AdditionalAttributes"
    @onclick="HandleClick"
@@ -31,7 +29,8 @@
     </div>
     @if (!string.IsNullOrEmpty(Label))
     {
-        <span class="text-[11px] font-medium mt-1 text-center max-w-16 overflow-hidden text-ellipsis whitespace-nowrap">@Label</span>
+        <span
+            class="text-[11px] font-medium mt-1 text-center max-w-16 overflow-hidden text-ellipsis whitespace-nowrap">@Label</span>
     }
     @if (isActive)
     {
@@ -40,23 +39,39 @@
 </a>
 
 @code {
-    [CascadingParameter] public BwBottomNav? ParentNav { get; set; }
-    
-    [Parameter] public string Icon { get; set; } = "fa-solid fa-home";
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Href { get; set; }
-    [Parameter] public int BadgeCount { get; set; } = 0;
-    [Parameter] public bool ShowDot { get; set; } = false;
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public EventCallback OnClick { get; set; }
-    
-    private string _itemId = Guid.NewGuid().ToString();
+
+    [CascadingParameter]
+    public BwBottomNav? ParentNav { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; } = "fa-solid fa-home";
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; }
+
+    [Parameter]
+    public int BadgeCount { get; set; }
+
+    [Parameter]
+    public bool ShowDot { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private readonly string _itemId = Guid.NewGuid().ToString();
 
     private async Task HandleClick()
     {
         if (IsDisabled) return;
-        
+
         ParentNav?.SetActiveItem(_itemId);
         await OnClick.InvokeAsync();
     }
+
 }

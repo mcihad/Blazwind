@@ -19,6 +19,7 @@ Tamamen özelleştirilebilir brush bileşeni. Kendi görselleştirmenizi ekleyeb
 ```
 
 ### Şablonlar ile
+
 ```razor
 <BwCustomRange OnBrushChanged="OnBrushChanged">
     <BackgroundTemplate>
@@ -36,6 +37,7 @@ Tamamen özelleştirilebilir brush bileşeni. Kendi görselleştirmenizi ekleyeb
 ```
 
 ### Görsel Harita ile
+
 ```razor
 <BwCustomRange Label="Bölge Seçimi" OnBrushChanged="OnBrushChanged">
     <img src="/images/heatmap.png" class="w-full h-24 object-cover rounded" />
@@ -43,6 +45,7 @@ Tamamen özelleştirilebilir brush bileşeni. Kendi görselleştirmenizi ekleyeb
 ```
 
 ### Özel SVG Grafik ile
+
 ```razor
 <BwCustomRange OnBrushChanged="OnBrushChanged">
     <svg viewBox="0 0 400 100" class="w-full h-24">
@@ -57,27 +60,28 @@ Tamamen özelleştirilebilir brush bileşeni. Kendi görselleştirmenizi ekleyeb
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `BackgroundTemplate` | `RenderFragment` | `null` | Tüm alanı kaplayan arka plan şablonu. |
-| `SelectionTemplate` | `RenderFragment` | `null` | Sadece seçili alanı kaplayan şablon. |
-| `HandleTemplate` | `RenderFragment` | `null` | Tutamaçlar için özel şablon. |
-| `ChildContent` | `RenderFragment` | `null` | Ana içerik alanı. |
-| `StartPercent` | `double` | `0` | Başlangıç yüzdesi (Two-way binding). |
-| `EndPercent` | `double` | `100` | Bitiş yüzdesi (Two-way binding). |
-| `MinWidthPercent` | `double` | `5` | Minimum seçim genişliği (%). |
-| `Height` | `int` | `80` | Bileşen yüksekliği (px). |
-| `Label` | `string` | `null` | Alan etiketi. |
+| Parametre            | Tip              | Varsayılan | Açıklama                              |
+|:---------------------|:-----------------|:-----------|:--------------------------------------|
+| `BackgroundTemplate` | `RenderFragment` | `null`     | Tüm alanı kaplayan arka plan şablonu. |
+| `SelectionTemplate`  | `RenderFragment` | `null`     | Sadece seçili alanı kaplayan şablon.  |
+| `HandleTemplate`     | `RenderFragment` | `null`     | Tutamaçlar için özel şablon.          |
+| `ChildContent`       | `RenderFragment` | `null`     | Ana içerik alanı.                     |
+| `StartPercent`       | `double`         | `0`        | Başlangıç yüzdesi (Two-way binding).  |
+| `EndPercent`         | `double`         | `100`      | Bitiş yüzdesi (Two-way binding).      |
+| `MinWidthPercent`    | `double`         | `5`        | Minimum seçim genişliği (%).          |
+| `Height`             | `int`            | `80`       | Bileşen yüksekliği (px).              |
+| `Label`              | `string`         | `null`     | Alan etiketi.                         |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `StartPercentChanged` | `double` | Başlangıç yüzdesi değiştiğinde tetiklenir. |
-| `EndPercentChanged` | `double` | Bitiş yüzdesi değiştiğinde tetiklenir. |
-| `OnBrushChanged` | `BrushChangedEventArgs` | Fırça alanı her değiştiğinde tetiklenir. |
+| Olay                  | Paylaşım (Payload)      | Açıklama                                   |
+|:----------------------|:------------------------|:-------------------------------------------|
+| `StartPercentChanged` | `double`                | Başlangıç yüzdesi değiştiğinde tetiklenir. |
+| `EndPercentChanged`   | `double`                | Bitiş yüzdesi değiştiğinde tetiklenir.     |
+| `OnBrushChanged`      | `BrushChangedEventArgs` | Fırça alanı her değiştiğinde tetiklenir.   |
 
 ## Slot Pattern
+
 ```razor
 <BwCustomRange>
     <!-- Arka plan - tüm alan -->
@@ -103,8 +107,10 @@ Tamamen özelleştirilebilir brush bileşeni. Kendi görselleştirmenizi ekleyeb
 ```
 
 ## Kullanım Senaryoları
+
 - **Özel Grafikler:** D3.js, Chart.js entegrasyonu
 - **Harita Seçimi:** Coğrafi bölge seçimi
 - **Görüntü Kırpma:** Resim üzerinde alan seçimi
 - **Video Timeline:** Video düzenleme zaman çizelgesi
+
 ```

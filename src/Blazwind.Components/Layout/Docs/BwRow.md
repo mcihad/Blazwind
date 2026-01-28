@@ -1,10 +1,12 @@
 # Row
 
-A flexbox-based container component used as a horizontal wrapper in the Blazwind grid system. Supports both Flexbox and CSS Grid layouts.
+A flexbox-based container component used as a horizontal wrapper in the Blazwind grid system. Supports both Flexbox and
+CSS Grid layouts.
 
 ## Usage
 
 ### Grid Logic
+
 Combine `BwRow` with `BwColumn` to create responsive layouts.
 
 ```razor
@@ -17,6 +19,7 @@ Combine `BwRow` with `BwColumn` to create responsive layouts.
 ```
 
 ### Alignment & Spacing
+
 Control internal alignment and gaps easily using enums.
 
 ```razor
@@ -28,6 +31,7 @@ Control internal alignment and gaps easily using enums.
 ```
 
 ### CSS Grid Mode
+
 Use responsive column parameters to switch to CSS Grid layout automatically.
 
 ```razor
@@ -43,33 +47,35 @@ This automatically generates: `grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `MainAxisAlignment` | `BwMainAxisAlignment` | `Start` | Horizontal alignment of children (Start, Center, End, SpaceBetween, etc.). |
-| `CrossAxisAlignment` | `BwCrossAxisAlignment` | `Stretch` | Vertical alignment of children (Start, Center, End, Stretch, Baseline). |
-| `Spacing` | `BwSpacing` | `Md` | Standard gap between items using theme scale. |
-| `GutterX` | `int?` | `null` | Manual horizontal gap (Tailwind scale 0-12). Overrides `Spacing`. |
-| `GutterY` | `int?` | `null` | Manual vertical gap (Tailwind scale 0-12). Overrides `Spacing`. |
-| `Wrap` | `bool` | `true` | Whether items should wrap to the next line. |
-| `Class` | `string?` | `null` | Custom CSS classes. |
+| Parameter            | Type                   | Default   | Description                                                                |
+|:---------------------|:-----------------------|:----------|:---------------------------------------------------------------------------|
+| `MainAxisAlignment`  | `BwMainAxisAlignment`  | `Start`   | Horizontal alignment of children (Start, Center, End, SpaceBetween, etc.). |
+| `CrossAxisAlignment` | `BwCrossAxisAlignment` | `Stretch` | Vertical alignment of children (Start, Center, End, Stretch, Baseline).    |
+| `Spacing`            | `BwSpacing`            | `Md`      | Standard gap between items using theme scale.                              |
+| `GutterX`            | `int?`                 | `null`    | Manual horizontal gap (Tailwind scale 0-12). Overrides `Spacing`.          |
+| `GutterY`            | `int?`                 | `null`    | Manual vertical gap (Tailwind scale 0-12). Overrides `Spacing`.            |
+| `Wrap`               | `bool`                 | `true`    | Whether items should wrap to the next line.                                |
+| `Class`              | `string?`              | `null`    | Custom CSS classes.                                                        |
 
 ### Responsive Grid Columns
 
 When any column parameter is set, the component switches from Flexbox to CSS Grid.
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Cols` | `int?` | `null` | Base column count (1-8). |
-| `SmCols` | `int?` | `null` | Column count for `sm:` breakpoint (640px+). |
-| `MdCols` | `int?` | `null` | Column count for `md:` breakpoint (768px+). |
-| `LgCols` | `int?` | `null` | Column count for `lg:` breakpoint (1024px+). |
-| `XlCols` | `int?` | `null` | Column count for `xl:` breakpoint (1280px+). |
+| Parameter | Type   | Default | Description                                  |
+|:----------|:-------|:--------|:---------------------------------------------|
+| `Cols`    | `int?` | `null`  | Base column count (1-8).                     |
+| `SmCols`  | `int?` | `null`  | Column count for `sm:` breakpoint (640px+).  |
+| `MdCols`  | `int?` | `null`  | Column count for `md:` breakpoint (768px+).  |
+| `LgCols`  | `int?` | `null`  | Column count for `lg:` breakpoint (1024px+). |
+| `XlCols`  | `int?` | `null`  | Column count for `xl:` breakpoint (1280px+). |
 
 ## Enums
 
 ### BwMainAxisAlignment
+
 - `Start`, `Center`, `End`, `SpaceBetween`, `SpaceAround`, `SpaceEvenly`
 
 ### BwCrossAxisAlignment
+
 - `Start`, `Center`, `End`, `Stretch`, `Baseline`
 

@@ -1,6 +1,7 @@
 # BwTypography
 
-A flexible component used for headings, paragraphs, labels, and generic text formatting with support for various weights, colors, and truncation.
+A flexible component used for headings, paragraphs, labels, and generic text formatting with support for various
+weights, colors, and truncation.
 
 ## Usage
 
@@ -17,24 +18,28 @@ A flexible component used for headings, paragraphs, labels, and generic text for
 ## Features
 
 ### HTML Tags
+
 Control the underlying HTML element using the `Tag` parameter. Supported: `H1`-`H6`, `P`, `Span`, `Label`, `Div`.
 
 ### Sizes
+
 Set text size using the `Size` parameter, ranging from `ExtraSmall` (xs) to `ExtraLarge` (xl).
 
 ### Font Weights
+
 Comprehensive support for font weights from `Thin` (100) to `Black` (900).
 
-| Weight | Tailwind Class |
-|--------|----------------|
-| `Thin` | `font-thin` |
-| `Light`| `font-light` |
-| `Normal`| `font-normal` |
-| `Medium`| `font-medium` |
-| `Bold` | `font-bold` |
-| `Black`| `font-black` |
+| Weight   | Tailwind Class |
+|----------|----------------|
+| `Thin`   | `font-thin`    |
+| `Light`  | `font-light`   |
+| `Normal` | `font-normal`  |
+| `Medium` | `font-medium`  |
+| `Bold`   | `font-bold`    |
+| `Black`  | `font-black`   |
 
 ### Text Truncation
+
 - **IsTruncated:** Truncates text to a single line with an ellipsis (`...`).
 - **LineClamp:** Truncates text after a specified number of lines (e.g., `LineClamp="3"`).
 
@@ -51,9 +56,10 @@ Comprehensive support for font weights from `Thin` (100) to `Black` (900).
 ```
 
 ### Styling
-*   **Align:** Text alignment (`Left`, `Center`, `Right`).
-*   **Transform:** Text transformation (`Uppercase`, `Lowercase`, `Capitalize`).
-*   **Decoration:** Style flags like `Bold`, `Italic`, `Underline`, `Strikethrough`.
+
+* **Align:** Text alignment (`Left`, `Center`, `Right`).
+* **Transform:** Text transformation (`Uppercase`, `Lowercase`, `Capitalize`).
+* **Decoration:** Style flags like `Bold`, `Italic`, `Underline`, `Strikethrough`.
 
 ```razor
 <BwTypography Bold="true" Italic="true" Align="BwAlignment.Center">
@@ -63,22 +69,22 @@ Comprehensive support for font weights from `Thin` (100) to `Black` (900).
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Text` | `string?` | `null` | The text content (can be used instead of `ChildContent`). |
-| `ChildContent` | `RenderFragment?` | `null` | Customizable content inside the component. |
-| `Tag` | `BwTypographyTag`| `Span` | The HTML tag to render (`H1`-`H6`, `P`, `Span`, `Label`, `Div`). |
-| `Size` | `BwSize` | `Medium` | Text size (`ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`). |
-| `Weight` | `BwFontWeight` | `Normal` | Font weight (`Thin` to `Black`). |
-| `Color` | `BwColor` | `Primary` | Text color variant. |
-| `Align` | `BwAlignment?` | `null` | Text alignment (Left, Center, Right). |
-| `Transform` | `BwTextTransform?` | `null` | Text transformation (Uppercase, Lowercase, Capitalize). |
-| `Bold` | `bool` | `false` | Shortcut for `Weight=Bold`. |
-| `Italic` | `bool` | `false` | Applies italic style. |
-| `Underline` | `bool` | `false` | Applies underline decoration. |
-| `Strikethrough`| `bool` | `false` | Applies line-through decoration. |
-| `IsTruncated` | `bool` | `false` | Truncate text to a single line. |
-| `LineClamp` | `int?` | `null` | Truncate text after N lines. |
-| `OnClick` | `EventCallback<MouseEventArgs>`| - | Triggered when the component is clicked. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
-| `Style` | `string?` | `null` | Inline CSS styles. |
+| Parameter       | Type                            | Default   | Description                                                         |
+|-----------------|---------------------------------|-----------|---------------------------------------------------------------------|
+| `Text`          | `string?`                       | `null`    | The text content (can be used instead of `ChildContent`).           |
+| `ChildContent`  | `RenderFragment?`               | `null`    | Customizable content inside the component.                          |
+| `Tag`           | `BwTypographyTag`               | `Span`    | The HTML tag to render (`H1`-`H6`, `P`, `Span`, `Label`, `Div`).    |
+| `Size`          | `BwSize`                        | `Medium`  | Text size (`ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge`). |
+| `Weight`        | `BwFontWeight`                  | `Normal`  | Font weight (`Thin` to `Black`).                                    |
+| `Color`         | `BwColor`                       | `Primary` | Text color variant.                                                 |
+| `Align`         | `BwAlignment?`                  | `null`    | Text alignment (Left, Center, Right).                               |
+| `Transform`     | `BwTextTransform?`              | `null`    | Text transformation (Uppercase, Lowercase, Capitalize).             |
+| `Bold`          | `bool`                          | `false`   | Shortcut for `Weight=Bold`.                                         |
+| `Italic`        | `bool`                          | `false`   | Applies italic style.                                               |
+| `Underline`     | `bool`                          | `false`   | Applies underline decoration.                                       |
+| `Strikethrough` | `bool`                          | `false`   | Applies line-through decoration.                                    |
+| `IsTruncated`   | `bool`                          | `false`   | Truncate text to a single line.                                     |
+| `LineClamp`     | `int?`                          | `null`    | Truncate text after N lines.                                        |
+| `OnClick`       | `EventCallback<MouseEventArgs>` | -         | Triggered when the component is clicked.                            |
+| `Class`         | `string?`                       | `null`    | Additional CSS classes.                                             |
+| `Style`         | `string?`                       | `null`    | Inline CSS styles.                                                  |

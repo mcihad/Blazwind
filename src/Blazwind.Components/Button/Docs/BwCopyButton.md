@@ -29,23 +29,24 @@ A utility button component used to copy text or code blocks to the clipboard wit
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Content` | `string` | (Required) | The text content to be copied to the clipboard. |
-| `Text` | `string` | `"Copy"` | The button label. |
-| `CopiedText` | `string` | `"Kopyalandı"` | The label shown after a successful copy. |
-| `Icon` | `string` | `"fa-regular fa-copy"` | The icon displayed inside the button. |
-| `Tooltip` | `string` | `"Panoya kopyala"` | Tooltip text shown on hover. |
-| `CopiedTooltip`| `string` | `"Kopyalandı!"` | Tooltip text shown after successful copy. |
-| `ShowText` | `bool` | `true` | If `true`, the text label is displayed next to the icon. |
-| `CopiedDuration`| `int` | `2000` | Duration (ms) to show the "Copied" state. |
-| `OnCopied` | `EventCallback` | - | Triggered after the content is successfully copied. |
-| `Class` | `string?` | `null` | Additional CSS classes for the button. |
-| `Style` | `string?` | `null` | Inline CSS styles. |
+| Parameter        | Type            | Default                | Description                                              |
+|------------------|-----------------|------------------------|----------------------------------------------------------|
+| `Content`        | `string`        | (Required)             | The text content to be copied to the clipboard.          |
+| `Text`           | `string`        | `"Copy"`               | The button label.                                        |
+| `CopiedText`     | `string`        | `"Kopyalandı"`         | The label shown after a successful copy.                 |
+| `Icon`           | `string`        | `"fa-regular fa-copy"` | The icon displayed inside the button.                    |
+| `Tooltip`        | `string`        | `"Panoya kopyala"`     | Tooltip text shown on hover.                             |
+| `CopiedTooltip`  | `string`        | `"Kopyalandı!"`        | Tooltip text shown after successful copy.                |
+| `ShowText`       | `bool`          | `true`                 | If `true`, the text label is displayed next to the icon. |
+| `CopiedDuration` | `int`           | `2000`                 | Duration (ms) to show the "Copied" state.                |
+| `OnCopied`       | `EventCallback` | -                      | Triggered after the content is successfully copied.      |
+| `Class`          | `string?`       | `null`                 | Additional CSS classes for the button.                   |
+| `Style`          | `string?`       | `null`                 | Inline CSS styles.                                       |
 
 ## Examples
 
 ### Code Block with Copy Button
+
 A common pattern for documentation or code snippets.
 
 ```razor

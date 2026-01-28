@@ -1,15 +1,18 @@
 # BwDialog
 
-The `BwDialog` component and its associated `DialogService` provide a powerful way to display modal windows. It supports everything from simple alerts and confirmations to hosting complex Razor components with data exchange.
+The `BwDialog` component and its associated `DialogService` provide a powerful way to display modal windows. It supports
+everything from simple alerts and confirmations to hosting complex Razor components with data exchange.
 
 ## Service Configuration
 
 Register the service in your `Program.cs`:
+
 ```csharp
 builder.Services.AddScoped<DialogService>();
 ```
 
 Place the container in your `MainLayout.razor`:
+
 ```razor
 <BwDialogContainer />
 ```
@@ -17,6 +20,7 @@ Place the container in your `MainLayout.razor`:
 ## Usage
 
 ### 1. Simple Utility Dialogs
+
 Use the service to quickly show standard messages or gather input:
 
 ```csharp
@@ -33,6 +37,7 @@ string? name = await DialogService.ShowInputAsync("Identify Yourself", "Please e
 ```
 
 ### 2. Custom Razor Component Dialogs
+
 You can open any Razor component as a modal:
 
 ```csharp
@@ -51,26 +56,28 @@ if (!dialog.Canceled && dialog.Data != null)
 
 ### DialogOptions
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `Width` | `string` | `"500px"` | CSS width of the dialog. |
-| `Height` | `string` | `"auto"` | CSS height of the dialog. |
-| `MaxWidth` | `string` | `"90vw"` | CSS max-width for responsiveness. |
-| `FullScreen` | `bool` | `false` | When true, the dialog occupies the entire viewport. |
-| `Draggable` | `bool` | `false` | Allows moving the dialog by dragging the header. |
-| `Resizable` | `bool` | `false` | Allows resizing via the bottom-right corner. |
-| `ShowClose` | `bool` | `true` | Displays the 'X' button in the header. |
-| `TitleColor` | `BwColor`| `Primary` | Background color theme for the header. |
-| `TitleSize` | `BwSize` | `Medium` | Font size and padding for the header. |
+| Property     | Type      | Default   | Description                                         |
+|--------------|-----------|-----------|-----------------------------------------------------|
+| `Width`      | `string`  | `"500px"` | CSS width of the dialog.                            |
+| `Height`     | `string`  | `"auto"`  | CSS height of the dialog.                           |
+| `MaxWidth`   | `string`  | `"90vw"`  | CSS max-width for responsiveness.                   |
+| `FullScreen` | `bool`    | `false`   | When true, the dialog occupies the entire viewport. |
+| `Draggable`  | `bool`    | `false`   | Allows moving the dialog by dragging the header.    |
+| `Resizable`  | `bool`    | `false`   | Allows resizing via the bottom-right corner.        |
+| `ShowClose`  | `bool`    | `true`    | Displays the 'X' button in the header.              |
+| `TitleColor` | `BwColor` | `Primary` | Background color theme for the header.              |
+| `TitleSize`  | `BwSize`  | `Medium`  | Font size and padding for the header.               |
 
 ### DialogService Methods
 
 #### Utility Dialogs
+
 - `ShowAlertAsync(title, message, color)`: Show a simple alert.
 - `ShowConfirmAsync(title, message, okText, cancelText, color)`: Ask for confirmation.
 - `ShowInputAsync(title, message, placeholder, defaultValue)`: Prompt for text input.
 
 #### Premium Feedback Dialogs
+
 - `ShowLoadingAsync(message)`: Non-blocking loading modal. Returns a handle to close later.
 - `ShowSquareLoadingAsync(message)`: Creative square-animation loading modal.
 - `ShowPulseLoadingAsync(message, icon)`: Pulsing icon notification.
@@ -79,11 +86,13 @@ if (!dialog.Canceled && dialog.Data != null)
 - `ShowCountdownAsync(title, message, seconds)`: Automatically closes after the time expires.
 
 #### Specialized Visuals
+
 - `ShowSuccessAnimationAsync(title, message)`: Play a checkmark animation.
 - `ShowErrorAnimationAsync(title, message)`: Play a cross animation.
 - `ShowImagePreviewAsync(url, title, description)`: High-fidelity image lightbox.
 
 ## Handling Dialog Results
+
 Inside your custom component, receive the `DialogInstance` via a `CascadingParameter` to control the dialog:
 
 ```razor

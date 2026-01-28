@@ -1,6 +1,7 @@
 # Flex & FlexItem
 
-The `BwFlex` and `BwFlexItem` components provide a high-level wrapper around the CSS Flexbox system, allowing you to build professional layouts without writing manual CSS.
+The `BwFlex` and `BwFlexItem` components provide a high-level wrapper around the CSS Flexbox system, allowing you to
+build professional layouts without writing manual CSS.
 
 ## BwFlex (Container)
 
@@ -8,18 +9,18 @@ The root flex container. Controls the arrangement, spacing, and alignment of its
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Direction` | `BwFlexDirection` | `Row` | The direction of the main axis (`Row`, `RowReverse`, `Column`, `ColumnReverse`). |
-| `Wrap` | `BwFlexWrap` | `NoWrap` | Controls item wrapping behavior (`NoWrap`, `Wrap`, `WrapReverse`). |
-| `JustifyContent` | `BwMainAxisAlignment` | `Start` | Alignment along the main axis (`Start`, `Center`, `End`, `SpaceBetween`, etc.). |
-| `AlignItems` | `BwCrossAxisAlignment` | `Stretch` | Alignment along the cross axis (`Start`, `Center`, `End`, `Stretch`, `Baseline`). |
-| `AlignContent` | `BwAlignContent?` | `null` | Alignment of multi-line content (only when `Wrap` is enabled). |
-| `Gap` | `BwSpacing` | `None` | Uniform spacing between children using the theme scale. |
-| `GapX` | `int?` | `null` | Horizontal gap override (Tailwind scale 0-96). |
-| `GapY` | `int?` | `null` | Vertical gap override (Tailwind scale 0-96). |
-| `Inline` | `bool` | `false` | If true, uses `inline-flex` instead of `flex`. |
-| `Class` | `string?` | `null` | Custom CSS classes. |
+| Parameter        | Type                   | Default   | Description                                                                       |
+|:-----------------|:-----------------------|:----------|:----------------------------------------------------------------------------------|
+| `Direction`      | `BwFlexDirection`      | `Row`     | The direction of the main axis (`Row`, `RowReverse`, `Column`, `ColumnReverse`).  |
+| `Wrap`           | `BwFlexWrap`           | `NoWrap`  | Controls item wrapping behavior (`NoWrap`, `Wrap`, `WrapReverse`).                |
+| `JustifyContent` | `BwMainAxisAlignment`  | `Start`   | Alignment along the main axis (`Start`, `Center`, `End`, `SpaceBetween`, etc.).   |
+| `AlignItems`     | `BwCrossAxisAlignment` | `Stretch` | Alignment along the cross axis (`Start`, `Center`, `End`, `Stretch`, `Baseline`). |
+| `AlignContent`   | `BwAlignContent?`      | `null`    | Alignment of multi-line content (only when `Wrap` is enabled).                    |
+| `Gap`            | `BwSpacing`            | `None`    | Uniform spacing between children using the theme scale.                           |
+| `GapX`           | `int?`                 | `null`    | Horizontal gap override (Tailwind scale 0-96).                                    |
+| `GapY`           | `int?`                 | `null`    | Vertical gap override (Tailwind scale 0-96).                                      |
+| `Inline`         | `bool`                 | `false`   | If true, uses `inline-flex` instead of `flex`.                                    |
+| `Class`          | `string?`              | `null`    | Custom CSS classes.                                                               |
 
 ### Usage
 
@@ -49,18 +50,19 @@ Provides granular control over a single item within a `BwFlex` container.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Grow` | `int?` | `null` | Growth factor (0 = default, 1+ = fills space). |
-| `Shrink` | `int?` | `null` | Shrink factor (0 = never shrink, 1+ = shrinks if needed). |
-| `Basis` | `string?` | `null` | Initial size (`auto`, `0`, `full`, `1/4`, `200px`, `10rem`). |
-| `AlignSelf` | `BwAlignSelf?` | `null` | Individual alignment override (`Start`, `Center`, `End`, `Stretch`). |
-| `Order` | `int?` | `null` | Visual order (`-9999` for first, `9999` for last, or `1-12`). |
-| `Class` | `string?` | `null` | Custom CSS classes. |
+| Parameter   | Type           | Default | Description                                                          |
+|:------------|:---------------|:--------|:---------------------------------------------------------------------|
+| `Grow`      | `int?`         | `null`  | Growth factor (0 = default, 1+ = fills space).                       |
+| `Shrink`    | `int?`         | `null`  | Shrink factor (0 = never shrink, 1+ = shrinks if needed).            |
+| `Basis`     | `string?`      | `null`  | Initial size (`auto`, `0`, `full`, `1/4`, `200px`, `10rem`).         |
+| `AlignSelf` | `BwAlignSelf?` | `null`  | Individual alignment override (`Start`, `Center`, `End`, `Stretch`). |
+| `Order`     | `int?`         | `null`  | Visual order (`-9999` for first, `9999` for last, or `1-12`).        |
+| `Class`     | `string?`      | `null`  | Custom CSS classes.                                                  |
 
 ### Enums
 
 #### BwAlignSelf
+
 - `Auto`, `Start`, `Center`, `End`, `Stretch`, `Baseline`
 
 ### Advanced Sizing Examples
@@ -86,6 +88,7 @@ Provides granular control over a single item within a `BwFlex` container.
 ## Real-World Examples
 
 ### Media Object
+
 ```razor
 <BwFlex Gap="BwSpacing.Md" AlignItems="BwCrossAxisAlignment.Start">
     <div class="w-12 h-12 bg-blue-500 rounded-full shrink-0"></div>
@@ -97,7 +100,9 @@ Provides granular control over a single item within a `BwFlex` container.
 ```
 
 ### Center Everything
+
 Perfect for splash screens or hero sections.
+
 ```razor
 <BwFlex JustifyContent="BwMainAxisAlignment.Center" 
         AlignItems="BwCrossAxisAlignment.Center" 

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Main axis alignment (justify-content)
+///     Main axis alignment (justify-content)
 /// </summary>
 public enum BwMainAxisAlignment
 {
@@ -14,7 +14,7 @@ public enum BwMainAxisAlignment
 }
 
 /// <summary>
-/// Cross axis alignment (align-items)
+///     Cross axis alignment (align-items)
 /// </summary>
 public enum BwCrossAxisAlignment
 {
@@ -26,7 +26,7 @@ public enum BwCrossAxisAlignment
 }
 
 /// <summary>
-/// Spacing between items
+///     Spacing between items
 /// </summary>
 public enum BwSpacing
 {

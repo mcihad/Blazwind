@@ -4,7 +4,8 @@ A popover component that displays contextual help or information when clicking a
 
 ## Overview
 
-`BwHelpTooltip` provides a clean way to show additional details without cluttering the UI. It renders a clickable icon (default: question mark) which opens a popover containing title, text, or custom content.
+`BwHelpTooltip` provides a clean way to show additional details without cluttering the UI. It renders a clickable icon (
+default: question mark) which opens a popover containing title, text, or custom content.
 
 ## Usage
 
@@ -24,29 +25,30 @@ A popover component that displays contextual help or information when clicking a
 
 ## Parametreler
 
-| Parametre | Tip | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Content` | `string` | `null` | Tooltip içerisinde gösterilecek düz metin. |
-| `Title` | `string` | `null` | Tooltip başlığı (isteğe bağlı). |
-| `ChildContent` | `RenderFragment` | `null` | `Content` yerine karmaşık HTML içeriği yerleştirmek için kullanılır. |
-| `Icon` | `string` | `"fa-solid fa-circle-question"` | Tetikleyici ikon sınıfı. |
-| `Color` | `BwColor` | `Info` | İkonun rengi. |
-| `Size` | `BwSize` | `Medium` | İkonun boyutu ve tooltip genişliği. |
-| `Position` | `HelpTooltipPosition` | `Top` | Tooltip'in ikona göre konumu (`Top`, `Bottom`, `Left`, `Right`). |
-| `Closable` | `bool` | `true` | Kapatma butonunu ("X") gösterir. |
-| `LinkText` | `string` | `null` | Alt kısımda gösterilecek bağlantı metni. |
-| `LinkHref` | `string` | `null` | Bağlantı adresi (URL). |
+| Parametre      | Tip                   | Default                         | Description                                                          |
+|:---------------|:----------------------|:--------------------------------|:---------------------------------------------------------------------|
+| `Content`      | `string`              | `null`                          | Tooltip içerisinde gösterilecek düz metin.                           |
+| `Title`        | `string`              | `null`                          | Tooltip başlığı (isteğe bağlı).                                      |
+| `ChildContent` | `RenderFragment`      | `null`                          | `Content` yerine karmaşık HTML içeriği yerleştirmek için kullanılır. |
+| `Icon`         | `string`              | `"fa-solid fa-circle-question"` | Tetikleyici ikon sınıfı.                                             |
+| `Color`        | `BwColor`             | `Info`                          | İkonun rengi.                                                        |
+| `Size`         | `BwSize`              | `Medium`                        | İkonun boyutu ve tooltip genişliği.                                  |
+| `Position`     | `HelpTooltipPosition` | `Top`                           | Tooltip'in ikona göre konumu (`Top`, `Bottom`, `Left`, `Right`).     |
+| `Closable`     | `bool`                | `true`                          | Kapatma butonunu ("X") gösterir.                                     |
+| `LinkText`     | `string`              | `null`                          | Alt kısımda gösterilecek bağlantı metni.                             |
+| `LinkHref`     | `string`              | `null`                          | Bağlantı adresi (URL).                                               |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `OnOpen` | `null` | Tooltip açıldığında tetiklenir. |
-| `OnClose` | `null` | Tooltip kapatıldığında tetiklenir. |
+| Olay      | Paylaşım (Payload) | Açıklama                           |
+|:----------|:-------------------|:-----------------------------------|
+| `OnOpen`  | `null`             | Tooltip açıldığında tetiklenir.    |
+| `OnClose` | `null`             | Tooltip kapatıldığında tetiklenir. |
 
 ## Examples
 
 ### With Title and Link
+
 ```razor
 <BwHelpTooltip Title="Secure Connection" 
                Content="Your data is encrypted using 256-bit SSL."
@@ -56,6 +58,7 @@ A popover component that displays contextual help or information when clicking a
 ```
 
 ### Custom Content
+
 ```razor
 <BwHelpTooltip Position="HelpTooltipPosition.Right">
     <div class="flex items-center gap-2">

@@ -46,7 +46,7 @@ A component used to select numeric values by sliding.
 ## Parameters
 
 | Parameter        | Type         | Default   | Description                                |
-| :--------------- | :----------- | :-------- | :----------------------------------------- |
+|:-----------------|:-------------|:----------|:-------------------------------------------|
 | `Value`          | `double`     | `0`       | Current value (two-way binding).           |
 | `Min`            | `double`     | `0`       | Minimum value.                             |
 | `Max`            | `double`     | `100`     | Maximum value.                             |
@@ -66,6 +66,6 @@ A component used to select numeric values by sliding.
 ## Events
 
 | Event          | Payload  | Description                                             |
-| :------------- | :------- | :------------------------------------------------------ |
+|:---------------|:---------|:--------------------------------------------------------|
 | `ValueChanged` | `double` | Triggered whenever the value changes (two-way binding). |
 | `OnChange`     | `double` | Triggered when the change is completed.                 |

@@ -3,7 +3,7 @@ using Blazwind.Components.Shared;
 namespace Blazwind.Components.Services;
 
 /// <summary>
-/// Calendar service interface - to be implemented by the application
+///     Calendar service interface - to be implemented by the application
 /// </summary>
 public interface ICalendarService
 {

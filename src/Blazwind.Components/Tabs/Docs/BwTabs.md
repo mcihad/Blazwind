@@ -21,7 +21,9 @@ A component that organizes content into separate views where only one view is vi
 ```
 
 ### Variants
-Use the `Variant` parameter to change the visual style: `Ghost` (Default), `Soft` (Pills), `Outline` (Card/Boxed), `Filled`.
+
+Use the `Variant` parameter to change the visual style: `Ghost` (Default), `Soft` (Pills), `Outline` (Card/Boxed),
+`Filled`.
 
 ```razor
 <BwTabs Variant="BwVariant.Soft">
@@ -30,6 +32,7 @@ Use the `Variant` parameter to change the visual style: `Ghost` (Default), `Soft
 ```
 
 ### Vertical Tabs
+
 Set `Vertical="true"` to display tabs as a sidebar list.
 
 ```razor
@@ -44,6 +47,7 @@ Set `Vertical="true"` to display tabs as a sidebar list.
 ```
 
 ### Closable Tabs
+
 Set `Closable="true"` on `BwTabItem` to show a close button.
 
 ```razor
@@ -58,24 +62,24 @@ Set `Closable="true"` on `BwTabItem` to show a close button.
 
 ### BwTabs Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `ActiveIndex` | `int` | `0` | Index of the currently active tab. |
-| `Variant` | `BwVariant` | `Ghost` | Style variant: `Ghost`, `Soft`, `Filled`, `Outline`. |
-| `Vertical` | `bool` | `false` | If true, tabs are displayed vertically. |
-| `Justified` | `bool` | `false` | If true, tabs fill the available width evenly. |
-| `Scrollable` | `bool` | `false` | Enables scrolling if tabs exceed container width. |
-| `ShowScrollControls`| `bool` | `false` | Shows arrow buttons for scrolling. |
-| `MaxTabs` | `int?` | `null` | Limits the maximum number of tabs. |
+| Parameter            | Type        | Default | Description                                          |
+|:---------------------|:------------|:--------|:-----------------------------------------------------|
+| `ActiveIndex`        | `int`       | `0`     | Index of the currently active tab.                   |
+| `Variant`            | `BwVariant` | `Ghost` | Style variant: `Ghost`, `Soft`, `Filled`, `Outline`. |
+| `Vertical`           | `bool`      | `false` | If true, tabs are displayed vertically.              |
+| `Justified`          | `bool`      | `false` | If true, tabs fill the available width evenly.       |
+| `Scrollable`         | `bool`      | `false` | Enables scrolling if tabs exceed container width.    |
+| `ShowScrollControls` | `bool`      | `false` | Shows arrow buttons for scrolling.                   |
+| `MaxTabs`            | `int?`      | `null`  | Limits the maximum number of tabs.                   |
 
 ### BwTabItem Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Title` | `string` | `null` | Tab header text. |
-| `Icon` | `string` | `null` | Icon class for the header. |
-| `Badge` | `RenderFragment`| `null` | Content to display as a badge next to the title. |
-| `IsDisabled` | `bool` | `false` | Disables the tab (cannot be clicked). |
-| `Closable` | `bool` | `false` | Shows a close button on the tab. |
-| `ConfirmClose` | `bool` | `false` | Asks for confirmation before closing. |
-| `TitleTemplate` | `RenderFragment`| `null` | Custom template for the tab header. |
+| Parameter       | Type             | Default | Description                                      |
+|:----------------|:-----------------|:--------|:-------------------------------------------------|
+| `Title`         | `string`         | `null`  | Tab header text.                                 |
+| `Icon`          | `string`         | `null`  | Icon class for the header.                       |
+| `Badge`         | `RenderFragment` | `null`  | Content to display as a badge next to the title. |
+| `IsDisabled`    | `bool`           | `false` | Disables the tab (cannot be clicked).            |
+| `Closable`      | `bool`           | `false` | Shows a close button on the tab.                 |
+| `ConfirmClose`  | `bool`           | `false` | Asks for confirmation before closing.            |
+| `TitleTemplate` | `RenderFragment` | `null`  | Custom template for the tab header.              |

@@ -1,10 +1,8 @@
 @namespace Blazwind.Components.Layout
-@using Blazwind.Components.Button
-@using Blazwind.Components.Shared
 
 
 <div id="components-reconnect-modal"
-    class="hidden fixed inset-0 z-[9999] opacity-0 transition-opacity duration-500 ease-in-out">
+     class="hidden fixed inset-0 z-[9999] opacity-0 transition-opacity duration-500 ease-in-out">
     <!-- Backdrop with blur -->
     <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-md"></div>
 
@@ -46,7 +44,7 @@
                     <h3 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">@ConnectionLostTitle</h3>
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">@ConnectionLostMessage</p>
                     <button onclick="window.Blazor.reconnect()"
-                        class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                            class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
                         <i class="fa-solid fa-rotate-right mr-2"></i> @RetryButtonText
                     </button>
                 </div>
@@ -61,7 +59,7 @@
                     </h3>
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">@ConnectionRejectedMessage</p>
                     <button onclick="location.reload()"
-                        class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                            class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
                         <i class="fa-solid fa-rotate mr-2"></i> @ReloadButtonText
                     </button>
                 </div>
@@ -129,15 +127,29 @@
 </style>
 
 @code {
-    [Parameter] public string RejoiningTitle { get; set; } = "Reconnecting...";
-    [Parameter] public string RejoiningMessage { get; set; } = "We're trying to reach the server.";
 
-    [Parameter] public string ConnectionLostTitle { get; set; } = "Connection Lost";
-    [Parameter] public string ConnectionLostMessage { get; set; } = "Please check your internet connection.";
+    [Parameter]
+    public string RejoiningTitle { get; set; } = "Reconnecting...";
 
-    [Parameter] public string ConnectionRejectedTitle { get; set; } = "Connection Rejected";
-    [Parameter] public string ConnectionRejectedMessage { get; set; } = "The server rejected the session. Please reload.";
+    [Parameter]
+    public string RejoiningMessage { get; set; } = "We're trying to reach the server.";
 
-    [Parameter] public string RetryButtonText { get; set; } = "Retry Connection";
-    [Parameter] public string ReloadButtonText { get; set; } = "Reload Page";
+    [Parameter]
+    public string ConnectionLostTitle { get; set; } = "Connection Lost";
+
+    [Parameter]
+    public string ConnectionLostMessage { get; set; } = "Please check your internet connection.";
+
+    [Parameter]
+    public string ConnectionRejectedTitle { get; set; } = "Connection Rejected";
+
+    [Parameter]
+    public string ConnectionRejectedMessage { get; set; } = "The server rejected the session. Please reload.";
+
+    [Parameter]
+    public string RetryButtonText { get; set; } = "Retry Connection";
+
+    [Parameter]
+    public string ReloadButtonText { get; set; } = "Reload Page";
+
 }

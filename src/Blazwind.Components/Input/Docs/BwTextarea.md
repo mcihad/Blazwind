@@ -37,7 +37,7 @@ A component used for long text input. Inherits `BwBaseInput` features and suppor
 ## Parameters
 
 | Parameter       | Type                       | Default  | Description                                        |
-| :-------------- | :------------------------- | :------- | :------------------------------------------------- |
+|:----------------|:---------------------------|:---------|:---------------------------------------------------|
 | `Value`         | `string`                   | `null`   | Text value (two-way binding).                      |
 | `Label`         | `string`                   | `null`   | Field label.                                       |
 | `Placeholder`   | `string`                   | `null`   | Placeholder text.                                  |
@@ -59,7 +59,7 @@ A component used for long text input. Inherits `BwBaseInput` features and suppor
 ## Events
 
 | Event          | Payload           | Description                                                |
-| :------------- | :---------------- | :--------------------------------------------------------- |
+|:---------------|:------------------|:-----------------------------------------------------------|
 | `ValueChanged` | `string`          | Triggered whenever the value changes.                      |
 | `OnChange`     | `string`          | Triggered when the value changes or the field loses focus. |
 | `OnInput`      | `ChangeEventArgs` | Triggered on every keystroke.                              |

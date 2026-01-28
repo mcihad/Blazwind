@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Flex container direction (flex-direction)
+///     Flex container direction (flex-direction)
 /// </summary>
 public enum BwFlexDirection
 {
@@ -12,7 +12,7 @@ public enum BwFlexDirection
 }
 
 /// <summary>
-/// Flex wrap behavior (flex-wrap)
+///     Flex wrap behavior (flex-wrap)
 /// </summary>
 public enum BwFlexWrap
 {
@@ -22,7 +22,7 @@ public enum BwFlexWrap
 }
 
 /// <summary>
-/// Align content for multi-line flex containers (align-content)
+///     Align content for multi-line flex containers (align-content)
 /// </summary>
 public enum BwAlignContent
 {
@@ -37,7 +37,7 @@ public enum BwAlignContent
 }
 
 /// <summary>
-/// Self alignment for flex items (align-self)
+///     Self alignment for flex items (align-self)
 /// </summary>
 public enum BwAlignSelf
 {

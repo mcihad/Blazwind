@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Card
-@using Blazwind.Components.Shared
 @inherits BwBase
 
 <div class="@CombineClasses("bw-card-header")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
@@ -22,7 +21,14 @@
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? SubTitle { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? SubTitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
 }

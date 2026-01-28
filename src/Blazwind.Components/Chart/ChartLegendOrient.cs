@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart legend orientation (ECharts legend.orient)
+///     Chart legend orientation (ECharts legend.orient)
 /// </summary>
 public static class ChartLegendOrient
 {

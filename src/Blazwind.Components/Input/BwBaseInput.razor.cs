@@ -7,17 +7,46 @@ using Microsoft.AspNetCore.Components.Web;
 namespace Blazwind.Components.Input;
 
 /// <summary>
-/// Base class for all input components providing common parameters and functionality
+///     Base class for all input components providing common parameters and functionality
 /// </summary>
 /// <typeparam name="TValue">The type of the input value</typeparam>
 public abstract class BwBaseInput<TValue> : BwBase, IDisposable
 {
+    #region IDisposable
+
+    public virtual void Dispose()
+    {
+        if (CascadedEditContext != null) CascadedEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
+    }
+
+    #endregion
+
+    #region Lifecycle
+
+    protected override void OnInitialized()
+    {
+        if (CascadedEditContext != null && For != null)
+        {
+            FieldIdentifier = FieldIdentifier.Create(For);
+            CascadedEditContext.OnValidationStateChanged += HandleValidationStateChanged;
+        }
+    }
+
+    #endregion
+
     #region Cascading Parameters
 
-    [CascadingParameter] protected EditContext? CascadedEditContext { get; set; }
-    [CascadingParameter] protected BwLabelPosition? CascadedLabelPosition { get; set; }
-    [CascadingParameter] protected BwFormDensity? CascadedDensity { get; set; }
-    [CascadingParameter] protected BwHelpTextMode? CascadedHelpTextMode { get; set; }
+    [CascadingParameter]
+    protected EditContext? CascadedEditContext { get; set; }
+
+    [CascadingParameter]
+    protected BwLabelPosition? CascadedLabelPosition { get; set; }
+
+    [CascadingParameter]
+    protected BwFormDensity? CascadedDensity { get; set; }
+
+    [CascadingParameter]
+    protected BwHelpTextMode? CascadedHelpTextMode { get; set; }
 
     #endregion
 
@@ -70,7 +99,6 @@ public abstract class BwBaseInput<TValue> : BwBase, IDisposable
     /// <summary>Component size</summary>
     [Parameter]
     public BwSize Size { get; set; } = BwSize.Medium;
-
 
 
     /// <summary>Form density - overrides cascade if set</summary>
@@ -150,19 +178,6 @@ public abstract class BwBaseInput<TValue> : BwBase, IDisposable
 
     #endregion
 
-    #region Lifecycle
-
-    protected override void OnInitialized()
-    {
-        if (CascadedEditContext != null && For != null)
-        {
-            FieldIdentifier = FieldIdentifier.Create(For);
-            CascadedEditContext.OnValidationStateChanged += HandleValidationStateChanged;
-        }
-    }
-
-    #endregion
-
     #region Event Handlers
 
     protected virtual void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
@@ -177,10 +192,7 @@ public abstract class BwBaseInput<TValue> : BwBase, IDisposable
         await ValueChanged.InvokeAsync(newValue);
         await OnChange.InvokeAsync(newValue);
 
-        if (CascadedEditContext != null && For != null)
-        {
-            CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
-        }
+        if (CascadedEditContext != null && For != null) CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
     }
 
     protected virtual async Task HandleFocus(FocusEventArgs e)
@@ -214,48 +226,53 @@ public abstract class BwBaseInput<TValue> : BwBase, IDisposable
 
     #region CSS Helpers
 
-    protected string GetSizeClass() => Size switch
+    protected string GetSizeClass()
     {
-        BwSize.Small => "bw-input-small",
-        BwSize.Large => "bw-input-large",
-        _ => "bw-input-medium"
-    };
-
-    protected string GetDensityMarginClass() => EffectiveDensity switch
-    {
-        BwFormDensity.Compact => "mb-2",
-        BwFormDensity.Relaxed => "mb-6",
-        _ => "mb-4"
-    };
-
-    protected string GetLabelSpacingClass() => EffectiveDensity switch
-    {
-        BwFormDensity.Compact => "mb-0.5",
-        BwFormDensity.Relaxed => "mb-2",
-        _ => "mb-1.5"
-    };
-
-    protected string GetStateClass() => HasError
-        ? "bw-input-error"
-        : "";
-
-    protected string GetDisabledClass() => IsDisabled
-        ? "bw-input-disabled"
-        : "";
-
-    protected string GetBaseInputClass() =>
-        "bw-input";
-
-    #endregion
-
-    #region IDisposable
-
-    public virtual void Dispose()
-    {
-        if (CascadedEditContext != null)
+        return Size switch
         {
-            CascadedEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
-        }
+            BwSize.Small => "bw-input-small",
+            BwSize.Large => "bw-input-large",
+            _ => "bw-input-medium"
+        };
+    }
+
+    protected string GetDensityMarginClass()
+    {
+        return EffectiveDensity switch
+        {
+            BwFormDensity.Compact => "mb-2",
+            BwFormDensity.Relaxed => "mb-6",
+            _ => "mb-4"
+        };
+    }
+
+    protected string GetLabelSpacingClass()
+    {
+        return EffectiveDensity switch
+        {
+            BwFormDensity.Compact => "mb-0.5",
+            BwFormDensity.Relaxed => "mb-2",
+            _ => "mb-1.5"
+        };
+    }
+
+    protected string GetStateClass()
+    {
+        return HasError
+            ? "bw-input-error"
+            : "";
+    }
+
+    protected string GetDisabledClass()
+    {
+        return IsDisabled
+            ? "bw-input-disabled"
+            : "";
+    }
+
+    protected string GetBaseInputClass()
+    {
+        return "bw-input";
     }
 
     #endregion

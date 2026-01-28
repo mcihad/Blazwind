@@ -1,16 +1,15 @@
-@using Blazwind.Components.DataGrid.Models
-@using Blazwind.Components.Popover
 @using Blazwind.Components.Button
+@using Blazwind.Components.DataGrid.Models
 @using Blazwind.Components.Shared
 @namespace Blazwind.Components.DataGrid
 
 <div class="relative inline-block ml-2" @onclick:stopPropagation="true">
-    <button type="button" 
+    <button type="button"
             class="@(IsActive ? "bw-datagrid-filter-btn-active" : "bw-datagrid-filter-btn")"
             @onclick="TogglePopover">
         <i class="fa-solid fa-filter text-xs"></i>
     </button>
-    
+
     @if (_isOpen)
     {
         <div class="bw-datagrid-filter-popover" @onclick:stopPropagation="true">
@@ -18,9 +17,9 @@
                 <BwDataGridFilter FilterType="@FilterType"
                                   CurrentFilter="@CurrentFilter"
                                   FilterOptions="@FilterOptions"
-                                  OnFilterChanged="HandleFilterChanged" />
+                                  OnFilterChanged="HandleFilterChanged"/>
             </div>
-            
+
             <div class="bw-datagrid-filter-popover-footer">
                 <BwButton Size="BwSize.Small" Variant="BwVariant.Ghost" OnClick="ClearFilter">
                     Temizle
@@ -30,20 +29,28 @@
                 </BwButton>
             </div>
         </div>
-        
+
         <div class="fixed inset-0 z-40" @onclick="ClosePopover"></div>
     }
 </div>
 
 @code {
-    [Parameter] public FilterType FilterType { get; set; }
-    [Parameter] public FilterDescriptor? CurrentFilter { get; set; }
-    [Parameter] public IEnumerable<FilterOption>? FilterOptions { get; set; }
-    [Parameter] public EventCallback<FilterDescriptor?> OnFilterChanged { get; set; }
+
+    [Parameter]
+    public FilterType FilterType { get; set; }
+
+    [Parameter]
+    public FilterDescriptor? CurrentFilter { get; set; }
+
+    [Parameter]
+    public IEnumerable<FilterOption>? FilterOptions { get; set; }
+
+    [Parameter]
+    public EventCallback<FilterDescriptor?> OnFilterChanged { get; set; }
 
     private bool _isOpen;
     private bool IsActive => CurrentFilter?.Value != null;
-    
+
     // Temporary state to hold changes before Apply
     private FilterDescriptor? _tempFilter;
 
@@ -52,13 +59,15 @@
         // sync temp filter with current filter when valid
         if (!_isOpen)
         {
-            _tempFilter = CurrentFilter != null ? new FilterDescriptor 
-            { 
-                Field = CurrentFilter.Field, 
-                Operator = CurrentFilter.Operator, 
-                Value = CurrentFilter.Value,
-                Logic = CurrentFilter.Logic 
-            } : null;
+            _tempFilter = CurrentFilter != null
+                ? new FilterDescriptor
+                {
+                    Field = CurrentFilter.Field,
+                    Operator = CurrentFilter.Operator,
+                    Value = CurrentFilter.Value,
+                    Logic = CurrentFilter.Logic
+                }
+                : null;
         }
     }
 
@@ -68,13 +77,15 @@
         if (_isOpen)
         {
             // Reset temp to current when opening
-             _tempFilter = CurrentFilter != null ? new FilterDescriptor 
-            { 
-                Field = CurrentFilter.Field, 
-                Operator = CurrentFilter.Operator, 
-                Value = CurrentFilter.Value,
-                Logic = CurrentFilter.Logic 
-            } : null;
+            _tempFilter = CurrentFilter != null
+                ? new FilterDescriptor
+                {
+                    Field = CurrentFilter.Field,
+                    Operator = CurrentFilter.Operator,
+                    Value = CurrentFilter.Value,
+                    Logic = CurrentFilter.Logic
+                }
+                : null;
         }
     }
 
@@ -82,7 +93,7 @@
     {
         _isOpen = false;
     }
-    
+
     private void HandleFilterChanged(FilterDescriptor? descriptor)
     {
         _tempFilter = descriptor;
@@ -100,4 +111,5 @@
         await OnFilterChanged.InvokeAsync(null);
         _isOpen = false;
     }
+
 }

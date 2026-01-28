@@ -1,6 +1,7 @@
 # Transfer
 
-An advanced data input component used to transfer multiple items between two lists. Commonly used for permission assignment, staff selection, or category management.
+An advanced data input component used to transfer multiple items between two lists. Commonly used for permission
+assignment, staff selection, or category management.
 
 ## General Features
 
@@ -49,7 +50,7 @@ Real-world scenario: user list.
 ## Parameters
 
 | Parameter           | Type                             | Default                | Description                                         |
-| :------------------ | :------------------------------- | :--------------------- | :-------------------------------------------------- |
+|:--------------------|:---------------------------------|:-----------------------|:----------------------------------------------------|
 | `DataSource`        | `IEnumerable<TItem>`             | `null`                 | List of all items.                                  |
 | `TargetItems`       | `IList<TItem>`                   | `new List<TItem>()`    | Selected (right-side) items list (two-way binding). |
 | `TextSelector`      | `Func<TItem, string>`            | -                      | Selector for the item’s display text.               |
@@ -64,6 +65,6 @@ Real-world scenario: user list.
 ## Events
 
 | Event                | Payload                    | Description                                                       |
-| :------------------- | :------------------------- | :---------------------------------------------------------------- |
+|:---------------------|:---------------------------|:------------------------------------------------------------------|
 | `TargetItemsChanged` | `List<TItem>`              | Triggered when the selected items list changes (two-way binding). |
 | `OnTransfer`         | `TransferEventArgs<TItem>` | Triggered when items are transferred between lists.               |

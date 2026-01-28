@@ -1,10 +1,12 @@
 # Floating Action Button (FAB)
 
-A floating button displayed at a fixed position on the screen, typically used for the primary action. Supports labels (extended mode) and Speed Dial sub-menus.
+A floating button displayed at a fixed position on the screen, typically used for the primary action. Supports labels (
+extended mode) and Speed Dial sub-menus.
 
 ## Examples
 
 ### Basic FAB
+
 A simple circular button.
 
 ```razor
@@ -12,6 +14,7 @@ A simple circular button.
 ```
 
 ### Extended FAB
+
 A button with both an icon and a text label.
 
 ```razor
@@ -23,6 +26,7 @@ A button with both an icon and a text label.
 ```
 
 ### Speed Dial
+
 A FAB that reveals a sub-menu of actions when clicked or hovered.
 
 ```razor
@@ -39,26 +43,26 @@ A FAB that reveals a sub-menu of actions when clicked or hovered.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Icon` | `string` | `fa-solid fa-plus` | FontAwesome icon class. |
-| `Label` | `string?` | `null` | Text to display when `Extended="true"`. |
-| `Size` | `BwSize` | `Medium` | Button size (`Small`, `Medium`, `Large`). |
-| `Color` | `BwColor` | `Primary` | Button color. |
-| `Position` | `BwPosition`| `BottomRight` | Screen position (`TopLeft`, `TopRight`, `BottomLeft`, `BottomRight`). |
-| `Extended` | `bool` | `false` | If true, renders as an oval with label. |
-| `Mini` | `bool` | `false` | If true, renders a smaller circular button. |
-| `IsDisabled` | `bool` | `false` | If true, interaction is disabled. |
-| `SpeedDialItems`| `RenderFragment?` | `null` | Content (list of `BwFabItem`) for the speed dial menu. |
-| `OnClick` | `EventCallback` | - | Fired when the main button is clicked. |
+| Parameter        | Type              | Default            | Description                                                           |
+|:-----------------|:------------------|:-------------------|:----------------------------------------------------------------------|
+| `Icon`           | `string`          | `fa-solid fa-plus` | FontAwesome icon class.                                               |
+| `Label`          | `string?`         | `null`             | Text to display when `Extended="true"`.                               |
+| `Size`           | `BwSize`          | `Medium`           | Button size (`Small`, `Medium`, `Large`).                             |
+| `Color`          | `BwColor`         | `Primary`          | Button color.                                                         |
+| `Position`       | `BwPosition`      | `BottomRight`      | Screen position (`TopLeft`, `TopRight`, `BottomLeft`, `BottomRight`). |
+| `Extended`       | `bool`            | `false`            | If true, renders as an oval with label.                               |
+| `Mini`           | `bool`            | `false`            | If true, renders a smaller circular button.                           |
+| `IsDisabled`     | `bool`            | `false`            | If true, interaction is disabled.                                     |
+| `SpeedDialItems` | `RenderFragment?` | `null`             | Content (list of `BwFabItem`) for the speed dial menu.                |
+| `OnClick`        | `EventCallback`   | -                  | Fired when the main button is clicked.                                |
 
 ## API - BwFabItem
 
 Sub-item for the Speed Dial menu.
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Icon` | `string` | `fa-solid fa-star` | Item icon. |
-| `Label` | `string?` | `null` | Label displayed next to the item. |
-| `Color` | `BwColor` | `Secondary` | Item button color. |
-| `OnClick` | `EventCallback` | - | Fired when the sub-item is clicked. |
+| Parameter | Type            | Default            | Description                         |
+|:----------|:----------------|:-------------------|:------------------------------------|
+| `Icon`    | `string`        | `fa-solid fa-star` | Item icon.                          |
+| `Label`   | `string?`       | `null`             | Label displayed next to the item.   |
+| `Color`   | `BwColor`       | `Secondary`        | Item button color.                  |
+| `OnClick` | `EventCallback` | -                  | Fired when the sub-item is clicked. |

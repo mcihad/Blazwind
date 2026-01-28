@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Calendar view modes
+///     Calendar view modes
 /// </summary>
 public enum BwCalendarView
 {

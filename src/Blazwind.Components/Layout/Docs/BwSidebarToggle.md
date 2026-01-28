@@ -19,6 +19,6 @@ Place this inside your `BwHeader` or anywhere in the layout. It only appears on 
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Class` | `string?` | `null` | Custom CSS classes. |
+| Parameter | Type      | Default | Description         |
+|:----------|:----------|:--------|:--------------------|
+| `Class`   | `string?` | `null`  | Custom CSS classes. |

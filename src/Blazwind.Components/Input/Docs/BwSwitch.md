@@ -31,7 +31,7 @@ A toggle component used to switch between On/Off states.
 ## Parameters
 
 | Parameter      | Type                     | Default   | Description                                       |
-| :------------- | :----------------------- | :-------- | :------------------------------------------------ |
+|:---------------|:-------------------------|:----------|:--------------------------------------------------|
 | `Value`        | `bool`                   | `false`   | Switch state (two-way binding).                   |
 | `Label`        | `string`                 | `null`    | Label text next to the switch.                    |
 | `ChildContent` | `RenderFragment`         | `null`    | Custom content that can replace the label.        |
@@ -47,7 +47,7 @@ A toggle component used to switch between On/Off states.
 ## Events
 
 | Event              | Payload | Description                                         |
-| :----------------- | :------ | :-------------------------------------------------- |
+|:-------------------|:--------|:----------------------------------------------------|
 | `ValueChanged`     | `bool`  | Triggered when the state changes (two-way binding). |
 | `IsCheckedChanged` | `bool`  | Triggered at the same time as `ValueChanged`.       |
 | `OnChange`         | `bool`  | Triggered after the change.                         |

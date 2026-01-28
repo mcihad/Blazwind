@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Overflow behavior for BwFlow when content exceeds container
+///     Overflow behavior for BwFlow when content exceeds container
 /// </summary>
 public enum BwOverflow
 {

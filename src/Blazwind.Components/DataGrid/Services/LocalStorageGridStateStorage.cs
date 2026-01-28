@@ -4,13 +4,13 @@ using Microsoft.JSInterop;
 namespace Blazwind.Components.DataGrid.Services;
 
 /// <summary>
-/// LocalStorage implementation of IGridStateStorage.
-/// Uses browser's localStorage via JavaScript interop.
+///     LocalStorage implementation of IGridStateStorage.
+///     Uses browser's localStorage via JavaScript interop.
 /// </summary>
 public class LocalStorageGridStateStorage : IGridStateStorage
 {
-    private readonly IJSRuntime _jsRuntime;
     private const string StoragePrefix = "bw-datagrid-state:";
+    private readonly IJSRuntime _jsRuntime;
 
     public LocalStorageGridStateStorage(IJSRuntime jsRuntime)
     {
@@ -53,11 +53,17 @@ public class LocalStorageGridStateStorage : IGridStateStorage
         await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", cancellationToken, storageKey);
     }
 
-    private static string GetStorageKey(string key) => $"{StoragePrefix}{key}";
-
-    private static JsonSerializerOptions GetJsonOptions() => new()
+    private static string GetStorageKey(string key)
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false
-    };
+        return $"{StoragePrefix}{key}";
+    }
+
+    private static JsonSerializerOptions GetJsonOptions()
+    {
+        return new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = false
+        };
+    }
 }

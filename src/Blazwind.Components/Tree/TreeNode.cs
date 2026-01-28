@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Tree;
 
 /// <summary>
-/// Data model for tree nodes.
+///     Data model for tree nodes.
 /// </summary>
 public class TreeNode<TItem>
 {

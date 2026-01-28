@@ -20,6 +20,7 @@
 ```
 
 ### Süre Gösterimi ile
+
 ```razor
 <BwDateRange Start="DateTime.Today.AddMonths(-1)" 
              End="DateTime.Today" 
@@ -28,6 +29,7 @@
 ```
 
 ### Preset'ler ile
+
 ```razor
 <BwDateRange Label="Dönem Seçimi" 
              ShowPresets="true" 
@@ -35,6 +37,7 @@
 ```
 
 ## Yerleşik Preset'ler
+
 - **Bugün:** Bugünün tarihi
 - **Dün:** Dünün tarihi
 - **Bu Hafta:** Pazartesiden bugüne
@@ -46,25 +49,25 @@
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Start` | `DateTime?` | `null` | Başlangıç tarihi (Two-way binding). |
-| `End` | `DateTime?` | `null` | Bitiş tarihi (Two-way binding). |
-| `Min` | `DateTime?` | `null` | Seçilebilecek en eski tarih. |
-| `Max` | `DateTime?` | `null` | Seçilebilecek en yeni tarih. |
-| `ShowDuration` | `bool` | `false` | Seçilen aralığın gün sayısını gösterir. |
-| `ShowPresets` | `bool` | `false` | Hızlı seçim butonlarını gösterir. |
-| `Presets` | `List<DateRangePreset>` | `null` | Özelleştirilebilir hızlı seçim listesi. |
-| `Color` | `BwColor` | `Primary` | Vurgu rengi. |
-| `Label` | `string` | `null` | Grup etiketi. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
+| Parametre      | Tip                     | Varsayılan | Açıklama                                |
+|:---------------|:------------------------|:-----------|:----------------------------------------|
+| `Start`        | `DateTime?`             | `null`     | Başlangıç tarihi (Two-way binding).     |
+| `End`          | `DateTime?`             | `null`     | Bitiş tarihi (Two-way binding).         |
+| `Min`          | `DateTime?`             | `null`     | Seçilebilecek en eski tarih.            |
+| `Max`          | `DateTime?`             | `null`     | Seçilebilecek en yeni tarih.            |
+| `ShowDuration` | `bool`                  | `false`    | Seçilen aralığın gün sayısını gösterir. |
+| `ShowPresets`  | `bool`                  | `false`    | Hızlı seçim butonlarını gösterir.       |
+| `Presets`      | `List<DateRangePreset>` | `null`     | Özelleştirilebilir hızlı seçim listesi. |
+| `Color`        | `BwColor`               | `Primary`  | Vurgu rengi.                            |
+| `Label`        | `string`                | `null`     | Grup etiketi.                           |
+| `IsDisabled`   | `bool`                  | `false`    | Devre dışı bırakır.                     |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `StartChanged` | `DateTime?` | Başlangıç tarihi değiştiğinde tetiklenir. |
-| `EndChanged` | `DateTime?` | Bitiş tarihi değiştiğinde tetiklenir. |
+| Olay             | Paylaşım (Payload)                 | Açıklama                                                    |
+|:-----------------|:-----------------------------------|:------------------------------------------------------------|
+| `StartChanged`   | `DateTime?`                        | Başlangıç tarihi değiştiğinde tetiklenir.                   |
+| `EndChanged`     | `DateTime?`                        | Bitiş tarihi değiştiğinde tetiklenir.                       |
 | `OnRangeChanged` | `RangeChangedEventArgs<DateTime?>` | Aralık değiştiğinde tetiklenir (Start ve End ile birlikte). |
 
 ## Yardımcı Sınıflar
@@ -78,4 +81,5 @@ public class RangeChangedEventArgs<T>
     public T End { get; set; }
 }
 ```
+
 ```

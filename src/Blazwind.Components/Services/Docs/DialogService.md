@@ -1,6 +1,7 @@
 # DialogService
 
-`DialogService` provides a powerful mechanism to show modal dialogs, alerts, confirmations, and dynamic Razor components.
+`DialogService` provides a powerful mechanism to show modal dialogs, alerts, confirmations, and dynamic Razor
+components.
 
 ## Interface
 
@@ -20,11 +21,11 @@ Inject the service into your component:
 
 Methods for showing standard system-like dialogs.
 
-| Method | Description |
-| :--- | :--- |
-| `ShowAlertAsync(string title, string message, ...)` | Shows an information or alert dialog. |
-| `ShowConfirmAsync(string title, string message, ...)` | Shows a confirmation dialog (Yes/No). |
-| `ShowInputAsync(string title, string message, ...)` | Shows an input dialog to get text from user. |
+| Method                                                | Description                                  |
+|:------------------------------------------------------|:---------------------------------------------|
+| `ShowAlertAsync(string title, string message, ...)`   | Shows an information or alert dialog.        |
+| `ShowConfirmAsync(string title, string message, ...)` | Shows a confirmation dialog (Yes/No).        |
+| `ShowInputAsync(string title, string message, ...)`   | Shows an input dialog to get text from user. |
 
 #### Examples
 
@@ -46,11 +47,11 @@ var name = await DialogService.ShowInputAsync("Enter Name", "What is your name?"
 
 Methods for showing non-blocking or blocking loading indicators.
 
-| Method | Description | Returns |
-| :--- | :--- | :--- |
-| `ShowLoadingAsync(string message)` | Shows a standard loading spinner. | `LoadingHandle` |
-| `ShowBusyAsync(string message)` | Shows a full-screen blocking busy indicator. | `LoadingHandle` |
-| `ShowProgressAsync(string title, string message)` | Shows a progress bar dialog. | `ProgressHandle` |
+| Method                                            | Description                                  | Returns          |
+|:--------------------------------------------------|:---------------------------------------------|:-----------------|
+| `ShowLoadingAsync(string message)`                | Shows a standard loading spinner.            | `LoadingHandle`  |
+| `ShowBusyAsync(string message)`                   | Shows a full-screen blocking busy indicator. | `LoadingHandle`  |
+| `ShowProgressAsync(string title, string message)` | Shows a progress bar dialog.                 | `ProgressHandle` |
 
 #### Examples
 

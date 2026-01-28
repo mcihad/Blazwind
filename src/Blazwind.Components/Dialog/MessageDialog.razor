@@ -1,8 +1,5 @@
 @using Blazwind.Components.Button
 @using Blazwind.Components.Shared
-@using Blazwind.Components.Services
-@using Blazwind.Components.Dialog
-
 @namespace Blazwind.Components.Dialog
 
 <div class="flex flex-col h-full rounded overflow-hidden border @ContainerClass shadow-sm">
@@ -16,26 +13,41 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed text-pretty">@Message</p>
             </div>
         </div>
-        
+
         <div class="flex justify-end gap-3 mt-2">
             @if (!string.IsNullOrEmpty(CancelText))
             {
-                <BwButton Text="@CancelText" Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Medium" OnClick="Cancel" Class="!px-4 !py-2" />
+                <BwButton Text="@CancelText" Color="BwColor.Secondary" Variant="BwVariant.Ghost" Size="BwSize.Medium"
+                          OnClick="Cancel" Class="!px-4 !py-2"/>
             }
-            <BwButton Text="@ConfirmText" Color="@Color" Variant="BwVariant.Filled" Size="BwSize.Medium" OnClick="Confirm" Class="!px-4 !py-2 shadow-sm" />
+            <BwButton Text="@ConfirmText" Color="@Color" Variant="BwVariant.Filled" Size="BwSize.Medium"
+                      OnClick="Confirm" Class="!px-4 !py-2 shadow-sm"/>
         </div>
     </div>
 </div>
 
 @code {
-    [CascadingParameter] Blazwind.Components.Services.DialogInstance DialogInstance { get; set; } = default!;
-    [Inject] DialogService DialogService { get; set; } = default!;
 
-    [Parameter] public string Title { get; set; } = "Bildirim";
-    [Parameter] public string Message { get; set; } = "";
-    [Parameter] public BwColor Color { get; set; } = BwColor.Info;
-    [Parameter] public string ConfirmText { get; set; } = "Tamam";
-    [Parameter] public string? CancelText { get; set; }
+    [CascadingParameter]
+    DialogInstance DialogInstance { get; set; } = default!;
+
+    [Inject]
+    DialogService DialogService { get; set; } = default!;
+
+    [Parameter]
+    public string Title { get; set; } = "Bildirim";
+
+    [Parameter]
+    public string Message { get; set; } = "";
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Info;
+
+    [Parameter]
+    public string ConfirmText { get; set; } = "Tamam";
+
+    [Parameter]
+    public string? CancelText { get; set; }
 
     private string ContainerClass => Color switch
     {
@@ -66,4 +78,5 @@
     {
         DialogService.Close(DialogInstance, DialogResult.Cancel());
     }
+
 }

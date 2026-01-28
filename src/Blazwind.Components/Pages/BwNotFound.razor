@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Pages
+@inject NavigationManager NavigationManager
 @using Blazwind.Components.Button
 @using Blazwind.Components.Shared
-@inject NavigationManager NavigationManager
 @inherits BwBase
 
 <div class="@CombineClasses("bw-not-found")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -38,7 +38,7 @@
             else
             {
                 <BwButton OnClick="@(() => NavigationManager.NavigateTo(ActionHref))" Variant="BwVariant.Filled"
-                    Color="BwColor.Primary" Size="BwSize.Large" Icon="fa-solid fa-arrow-left" Class="px-8">
+                          Color="BwColor.Primary" Size="BwSize.Large" Icon="fa-solid fa-arrow-left" Class="px-8">
                     @ActionText
                 </BwButton>
             }
@@ -47,11 +47,24 @@
 </div>
 
 @code {
-    [Parameter] public string Title { get; set; } = "Page Not Found";
-    [Parameter] public string Description { get; set; } = "Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.";
-    [Parameter] public string ActionText { get; set; } = "Go Back Home";
-    [Parameter] public string ActionHref { get; set; } = "/";
-    [Parameter] public RenderFragment? CustomContent { get; set; }
-    [Parameter] public RenderFragment? CustomAction { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "Page Not Found";
+
+    [Parameter]
+    public string Description { get; set; } = "Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.";
+
+    [Parameter]
+    public string ActionText { get; set; } = "Go Back Home";
+
+    [Parameter]
+    public string ActionHref { get; set; } = "/";
+
+    [Parameter]
+    public RenderFragment? CustomContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? CustomAction { get; set; }
+
     // Removed Class and Style parameters (inherited)
 }

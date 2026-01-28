@@ -1,15 +1,12 @@
-@using Blazwind.Components.Workflow.Interfaces
-@using Blazwind.Components.Workflow.Events
-@using Blazwind.Components.Workflow.Nodes
-@using Blazwind.Components.Workflow.Models
-@using System.Text.Json
-@using Microsoft.JSInterop
-@using Blazwind.Components.Shared
 @inject IJSRuntime JS
+@using System.Text.Json
+@using Blazwind.Components.Workflow.Events
+@using Blazwind.Components.Workflow.Interfaces
+@using Microsoft.JSInterop
 @inherits BwBase
 
 <div @ref="_container" class="@CombineClasses("bw-workflow-container")" style="height: @Height; @Style" id="@Id"
-    @attributes="AdditionalAttributes">
+     @attributes="AdditionalAttributes">
 </div>
 
 @code {
@@ -21,86 +18,102 @@
     #region Parameters
 
     /// <summary>
-    /// Workflow nodes
+    ///     Workflow nodes
     /// </summary>
-    [Parameter] public List<IWorkflowNode> Nodes { get; set; } = new();
+    [Parameter]
+    public List<IWorkflowNode> Nodes { get; set; } = new();
 
     /// <summary>
-    /// Workflow edges
+    ///     Workflow edges
     /// </summary>
-    [Parameter] public List<IWorkflowEdge> Edges { get; set; } = new();
+    [Parameter]
+    public List<IWorkflowEdge> Edges { get; set; } = new();
 
     /// <summary>
-    /// Container height
+    ///     Container height
     /// </summary>
-    [Parameter] public string Height { get; set; } = "400px";
+    [Parameter]
+    public string Height { get; set; } = "400px";
 
     // Removed Style and Class parameters (inherited)
 
     /// <summary>
-    /// Node width
+    ///     Node width
     /// </summary>
-    [Parameter] public int NodeWidth { get; set; } = 180;
+    [Parameter]
+    public int NodeWidth { get; set; } = 180;
 
     /// <summary>
-    /// Node height
+    ///     Node height
     /// </summary>
-    [Parameter] public int NodeHeight { get; set; } = 70;
+    [Parameter]
+    public int NodeHeight { get; set; } = 70;
 
     /// <summary>
-    /// Horizontal spacing between nodes
+    ///     Horizontal spacing between nodes
     /// </summary>
-    [Parameter] public int HorizontalSpacing { get; set; } = 100;
+    [Parameter]
+    public int HorizontalSpacing { get; set; } = 100;
 
     /// <summary>
-    /// Vertical spacing between nodes
+    ///     Vertical spacing between nodes
     /// </summary>
-    [Parameter] public int VerticalSpacing { get; set; } = 80;
+    [Parameter]
+    public int VerticalSpacing { get; set; } = 80;
 
     /// <summary>
-    /// Flow direction
+    ///     Flow direction
     /// </summary>
-    [Parameter] public WorkflowDirection Direction { get; set; } = WorkflowDirection.Horizontal;
+    [Parameter]
+    public WorkflowDirection Direction { get; set; } = WorkflowDirection.Horizontal;
 
     /// <summary>
-    /// Show labels on nodes
+    ///     Show labels on nodes
     /// </summary>
-    [Parameter] public bool ShowLabels { get; set; } = true;
+    [Parameter]
+    public bool ShowLabels { get; set; } = true;
 
     /// <summary>
-    /// Enable node interactions
+    ///     Enable node interactions
     /// </summary>
-    [Parameter] public bool Interactive { get; set; } = true;
+    [Parameter]
+    public bool Interactive { get; set; } = true;
 
     /// <summary>
-    /// Enable node dragging
+    ///     Enable node dragging
     /// </summary>
-    [Parameter] public bool Draggable { get; set; } = true;
+    [Parameter]
+    public bool Draggable { get; set; } = true;
 
     /// <summary>
-    /// Enable animations
+    ///     Enable animations
     /// </summary>
-    [Parameter] public bool Animated { get; set; } = true;
+    [Parameter]
+    public bool Animated { get; set; } = true;
 
     /// <summary>
-    /// Fit to screen on load
+    ///     Fit to screen on load
     /// </summary>
-    [Parameter] public bool FitToScreen { get; set; } = true;
+    [Parameter]
+    public bool FitToScreen { get; set; } = true;
 
     /// <summary>
-    /// Node click event
+    ///     Node click event
     /// </summary>
-    [Parameter] public EventCallback<NodeClickedEventArgs> OnNodeClick { get; set; }
+    [Parameter]
+    public EventCallback<NodeClickedEventArgs> OnNodeClick { get; set; }
 
     /// <summary>
-    /// Node position changed event (after drag)
+    ///     Node position changed event (after drag)
     /// </summary>
-    [Parameter] public EventCallback<NodePositionChangedEventArgs> OnNodePositionChanged { get; set; }
+    [Parameter]
+    public EventCallback<NodePositionChangedEventArgs> OnNodePositionChanged { get; set; }
 
     /// <summary>
-    /// Node status changed event
+    ///     Node status changed event
     /// </summary>
-    [Parameter] public EventCallback<NodeStatusChangedEventArgs> OnNodeStatusChanged { get; set; }
+    [Parameter]
+    public EventCallback<NodeStatusChangedEventArgs> OnNodeStatusChanged { get; set; }
 
     // Removed AdditionalAttributes (inherited)
 
@@ -203,7 +216,7 @@
     #region Public API
 
     /// <summary>
-    /// Update a node's status
+    ///     Update a node's status
     /// </summary>
     public async Task UpdateNodeStatusAsync(string nodeId, WorkflowNodeStatus status)
     {
@@ -214,7 +227,7 @@
     }
 
     /// <summary>
-    /// Zoom in
+    ///     Zoom in
     /// </summary>
     public async Task ZoomInAsync()
     {
@@ -225,7 +238,7 @@
     }
 
     /// <summary>
-    /// Zoom out
+    ///     Zoom out
     /// </summary>
     public async Task ZoomOutAsync()
     {
@@ -236,7 +249,7 @@
     }
 
     /// <summary>
-    /// Fit diagram to screen
+    ///     Fit diagram to screen
     /// </summary>
     public async Task FitToScreenAsync()
     {
@@ -300,8 +313,12 @@
             {
                 await JS.InvokeVoidAsync("Blazwind.Workflow.dispose", _instanceId);
             }
-            catch { }
+            catch
+            {
+            }
         }
+
         _netRef?.Dispose();
     }
+
 }

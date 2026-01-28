@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Navigation
 @inherits BwBase
 
-<div class="@CombineClasses("bw-nav-header")" 
+<div class="@CombineClasses("bw-nav-header")"
      style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Image))
     {
@@ -31,9 +31,20 @@
 </div>
 
 @code {
-    [Parameter] public string Title { get; set; } = "";
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string? Image { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public string? Image { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
 }

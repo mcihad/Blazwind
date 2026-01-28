@@ -14,7 +14,7 @@
         BwColor.Info => "bw-card-icon-bg-info",
         _ => "bw-card-icon-bg-primary"
     };
-    
+
     // Icon color class (theme-aware)
     var iconColorClass = Color switch
     {
@@ -56,11 +56,11 @@
             }
         </div>
     }
-    
+
     <div class="bw-card-body @BodyClass">
         @ChildContent
     </div>
-    
+
     @if (Footer != null)
     {
         <div class="bw-card-footer @FooterClass">
@@ -70,16 +70,35 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Header { get; set; }
-    [Parameter] public RenderFragment? Footer { get; set; }
-    
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    
-    [Parameter] public string? HeaderClass { get; set; }
-    [Parameter] public string? BodyClass { get; set; }
-    [Parameter] public string? FooterClass { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public string? HeaderClass { get; set; }
+
+    [Parameter]
+    public string? BodyClass { get; set; }
+
+    [Parameter]
+    public string? FooterClass { get; set; }
+
 }

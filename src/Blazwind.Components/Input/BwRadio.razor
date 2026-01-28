@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
 @inherits BwBase
 @typeparam TValue where TValue : notnull
 
@@ -9,23 +8,25 @@
     var ringClass = isSelected ? "border-[var(--bw-color-primary)] ring-1 ring-[var(--bw-color-primary)]" : "border-[var(--bw-color-border)] group-hover:border-[var(--bw-color-primary)]";
 }
 
-<div class="@CombineClasses($"flex items-start {cursorClass}")" id="@Id" @onclick="HandleClick" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"flex items-start {cursorClass}")" id="@Id" @onclick="HandleClick"
+     @attributes="AdditionalAttributes">
     <div class="flex items-center h-5">
-        <input type="radio" 
-               name="@Context?.GroupName" 
+        <input type="radio"
+               name="@Context?.GroupName"
                checked="@isSelected"
-               class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 hidden" 
-               disabled="@IsDisabled" />
-               
+               class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 hidden"
+               disabled="@IsDisabled"/>
+
         @* Custom Radio UI *@
-        <div class="w-4 h-4 rounded-full border @ringClass bg-[var(--bw-color-surface)] flex items-center justify-center transition-all duration-200 relative group">
+        <div
+            class="w-4 h-4 rounded-full border @ringClass bg-[var(--bw-color-surface)] flex items-center justify-center transition-all duration-200 relative group">
             @if (isSelected)
             {
                 <div class="w-2 h-2 rounded-full bg-[var(--bw-color-primary)] transition-transform scale-100"></div>
             }
         </div>
     </div>
-    
+
     <div class="ml-3 text-sm">
         @if (!string.IsNullOrEmpty(Label))
         {
@@ -42,22 +43,36 @@
 </div>
 
 @code {
-    [CascadingParameter] public BwRadioGroup<TValue>? Context { get; set; }
 
-    [Parameter] public TValue Value { get; set; } = default!;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? SubLabel { get; set; }
-    [Parameter] public bool IsDisabled { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [CascadingParameter]
+    public BwRadioGroup<TValue>? Context { get; set; }
+
+    [Parameter]
+    public TValue Value { get; set; } = default!;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? SubLabel { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
 
-    [Parameter] public bool? IsChecked { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter]
+    public bool? IsChecked { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
 
     private bool IsSelected()
     {
         if (IsChecked.HasValue) return IsChecked.Value;
-        
+
         if (Context is null) return false;
         return EqualityComparer<TValue>.Default.Equals(Context.Value, Value);
     }
@@ -65,15 +80,16 @@
     private async Task HandleClick()
     {
         if (IsDisabled) return;
-        
+
         if (OnClick.HasDelegate)
         {
             await OnClick.InvokeAsync();
         }
-        
-        if (Context != null) 
+
+        if (Context != null)
         {
             await Context.OnRadioChange(Value);
         }
     }
+
 }

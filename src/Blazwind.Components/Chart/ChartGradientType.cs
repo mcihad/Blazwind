@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Gradient type constants
+///     Gradient type constants
 /// </summary>
 public static class ChartGradientType
 {

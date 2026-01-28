@@ -1,23 +1,21 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
-@using Blazwind.Components.HelpTooltip
-@using Microsoft.AspNetCore.Components.Forms
-@using System.Linq.Expressions
 @inherits BwBaseInput<TValue>
+@using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @typeparam TValue where TValue : notnull
 
 @{
     var hasError = !IsValid || !string.IsNullOrEmpty(ErrorMessage);
     var hasLabel = !string.IsNullOrEmpty(Label);
     var hasHelper = !string.IsNullOrEmpty(HelperText);
-    
+
     var marginClass = EffectiveDensity switch
     {
         BwFormDensity.Compact => "mb-2",
         BwFormDensity.Relaxed => "mb-6",
         _ => "mb-4"
     };
-    
+
     var labelSpacingClass = EffectiveDensity switch
     {
         BwFormDensity.Compact => "mb-0.5",
@@ -39,27 +37,27 @@
             </label>
             @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
             {
-                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
             }
         </div>
     }
-    
+
     <div class="@_orientationClass" role="radiogroup">
         <CascadingValue Value="this">
             @if (Items != null)
             {
                 @foreach (var item in Items)
                 {
-                    <BwRadio TValue="TValue" 
-                             Value="@item.Value" 
-                             Label="@item.Text" 
-                             IsDisabled="@item.IsDisabled" />
+                    <BwRadio TValue="TValue"
+                             Value="@item.Value"
+                             Label="@item.Text"
+                             IsDisabled="@item.IsDisabled"/>
                 }
             }
             @ChildContent
         </CascadingValue>
     </div>
-    
+
     @* Error/Helper Messages *@
     @if (hasError)
     {
@@ -78,47 +76,48 @@
 
 
     #region Parameters
-    
-    [Parameter] public string Name { get; set; } = Guid.NewGuid().ToString();
-    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Vertical;
-    
-    /// <summary>Data source for radio options</summary>
-    [Parameter] public IEnumerable<BwSelectItem<TValue>>? Items { get; set; }
 
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public string Name { get; set; } = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public BwOrientation Orientation { get; set; } = BwOrientation.Vertical;
+
+    /// <summary>Data source for radio options</summary>
+    [Parameter]
+    public IEnumerable<BwSelectItem<TValue>>? Items { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     #endregion
 
     #region Private Fields
-    
-    private string _name = default!;
-    
+
     #endregion
 
     #region Computed Properties
-    
 
-    
-    private string _orientationClass => Orientation == BwOrientation.Horizontal 
-        ? "flex flex-row flex-wrap gap-4" 
+    private string _orientationClass => Orientation == BwOrientation.Horizontal
+        ? "flex flex-row flex-wrap gap-4"
         : "flex flex-col gap-2";
-    
-    public string GroupName => _name;
-    
+
+    public string GroupName { get; private set; } = default!;
+
     #endregion
 
     #region Lifecycle
-    
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _name = Name ?? $"bw-radio-group-{Guid.NewGuid():N}";
+        GroupName = Name ?? $"bw-radio-group-{Guid.NewGuid():N}";
     }
-    
+
     #endregion
 
     #region Public Methods
-    
+
     public async Task OnRadioChange(TValue selectedValue)
     {
         if (!EqualityComparer<TValue>.Default.Equals(Value, selectedValue))
@@ -127,15 +126,15 @@
             await ValueChanged.InvokeAsync(selectedValue);
             await OnChange.InvokeAsync(selectedValue);
             StateHasChanged();
-            
+
             if (CascadedEditContext != null && For != null)
             {
                 CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
             }
         }
     }
-    
+
     #endregion
-    
+
 
 }

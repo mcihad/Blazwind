@@ -1,11 +1,10 @@
 @namespace Blazwind.Components.Comment
-@using Blazwind.Components.Shared
-@inherits BwBase
 @using Blazwind.Components.Avatar
 @using Blazwind.Components.Button
-@using Blazwind.Components.Input
 @using Blazwind.Components.Layout
 @using Blazwind.Components.Mentions
+@using Blazwind.Components.Shared
+@inherits BwBase
 
 <div class="@CombineClasses($"bw-comments")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @* Header *@
@@ -26,7 +25,7 @@
         {
             <div class="bw-comment-item">
                 @RenderComment(comment, 0)
-                
+
                 @* Replies *@
                 @if (comment.Replies.Count > 0)
                 {
@@ -57,18 +56,18 @@
             <BwRow Spacing="BwSpacing.Sm">
                 @if (!string.IsNullOrEmpty(CurrentUserAvatar))
                 {
-                    <BwAvatar Name="@CurrentUserName" Src="@CurrentUserAvatar" Size="BwSize.Small" />
+                    <BwAvatar Name="@CurrentUserName" Src="@CurrentUserAvatar" Size="BwSize.Small"/>
                 }
                 <BwColumn Class="flex-1" Spacing="BwSpacing.Sm">
                     <BwMentions Value="@_newCommentText"
                                 ValueChanged="@(v => _newCommentText = v)"
                                 Mentions="Mentions"
-                                Placeholder="@Placeholder" 
-                                Rows="2" 
-                                Class="text-sm" />
+                                Placeholder="@Placeholder"
+                                Rows="2"
+                                Class="text-sm"/>
                     <BwRow MainAxisAlignment="BwMainAxisAlignment.End">
-                        <BwButton Size="BwSize.Small" 
-                                  Color="BwColor.Primary" 
+                        <BwButton Size="BwSize.Small"
+                                  Color="BwColor.Primary"
                                   OnClick="HandleAddComment"
                                   Disabled="@string.IsNullOrWhiteSpace(_newCommentText)">
                             <i class="fa-solid fa-paper-plane mr-1"></i>
@@ -82,22 +81,48 @@
 </div>
 
 @code {
-    [Parameter] public List<CommentItem> Comments { get; set; } = new();
-    [Parameter] public string Title { get; set; } = "Yorumlar";
-    [Parameter] public string Placeholder { get; set; } = "Yorum yazın...";
-    [Parameter] public bool AllowAdd { get; set; } = true;
-    [Parameter] public bool AllowReply { get; set; } = true;
-    [Parameter] public bool AllowLike { get; set; } = true;
-    [Parameter] public string? CurrentUserName { get; set; }
-    [Parameter] public string? CurrentUserAvatar { get; set; }
-    
-    [Parameter] public EventCallback<string> OnAdd { get; set; }
-    [Parameter] public EventCallback<(string CommentId, string Text)> OnReply { get; set; }
-    [Parameter] public EventCallback<CommentItem> OnEdit { get; set; }
-    [Parameter] public EventCallback<CommentItem> OnDelete { get; set; }
-    [Parameter] public EventCallback<CommentItem> OnLike { get; set; }
 
-    [Parameter] public List<BwMentionItem> Mentions { get; set; } = new();
+    [Parameter]
+    public List<CommentItem> Comments { get; set; } = new();
+
+    [Parameter]
+    public string Title { get; set; } = "Yorumlar";
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Yorum yazın...";
+
+    [Parameter]
+    public bool AllowAdd { get; set; } = true;
+
+    [Parameter]
+    public bool AllowReply { get; set; } = true;
+
+    [Parameter]
+    public bool AllowLike { get; set; } = true;
+
+    [Parameter]
+    public string? CurrentUserName { get; set; }
+
+    [Parameter]
+    public string? CurrentUserAvatar { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnAdd { get; set; }
+
+    [Parameter]
+    public EventCallback<(string CommentId, string Text)> OnReply { get; set; }
+
+    [Parameter]
+    public EventCallback<CommentItem> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<CommentItem> OnDelete { get; set; }
+
+    [Parameter]
+    public EventCallback<CommentItem> OnLike { get; set; }
+
+    [Parameter]
+    public List<BwMentionItem> Mentions { get; set; } = new();
 
     private string _newCommentText = "";
     private string? _replyingTo;
@@ -108,7 +133,7 @@
     private RenderFragment RenderComment(CommentItem comment, int depth) => __builder =>
     {
         <div class="bw-comment-inner">
-            <BwAvatar Name="@comment.AuthorName" Src="@comment.AuthorAvatar" Size="BwSize.Small" />
+            <BwAvatar Name="@comment.AuthorName" Src="@comment.AuthorAvatar" Size="BwSize.Small"/>
             <div class="flex-1 min-w-0">
                 @* Header *@
                 <div class="bw-comment-meta">
@@ -132,7 +157,7 @@
                 <div class="bw-comment-actions">
                     @if (AllowLike)
                     {
-                        <BwButton Variant="BwVariant.Link" 
+                        <BwButton Variant="BwVariant.Link"
                                   Size="BwSize.Small"
                                   Color="@(comment.IsLiked ? BwColor.Primary : BwColor.Secondary)"
                                   OnClick="() => HandleLike(comment)">
@@ -145,30 +170,30 @@
                     }
                     @if (AllowReply && depth == 0)
                     {
-                        <BwButton Variant="BwVariant.Link" 
+                        <BwButton Variant="BwVariant.Link"
                                   Size="BwSize.Small"
                                   Color="BwColor.Secondary"
                                   Icon="fa-solid fa-reply"
                                   Text="Yanıtla"
-                                  OnClick="() => ToggleReply(comment.Id)" />
+                                  OnClick="() => ToggleReply(comment.Id)"/>
                     }
                     @if (comment.CanEdit)
                     {
-                        <BwButton Variant="BwVariant.Link" 
+                        <BwButton Variant="BwVariant.Link"
                                   Size="BwSize.Small"
                                   Color="BwColor.Secondary"
                                   Icon="fa-solid fa-pen"
                                   Text="Düzenle"
-                                  OnClick="() => HandleEdit(comment)" />
+                                  OnClick="() => HandleEdit(comment)"/>
                     }
                     @if (comment.CanDelete)
                     {
-                        <BwButton Variant="BwVariant.Link" 
+                        <BwButton Variant="BwVariant.Link"
                                   Size="BwSize.Small"
                                   Color="BwColor.Danger"
                                   Icon="fa-solid fa-trash"
                                   Text="Sil"
-                                  OnClick="() => HandleDelete(comment)" />
+                                  OnClick="() => HandleDelete(comment)"/>
                     }
                 </div>
 
@@ -177,13 +202,14 @@
                 {
                     <div class="mt-3 flex gap-2">
                         <BwMentions Value="@_replyText"
-                                    ValueChanged="@(v => _replyText = v)" 
+                                    ValueChanged="@(v => _replyText = v)"
                                     Mentions="Mentions"
-                                    Placeholder="Yanıt yazın..." 
-                                    Rows="1" 
-                                    Class="flex-1" />
+                                    Placeholder="Yanıt yazın..."
+                                    Rows="1"
+                                    Class="flex-1"/>
                         <div class="flex flex-col gap-1">
-                            <BwButton Size="BwSize.ExtraSmall" Color="BwColor.Primary" OnClick="() => HandleReply(comment.Id)">
+                            <BwButton Size="BwSize.ExtraSmall" Color="BwColor.Primary"
+                                      OnClick="() => HandleReply(comment.Id)">
                                 <i class="fa-solid fa-paper-plane"></i>
                             </BwButton>
                             <BwButton Size="BwSize.ExtraSmall" Variant="BwVariant.Ghost" OnClick="CancelReply">
@@ -195,7 +221,7 @@
             </div>
         </div>
     };
-    
+
     // ... rest of code
 
 
@@ -254,4 +280,5 @@
     {
         await OnDelete.InvokeAsync(comment);
     }
+
 }

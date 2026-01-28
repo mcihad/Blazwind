@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Workflow.Interfaces;
 
 /// <summary>
-/// Workflow direction
+///     Workflow direction
 /// </summary>
 public enum WorkflowDirection
 {

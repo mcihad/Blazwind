@@ -1,28 +1,27 @@
 @namespace Blazwind.Components.SignaturePad
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Services
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
 @inject ScriptLoaderService ScriptLoader
 @implements IAsyncDisposable
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
-<div class="@CombineClasses("bw-signature-pad", _containerClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-signature-pad", _containerClass)" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Label))
     {
         <label class="bw-signature-label">@Label</label>
     }
-    
+
     <div class="@_wrapperClass" style="width: @Width; height: @Height;">
         <canvas @ref="_canvas" class="w-full h-full"></canvas>
-        
+
         @if (ShowClearButton || ShowUndoButton)
         {
             <div class="bw-signature-tools">
                 @if (ShowUndoButton)
                 {
-                    <button type="button" 
+                    <button type="button"
                             class="bw-signature-btn undo"
                             title="Geri Al"
                             @onclick="UndoAsync">
@@ -31,7 +30,7 @@
                 }
                 @if (ShowClearButton)
                 {
-                    <button type="button" 
+                    <button type="button"
                             class="bw-signature-btn clear"
                             title="Temizle"
                             @onclick="ClearAsync">
@@ -41,12 +40,12 @@
             </div>
         }
     </div>
-    
+
     @if (!string.IsNullOrEmpty(HelperText))
     {
         <p class="bw-signature-helper">@HelperText</p>
     }
-    
+
     @if (!string.IsNullOrEmpty(Error))
     {
         <p class="bw-signature-error">@Error</p>
@@ -55,15 +54,15 @@
 
 @code {
     private const string ScriptPath = "_content/Blazwind.Components/blazwind.js";
-    
+
     private ElementReference _canvas;
     private string? _instanceId;
     private DotNetObjectReference<BwSignaturePad>? _netRef;
     private bool _isInitialized;
-    
+
     // Container class
     private string _containerClass => "";
-    
+
     // Wrapper class based on variant
     private string _wrapperClass => Variant switch
     {
@@ -71,99 +70,115 @@
         BwVariant.Filled => "bw-signature-wrapper filled",
         _ => "bw-signature-wrapper outline"
     };
-    
+
     #region Parameters
-    
+
     // Removed Class and Style parameters (inherited)
-    
+
     /// <summary>
-    /// Label text
+    ///     Label text
     /// </summary>
-    [Parameter] public string? Label { get; set; }
-    
+    [Parameter]
+    public string? Label { get; set; }
+
     /// <summary>
-    /// Helper text shown below the pad
+    ///     Helper text shown below the pad
     /// </summary>
-    [Parameter] public string? HelperText { get; set; }
-    
+    [Parameter]
+    public string? HelperText { get; set; }
+
     /// <summary>
-    /// Error message
+    ///     Error message
     /// </summary>
-    [Parameter] public string? Error { get; set; }
-    
+    [Parameter]
+    public string? Error { get; set; }
+
     /// <summary>
-    /// Visual variant
+    ///     Visual variant
     /// </summary>
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
-    
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Outline;
+
     /// <summary>
-    /// Width of the signature pad
+    ///     Width of the signature pad
     /// </summary>
-    [Parameter] public string Width { get; set; } = "100%";
-    
+    [Parameter]
+    public string Width { get; set; } = "100%";
+
     /// <summary>
-    /// Height of the signature pad
+    ///     Height of the signature pad
     /// </summary>
-    [Parameter] public string Height { get; set; } = "200px";
-    
+    [Parameter]
+    public string Height { get; set; } = "200px";
+
     /// <summary>
-    /// Pen color
+    ///     Pen color
     /// </summary>
-    [Parameter] public string PenColor { get; set; } = "#000000";
-    
+    [Parameter]
+    public string PenColor { get; set; } = "#000000";
+
     /// <summary>
-    /// Background color
+    ///     Background color
     /// </summary>
-    [Parameter] public string BackgroundColor { get; set; } = "#ffffff";
-    
+    [Parameter]
+    public string BackgroundColor { get; set; } = "#ffffff";
+
     /// <summary>
-    /// Minimum pen width
+    ///     Minimum pen width
     /// </summary>
-    [Parameter] public double MinWidth { get; set; } = 0.5;
-    
+    [Parameter]
+    public double MinWidth { get; set; } = 0.5;
+
     /// <summary>
-    /// Maximum pen width
+    ///     Maximum pen width
     /// </summary>
-    [Parameter] public double MaxWidth { get; set; } = 2.5;
-    
+    [Parameter]
+    public double MaxWidth { get; set; } = 2.5;
+
     /// <summary>
-    /// Show clear button
+    ///     Show clear button
     /// </summary>
-    [Parameter] public bool ShowClearButton { get; set; } = true;
-    
+    [Parameter]
+    public bool ShowClearButton { get; set; } = true;
+
     /// <summary>
-    /// Show undo button
+    ///     Show undo button
     /// </summary>
-    [Parameter] public bool ShowUndoButton { get; set; } = true;
-    
+    [Parameter]
+    public bool ShowUndoButton { get; set; } = true;
+
     /// <summary>
-    /// Read-only mode
+    ///     Read-only mode
     /// </summary>
-    [Parameter] public bool IsReadOnly { get; set; }
-    
+    [Parameter]
+    public bool IsReadOnly { get; set; }
+
     /// <summary>
-    /// Initial signature data (data URL or SVG)
+    ///     Initial signature data (data URL or SVG)
     /// </summary>
-    [Parameter] public string? Value { get; set; }
-    
+    [Parameter]
+    public string? Value { get; set; }
+
     /// <summary>
-    /// Callback when signature changes
+    ///     Callback when signature changes
     /// </summary>
-    [Parameter] public EventCallback<string> ValueChanged { get; set; }
-    
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
     /// <summary>
-    /// Callback when signature ends
+    ///     Callback when signature ends
     /// </summary>
-    [Parameter] public EventCallback OnEndStroke { get; set; }
-    
+    [Parameter]
+    public EventCallback OnEndStroke { get; set; }
+
     #endregion
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _netRef = DotNetObjectReference.Create(this);
-            
+
             var options = new
             {
                 penColor = PenColor,
@@ -173,12 +188,12 @@
                 readOnly = IsReadOnly,
                 initialData = Value
             };
-            
+
             _instanceId = await JS.InvokeAsync<string>("Blazwind.SignaturePad.init", _canvas, options, _netRef);
             _isInitialized = true;
         }
     }
-    
+
     [JSInvokable]
     public async Task HandleEndStroke()
     {
@@ -189,9 +204,9 @@
             await OnEndStroke.InvokeAsync();
         }
     }
-    
+
     /// <summary>
-    /// Clear the signature pad
+    ///     Clear the signature pad
     /// </summary>
     public async Task ClearAsync()
     {
@@ -201,9 +216,9 @@
             await ValueChanged.InvokeAsync(null);
         }
     }
-    
+
     /// <summary>
-    /// Undo the last stroke
+    ///     Undo the last stroke
     /// </summary>
     public async Task UndoAsync()
     {
@@ -214,9 +229,9 @@
             await ValueChanged.InvokeAsync(data);
         }
     }
-    
+
     /// <summary>
-    /// Get signature as Data URL (PNG)
+    ///     Get signature as Data URL (PNG)
     /// </summary>
     public async Task<string> ToDataUrlAsync(string type = "image/png")
     {
@@ -224,11 +239,12 @@
         {
             return await JS.InvokeAsync<string>("Blazwind.SignaturePad.toDataURL", _instanceId, type);
         }
+
         return string.Empty;
     }
-    
+
     /// <summary>
-    /// Get signature as SVG
+    ///     Get signature as SVG
     /// </summary>
     public async Task<string> ToSvgAsync()
     {
@@ -236,11 +252,12 @@
         {
             return await JS.InvokeAsync<string>("Blazwind.SignaturePad.toSVG", _instanceId);
         }
+
         return string.Empty;
     }
-    
+
     /// <summary>
-    /// Check if the pad is empty
+    ///     Check if the pad is empty
     /// </summary>
     public async Task<bool> IsEmptyAsync()
     {
@@ -248,11 +265,12 @@
         {
             return await JS.InvokeAsync<bool>("Blazwind.SignaturePad.isEmpty", _instanceId);
         }
+
         return true;
     }
-    
+
     /// <summary>
-    /// Load signature from data URL
+    ///     Load signature from data URL
     /// </summary>
     public async Task FromDataUrlAsync(string dataUrl)
     {
@@ -261,7 +279,7 @@
             await JS.InvokeVoidAsync("Blazwind.SignaturePad.fromDataURL", _instanceId, dataUrl);
         }
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         if (_instanceId != null)
@@ -270,8 +288,12 @@
             {
                 await JS.InvokeVoidAsync("Blazwind.SignaturePad.dispose", _instanceId);
             }
-            catch { }
+            catch
+            {
+            }
         }
+
         _netRef?.Dispose();
     }
+
 }

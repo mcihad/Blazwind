@@ -5,6 +5,7 @@ A component used to navigate through large datasets by dividing them into manage
 ## Examples
 
 ### Basic Usage
+
 ```razor
 <BwPagination TotalItems="150" 
               PageSize="10" 
@@ -16,6 +17,7 @@ A component used to navigate through large datasets by dividing them into manage
 ```
 
 ### Advanced Features
+
 Includes page size selector and item information.
 
 ```razor
@@ -33,7 +35,9 @@ Includes page size selector and item information.
 ```
 
 ### Mobile / Compact Mode
-To use the input-based compact mode (which is active by default on mobile via `Responsive="true"`), you can also force it:
+
+To use the input-based compact mode (which is active by default on mobile via `Responsive="true"`), you can also force
+it:
 
 ```razor
 <BwPagination TotalItems="100" Compact="true" />
@@ -43,27 +47,27 @@ To use the input-based compact mode (which is active by default on mobile via `R
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `TotalItems` | `int` | - | Total number of items in the dataset. |
-| `PageSize` | `int` | `10` | Number of items to display per page (Supports two-way binding). |
-| `CurrentPage` | `int` | `1` | The currently active page (Supports two-way binding). |
-| `MaxVisiblePages` | `int` | `5` | Maximum number of page buttons to show (excluding ellipses). |
-| `ShowFirstLast` | `bool` | `true` | Show 'First' and 'Last' navigation buttons. |
-| `ShowPageSizeSelector`| `bool` | `false` | Show a dropdown to change items per page. |
-| `PageSizeOptions` | `int[]` | `[10, 25, 50, 100]`| Options available in the page size selector. |
-| `ShowInfo` | `bool` | `true` | Show item range information (e.g., "1 - 10 / 150"). |
-| `Size` | `BwSize` | `Medium` | Size of the pagination buttons (`Small`, `Medium`, `Large`). |
-| `Compact` | `bool` | `false` | Enables compact mode (Input box style instead of list). Useful for mobile. |
-| `Responsive` | `bool` | `true` | Automatically switches to Compact mode on mobile screens. |
-| `Class` | `string?` | `null` | Additional CSS class for the container. |
+| Parameter              | Type      | Default             | Description                                                                |
+|:-----------------------|:----------|:--------------------|:---------------------------------------------------------------------------|
+| `TotalItems`           | `int`     | -                   | Total number of items in the dataset.                                      |
+| `PageSize`             | `int`     | `10`                | Number of items to display per page (Supports two-way binding).            |
+| `CurrentPage`          | `int`     | `1`                 | The currently active page (Supports two-way binding).                      |
+| `MaxVisiblePages`      | `int`     | `5`                 | Maximum number of page buttons to show (excluding ellipses).               |
+| `ShowFirstLast`        | `bool`    | `true`              | Show 'First' and 'Last' navigation buttons.                                |
+| `ShowPageSizeSelector` | `bool`    | `false`             | Show a dropdown to change items per page.                                  |
+| `PageSizeOptions`      | `int[]`   | `[10, 25, 50, 100]` | Options available in the page size selector.                               |
+| `ShowInfo`             | `bool`    | `true`              | Show item range information (e.g., "1 - 10 / 150").                        |
+| `Size`                 | `BwSize`  | `Medium`            | Size of the pagination buttons (`Small`, `Medium`, `Large`).               |
+| `Compact`              | `bool`    | `false`             | Enables compact mode (Input box style instead of list). Useful for mobile. |
+| `Responsive`           | `bool`    | `true`              | Automatically switches to Compact mode on mobile screens.                  |
+| `Class`                | `string?` | `null`              | Additional CSS class for the container.                                    |
 
 ### Events
 
-| Event | Argument Type | Description |
-| :--- | :--- | :--- |
-| `CurrentPageChanged`| `int` | Fired when the active page changes. |
-| `PageSizeChanged` | `int` | Fired when the items per page setting is changed. |
+| Event                | Argument Type | Description                                       |
+|:---------------------|:--------------|:--------------------------------------------------|
+| `CurrentPageChanged` | `int`         | Fired when the active page changes.               |
+| `PageSizeChanged`    | `int`         | Fired when the items per page setting is changed. |
 
 ## Features
 

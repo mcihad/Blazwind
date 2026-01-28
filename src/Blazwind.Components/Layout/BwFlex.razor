@@ -5,7 +5,7 @@
 @{
     // Display
     var displayClass = Inline ? "inline-flex" : "flex";
-    
+
     // Direction
     var directionClass = Direction switch
     {
@@ -15,7 +15,7 @@
         BwFlexDirection.ColumnReverse => "flex-col-reverse",
         _ => "flex-row"
     };
-    
+
     // Wrap
     var wrapClass = Wrap switch
     {
@@ -24,7 +24,7 @@
         BwFlexWrap.WrapReverse => "flex-wrap-reverse",
         _ => "flex-nowrap"
     };
-    
+
     // Justify Content (Main Axis)
     var justifyClass = JustifyContent switch
     {
@@ -36,7 +36,7 @@
         BwMainAxisAlignment.SpaceEvenly => "justify-evenly",
         _ => "justify-start"
     };
-    
+
     // Align Items (Cross Axis)
     var alignItemsClass = AlignItems switch
     {
@@ -47,7 +47,7 @@
         BwCrossAxisAlignment.Baseline => "items-baseline",
         _ => "items-stretch"
     };
-    
+
     // Align Content (Multi-line)
     var alignContentClass = AlignContent switch
     {
@@ -62,11 +62,11 @@
         null => "",
         _ => ""
     };
-    
+
     // Gap - use Tailwind classes for standard spacing, inline style for custom GapX/GapY
     var gapClass = "";
     var gapStyle = "";
-    
+
     if (GapX.HasValue || GapY.HasValue)
     {
         // Use inline style for custom gap values
@@ -91,60 +91,73 @@
     }
 }
 
-<div class="@CombineClasses(displayClass, directionClass, wrapClass, justifyClass, alignItemsClass, alignContentClass, gapClass)" style="@($"{gapStyle} {Style}")" id="@Id" @attributes="AdditionalAttributes">
+<div
+    class="@CombineClasses(displayClass, directionClass, wrapClass, justifyClass, alignItemsClass, alignContentClass, gapClass)"
+    style="@($"{gapStyle} {Style}")" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
+
     /// <summary>
-    /// Child content to render inside the flex container
+    ///     Child content to render inside the flex container
     /// </summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>
-    /// Flex direction (row, column, row-reverse, column-reverse)
+    ///     Flex direction (row, column, row-reverse, column-reverse)
     /// </summary>
-    [Parameter] public BwFlexDirection Direction { get; set; } = BwFlexDirection.Row;
-    
+    [Parameter]
+    public BwFlexDirection Direction { get; set; } = BwFlexDirection.Row;
+
     /// <summary>
-    /// Flex wrap behavior
+    ///     Flex wrap behavior
     /// </summary>
-    [Parameter] public BwFlexWrap Wrap { get; set; } = BwFlexWrap.NoWrap;
-    
+    [Parameter]
+    public BwFlexWrap Wrap { get; set; } = BwFlexWrap.NoWrap;
+
     /// <summary>
-    /// Main axis alignment (justify-content)
+    ///     Main axis alignment (justify-content)
     /// </summary>
-    [Parameter] public BwMainAxisAlignment JustifyContent { get; set; } = BwMainAxisAlignment.Start;
-    
+    [Parameter]
+    public BwMainAxisAlignment JustifyContent { get; set; } = BwMainAxisAlignment.Start;
+
     /// <summary>
-    /// Cross axis alignment (align-items)
+    ///     Cross axis alignment (align-items)
     /// </summary>
-    [Parameter] public BwCrossAxisAlignment AlignItems { get; set; } = BwCrossAxisAlignment.Stretch;
-    
+    [Parameter]
+    public BwCrossAxisAlignment AlignItems { get; set; } = BwCrossAxisAlignment.Stretch;
+
     /// <summary>
-    /// Multi-line content alignment (align-content). Only applies when Wrap is enabled.
+    ///     Multi-line content alignment (align-content). Only applies when Wrap is enabled.
     /// </summary>
-    [Parameter] public BwAlignContent? AlignContent { get; set; }
-    
+    [Parameter]
+    public BwAlignContent? AlignContent { get; set; }
+
     /// <summary>
-    /// Gap between items using spacing scale
+    ///     Gap between items using spacing scale
     /// </summary>
-    [Parameter] public BwSpacing Gap { get; set; } = BwSpacing.None;
-    
+    [Parameter]
+    public BwSpacing Gap { get; set; } = BwSpacing.None;
+
     /// <summary>
-    /// Horizontal gap (overrides Gap for x-axis)
+    ///     Horizontal gap (overrides Gap for x-axis)
     /// </summary>
-    [Parameter] public int? GapX { get; set; }
-    
+    [Parameter]
+    public int? GapX { get; set; }
+
     /// <summary>
-    /// Vertical gap (overrides Gap for y-axis)
+    ///     Vertical gap (overrides Gap for y-axis)
     /// </summary>
-    [Parameter] public int? GapY { get; set; }
-    
+    [Parameter]
+    public int? GapY { get; set; }
+
     /// <summary>
-    /// Use inline-flex instead of flex
+    ///     Use inline-flex instead of flex
     /// </summary>
-    [Parameter] public bool Inline { get; set; } = false;
-    
+    [Parameter]
+    public bool Inline { get; set; }
+
 
 }

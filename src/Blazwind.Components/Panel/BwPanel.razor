@@ -1,14 +1,14 @@
-@using Blazwind.Components.Shared
 @namespace Blazwind.Components.Panel
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 @{
     var colorClass = $"bw-panel-{Color.ToString().ToLower()}";
-    
+
     // Fullscreen behavior classes
     var containerClass = _isFullscreen ? "is-fullscreen" : "";
     var collapsedClass = _isCollapsed ? "is-collapsed" : "";
-    
+
     var finalClass = CombineClasses("bw-panel", colorClass, containerClass, collapsedClass);
 }
 
@@ -28,6 +28,7 @@
                     {
                         <i class="@Icon bw-panel-icon"></i>
                     }
+
                     <h3 class="bw-panel-title">@Title</h3>
                     @if (!string.IsNullOrEmpty(Subtitle))
                     {
@@ -35,33 +36,33 @@
                     }
                 }
             </div>
-            
+
             <div class="bw-panel-tools">
                 @if (Toolbox != null)
                 {
                     <div class="@CombineClasses("flex items-center gap-1 sm:gap-2", ToolboxClass)">
                         @Toolbox
                     </div>
-                    
-                    @if(Collapsible || IsFullscreenable)
+
+                    @if (Collapsible || IsFullscreenable)
                     {
                         <div class="bw-panel-tool-separator"></div>
                     }
                 }
-                
+
                 @if (IsFullscreenable)
                 {
-                    <button type="button" 
+                    <button type="button"
                             class="bw-panel-btn"
                             title="@(_isFullscreen ? "Küçült" : "Tam Ekran")"
                             @onclick="ToggleFullscreen">
                         <i class="fa-solid @(_isFullscreen ? "fa-compress" : "fa-expand") text-sm"></i>
                     </button>
                 }
-                
+
                 @if (Collapsible)
                 {
-                    <button type="button" 
+                    <button type="button"
                             class="bw-panel-btn"
                             title="@(_isCollapsed ? "Genişlet" : "Daralt")"
                             @onclick="ToggleCollapse">
@@ -71,14 +72,14 @@
             </div>
         </div>
     }
-    
+
     @* Body *@
     @if (!_isCollapsed)
     {
         <div class="@CombineClasses("bw-panel-body", BodyClass)">
             @ChildContent
         </div>
-        
+
         @* Footer *@
         @if (Footer != null)
         {
@@ -90,28 +91,55 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Header { get; set; }
-    [Parameter] public RenderFragment? Toolbox { get; set; }
-    [Parameter] public RenderFragment? Footer { get; set; }
-    
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    
-    [Parameter] public bool Collapsible { get; set; } = false;
-    [Parameter] public bool IsCollapsed { get; set; } = false;
-    [Parameter] public EventCallback<bool> IsCollapsedChanged { get; set; }
-    
-    [Parameter] public bool IsFullscreenable { get; set; } = false;
-    
-    [Parameter] public BwColor Color { get; set; } = BwColor.Secondary;
-    
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+
+    [Parameter]
+    public RenderFragment? Toolbox { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public bool Collapsible { get; set; }
+
+    [Parameter]
+    public bool IsCollapsed { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsCollapsedChanged { get; set; }
+
+    [Parameter]
+    public bool IsFullscreenable { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Secondary;
+
     // Removed Class parameter (inherited)
-    [Parameter] public string? HeaderClass { get; set; }
-    [Parameter] public string? ToolboxClass { get; set; }
-    [Parameter] public string? BodyClass { get; set; }
-    [Parameter] public string? FooterClass { get; set; } = "justify-end gap-3"; // Default right aligned
+    [Parameter]
+    public string? HeaderClass { get; set; }
+
+    [Parameter]
+    public string? ToolboxClass { get; set; }
+
+    [Parameter]
+    public string? BodyClass { get; set; }
+
+    [Parameter]
+    public string? FooterClass { get; set; } = "justify-end gap-3"; // Default right aligned
 
     private bool _isCollapsed;
     private bool _isFullscreen;
@@ -131,4 +159,5 @@
     {
         _isFullscreen = !_isFullscreen;
     }
+
 }

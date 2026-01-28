@@ -1,15 +1,14 @@
 @namespace Blazwind.Components.OtpInput
-@inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 
 @{
     var sizeClass = Size.ToString().ToLower();
     var variantClass = Variant.ToString().ToLower();
     var colorClass = $"color-{Color.ToString().ToLower()}";
-    
+
     var inputClass = CombineClasses("bw-otp-input", sizeClass, variantClass, colorClass, HasError ? "error" : "");
     var groupClass = CombineClasses("bw-otp-group", sizeClass);
 }
@@ -21,13 +20,15 @@
     }
 
     <div class="@groupClass">
-        @for (int i = 0; i < Length; i++)
+        @for (var i = 0; i < Length; i++)
         {
             var index = i;
-            <input type="@(IsMasked ? "password" : "text")" maxlength="1" inputmode="@(NumericOnly ? "numeric" : "text")"
-                pattern="@(NumericOnly ? "[0-9]" : null)" class="@inputClass"
-                value="@GetCharAt(index)" disabled="@IsDisabled" @oninput="e => HandleInput(index, e)"
-                @onkeydown="e => HandleKeyDown(index, e)" @onfocus="() => HandleFocus(index)" @ref="_inputRefs[index]" />
+            <input type="@(IsMasked ? "password" : "text")" maxlength="1"
+                   inputmode="@(NumericOnly ? "numeric" : "text")"
+                   pattern="@(NumericOnly ? "[0-9]" : null)" class="@inputClass"
+                   value="@GetCharAt(index)" disabled="@IsDisabled" @oninput="e => HandleInput(index, e)"
+                   @onkeydown="e => HandleKeyDown(index, e)" @onfocus="() => HandleFocus(index)"
+                   @ref="_inputRefs[index]"/>
         }
     </div>
 
@@ -43,22 +44,51 @@
 </div>
 
 @code {
-    [Parameter] public int Length { get; set; } = 6;
-    [Parameter] public string Value { get; set; } = "";
-    [Parameter] public bool NumericOnly { get; set; } = true;
-    [Parameter] public bool IsMasked { get; set; } = false;
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public bool AutoFocus { get; set; } = false;
-    [Parameter] public bool HasError { get; set; } = false;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? ErrorMessage { get; set; }
-    [Parameter] public string? HelperText { get; set; }
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
 
-    [Parameter] public EventCallback<string> ValueChanged { get; set; }
-    [Parameter] public EventCallback<string> OnComplete { get; set; }
+    [Parameter]
+    public int Length { get; set; } = 6;
+
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public bool NumericOnly { get; set; } = true;
+
+    [Parameter]
+    public bool IsMasked { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public bool AutoFocus { get; set; }
+
+    [Parameter]
+    public bool HasError { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? ErrorMessage { get; set; }
+
+    [Parameter]
+    public string? HelperText { get; set; }
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Outline;
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnComplete { get; set; }
 
     private ElementReference[] _inputRefs = new ElementReference[10];
     private string _internalValue = "";
@@ -84,6 +114,7 @@
             var c = _internalValue[index];
             return c == ' ' ? "" : c.ToString();
         }
+
         return "";
     }
 
@@ -142,7 +173,9 @@
             {
                 await _inputRefs[index].FocusAsync();
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
 
@@ -157,4 +190,5 @@
         _internalValue = new string(' ', Length);
         StateHasChanged();
     }
+
 }

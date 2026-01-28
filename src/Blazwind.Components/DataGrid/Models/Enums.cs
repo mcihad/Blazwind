@@ -1,7 +1,7 @@
 namespace Blazwind.Components.DataGrid.Models;
 
 /// <summary>
-/// Filter operators for data grid filtering
+///     Filter operators for data grid filtering
 /// </summary>
 public enum FilterOperator
 {
@@ -21,7 +21,7 @@ public enum FilterOperator
 }
 
 /// <summary>
-/// Logical operator for combining filters
+///     Logical operator for combining filters
 /// </summary>
 public enum FilterLogic
 {
@@ -30,7 +30,7 @@ public enum FilterLogic
 }
 
 /// <summary>
-/// Sort direction
+///     Sort direction
 /// </summary>
 public enum SortDirection
 {
@@ -39,7 +39,7 @@ public enum SortDirection
 }
 
 /// <summary>
-/// Filter input type for column filters
+///     Filter input type for column filters
 /// </summary>
 public enum FilterType
 {
@@ -53,7 +53,7 @@ public enum FilterType
 }
 
 /// <summary>
-/// Position for frozen columns
+///     Position for frozen columns
 /// </summary>
 public enum FrozenPosition
 {
@@ -63,7 +63,7 @@ public enum FrozenPosition
 }
 
 /// <summary>
-/// Text alignment for cells
+///     Text alignment for cells
 /// </summary>
 public enum TextAlign
 {
@@ -73,7 +73,7 @@ public enum TextAlign
 }
 
 /// <summary>
-/// Export format types
+///     Export format types
 /// </summary>
 public enum ExportFormat
 {
@@ -84,7 +84,7 @@ public enum ExportFormat
 }
 
 /// <summary>
-/// Loading state for the grid
+///     Loading state for the grid
 /// </summary>
 public enum LoadingState
 {
@@ -94,17 +94,17 @@ public enum LoadingState
 }
 
 /// <summary>
-/// Filter UI mode
+///     Filter UI mode
 /// </summary>
 public enum FilterMode
 {
     /// <summary>
-    /// Show filters in a separate row below headers (default)
+    ///     Show filters in a separate row below headers (default)
     /// </summary>
     Row,
 
     /// <summary>
-    /// Show filters in a popup menu triggered by a header icon
+    ///     Show filters in a popup menu triggered by a header icon
     /// </summary>
     Menu
 }

@@ -7,7 +7,7 @@ public class TourStep
     public string Content { get; set; } = "";
 
     /// <summary>
-    /// Placement of the tooltip: "top", "bottom", "left", "right"
+    ///     Placement of the tooltip: "top", "bottom", "left", "right"
     /// </summary>
     public string Placement { get; set; } = "bottom";
 }

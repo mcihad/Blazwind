@@ -31,12 +31,13 @@ A component used for date selection. By default, it uses the Turkish (tr-TR) cul
 ```
 
 > [!NOTE]
-> This component uses the browser’s native date picker (`input type="date"`). The appearance (calendar language, date format) depends on the user’s browser settings, but `Value` is always provided as a standard `DateTime`.
+> This component uses the browser’s native date picker (`input type="date"`). The appearance (calendar language, date
+> format) depends on the user’s browser settings, but `Value` is always provided as a standard `DateTime`.
 
 ## Parameters
 
 | Parameter       | Type              | Default  | Description                                           |
-| :-------------- | :---------------- | :------- | :---------------------------------------------------- |
+|:----------------|:------------------|:---------|:------------------------------------------------------|
 | `Value`         | `DateTime?`       | `null`   | Selected date (two-way binding).                      |
 | `Min`           | `DateTime?`       | `null`   | Earliest selectable date.                             |
 | `Max`           | `DateTime?`       | `null`   | Latest selectable date.                               |
@@ -52,7 +53,7 @@ A component used for date selection. By default, it uses the Turkish (tr-TR) cul
 ## Events
 
 | Event          | Payload          | Description                                        |
-| :------------- | :--------------- | :------------------------------------------------- |
+|:---------------|:-----------------|:---------------------------------------------------|
 | `ValueChanged` | `DateTime?`      | Triggered when the date changes (two-way binding). |
 | `OnChange`     | `DateTime?`      | Triggered after the change.                        |
 | `OnFocus`      | `FocusEventArgs` | Triggered when the field gains focus.              |

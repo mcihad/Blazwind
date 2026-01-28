@@ -11,50 +11,60 @@
 }
 
 @code {
-    /// <summary>
-    /// Parent map component
-    /// </summary>
-    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
 
     /// <summary>
-    /// Unique group identifier
+    ///     Parent map component
     /// </summary>
-    [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
+    [CascadingParameter]
+    public BwMapLibre? ParentMap { get; set; }
 
     /// <summary>
-    /// Display name for the group
+    ///     Unique group identifier
     /// </summary>
-    [Parameter] public string? Name { get; set; }
+    [Parameter][EditorRequired]
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Group visibility - controls all child layers
+    ///     Display name for the group
     /// </summary>
-    [Parameter] public bool Visible { get; set; } = true;
+    [Parameter]
+    public string? Name { get; set; }
 
     /// <summary>
-    /// Base click order for the group - child layers inherit this unless they override
+    ///     Group visibility - controls all child layers
     /// </summary>
-    [Parameter] public int ClickOrder { get; set; }
+    [Parameter]
+    public bool Visible { get; set; } = true;
 
     /// <summary>
-    /// Fired when any layer in the group is clicked
+    ///     Base click order for the group - child layers inherit this unless they override
     /// </summary>
-    [Parameter] public EventCallback<MapLayerClickEventArgs> OnClick { get; set; }
+    [Parameter]
+    public int ClickOrder { get; set; }
 
     /// <summary>
-    /// Fired when mouse enters any layer in the group
+    ///     Fired when any layer in the group is clicked
     /// </summary>
-    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseEnter { get; set; }
+    [Parameter]
+    public EventCallback<MapLayerClickEventArgs> OnClick { get; set; }
 
     /// <summary>
-    /// Fired when mouse leaves any layer in the group
+    ///     Fired when mouse enters any layer in the group
     /// </summary>
-    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseLeave { get; set; }
+    [Parameter]
+    public EventCallback<MapLayerEventArgs> OnMouseEnter { get; set; }
 
     /// <summary>
-    /// Child content (BwMapLibreLayer components)
+    ///     Fired when mouse leaves any layer in the group
     /// </summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public EventCallback<MapLayerEventArgs> OnMouseLeave { get; set; }
+
+    /// <summary>
+    ///     Child content (BwMapLibreLayer components)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     private readonly List<string> _childLayerIds = new();
     private bool _visible = true;
@@ -75,7 +85,7 @@
     }
 
     /// <summary>
-    /// Register a child layer ID with this group
+    ///     Register a child layer ID with this group
     /// </summary>
     internal void RegisterChildLayer(string layerId)
     {
@@ -86,7 +96,7 @@
     }
 
     /// <summary>
-    /// Unregister a child layer ID from this group
+    ///     Unregister a child layer ID from this group
     /// </summary>
     internal void UnregisterChildLayer(string layerId)
     {
@@ -94,12 +104,15 @@
     }
 
     /// <summary>
-    /// Get the group's base click order for child layers
+    ///     Get the group's base click order for child layers
     /// </summary>
-    public int GetBaseClickOrder() => ClickOrder;
+    public int GetBaseClickOrder()
+    {
+        return ClickOrder;
+    }
 
     /// <summary>
-    /// Set visibility for all layers in the group
+    ///     Set visibility for all layers in the group
     /// </summary>
     public async Task SetGroupVisibilityAsync(bool visible)
     {
@@ -115,7 +128,7 @@
     }
 
     /// <summary>
-    /// Handle click from any child layer (routes to group's OnClick)
+    ///     Handle click from any child layer (routes to group's OnClick)
     /// </summary>
     internal async Task HandleChildClick(MapLayerClickEventArgs e)
     {
@@ -123,7 +136,7 @@
     }
 
     /// <summary>
-    /// Handle mouse enter from any child layer
+    ///     Handle mouse enter from any child layer
     /// </summary>
     internal async Task HandleChildMouseEnter(MapLayerEventArgs e)
     {
@@ -131,7 +144,7 @@
     }
 
     /// <summary>
-    /// Handle mouse leave from any child layer
+    ///     Handle mouse leave from any child layer
     /// </summary>
     internal async Task HandleChildMouseLeave(MapLayerEventArgs e)
     {
@@ -142,4 +155,5 @@
     {
         _childLayerIds.Clear();
     }
+
 }

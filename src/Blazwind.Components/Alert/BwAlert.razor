@@ -4,7 +4,7 @@
 
 @{
     var alertId = Id ?? $"bw-alert-{Guid.NewGuid():N}";
-    
+
     // Default Icon
     var defaultIcon = Color switch
     {
@@ -13,12 +13,12 @@
         BwColor.Danger => "fa-solid fa-circle-xmark",
         _ => "fa-solid fa-circle-info"
     };
-    
+
     var iconToUse = string.IsNullOrEmpty(Icon) ? defaultIcon : Icon;
 
     // Base class
     var baseClass = "bw-alert";
-    
+
     // Variant class (theme-aware)
     var variantClass = (Variant, Color) switch
     {
@@ -30,7 +30,7 @@
         (BwVariant.Filled, BwColor.Primary) => "bw-alert-filled-primary",
         (BwVariant.Filled, BwColor.Secondary) => "bw-alert-filled-secondary",
         (BwVariant.Filled, BwColor.Dark) => "bw-alert-filled-dark",
-        
+
         // OUTLINE variants
         (BwVariant.Outline, BwColor.Success) => "bw-alert-outline-success",
         (BwVariant.Outline, BwColor.Warning) => "bw-alert-outline-warning",
@@ -39,7 +39,7 @@
         (BwVariant.Outline, BwColor.Primary) => "bw-alert-outline-primary",
         (BwVariant.Outline, BwColor.Secondary) => "bw-alert-outline-secondary",
         (BwVariant.Outline, BwColor.Dark) => "bw-alert-outline-dark",
-        
+
         // SOFT variants (default)
         (BwVariant.Soft, BwColor.Success) => "bw-alert-soft-success",
         (BwVariant.Soft, BwColor.Warning) => "bw-alert-soft-warning",
@@ -48,7 +48,7 @@
         (BwVariant.Soft, BwColor.Primary) => "bw-alert-soft-primary",
         (BwVariant.Soft, BwColor.Secondary) => "bw-alert-soft-secondary",
         (BwVariant.Soft, BwColor.Dark) => "bw-alert-soft-dark",
-        
+
         // GHOST variants
         (BwVariant.Ghost, BwColor.Success) => "bw-alert-ghost-success",
         (BwVariant.Ghost, BwColor.Warning) => "bw-alert-ghost-warning",
@@ -56,10 +56,10 @@
         (BwVariant.Ghost, BwColor.Info) => "bw-alert-ghost-info",
         (BwVariant.Ghost, BwColor.Primary) => "bw-alert-ghost-primary",
         (BwVariant.Ghost, _) => "bw-alert-ghost-primary",
-        
+
         _ => "bw-alert-soft-primary"
     };
-    
+
     // Icon class (theme-aware)
     var iconClass = Color switch
     {
@@ -71,7 +71,7 @@
         BwColor.Secondary => "bw-alert-icon-secondary",
         _ => "bw-alert-icon-primary"
     };
-    
+
     // For filled variant, icon should be white
     if (Variant == BwVariant.Filled)
     {
@@ -81,32 +81,33 @@
 
 @if (_isVisible)
 {
-    <div id="@alertId" class="@CombineClasses($"{baseClass} {variantClass}")" style="@Style" role="alert" @attributes="AdditionalAttributes">
+    <div id="@alertId" class="@CombineClasses($"{baseClass} {variantClass}")" style="@Style" role="alert"
+         @attributes="AdditionalAttributes">
         @if (ShowIcon && !string.IsNullOrEmpty(iconToUse))
         {
             <div class="bw-alert-icon-wrapper">
                 <i class="@iconToUse text-lg @iconClass"></i>
             </div>
         }
-        
+
         <div class="bw-alert-content">
             @if (!string.IsNullOrEmpty(Title))
             {
                 <h4 class="bw-alert-title">@Title</h4>
             }
-            
+
             @if (!string.IsNullOrEmpty(Message))
             {
                 <p class="bw-alert-message">@Message</p>
             }
-            
+
             @if (ChildContent != null)
             {
                 <div class="bw-alert-message">
                     @ChildContent
                 </div>
             }
-            
+
             @if (Actions != null)
             {
                 <div class="bw-alert-actions">
@@ -114,7 +115,7 @@
                 </div>
             }
         </div>
-        
+
         @if (Dismissible)
         {
             <button type="button" class="bw-alert-close" @onclick="Close">
@@ -125,20 +126,39 @@
 }
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Message { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Actions { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Info;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Soft;
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public bool ShowIcon { get; set; } = true;
-    [Parameter] public bool Dismissible { get; set; } = false;
-    
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Info;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Soft;
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public bool ShowIcon { get; set; } = true;
+
+    [Parameter]
+    public bool Dismissible { get; set; }
+
     private bool _isVisible = true;
 
     private void Close()
     {
         _isVisible = false;
     }
+
 }

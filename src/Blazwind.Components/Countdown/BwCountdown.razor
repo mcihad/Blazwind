@@ -1,7 +1,6 @@
 @namespace Blazwind.Components.Countdown
 @inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
 @implements IDisposable
 
 @{
@@ -55,7 +54,7 @@
         BwVariant.Soft => "bw-countdown-soft",
         _ => "bw-countdown-ghost"
     };
-    
+
     // Combine classes
     var boxClasses = CombineClasses($"bw-countdown-box {boxSizeClass} {variantClass} {colorClass}");
     var separatorClasses = "bw-countdown-separator";
@@ -125,30 +124,59 @@
 </div>
 
 @code {
-    [Parameter] public DateTime TargetDate { get; set; }
-    [Parameter] public TimeSpan? Duration { get; set; }
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Ghost;
 
-    [Parameter] public bool ShowDays { get; set; } = true;
-    [Parameter] public bool ShowHours { get; set; } = true;
-    [Parameter] public bool ShowMinutes { get; set; } = true;
-    [Parameter] public bool ShowSeconds { get; set; } = true;
-    [Parameter] public bool ShowMilliseconds { get; set; } = false;
-    [Parameter] public bool ShowLabels { get; set; } = false;
+    [Parameter]
+    public DateTime TargetDate { get; set; }
 
-    [Parameter] public string DayLabel { get; set; } = "gün";
-    [Parameter] public string HourLabel { get; set; } = "saat";
-    [Parameter] public string MinuteLabel { get; set; } = "dk";
-    [Parameter] public string SecondLabel { get; set; } = "sn";
+    [Parameter]
+    public TimeSpan? Duration { get; set; }
 
-    [Parameter] public EventCallback OnComplete { get; set; }
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Ghost;
+
+    [Parameter]
+    public bool ShowDays { get; set; } = true;
+
+    [Parameter]
+    public bool ShowHours { get; set; } = true;
+
+    [Parameter]
+    public bool ShowMinutes { get; set; } = true;
+
+    [Parameter]
+    public bool ShowSeconds { get; set; } = true;
+
+    [Parameter]
+    public bool ShowMilliseconds { get; set; }
+
+    [Parameter]
+    public bool ShowLabels { get; set; }
+
+    [Parameter]
+    public string DayLabel { get; set; } = "gün";
+
+    [Parameter]
+    public string HourLabel { get; set; } = "saat";
+
+    [Parameter]
+    public string MinuteLabel { get; set; } = "dk";
+
+    [Parameter]
+    public string SecondLabel { get; set; } = "sn";
+
+    [Parameter]
+    public EventCallback OnComplete { get; set; }
 
     private TimeSpan _remaining = TimeSpan.Zero;
     private Timer? _timer;
     private DateTime _endTime;
-    private bool _isCompleted = false;
+    private bool _isCompleted;
 
     protected override void OnInitialized()
     {
@@ -195,4 +223,5 @@
     {
         _timer?.Dispose();
     }
+
 }

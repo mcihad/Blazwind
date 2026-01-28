@@ -45,7 +45,7 @@ Instead of the `Items` parameter, manual `option` tags or custom content can als
 ## Parameters
 
 | Parameter        | Type                                | Default | Description                                                    |
-| :--------------- | :---------------------------------- | :------ | :------------------------------------------------------------- |
+|:-----------------|:------------------------------------|:--------|:---------------------------------------------------------------|
 | `Value`          | `TValue`                            | -       | Selected value (single selection, two-way binding).            |
 | `SelectedValues` | `List<TValue>`                      | `null`  | List of selected values (multiple selection, two-way binding). |
 | `Items`          | `IEnumerable<BwSelectItem<TValue>>` | `null`  | Data source.                                                   |
@@ -63,7 +63,7 @@ Instead of the `Items` parameter, manual `option` tags or custom content can als
 ## Events
 
 | Event                   | Payload                      | Description                                               |
-| :---------------------- | :--------------------------- | :-------------------------------------------------------- |
+|:------------------------|:-----------------------------|:----------------------------------------------------------|
 | `ValueChanged`          | `TValue`                     | Triggered when the selection changes (single selection).  |
 | `SelectedValuesChanged` | `List<TValue>`               | Triggered when selections change (multiple selection).    |
 | `SelectedItemChanged`   | `BwSelectItem<TValue>`       | Triggered when the selected item object changes.          |

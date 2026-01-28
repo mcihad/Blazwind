@@ -1,7 +1,7 @@
 namespace Blazwind.Components.RRule;
 
 /// <summary>
-/// Tekrarlama sıklığı
+///     Tekrarlama sıklığı
 /// </summary>
 public enum RRuleFrequency
 {
@@ -12,7 +12,7 @@ public enum RRuleFrequency
 }
 
 /// <summary>
-/// Bitiş tipi
+///     Bitiş tipi
 /// </summary>
 public enum RRuleEndType
 {
@@ -22,7 +22,7 @@ public enum RRuleEndType
 }
 
 /// <summary>
-/// Aylık tekrar tipi
+///     Aylık tekrar tipi
 /// </summary>
 public enum RRuleMonthlyType
 {
@@ -34,7 +34,7 @@ public enum RRuleMonthlyType
 }
 
 /// <summary>
-/// RRULE seçenekleri - UI state ve RRULE arasında köprü
+///     RRULE seçenekleri - UI state ve RRULE arasında köprü
 /// </summary>
 public class RRuleOptions
 {
@@ -88,7 +88,7 @@ public class RRuleOptions
 }
 
 /// <summary>
-/// Hafta günleri için yardımcı model
+///     Hafta günleri için yardımcı model
 /// </summary>
 public class WeekDayInfo
 {

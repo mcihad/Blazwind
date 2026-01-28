@@ -16,15 +16,18 @@
 </div>
 
 @code {
-    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
-    
-    /// <summary>Density override</summary>
-    [Parameter] public BwFormDensity? DensityOverride { get; set; }
-    
 
-    
+    [CascadingParameter]
+    private BwFormDensity? CascadedDensity { get; set; }
+
+    /// <summary>Density override</summary>
+    [Parameter]
+    public BwFormDensity? DensityOverride { get; set; }
+
+
     /// <summary>Child content</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     private BwFormDensity Density => DensityOverride ?? CascadedDensity ?? BwFormDensity.Normal;
 }

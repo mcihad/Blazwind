@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Form density/spacing mode
+///     Form density/spacing mode
 /// </summary>
 public enum BwFormDensity
 {

@@ -14,7 +14,7 @@ A simple wrapper for the main content area of a card, providing consistent paddi
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `ChildContent`| `RenderFragment?`| `null` | Content inside the body. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
+| Parameter      | Type              | Default | Description              |
+|----------------|-------------------|---------|--------------------------|
+| `ChildContent` | `RenderFragment?` | `null`  | Content inside the body. |
+| `Class`        | `string?`         | `null`  | Additional CSS classes.  |

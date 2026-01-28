@@ -5,13 +5,13 @@ using Blazwind.Components.DataGrid.Models;
 namespace Blazwind.Components.DataGrid.Services;
 
 /// <summary>
-/// Extension methods for IQueryable to apply DataGrid state for server-side operations.
-/// These extensions allow seamless integration with Entity Framework and other IQueryable providers.
+///     Extension methods for IQueryable to apply DataGrid state for server-side operations.
+///     These extensions allow seamless integration with Entity Framework and other IQueryable providers.
 /// </summary>
 public static class DataGridExtensions
 {
     /// <summary>
-    /// Applies the complete DataGrid state (filters, sorting, pagination) to an IQueryable.
+    ///     Applies the complete DataGrid state (filters, sorting, pagination) to an IQueryable.
     /// </summary>
     /// <typeparam name="T">Entity type</typeparam>
     /// <param name="query">Source query</param>
@@ -22,22 +22,13 @@ public static class DataGridExtensions
         if (state == null) return query;
 
         // Apply filters
-        if (state.Filters?.Any() == true)
-        {
-            query = query.ApplyFilters(state.Filters);
-        }
+        if (state.Filters?.Any() == true) query = query.ApplyFilters(state.Filters);
 
         // Apply search query
-        if (!string.IsNullOrWhiteSpace(state.SearchQuery))
-        {
-            query = query.ApplySearch(state.SearchQuery);
-        }
+        if (!string.IsNullOrWhiteSpace(state.SearchQuery)) query = query.ApplySearch(state.SearchQuery);
 
         // Apply sorting
-        if (state.Sorts?.Any() == true)
-        {
-            query = query.ApplySorting(state.Sorts);
-        }
+        if (state.Sorts?.Any() == true) query = query.ApplySorting(state.Sorts);
 
         // Apply pagination
         query = query.ApplyPagination(state.CurrentPage, state.PageSize);
@@ -46,7 +37,7 @@ public static class DataGridExtensions
     }
 
     /// <summary>
-    /// Applies filters to an IQueryable based on FilterDescriptor list.
+    ///     Applies filters to an IQueryable based on FilterDescriptor list.
     /// </summary>
     public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, IEnumerable<FilterDescriptor> filters)
     {
@@ -70,7 +61,7 @@ public static class DataGridExtensions
     }
 
     /// <summary>
-    /// Applies text search across all string properties.
+    ///     Applies text search across all string properties.
     /// </summary>
     public static IQueryable<T> ApplySearch<T>(this IQueryable<T> query, string searchQuery)
     {
@@ -110,7 +101,7 @@ public static class DataGridExtensions
     }
 
     /// <summary>
-    /// Applies sorting to an IQueryable based on SortDescriptor list.
+    ///     Applies sorting to an IQueryable based on SortDescriptor list.
     /// </summary>
     public static IQueryable<T> ApplySorting<T>(this IQueryable<T> query, IEnumerable<SortDescriptor> sorts)
     {
@@ -127,24 +118,20 @@ public static class DataGridExtensions
             var lambda = Expression.Lambda(property, parameter);
 
             if (orderedQuery == null)
-            {
                 orderedQuery = sort.Direction == SortDirection.Ascending
                     ? Queryable.OrderBy(query, (dynamic)lambda)
                     : Queryable.OrderByDescending(query, (dynamic)lambda);
-            }
             else
-            {
                 orderedQuery = sort.Direction == SortDirection.Ascending
                     ? Queryable.ThenBy(orderedQuery, (dynamic)lambda)
                     : Queryable.ThenByDescending(orderedQuery, (dynamic)lambda);
-            }
         }
 
         return orderedQuery ?? query;
     }
 
     /// <summary>
-    /// Applies pagination to an IQueryable.
+    ///     Applies pagination to an IQueryable.
     /// </summary>
     public static IQueryable<T> ApplyPagination<T>(this IQueryable<T> query, int page, int pageSize)
     {
@@ -155,8 +142,8 @@ public static class DataGridExtensions
     }
 
     /// <summary>
-    /// Gets the total count for the query (for pagination).
-    /// Call this BEFORE applying pagination.
+    ///     Gets the total count for the query (for pagination).
+    ///     Call this BEFORE applying pagination.
     /// </summary>
     public static async Task<int> GetTotalCountAsync<T>(
         this IQueryable<T> query,
@@ -166,35 +153,23 @@ public static class DataGridExtensions
         if (state == null) return await Task.FromResult(query.Count());
 
         // Apply filters only (not pagination)
-        if (state.Filters?.Any() == true)
-        {
-            query = query.ApplyFilters(state.Filters);
-        }
+        if (state.Filters?.Any() == true) query = query.ApplyFilters(state.Filters);
 
-        if (!string.IsNullOrWhiteSpace(state.SearchQuery))
-        {
-            query = query.ApplySearch(state.SearchQuery);
-        }
+        if (!string.IsNullOrWhiteSpace(state.SearchQuery)) query = query.ApplySearch(state.SearchQuery);
 
         return query.Count();
     }
 
     /// <summary>
-    /// Gets the total count synchronously.
+    ///     Gets the total count synchronously.
     /// </summary>
     public static int GetTotalCount<T>(this IQueryable<T> query, DataGridState state)
     {
         if (state == null) return query.Count();
 
-        if (state.Filters?.Any() == true)
-        {
-            query = query.ApplyFilters(state.Filters);
-        }
+        if (state.Filters?.Any() == true) query = query.ApplyFilters(state.Filters);
 
-        if (!string.IsNullOrWhiteSpace(state.SearchQuery))
-        {
-            query = query.ApplySearch(state.SearchQuery);
-        }
+        if (!string.IsNullOrWhiteSpace(state.SearchQuery)) query = query.ApplySearch(state.SearchQuery);
 
         return query.Count();
     }
@@ -205,7 +180,7 @@ public static class DataGridExtensions
     {
         if (string.IsNullOrEmpty(propertyPath)) return null;
 
-        Expression property = parameter;
+        var property = parameter;
         foreach (var member in propertyPath.Split('.'))
         {
             var propertyInfo = property.Type.GetProperty(member,
@@ -226,18 +201,14 @@ public static class DataGridExtensions
 
         // Handle null checks
         if (filter.Operator == FilterOperator.IsNull)
-        {
             return propertyType.IsValueType && Nullable.GetUnderlyingType(propertyType) == null
                 ? Expression.Constant(false)
                 : Expression.Equal(property, Expression.Constant(null, propertyType));
-        }
 
         if (filter.Operator == FilterOperator.IsNotNull)
-        {
             return propertyType.IsValueType && Nullable.GetUnderlyingType(propertyType) == null
                 ? Expression.Constant(true)
                 : Expression.NotEqual(property, Expression.Constant(null, propertyType));
-        }
 
         // Convert filter value to property type
         object? filterValue;
@@ -253,10 +224,7 @@ public static class DataGridExtensions
         var constant = Expression.Constant(filterValue, propertyType);
 
         // String operations
-        if (underlyingType == typeof(string))
-        {
-            return BuildStringExpression(property, filter, filterValue?.ToString());
-        }
+        if (underlyingType == typeof(string)) return BuildStringExpression(property, filter, filterValue?.ToString());
 
         // Comparison operations
         return filter.Operator switch
@@ -327,25 +295,13 @@ public static class DataGridExtensions
     {
         if (value == null) return null;
 
-        if (targetType == typeof(Guid))
-        {
-            return Guid.Parse(value.ToString()!);
-        }
+        if (targetType == typeof(Guid)) return Guid.Parse(value.ToString()!);
 
-        if (targetType == typeof(DateOnly))
-        {
-            return DateOnly.Parse(value.ToString()!);
-        }
+        if (targetType == typeof(DateOnly)) return DateOnly.Parse(value.ToString()!);
 
-        if (targetType == typeof(TimeOnly))
-        {
-            return TimeOnly.Parse(value.ToString()!);
-        }
+        if (targetType == typeof(TimeOnly)) return TimeOnly.Parse(value.ToString()!);
 
-        if (targetType.IsEnum)
-        {
-            return Enum.Parse(targetType, value.ToString()!);
-        }
+        if (targetType.IsEnum) return Enum.Parse(targetType, value.ToString()!);
 
         return Convert.ChangeType(value, targetType);
     }

@@ -1,11 +1,12 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
+@using System.Globalization
 @using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<double>
 
 @{
     var marginClass = GetDensityMarginClass();
-    var percentage = ((Value - Min) / (Max - Min)) * 100;
+    var percentage = (Value - Min) / (Max - Min) * 100;
 
     var fillColor = Color switch
     {
@@ -44,8 +45,8 @@
     // For vertical sliders, we rotate the horizontal slider by -90deg.
     // So the visual "width" is the "height" property, and visual "height" is "width".
     // The gradient direction is always "to right" relative to the element, which becomes "to top" visually after rotation.
-    
-    var percentageStr = percentage.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    var percentageStr = percentage.ToString("0.##", CultureInfo.InvariantCulture);
     var trackBgColor = "var(--bw-gray-200)";
     var trackGradient = $"linear-gradient(to right, {fillColor} 0%, {fillColor} {percentageStr}%, {trackBgColor} {percentageStr}%, {trackBgColor} 100%)";
     var errorTrackColor = HasError ? "var(--bw-color-danger-soft)" : trackBgColor;
@@ -54,7 +55,7 @@
     // Vertical: Use flex-col to stack Label -> Slider -> Value (centered).
     // Horizontal: Use block (standard).
     var outerClass = IsVertical ? $"inline-flex flex-col items-center gap-2 {marginClass} {Class}" : $"{marginClass} {Class}";
-    
+
     // Label Row:
     // Vertical: Simple centered label.
     // Horizontal: Flex row with justify-between (Label Left, Value Right).
@@ -66,8 +67,8 @@
     var sliderContainerClass = IsVertical ? "relative flex-none" : "relative w-full"; // flex-none important for vertical
     var sliderContainerStyle = IsVertical ? $"width: {thumbSizePx}; height: {VerticalHeight};" : "";
 
-    var sliderClass = "bw-slider"; 
-    
+    var sliderClass = "bw-slider";
+
     // Input Style:
     // Vertical: Absolute, Centered, Rotated. Width = Visual Height.
     var sliderStyle = IsVertical
@@ -91,7 +92,7 @@
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                     {
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                     }
                 </div>
             }
@@ -102,14 +103,15 @@
         </div>
     }
 
-    <div class="@(IsDisabled ? "opacity-50 cursor-not-allowed" : "") @sliderContainerClass" style="@sliderContainerStyle">
+    <div class="@(IsDisabled ? "opacity-50 cursor-not-allowed" : "") @sliderContainerClass"
+         style="@sliderContainerStyle">
         <input type="range" class="@sliderClass" min="@Min" max="@Max" step="@Step" value="@Value"
-            disabled="@IsDisabled" @oninput="HandleSliderInput" @onfocus="HandleFocusEvent" @onblur="HandleBlurEvent"
-            style="@sliderStyle" @attributes="AdditionalAttributes" />
-            
+               disabled="@IsDisabled" @oninput="HandleSliderInput" @onfocus="HandleFocusEvent" @onblur="HandleBlurEvent"
+               style="@sliderStyle" @attributes="AdditionalAttributes"/>
+
         @* Marks for Vertical could go here, absolutely positioned if implemented *@
     </div>
-    
+
     @* Vertical Value Display (Bottom) *@
     @if (ShowValue && IsVertical)
     {
@@ -122,8 +124,9 @@
         <div class="relative mt-1">
             @foreach (var mark in Marks)
             {
-                var markPercent = ((mark - Min) / (Max - Min)) * 100;
-                <div class="absolute -translate-x-1/2 text-xs text-[var(--bw-color-text-muted)]" style="left: @markPercent%;">
+                var markPercent = (mark - Min) / (Max - Min) * 100;
+                <div class="absolute -translate-x-1/2 text-xs text-[var(--bw-color-text-muted)]"
+                     style="left: @markPercent%;">
                     @mark
                 </div>
             }
@@ -145,38 +148,50 @@
 </div>
 
 @code {
+
     /// <summary>Minimum value</summary>
-    [Parameter] public double Min { get; set; } = 0;
+    [Parameter]
+    public double Min { get; set; }
 
     /// <summary>Maximum value</summary>
-    [Parameter] public double Max { get; set; } = 100;
+    [Parameter]
+    public double Max { get; set; } = 100;
 
     /// <summary>Step increment</summary>
-    [Parameter] public double Step { get; set; } = 1;
+    [Parameter]
+    public double Step { get; set; } = 1;
 
     /// <summary>Show current value</summary>
-    [Parameter] public bool ShowValue { get; set; } = true;
+    [Parameter]
+    public bool ShowValue { get; set; } = true;
 
     /// <summary>Show tooltip while dragging</summary>
-    [Parameter] public bool ShowTooltip { get; set; } = true;
+    [Parameter]
+    public bool ShowTooltip { get; set; } = true;
 
     /// <summary>Show tick marks</summary>
-    [Parameter] public bool ShowMarks { get; set; } // Renamed to simple bool to match usage in logic above
+    [Parameter]
+    public bool ShowMarks { get; set; } // Renamed to simple bool to match usage in logic above
 
     /// <summary>Custom mark values</summary>
-    [Parameter] public double[]? Marks { get; set; }
+    [Parameter]
+    public double[]? Marks { get; set; }
 
     /// <summary>Value format string</summary>
-    [Parameter] public string ValueFormat { get; set; } = "0";
+    [Parameter]
+    public string ValueFormat { get; set; } = "0";
 
     /// <summary>Color variant</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
 
     /// <summary>Vertical orientation</summary>
-    [Parameter] public bool IsVertical { get; set; }
+    [Parameter]
+    public bool IsVertical { get; set; }
 
     /// <summary>Height for vertical slider</summary>
-    [Parameter] public string VerticalHeight { get; set; } = "200px";
+    [Parameter]
+    public string VerticalHeight { get; set; } = "200px";
 
     private async Task HandleSliderInput(ChangeEventArgs e)
     {
@@ -204,4 +219,5 @@
         IsFocused = false;
         await HandleBlur(e);
     }
+
 }

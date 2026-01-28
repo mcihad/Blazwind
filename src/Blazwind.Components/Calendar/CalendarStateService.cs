@@ -3,16 +3,13 @@ using Blazwind.Components.Shared;
 namespace Blazwind.Components.Calendar;
 
 /// <summary>
-/// Centralized state management service for calendar events.
-/// Maintains an in-memory cache and notifies subscribers on changes.
+///     Centralized state management service for calendar events.
+///     Maintains an in-memory cache and notifies subscribers on changes.
 /// </summary>
 public class CalendarStateService : IDisposable
 {
-    private readonly List<CalendarEvent> _events = new();
     private readonly List<CalendarInfo> _calendars = new();
-
-    /// <summary>Fires when events or calendars change. Subscribe to trigger re-render.</summary>
-    public event Action? OnStateChanged;
+    private readonly List<CalendarEvent> _events = new();
 
     /// <summary>Read-only access to cached events.</summary>
     public IReadOnlyList<CalendarEvent> Events => _events;
@@ -20,9 +17,17 @@ public class CalendarStateService : IDisposable
     /// <summary>Read-only access to cached calendars.</summary>
     public IReadOnlyList<CalendarInfo> Calendars => _calendars;
 
+    public void Dispose()
+    {
+        OnStateChanged = null;
+    }
+
+    /// <summary>Fires when events or calendars change. Subscribe to trigger re-render.</summary>
+    public event Action? OnStateChanged;
+
     /// <summary>
-    /// Initialize the service with events and calendars.
-    /// Call this once after loading data from your repository.
+    ///     Initialize the service with events and calendars.
+    ///     Call this once after loading data from your repository.
     /// </summary>
     public void Initialize(IEnumerable<CalendarEvent> events, IEnumerable<CalendarInfo>? calendars = null)
     {
@@ -30,10 +35,7 @@ public class CalendarStateService : IDisposable
         _events.AddRange(events);
 
         _calendars.Clear();
-        if (calendars != null)
-        {
-            _calendars.AddRange(calendars);
-        }
+        if (calendars != null) _calendars.AddRange(calendars);
 
         NotifyStateChanged();
     }
@@ -60,14 +62,11 @@ public class CalendarStateService : IDisposable
     public void DeleteEvent(string eventId)
     {
         var removed = _events.RemoveAll(e => e.Id == eventId);
-        if (removed > 0)
-        {
-            NotifyStateChanged();
-        }
+        if (removed > 0) NotifyStateChanged();
     }
 
     /// <summary>
-    /// Move an event (update start/end times). Optimistic update.
+    ///     Move an event (update start/end times). Optimistic update.
     /// </summary>
     public void MoveEvent(string eventId, TimeSpan timeDelta, int dayDelta = 0)
     {
@@ -81,7 +80,7 @@ public class CalendarStateService : IDisposable
     }
 
     /// <summary>
-    /// Resize an event (update end time only). Optimistic update.
+    ///     Resize an event (update end time only). Optimistic update.
     /// </summary>
     public void ResizeEvent(string eventId, int newDurationMinutes)
     {
@@ -94,7 +93,10 @@ public class CalendarStateService : IDisposable
     }
 
     /// <summary>Get an event by ID.</summary>
-    public CalendarEvent? GetEvent(string eventId) => _events.FirstOrDefault(e => e.Id == eventId);
+    public CalendarEvent? GetEvent(string eventId)
+    {
+        return _events.FirstOrDefault(e => e.Id == eventId);
+    }
 
     // FindEventByIdOrMaster helper removed as recurrence system is disabled
 
@@ -109,10 +111,8 @@ public class CalendarStateService : IDisposable
         }
     }
 
-    private void NotifyStateChanged() => OnStateChanged?.Invoke();
-
-    public void Dispose()
+    private void NotifyStateChanged()
     {
-        OnStateChanged = null;
+        OnStateChanged?.Invoke();
     }
 }

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Emphasis focus constants
+///     Emphasis focus constants
 /// </summary>
 public static class ChartEmphasisFocus
 {

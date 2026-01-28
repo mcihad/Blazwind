@@ -8,14 +8,14 @@
         BwSize.Large => "w-12 h-12 text-lg",
         _ => "w-10 h-10 text-sm"
     };
-    
+
     var overlapMargin = Size switch
     {
         BwSize.Small => "-ml-2",
         BwSize.Large => "-ml-4",
         _ => "-ml-3"
     };
-    
+
     var displayAvatars = MaxDisplay.HasValue ? Avatars.Take(MaxDisplay.Value).ToList() : Avatars;
     var remainingCount = MaxDisplay.HasValue ? Avatars.Count - MaxDisplay.Value : 0;
 }
@@ -23,11 +23,12 @@
 <div class="@CombineClasses("flex items-center")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @foreach (var (avatar, index) in displayAvatars.Select((a, i) => (a, i)))
     {
-        <div class="relative @(index > 0 ? overlapMargin : "") @sizeClass rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden"
-             style="z-index: @(displayAvatars.Count - index);">
+        <div
+            class="relative @(index > 0 ? overlapMargin : "") @sizeClass rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-100 dark:bg-gray-800 flex items-center justify-center overflow-hidden"
+            style="z-index: @(displayAvatars.Count - index);">
             @if (!string.IsNullOrEmpty(avatar.Src))
             {
-                <img src="@avatar.Src" alt="@avatar.Name" class="w-full h-full object-cover" />
+                <img src="@avatar.Src" alt="@avatar.Name" class="w-full h-full object-cover"/>
             }
             else
             {
@@ -35,20 +36,27 @@
             }
         </div>
     }
-    
+
     @if (remainingCount > 0)
     {
-        <div class="@overlapMargin @sizeClass rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
-             style="z-index: 0;">
+        <div
+            class="@overlapMargin @sizeClass rounded-full ring-2 ring-white dark:ring-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center"
+            style="z-index: 0;">
             <span class="font-medium text-gray-600 dark:text-gray-300">+@remainingCount</span>
         </div>
     }
 </div>
 
 @code {
-    [Parameter] public List<AvatarItem> Avatars { get; set; } = new();
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public int? MaxDisplay { get; set; }
+
+    [Parameter]
+    public List<AvatarItem> Avatars { get; set; } = new();
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public int? MaxDisplay { get; set; }
 
     private string GetInitials(string? name)
     {
@@ -58,4 +66,5 @@
         if (parts.Length == 1) return parts[0][0].ToString().ToUpper();
         return $"{parts[0][0]}{parts[^1][0]}".ToUpper();
     }
+
 }

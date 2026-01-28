@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chat;
 
 /// <summary>
-/// Chat message type
+///     Chat message type
 /// </summary>
 public enum ChatMessageType
 {
@@ -11,7 +11,7 @@ public enum ChatMessageType
 }
 
 /// <summary>
-/// Chat attachment
+///     Chat attachment
 /// </summary>
 public class ChatAttachment
 {
@@ -23,63 +23,63 @@ public class ChatAttachment
 }
 
 /// <summary>
-/// Represents a chat message
+///     Represents a chat message
 /// </summary>
 public class ChatMessage
 {
     /// <summary>
-    /// Unique identifier
+    ///     Unique identifier
     /// </summary>
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Sender ID
+    ///     Sender ID
     /// </summary>
     public string SenderId { get; set; } = "";
 
     /// <summary>
-    /// Sender name
+    ///     Sender name
     /// </summary>
     public string SenderName { get; set; } = "";
 
     /// <summary>
-    /// Sender avatar URL
+    ///     Sender avatar URL
     /// </summary>
     public string? SenderAvatar { get; set; }
 
     /// <summary>
-    /// Message text content
+    ///     Message text content
     /// </summary>
     public string Content { get; set; } = "";
 
     /// <summary>
-    /// Message timestamp
+    ///     Message timestamp
     /// </summary>
     public DateTime Timestamp { get; set; } = DateTime.Now;
 
     /// <summary>
-    /// Whether this message is from current user
+    ///     Whether this message is from current user
     /// </summary>
     public bool IsOwn { get; set; }
 
     /// <summary>
-    /// Message type
+    ///     Message type
     /// </summary>
     public ChatMessageType Type { get; set; } = ChatMessageType.Text;
 
     /// <summary>
-    /// File attachments
+    ///     File attachments
     /// </summary>
     public List<ChatAttachment> Attachments { get; set; } = new();
 
     /// <summary>
-    /// Is message read
+    ///     Is message read
     /// </summary>
     public bool IsRead { get; set; }
 }
 
 /// <summary>
-/// Chat participant
+///     Chat participant
 /// </summary>
 public class ChatParticipant
 {

@@ -27,18 +27,19 @@ A continuous scrolling/sliding content component ideal for logo tickers, news fe
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Duration` | `int` | `20` | Animation cycle duration in seconds. Lower values increase speed. |
-| `Direction` | `BwDirection` | `Horizontal` | Scrolling orientation: `Horizontal` or `Vertical`. |
-| `Reverse` | `bool` | `false` | If true, flips the scrolling direction. |
-| `PauseOnHover` | `bool` | `true` | Stops the animation when the mouse hovers over any part of the marquee. |
-| `Clone` | `bool` | `true` | Duplicates content to ensure a seamless infinite loop. |
-| `ChildContent` | `RenderFragment` | `null` | The content to be scrolled. |
+| Parameter      | Type             | Default      | Description                                                             |
+|:---------------|:-----------------|:-------------|:------------------------------------------------------------------------|
+| `Duration`     | `int`            | `20`         | Animation cycle duration in seconds. Lower values increase speed.       |
+| `Direction`    | `BwDirection`    | `Horizontal` | Scrolling orientation: `Horizontal` or `Vertical`.                      |
+| `Reverse`      | `bool`           | `false`      | If true, flips the scrolling direction.                                 |
+| `PauseOnHover` | `bool`           | `true`       | Stops the animation when the mouse hovers over any part of the marquee. |
+| `Clone`        | `bool`           | `true`       | Duplicates content to ensure a seamless infinite loop.                  |
+| `ChildContent` | `RenderFragment` | `null`       | The content to be scrolled.                                             |
 
 ## Examples
 
 ### Logo Slider
+
 Perfect for displaying partner or technology logos.
 
 ```razor
@@ -53,6 +54,7 @@ Perfect for displaying partner or technology logos.
 ```
 
 ### Fast Ticker (Reverse)
+
 A quick-moving ticker moving from left to right.
 
 ```razor
@@ -66,6 +68,7 @@ A quick-moving ticker moving from left to right.
 ```
 
 ### Vertical Testimonials
+
 Scroll reviews or comments from bottom to top.
 
 ```razor

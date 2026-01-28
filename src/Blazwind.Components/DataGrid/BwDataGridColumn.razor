@@ -3,162 +3,195 @@
 @typeparam TItem where TItem : notnull
 
 @code {
-    [CascadingParameter] public BwDataGrid<TItem>? ParentGrid { get; set; }
-    
-    /// <summary>
-    /// Unique identifier for the column
-    /// </summary>
-    [Parameter] public string? Id { get; set; }
-    
-    /// <summary>
-    /// Column header title
-    /// </summary>
-    [Parameter] public string Title { get; set; } = "";
-    
-    /// <summary>
-    /// Field accessor expression
-    /// </summary>
-    [Parameter] public Func<TItem, object?>? Field { get; set; }
-    
-    /// <summary>
-    /// Field name for sorting/filtering (auto-detected if Field is set)
-    /// </summary>
-    [Parameter] public string? FieldName { get; set; }
-    
-    /// <summary>
-    /// Column width (CSS value, e.g., "200px", "20%")
-    /// </summary>
-    [Parameter] public string? Width { get; set; }
-    
-    /// <summary>
-    /// Minimum width in pixels
-    /// </summary>
-    [Parameter] public int MinWidth { get; set; } = 50;
-    
-    /// <summary>
-    /// Maximum width in pixels (0 = unlimited)
-    /// </summary>
-    [Parameter] public int MaxWidth { get; set; } = 0;
-    
-    /// <summary>
-    /// Is column visible
-    /// </summary>
-    [Parameter] public bool Visible { get; set; } = true;
-    
-    /// <summary>
-    /// Is column sortable
-    /// </summary>
-    [Parameter] public bool Sortable { get; set; } = true;
-    
-    /// <summary>
-    /// Is column filterable
-    /// </summary>
-    [Parameter] public bool Filterable { get; set; } = true;
-    
-    /// <summary>
-    /// Filter type for this column
-    /// </summary>
-    [Parameter] public FilterType FilterType { get; set; } = FilterType.Text;
-    
-    /// <summary>
-    /// Filter options for Select filter type
-    /// </summary>
-    [Parameter] public IEnumerable<FilterOption>? FilterOptions { get; set; }
-    
-    /// <summary>
-    /// Is column resizable
-    /// </summary>
-    [Parameter] public bool Resizable { get; set; } = true;
-    
-    /// <summary>
-    /// Is column reorderable (drag & drop)
-    /// </summary>
-    [Parameter] public bool Reorderable { get; set; } = true;
-    
-    /// <summary>
-    /// Frozen position (None, Left, Right)
-    /// </summary>
-    [Parameter] public FrozenPosition Frozen { get; set; } = FrozenPosition.None;
-    
-    /// <summary>
-    /// Text alignment
-    /// </summary>
-    [Parameter] public TextAlign Align { get; set; } = TextAlign.Left;
-    
-    /// <summary>
-    /// Display format string (e.g., "C2", "dd.MM.yyyy")
-    /// </summary>
-    [Parameter] public string? Format { get; set; }
-    
-    /// <summary>
-    /// Custom cell template
-    /// </summary>
-    [Parameter] public RenderFragment<TItem>? Template { get; set; }
-    
-    /// <summary>
-    /// Custom header template
-    /// </summary>
-    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
-    
-    /// <summary>
-    /// Custom filter template
-    /// </summary>
-    [Parameter] public RenderFragment<FilterContext>? FilterTemplate { get; set; }
-    
-    /// <summary>
-    /// CSS class for header cell
-    /// </summary>
-    [Parameter] public string? HeaderClass { get; set; }
-    
-    /// <summary>
-    /// CSS class for body cells
-    /// </summary>
-    [Parameter] public string? CellClass { get; set; }
-    
-    /// <summary>
-    /// Include in export
-    /// </summary>
-    [Parameter] public bool Exportable { get; set; } = true;
+
+    [CascadingParameter]
+    public BwDataGrid<TItem>? ParentGrid { get; set; }
 
     /// <summary>
-    /// Truncate long text with ellipsis
+    ///     Unique identifier for the column
     /// </summary>
-    [Parameter] public bool Ellipsis { get; set; } = false;
+    [Parameter]
+    public string? Id { get; set; }
 
     /// <summary>
-    /// Max width for ellipsis (CSS value, e.g., "200px", "15rem"). Used when Ellipsis=true
+    ///     Column header title
     /// </summary>
-    [Parameter] public string? EllipsisMaxWidth { get; set; }
+    [Parameter]
+    public string Title { get; set; } = "";
 
     /// <summary>
-    /// Column order (set internally by parent grid)
+    ///     Field accessor expression
+    /// </summary>
+    [Parameter]
+    public Func<TItem, object?>? Field { get; set; }
+
+    /// <summary>
+    ///     Field name for sorting/filtering (auto-detected if Field is set)
+    /// </summary>
+    [Parameter]
+    public string? FieldName { get; set; }
+
+    /// <summary>
+    ///     Column width (CSS value, e.g., "200px", "20%")
+    /// </summary>
+    [Parameter]
+    public string? Width { get; set; }
+
+    /// <summary>
+    ///     Minimum width in pixels
+    /// </summary>
+    [Parameter]
+    public int MinWidth { get; set; } = 50;
+
+    /// <summary>
+    ///     Maximum width in pixels (0 = unlimited)
+    /// </summary>
+    [Parameter]
+    public int MaxWidth { get; set; }
+
+    /// <summary>
+    ///     Is column visible
+    /// </summary>
+    [Parameter]
+    public bool Visible { get; set; } = true;
+
+    /// <summary>
+    ///     Is column sortable
+    /// </summary>
+    [Parameter]
+    public bool Sortable { get; set; } = true;
+
+    /// <summary>
+    ///     Is column filterable
+    /// </summary>
+    [Parameter]
+    public bool Filterable { get; set; } = true;
+
+    /// <summary>
+    ///     Filter type for this column
+    /// </summary>
+    [Parameter]
+    public FilterType FilterType { get; set; } = FilterType.Text;
+
+    /// <summary>
+    ///     Filter options for Select filter type
+    /// </summary>
+    [Parameter]
+    public IEnumerable<FilterOption>? FilterOptions { get; set; }
+
+    /// <summary>
+    ///     Is column resizable
+    /// </summary>
+    [Parameter]
+    public bool Resizable { get; set; } = true;
+
+    /// <summary>
+    ///     Is column reorderable (drag & drop)
+    /// </summary>
+    [Parameter]
+    public bool Reorderable { get; set; } = true;
+
+    /// <summary>
+    ///     Frozen position (None, Left, Right)
+    /// </summary>
+    [Parameter]
+    public FrozenPosition Frozen { get; set; } = FrozenPosition.None;
+
+    /// <summary>
+    ///     Text alignment
+    /// </summary>
+    [Parameter]
+    public TextAlign Align { get; set; } = TextAlign.Left;
+
+    /// <summary>
+    ///     Display format string (e.g., "C2", "dd.MM.yyyy")
+    /// </summary>
+    [Parameter]
+    public string? Format { get; set; }
+
+    /// <summary>
+    ///     Custom cell template
+    /// </summary>
+    [Parameter]
+    public RenderFragment<TItem>? Template { get; set; }
+
+    /// <summary>
+    ///     Custom header template
+    /// </summary>
+    [Parameter]
+    public RenderFragment? HeaderTemplate { get; set; }
+
+    /// <summary>
+    ///     Custom filter template
+    /// </summary>
+    [Parameter]
+    public RenderFragment<FilterContext>? FilterTemplate { get; set; }
+
+    /// <summary>
+    ///     CSS class for header cell
+    /// </summary>
+    [Parameter]
+    public string? HeaderClass { get; set; }
+
+    /// <summary>
+    ///     CSS class for body cells
+    /// </summary>
+    [Parameter]
+    public string? CellClass { get; set; }
+
+    /// <summary>
+    ///     Include in export
+    /// </summary>
+    [Parameter]
+    public bool Exportable { get; set; } = true;
+
+    /// <summary>
+    ///     Truncate long text with ellipsis
+    /// </summary>
+    [Parameter]
+    public bool Ellipsis { get; set; }
+
+    /// <summary>
+    ///     Max width for ellipsis (CSS value, e.g., "200px", "15rem"). Used when Ellipsis=true
+    /// </summary>
+    [Parameter]
+    public string? EllipsisMaxWidth { get; set; }
+
+    /// <summary>
+    ///     Column order (set internally by parent grid)
     /// </summary>
     internal int Order { get; set; } = 0;
-    
+
     /// <summary>
-    /// Current width in pixels (set by resize)
+    ///     Current width in pixels (set by resize)
     /// </summary>
     internal int? CurrentWidth { get; set; }
 
     /// <summary>
-    /// Get the effective column ID
+    ///     Get the effective column ID
     /// </summary>
-    internal string GetId() => Id ?? FieldName ?? Title;
+    internal string GetId()
+    {
+        return Id ?? FieldName ?? Title;
+    }
 
     /// <summary>
-    /// Get the field name for sorting/filtering
+    ///     Get the field name for sorting/filtering
     /// </summary>
-    internal string GetFieldName() => FieldName ?? Title;
+    internal string GetFieldName()
+    {
+        return FieldName ?? Title;
+    }
 
     /// <summary>
-    /// Get the value from an item
+    ///     Get the value from an item
     /// </summary>
     internal object? GetValue(TItem item)
     {
         if (Field == null) return null;
-        
+
         var value = Field(item);
-        
+
         if (value != null && !string.IsNullOrEmpty(Format))
         {
             return value switch
@@ -167,12 +200,12 @@
                 _ => value.ToString()
             };
         }
-        
+
         return value;
     }
 
     /// <summary>
-    /// Get raw value (without formatting) for filtering/sorting
+    ///     Get raw value (without formatting) for filtering/sorting
     /// </summary>
     internal object? GetRawValue(TItem item)
     {
@@ -180,7 +213,7 @@
     }
 
     /// <summary>
-    /// Convert to ColumnDefinition for export
+    ///     Convert to ColumnDefinition for export
     /// </summary>
     internal ColumnDefinition ToDefinition()
     {
@@ -213,4 +246,5 @@
     {
         ParentGrid?.RegisterColumn(this);
     }
+
 }

@@ -1,10 +1,12 @@
 # BwBreadcrumb
 
-A navigation component that indicates the current page's location within a site hierarchy, allowing users to navigate back to parent pages easily.
+A navigation component that indicates the current page's location within a site hierarchy, allowing users to navigate
+back to parent pages easily.
 
 ## Examples
 
 ### Basic Usage
+
 Standard breadcrumb navigation with links and icons.
 
 ```razor
@@ -16,6 +18,7 @@ Standard breadcrumb navigation with links and icons.
 ```
 
 ### Custom Separator
+
 Customize the divider between items using the `SeparatorTemplate`.
 
 ```razor
@@ -33,22 +36,22 @@ Customize the divider between items using the `SeparatorTemplate`.
 
 ## API - BwBreadcrumb
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `ChildContent` | `RenderFragment?` | `null` | Should contain one or more `BwBreadcrumbItem` components. |
-| `SeparatorTemplate`| `RenderFragment?` | `null` | Custom template for the item separator. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
-| `Style` | `string?` | `null` | Inline CSS styles. |
+| Parameter           | Type              | Default | Description                                               |
+|---------------------|-------------------|---------|-----------------------------------------------------------|
+| `ChildContent`      | `RenderFragment?` | `null`  | Should contain one or more `BwBreadcrumbItem` components. |
+| `SeparatorTemplate` | `RenderFragment?` | `null`  | Custom template for the item separator.                   |
+| `Class`             | `string?`         | `null`  | Additional CSS classes.                                   |
+| `Style`             | `string?`         | `null`  | Inline CSS styles.                                        |
 
 ## API - BwBreadcrumbItem
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Text` | `string?` | `null` | The text label for the item. |
-| `Href` | `string?` | `null` | The navigation URL. |
-| `Icon` | `string?` | `null` | CSS class for the icon (e.g., "fa-solid fa-home"). |
-| `IsActive` | `bool` | `false` | If `true`, indicates the current page. The link is disabled. |
-| `Target` | `string?` | `null` | HTML `target` attribute for the link (e.g., "_blank"). |
-| `ChildContent` | `RenderFragment?`| `null` | Custom content inside the item. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
-| `Style` | `string?` | `null` | Inline CSS styles. |
+| Parameter      | Type              | Default | Description                                                  |
+|----------------|-------------------|---------|--------------------------------------------------------------|
+| `Text`         | `string?`         | `null`  | The text label for the item.                                 |
+| `Href`         | `string?`         | `null`  | The navigation URL.                                          |
+| `Icon`         | `string?`         | `null`  | CSS class for the icon (e.g., "fa-solid fa-home").           |
+| `IsActive`     | `bool`            | `false` | If `true`, indicates the current page. The link is disabled. |
+| `Target`       | `string?`         | `null`  | HTML `target` attribute for the link (e.g., "_blank").       |
+| `ChildContent` | `RenderFragment?` | `null`  | Custom content inside the item.                              |
+| `Class`        | `string?`         | `null`  | Additional CSS classes.                                      |
+| `Style`        | `string?`         | `null`  | Inline CSS styles.                                           |

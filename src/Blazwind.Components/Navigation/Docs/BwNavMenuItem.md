@@ -5,6 +5,7 @@ Components for building the menu tree inside a `BwNavMenu`.
 ## Examples
 
 ### Hierarchy
+
 Create nested navigation structures using groups and items.
 
 ```razor
@@ -20,6 +21,7 @@ Create nested navigation structures using groups and items.
 ```
 
 ### Badges
+
 Highlight specific items with status indicators.
 
 ```razor
@@ -31,23 +33,23 @@ Highlight specific items with status indicators.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Label` | `string` | - | Text to display for the link. |
-| `Href` | `string` | - | Target URL. |
-| `Icon` | `string?` | `null` | FontAwesome icon class. |
-| `Badge` | `string?` | `null` | Text to display in a badge on the right. |
-| `Match` | `NavLinkMatch` | `Prefix` | Blazor `NavLinkMatch` behavior (`All` or `Prefix`). |
-| `ItemTemplate`| `RenderFragment<BwNavMenuItemContext>?` | `null` | Custom template for this specific item. |
+| Parameter      | Type                                    | Default  | Description                                         |
+|:---------------|:----------------------------------------|:---------|:----------------------------------------------------|
+| `Label`        | `string`                                | -        | Text to display for the link.                       |
+| `Href`         | `string`                                | -        | Target URL.                                         |
+| `Icon`         | `string?`                               | `null`   | FontAwesome icon class.                             |
+| `Badge`        | `string?`                               | `null`   | Text to display in a badge on the right.            |
+| `Match`        | `NavLinkMatch`                          | `Prefix` | Blazor `NavLinkMatch` behavior (`All` or `Prefix`). |
+| `ItemTemplate` | `RenderFragment<BwNavMenuItemContext>?` | `null`   | Custom template for this specific item.             |
 
 ## API - BwNavMenuGroup
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Title` | `string` | - | Label for the group header. |
-| `Icon` | `string?` | `null` | Icon for the group header. |
-| `DefaultExpanded`| `bool` | `false` | Whether the group is open by default. |
-| `ChildContent`| `RenderFragment?` | `null` | Nested `BwNavMenuItem` or `BwNavMenuGroup` components. |
-| `HeaderTemplate`| `RenderFragment<BwNavMenuGroupContext>?`| `null` | Custom template for this group's header. |
+| Parameter         | Type                                     | Default | Description                                            |
+|:------------------|:-----------------------------------------|:--------|:-------------------------------------------------------|
+| `Title`           | `string`                                 | -       | Label for the group header.                            |
+| `Icon`            | `string?`                                | `null`  | Icon for the group header.                             |
+| `DefaultExpanded` | `bool`                                   | `false` | Whether the group is open by default.                  |
+| `ChildContent`    | `RenderFragment?`                        | `null`  | Nested `BwNavMenuItem` or `BwNavMenuGroup` components. |
+| `HeaderTemplate`  | `RenderFragment<BwNavMenuGroupContext>?` | `null`  | Custom template for this group's header.               |

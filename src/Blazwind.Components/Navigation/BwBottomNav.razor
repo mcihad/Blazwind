@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Navigation
-@using Blazwind.Components.Shared
 @inherits BwBase
 
 <nav class="@CombineClasses("bw-bottom-nav")"
@@ -10,15 +9,16 @@
 </nav>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
-    private string? _activeItemId;
-    
-    internal string? ActiveItemId => _activeItemId;
-    
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    internal string? ActiveItemId { get; private set; }
+
     internal void SetActiveItem(string itemId)
     {
-        _activeItemId = itemId;
+        ActiveItemId = itemId;
         StateHasChanged();
     }
+
 }

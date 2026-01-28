@@ -1,8 +1,8 @@
 @namespace Blazwind.Components.List
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @typeparam TItem
 @inherits BwBase
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @implements IBwListParent
 
 <div class="@CombineClasses("bw-list", GapClass)" id="@Id" style="@Style" @attributes="AdditionalAttributes">
@@ -14,7 +14,7 @@
             {
                 var currentIndex = index;
                 var currentItem = item;
-                
+
                 if (ItemTemplate != null)
                 {
                     <CascadingValue Value="currentIndex" Name="CurrentItemIndex">
@@ -26,8 +26,9 @@
                     <BwListItem Index="@currentIndex"
                                 Title="@ItemText?.Invoke(currentItem)"
                                 Description="@ItemDescription?.Invoke(currentItem)"
-                                Icon="@ItemIcon?.Invoke(currentItem)" />
+                                Icon="@ItemIcon?.Invoke(currentItem)"/>
                 }
+
                 index++;
             }
         }
@@ -51,49 +52,73 @@
 
 @code {
     // Removed Id parameter as it is inherited from BwBase
-    
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Data source for the list</summary>
-    [Parameter] public IEnumerable<TItem>? Items { get; set; }
-    
+    [Parameter]
+    public IEnumerable<TItem>? Items { get; set; }
+
     /// <summary>Custom template for each item</summary>
-    [Parameter] public RenderFragment<TItem>? ItemTemplate { get; set; }
-    
+    [Parameter]
+    public RenderFragment<TItem>? ItemTemplate { get; set; }
+
     /// <summary>Function to get display text from item</summary>
-    [Parameter] public Func<TItem, string>? ItemText { get; set; }
-    
+    [Parameter]
+    public Func<TItem, string>? ItemText { get; set; }
+
     /// <summary>Function to get description from item</summary>
-    [Parameter] public Func<TItem, string?>? ItemDescription { get; set; }
-    
+    [Parameter]
+    public Func<TItem, string?>? ItemDescription { get; set; }
+
     /// <summary>Function to get icon class from item</summary>
-    [Parameter] public Func<TItem, string?>? ItemIcon { get; set; }
-    
+    [Parameter]
+    public Func<TItem, string?>? ItemIcon { get; set; }
+
     /// <summary>Template for empty state</summary>
-    [Parameter] public RenderFragment? EmptyTemplate { get; set; }
-    
+    [Parameter]
+    public RenderFragment? EmptyTemplate { get; set; }
+
     /// <summary>Text shown when list is empty</summary>
-    [Parameter] public string EmptyText { get; set; } = "Öğe bulunamadı";
-    
-    [Parameter] public bool EnableSorting { get; set; }
-    [Parameter] public EventCallback<(int oldIndex, int newIndex)> OnOrderChange { get; set; }
-    
-    [Parameter] public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
-    [Parameter] public int? MaxSelectedItems { get; set; }
-    [Parameter] public HashSet<int> SelectedIndices { get; set; } = new(); 
-    [Parameter] public EventCallback<HashSet<int>> SelectedIndicesChanged { get; set; }
-    
+    [Parameter]
+    public string EmptyText { get; set; } = "Öğe bulunamadı";
+
+    [Parameter]
+    public bool EnableSorting { get; set; }
+
+    [Parameter]
+    public EventCallback<(int oldIndex, int newIndex)> OnOrderChange { get; set; }
+
+    [Parameter]
+    public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
+
+    [Parameter]
+    public int? MaxSelectedItems { get; set; }
+
+    [Parameter]
+    public HashSet<int> SelectedIndices { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<HashSet<int>> SelectedIndicesChanged { get; set; }
+
     /// <summary>Selected items (for Items-bound lists)</summary>
-    [Parameter] public List<TItem> SelectedItems { get; set; } = new();
-    [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
-    
+    [Parameter]
+    public List<TItem> SelectedItems { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
+
     /// <summary>Fired when item is clicked</summary>
-    [Parameter] public EventCallback<TItem> OnItemClick { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnItemClick { get; set; }
 
     // Removed Class parameter (inherited)
-    [Parameter] public string GapClass { get; set; } = "gap-0";
-    
-    [Inject] private IJSRuntime JS { get; set; } = default!;
+    [Parameter]
+    public string GapClass { get; set; } = "gap-0";
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
 
     protected override void OnInitialized()
     {
@@ -108,11 +133,11 @@
     {
         if (firstRender)
         {
-             await JS.InvokeVoidAsync("Blazwind.List.initializeSortable", Id, DotNetObjectReference.Create(this), EnableSorting);
+            await JS.InvokeVoidAsync("Blazwind.List.initializeSortable", Id, DotNetObjectReference.Create(this), EnableSorting);
         }
         else
         {
-             await JS.InvokeVoidAsync("Blazwind.List.updateSortable", Id, EnableSorting);
+            await JS.InvokeVoidAsync("Blazwind.List.updateSortable", Id, EnableSorting);
         }
     }
 
@@ -124,14 +149,14 @@
             await OnOrderChange.InvokeAsync((oldIndex, newIndex));
         }
     }
-    
+
     private async Task HandleItemClick(int index)
     {
         if (Items != null && SelectionMode != BwSelectionMode.None)
         {
             await ToggleSelection(index);
         }
-        
+
         if (Items != null && OnItemClick.HasDelegate)
         {
             var item = Items.ElementAtOrDefault(index);
@@ -150,7 +175,7 @@
         {
             if (SelectedIndices.Contains(index))
             {
-                 SelectedIndices.Clear();
+                SelectedIndices.Clear();
             }
             else
             {
@@ -170,12 +195,13 @@
                 {
                     return;
                 }
+
                 SelectedIndices.Add(index);
             }
         }
 
         await SelectedIndicesChanged.InvokeAsync(SelectedIndices);
-        
+
         // Update SelectedItems if Items is bound
         if (Items != null)
         {
@@ -183,9 +209,13 @@
             SelectedItems = SelectedIndices.Where(i => i < dataList.Count).Select(i => dataList[i]).ToList();
             await SelectedItemsChanged.InvokeAsync(SelectedItems);
         }
-        
+
         StateHasChanged();
     }
-    
-    public bool IsSelected(int index) => SelectedIndices.Contains(index);
+
+    public bool IsSelected(int index)
+    {
+        return SelectedIndices.Contains(index);
+    }
+
 }

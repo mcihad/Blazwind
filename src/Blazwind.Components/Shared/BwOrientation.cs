@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// General purpose orientation enum
+///     General purpose orientation enum
 /// </summary>
 public enum BwOrientation
 {

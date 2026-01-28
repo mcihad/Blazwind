@@ -1,9 +1,10 @@
 @namespace Blazwind.Components.MegaMenu
-@using Blazwind.Components.Shared
 @using Blazwind.Components.Button
+@using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses("bw-megamenu")" style="@Style" id="@Id" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-megamenu")" style="@Style" id="@Id" @onmouseenter="HandleMouseEnter"
+     @onmouseleave="HandleMouseLeave" @attributes="AdditionalAttributes">
     @* Trigger *@
     <div class="bw-megamenu-trigger" @onclick="HandleTriggerClick">
         @if (TriggerContent != null)
@@ -13,7 +14,7 @@
         else
         {
             <BwButton Text="@Text" Icon="@Icon" Color="Color" Variant="Variant" EndIcon="@ChevronIcon"
-                Size="BwSize.Small" />
+                      Size="BwSize.Small"/>
         }
     </div>
 
@@ -29,22 +30,51 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? TriggerContent { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Ghost;
-    [Parameter] public int Columns { get; set; } = 3;
-    [Parameter] public string? ColumnWidth { get; set; }
-    [Parameter] public MegaMenuWidth Width { get; set; } = MegaMenuWidth.Auto;
-    [Parameter] public MegaMenuAlignment Alignment { get; set; } = MegaMenuAlignment.Start;
-    [Parameter] public MegaMenuTrigger Trigger { get; set; } = MegaMenuTrigger.Hover;
-    [Parameter] public bool OpenUpward { get; set; }
-    [Parameter] public int ShowDelay { get; set; } = 50;
-    [Parameter] public int HideDelay { get; set; } = 150;
-    
-    [Parameter] public EventCallback<bool> OnOpenChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? TriggerContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Ghost;
+
+    [Parameter]
+    public int Columns { get; set; } = 3;
+
+    [Parameter]
+    public string? ColumnWidth { get; set; }
+
+    [Parameter]
+    public MegaMenuWidth Width { get; set; } = MegaMenuWidth.Auto;
+
+    [Parameter]
+    public MegaMenuAlignment Alignment { get; set; } = MegaMenuAlignment.Start;
+
+    [Parameter]
+    public MegaMenuTrigger Trigger { get; set; } = MegaMenuTrigger.Hover;
+
+    [Parameter]
+    public bool OpenUpward { get; set; }
+
+    [Parameter]
+    public int ShowDelay { get; set; } = 50;
+
+    [Parameter]
+    public int HideDelay { get; set; } = 150;
+
+    [Parameter]
+    public EventCallback<bool> OnOpenChanged { get; set; }
 
     private bool _isOpen;
     private CancellationTokenSource? _showCts;
@@ -103,7 +133,9 @@
             await Task.Delay(ShowDelay, _showCts.Token);
             await Open();
         }
-        catch (TaskCanceledException) { }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     private async Task HandleMouseLeave()
@@ -118,7 +150,9 @@
             await Task.Delay(HideDelay, _hideCts.Token);
             await Close();
         }
-        catch (TaskCanceledException) { }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     private async Task HandleTriggerClick()
@@ -148,4 +182,5 @@
         else
             await Open();
     }
+
 }

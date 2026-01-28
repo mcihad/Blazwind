@@ -13,6 +13,7 @@ A component that displays informative text when a user hovers over, focuses on, 
 ```
 
 ### Placements
+
 Control where the tooltip appears using the `Placement` parameter.
 
 ```razor
@@ -23,6 +24,7 @@ Control where the tooltip appears using the `Placement` parameter.
 ```
 
 ### Colors
+
 Tooltips support semantic colors.
 
 ```razor
@@ -32,6 +34,7 @@ Tooltips support semantic colors.
 ```
 
 ### Triggers
+
 By default, it triggers on `Hover`. You can change this to `Focus` or `Both`.
 
 ```razor
@@ -44,15 +47,15 @@ By default, it triggers on `Hover`. You can change this to `Focus` or `Both`.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Text` | `string` | `null` | The content of the tooltip. |
-| `Icon` | `string` | `null` | Optional icon to display before the text. |
-| `Placement` | `BwPlacement` | `Top` | Position relative to the child element. |
-| `Color` | `BwColor` | `Dark` | Color theme. |
-| `Size` | `BwSize` | `Medium` | Text size. |
-| `ShowArrow` | `bool` | `true` | Whether to show the pointer arrow. |
-| `Trigger` | `TooltipTrigger` | `Hover` | `Hover`, `Focus`, or `Both`. |
-| `ShowDelay` | `int` | `100` | Delay in ms before showing. |
-| `HideDelay` | `int` | `0` | Delay in ms before hiding. |
-| `Disabled` | `bool` | `false` | Disables the tooltip. |
+| Parameter   | Type             | Default  | Description                               |
+|:------------|:-----------------|:---------|:------------------------------------------|
+| `Text`      | `string`         | `null`   | The content of the tooltip.               |
+| `Icon`      | `string`         | `null`   | Optional icon to display before the text. |
+| `Placement` | `BwPlacement`    | `Top`    | Position relative to the child element.   |
+| `Color`     | `BwColor`        | `Dark`   | Color theme.                              |
+| `Size`      | `BwSize`         | `Medium` | Text size.                                |
+| `ShowArrow` | `bool`           | `true`   | Whether to show the pointer arrow.        |
+| `Trigger`   | `TooltipTrigger` | `Hover`  | `Hover`, `Focus`, or `Both`.              |
+| `ShowDelay` | `int`            | `100`    | Delay in ms before showing.               |
+| `HideDelay` | `int`            | `0`      | Delay in ms before hiding.                |
+| `Disabled`  | `bool`           | `false`  | Disables the tooltip.                     |

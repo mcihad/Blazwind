@@ -5,7 +5,7 @@
 @{
     // Base class with theme-aware styling
     var baseClasses = "bw-btn";
-    
+
     // Size classes using theme-aware CSS
     var sizeClasses = Size switch
     {
@@ -13,7 +13,7 @@
         BwSize.Large => "bw-btn-large",
         _ => "bw-btn-medium"
     };
-    
+
     // Icon-only adjustments
     if (IconPosition == BwIconPosition.Only)
     {
@@ -24,7 +24,7 @@
             _ => "bw-btn-icon-medium"
         };
     }
-    
+
     // Variant class (theme-aware)
     var variantClass = (Variant, Color) switch
     {
@@ -37,7 +37,7 @@
         (BwVariant.Filled, BwColor.Info) => "bw-btn-filled-info",
         (BwVariant.Filled, BwColor.Light) => "bw-btn-filled-light",
         (BwVariant.Filled, BwColor.Dark) => "bw-btn-filled-dark",
-        
+
         // Outline variants
         (BwVariant.Outline, BwColor.Primary) => "bw-btn-outline-primary",
         (BwVariant.Outline, BwColor.Secondary) => "bw-btn-outline-secondary",
@@ -47,7 +47,7 @@
         (BwVariant.Outline, BwColor.Info) => "bw-btn-outline-info",
         (BwVariant.Outline, BwColor.Light) => "bw-btn-outline-light",
         (BwVariant.Outline, BwColor.Dark) => "bw-btn-outline-dark",
-        
+
         // Ghost variants
         (BwVariant.Ghost, BwColor.Primary) => "bw-btn-ghost-primary",
         (BwVariant.Ghost, BwColor.Secondary) => "bw-btn-ghost-secondary",
@@ -56,7 +56,7 @@
         (BwVariant.Ghost, BwColor.Warning) => "bw-btn-ghost-warning",
         (BwVariant.Ghost, BwColor.Info) => "bw-btn-ghost-info",
         (BwVariant.Ghost, _) => "bw-btn-ghost-secondary",
-        
+
         // Soft variants
         (BwVariant.Soft, BwColor.Primary) => "bw-btn-soft-primary",
         (BwVariant.Soft, BwColor.Secondary) => "bw-btn-soft-secondary",
@@ -65,17 +65,17 @@
         (BwVariant.Soft, BwColor.Warning) => "bw-btn-soft-warning",
         (BwVariant.Soft, BwColor.Info) => "bw-btn-soft-info",
         (BwVariant.Soft, _) => "bw-btn-soft-secondary",
-        
+
         // Link variants
         (BwVariant.Link, BwColor.Primary) => "bw-btn-link-primary",
         (BwVariant.Link, BwColor.Secondary) => "bw-btn-link-secondary",
         (BwVariant.Link, BwColor.Success) => "bw-btn-link-success",
         (BwVariant.Link, BwColor.Danger) => "bw-btn-link-danger",
         (BwVariant.Link, _) => "bw-btn-link-primary",
-        
+
         _ => "bw-btn-filled-primary"
     };
-    
+
     // Icon size
     var iconSize = Size switch
     {
@@ -83,14 +83,14 @@
         BwSize.Large => "text-lg",
         _ => "text-sm"
     };
-    
+
     var allClasses = CombineClasses($"{baseClasses} {sizeClasses} {variantClass}");
 }
 
 @if (string.IsNullOrEmpty(Href))
 {
-    <button type="@HtmlType" 
-            class="@allClasses" 
+    <button type="@HtmlType"
+            class="@allClasses"
             id="@Id"
             style="@Style"
             disabled="@Disabled"
@@ -101,8 +101,8 @@
 }
 else
 {
-    <a href="@Href" 
-       class="@allClasses" 
+    <a href="@Href"
+       class="@allClasses"
        id="@Id"
        style="@Style"
        role="button"
@@ -113,6 +113,7 @@ else
 }
 
 @code {
+
     private RenderFragment RenderContent() => __builder =>
     {
         var iconSize = Size switch
@@ -121,12 +122,12 @@ else
             BwSize.Large => "text-lg",
             _ => "text-sm"
         };
-        
+
         if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Left)
         {
             <i class="@Icon @iconSize"></i>
         }
-        
+
         if (IconPosition != BwIconPosition.Only)
         {
             if (ChildContent != null)
@@ -138,17 +139,17 @@ else
                 <span>@Text</span>
             }
         }
-        
+
         if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Right)
         {
             <i class="@Icon @iconSize"></i>
         }
-        
+
         if (!string.IsNullOrEmpty(Icon) && IconPosition == BwIconPosition.Only)
         {
             <i class="@Icon @iconSize"></i>
         }
-        
+
         if (IsLoading)
         {
             <i class="fa-solid fa-spinner animate-spin @iconSize"></i>
@@ -161,20 +162,48 @@ else
             </div>
         }
     };
+
 }
 
 @code {
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Href { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? BadgeContent { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public BwIconPosition IconPosition { get; set; } = BwIconPosition.Left;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Filled;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public bool Disabled { get; set; }
-    [Parameter] public bool IsLoading { get; set; }
-    [Parameter] public string HtmlType { get; set; } = "button";
-    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? BadgeContent { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public BwIconPosition IconPosition { get; set; } = BwIconPosition.Left;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Filled;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public string HtmlType { get; set; } = "button";
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
 }

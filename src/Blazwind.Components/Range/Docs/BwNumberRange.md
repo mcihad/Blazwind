@@ -19,6 +19,7 @@
 ```
 
 ### Slider ile
+
 ```razor
 <BwNumberRange Min="0" Max="100" Start="18" End="65" 
                Label="Yaş Aralığı" 
@@ -26,6 +27,7 @@
 ```
 
 ### Preset'ler ile
+
 ```razor
 <BwNumberRange Min="0" Max="10000" Start="0" End="2000" 
                Label="Bütçe" 
@@ -43,28 +45,28 @@
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Start` | `double` | `0` | Başlangıç değeri (Two-way binding). |
-| `End` | `double` | `100` | Bitiş değeri (Two-way binding). |
-| `Min` | `double` | `0` | Minimum değer. |
-| `Max` | `double` | `1000` | Maksimum değer. |
-| `Step` | `double` | `1` | Artış miktarı. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Prefix` | `string` | `null` | Değer başındaki sembol (örn: `₺`). |
-| `Suffix` | `string` | `null` | Değer sonundaki sembol (örn: `TL`). |
-| `ShowSlider` | `bool` | `true` | İki sayı kutusu arasında slider gösterir. |
-| `Color` | `BwColor` | `Primary` | Slider ve buton vurgu rengi. |
-| `Presets` | `List<NumberRangePreset>` | `null` | Hızlı seçim seçenekleri. |
-| `IsDisabled` | `bool` | `false` | Devre dışı bırakır. |
+| Parametre    | Tip                       | Varsayılan | Açıklama                                  |
+|:-------------|:--------------------------|:-----------|:------------------------------------------|
+| `Start`      | `double`                  | `0`        | Başlangıç değeri (Two-way binding).       |
+| `End`        | `double`                  | `100`      | Bitiş değeri (Two-way binding).           |
+| `Min`        | `double`                  | `0`        | Minimum değer.                            |
+| `Max`        | `double`                  | `1000`     | Maksimum değer.                           |
+| `Step`       | `double`                  | `1`        | Artış miktarı.                            |
+| `Label`      | `string`                  | `null`     | Alan etiketi.                             |
+| `Prefix`     | `string`                  | `null`     | Değer başındaki sembol (örn: `₺`).        |
+| `Suffix`     | `string`                  | `null`     | Değer sonundaki sembol (örn: `TL`).       |
+| `ShowSlider` | `bool`                    | `true`     | İki sayı kutusu arasında slider gösterir. |
+| `Color`      | `BwColor`                 | `Primary`  | Slider ve buton vurgu rengi.              |
+| `Presets`    | `List<NumberRangePreset>` | `null`     | Hızlı seçim seçenekleri.                  |
+| `IsDisabled` | `bool`                    | `false`    | Devre dışı bırakır.                       |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `StartChanged` | `double` | Başlangıç değeri değiştiğinde tetiklenir. |
-| `EndChanged` | `double` | Bitiş değeri değiştiğinde tetiklenir. |
-| `OnRangeChanged` | `RangeChangedEventArgs<double>` | Aralık değiştiğinde tetiklenir. |
+| Olay             | Paylaşım (Payload)              | Açıklama                                  |
+|:-----------------|:--------------------------------|:------------------------------------------|
+| `StartChanged`   | `double`                        | Başlangıç değeri değiştiğinde tetiklenir. |
+| `EndChanged`     | `double`                        | Bitiş değeri değiştiğinde tetiklenir.     |
+| `OnRangeChanged` | `RangeChangedEventArgs<double>` | Aralık değiştiğinde tetiklenir.           |
 
 ## Yardımcı Sınıflar
 
@@ -76,4 +78,5 @@ public class NumberRangePreset
     public double End { get; set; }
 }
 ```
+
 ```

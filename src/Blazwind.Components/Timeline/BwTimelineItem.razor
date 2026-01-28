@@ -10,10 +10,10 @@
     var itemIndex = _itemIndex;
     var isEven = itemIndex % 2 == 0;
     var isLast = parent?.IsLastItem(itemIndex) ?? false;
-    
+
     // State class
     var stateClass = IsCompleted ? "completed" : IsActive ? "active" : "pending";
-    
+
     // Variant color class
     var variantClass = Color switch
     {
@@ -24,7 +24,7 @@
         BwColor.Secondary => "secondary",
         _ => "primary"
     };
-    
+
     var dotClass = $"bw-timeline-dot {stateClass} {variantClass}";
     var connectorClass = IsCompleted ? "bw-timeline-connector completed" : "bw-timeline-connector";
 }
@@ -59,7 +59,7 @@
                 </div>
             }
         </div>
-        
+
         <div class="bw-timeline-center">
             @if (itemIndex > 0)
             {
@@ -69,7 +69,7 @@
             {
                 <div style="flex: 1; min-height: 16px;"></div>
             }
-            
+
             <div class="@dotClass">
                 @if (IsCompleted)
                 {
@@ -84,7 +84,7 @@
                     <i class="@Icon"></i>
                 }
             </div>
-            
+
             @if (!isLast)
             {
                 <div class="@connectorClass"></div>
@@ -94,7 +94,7 @@
                 <div style="flex: 1; min-height: 16px;"></div>
             }
         </div>
-        
+
         <div class="bw-timeline-right">
             @if (!isEven)
             {
@@ -141,7 +141,7 @@ else
                 <i class="@Icon"></i>
             }
         </div>
-        
+
         <div class="bw-timeline-content">
             @if (!string.IsNullOrEmpty(Title))
             {
@@ -160,40 +160,52 @@ else
 }
 
 @code {
-    [CascadingParameter] public BwTimeline? ParentTimeline { get; set; }
-    
+
+    [CascadingParameter]
+    public BwTimeline? ParentTimeline { get; set; }
+
     /// <summary>Item title</summary>
-    [Parameter] public string? Title { get; set; }
-    
+    [Parameter]
+    public string? Title { get; set; }
+
     /// <summary>Secondary text (date/time)</summary>
-    [Parameter] public string? Subtitle { get; set; }
-    
+    [Parameter]
+    public string? Subtitle { get; set; }
+
     /// <summary>FontAwesome icon class</summary>
-    [Parameter] public string? Icon { get; set; }
-    
+    [Parameter]
+    public string? Icon { get; set; }
+
     /// <summary>Custom marker content (overrides Icon)</summary>
-    [Parameter] public RenderFragment? IconContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? IconContent { get; set; }
+
     /// <summary>Color theme for this item</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     /// <summary>Highlighted state</summary>
-    [Parameter] public bool IsActive { get; set; }
-    
+    [Parameter]
+    public bool IsActive { get; set; }
+
     /// <summary>Completed state (shows checkmark)</summary>
-    [Parameter] public bool IsCompleted { get; set; }
-    
+    [Parameter]
+    public bool IsCompleted { get; set; }
+
     /// <summary>Content on opposite side (for alternate layout)</summary>
-    [Parameter] public RenderFragment? OppositeContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? OppositeContent { get; set; }
+
     /// <summary>Main content</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     private int _itemIndex;
-    
+
     protected override void OnInitialized()
     {
         _itemIndex = ParentTimeline?.GetNextItemIndex() ?? 0;
         ParentTimeline?.IncrementTotalItems();
     }
+
 }

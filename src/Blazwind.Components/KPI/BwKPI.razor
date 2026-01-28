@@ -2,7 +2,8 @@
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses($"bw-kpi-card {Class}")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onclick="HandleClick">
+<div class="@CombineClasses($"bw-kpi-card {Class}")" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     @onclick="HandleClick">
     <div class="px-4 py-4">
         <div class="flex items-start justify-between">
             <div>
@@ -43,10 +44,11 @@
         @if (ShowProgress)
         {
             <div class="bw-kpi-progress-bg">
-                <div class="@($"bw-kpi-progress-bar {GetProgressColorClass()}")" style="width: @(ProgressValue ?? 0)%"></div>
+                <div class="@($"bw-kpi-progress-bar {GetProgressColorClass()}")"
+                     style="width: @(ProgressValue ?? 0)%"></div>
             </div>
         }
-        
+
         @* Footer *@
         @if (ChildContent != null)
         {
@@ -58,66 +60,110 @@
 </div>
 
 @code {
-    [Parameter] public string Title { get; set; } = "KPI";
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public double Value { get; set; }
-    [Parameter] public string? ValuePrefix { get; set; }
-    [Parameter] public string? ValueSuffix { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public KpiFormat Format { get; set; } = KpiFormat.Number;
-    
-    [Parameter] public bool ShowTrend { get; set; } = true;
-    [Parameter] public double? TrendValue { get; set; }
-    [Parameter] public string? TrendDescription { get; set; } = "geçen aya göre";
-    [Parameter] public bool TrendPositiveIsGood { get; set; } = true;
-    
-    [Parameter] public bool ShowProgress { get; set; } = false;
-    [Parameter] public double? ProgressValue { get; set; }
-    
-    [Parameter] public bool Clickable { get; set; } = false;
-    [Parameter] public EventCallback OnClick { get; set; }
-    
-    [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    private string GetTrendIcon() => TrendValue switch
-    {
-        > 0 => "fa-solid fa-arrow-trend-up",
-        < 0 => "fa-solid fa-arrow-trend-down",
-        _ => "fa-solid fa-minus"
-    };
+    [Parameter]
+    public string Title { get; set; } = "KPI";
 
-    private string GetTrendColorClass() => TrendValue switch
-    {
-        > 0 when TrendPositiveIsGood => "bw-kpi-trend-up",
-        > 0 when !TrendPositiveIsGood => "bw-kpi-trend-down",
-        < 0 when TrendPositiveIsGood => "bw-kpi-trend-down",
-        < 0 when !TrendPositiveIsGood => "bw-kpi-trend-up",
-        _ => "bw-kpi-trend-neutral"
-    };
+    [Parameter]
+    public string? Subtitle { get; set; }
 
-    private string GetIconColorClass() => Color switch
-    {
-        BwColor.Primary => "bw-kpi-icon-primary",
-        BwColor.Success => "bw-kpi-icon-success",
-        BwColor.Warning => "bw-kpi-icon-warning",
-        BwColor.Danger => "bw-kpi-icon-danger",
-        BwColor.Info => "bw-kpi-icon-info",
-        BwColor.Secondary => "bw-kpi-icon-secondary",
-        _ => "bw-kpi-icon-primary"
-    };
+    [Parameter]
+    public double Value { get; set; }
 
-    private string GetProgressColorClass() => Color switch
+    [Parameter]
+    public string? ValuePrefix { get; set; }
+
+    [Parameter]
+    public string? ValueSuffix { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public KpiFormat Format { get; set; } = KpiFormat.Number;
+
+    [Parameter]
+    public bool ShowTrend { get; set; } = true;
+
+    [Parameter]
+    public double? TrendValue { get; set; }
+
+    [Parameter]
+    public string? TrendDescription { get; set; } = "geçen aya göre";
+
+    [Parameter]
+    public bool TrendPositiveIsGood { get; set; } = true;
+
+    [Parameter]
+    public bool ShowProgress { get; set; }
+
+    [Parameter]
+    public double? ProgressValue { get; set; }
+
+    [Parameter]
+    public bool Clickable { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private string GetTrendIcon()
     {
-        BwColor.Primary => "bw-kpi-progress-primary",
-        BwColor.Success => "bw-kpi-progress-success",
-        BwColor.Warning => "bw-kpi-progress-warning",
-        BwColor.Danger => "bw-kpi-progress-danger",
-        BwColor.Info => "bw-kpi-progress-info",
-        BwColor.Secondary => "bw-kpi-progress-secondary",
-        _ => "bw-kpi-progress-primary"
-    };
+        return TrendValue switch
+        {
+            > 0 => "fa-solid fa-arrow-trend-up",
+            < 0 => "fa-solid fa-arrow-trend-down",
+            _ => "fa-solid fa-minus"
+        };
+    }
+
+    private string GetTrendColorClass()
+    {
+        return TrendValue switch
+        {
+            > 0 when TrendPositiveIsGood => "bw-kpi-trend-up",
+            > 0 when !TrendPositiveIsGood => "bw-kpi-trend-down",
+            < 0 when TrendPositiveIsGood => "bw-kpi-trend-down",
+            < 0 when !TrendPositiveIsGood => "bw-kpi-trend-up",
+            _ => "bw-kpi-trend-neutral"
+        };
+    }
+
+    private string GetIconColorClass()
+    {
+        return Color switch
+        {
+            BwColor.Primary => "bw-kpi-icon-primary",
+            BwColor.Success => "bw-kpi-icon-success",
+            BwColor.Warning => "bw-kpi-icon-warning",
+            BwColor.Danger => "bw-kpi-icon-danger",
+            BwColor.Info => "bw-kpi-icon-info",
+            BwColor.Secondary => "bw-kpi-icon-secondary",
+            _ => "bw-kpi-icon-primary"
+        };
+    }
+
+    private string GetProgressColorClass()
+    {
+        return Color switch
+        {
+            BwColor.Primary => "bw-kpi-progress-primary",
+            BwColor.Success => "bw-kpi-progress-success",
+            BwColor.Warning => "bw-kpi-progress-warning",
+            BwColor.Danger => "bw-kpi-progress-danger",
+            BwColor.Info => "bw-kpi-progress-info",
+            BwColor.Secondary => "bw-kpi-progress-secondary",
+            _ => "bw-kpi-progress-primary"
+        };
+    }
 
     private async Task HandleClick()
     {
@@ -126,4 +172,5 @@
             await OnClick.InvokeAsync();
         }
     }
+
 }

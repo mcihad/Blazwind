@@ -15,19 +15,42 @@
 }
 
 @code {
-    [CascadingParameter] public BwTabs? ParentTabs { get; set; }
 
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Name { get; set; }
-    [Parameter] public RenderFragment? TitleTemplate { get; set; }
-    [Parameter] public RenderFragment? Badge { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public bool Closable { get; set; } = false;
-    [Parameter] public bool ConfirmClose { get; set; } = false;
-    [Parameter] public string ConfirmCloseMessage { get; set; } = "Are you sure you want to close this tab?";
-    [Parameter] public EventCallback<string> OnClose { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [CascadingParameter]
+    public BwTabs? ParentTabs { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public RenderFragment? TitleTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? Badge { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public bool Closable { get; set; }
+
+    [Parameter]
+    public bool ConfirmClose { get; set; }
+
+    [Parameter]
+    public string ConfirmCloseMessage { get; set; } = "Are you sure you want to close this tab?";
+
+    [Parameter]
+    public EventCallback<string> OnClose { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     protected override void OnInitialized()
     {
@@ -38,4 +61,5 @@
     {
         ParentTabs?.UnregisterTab(this);
     }
+
 }

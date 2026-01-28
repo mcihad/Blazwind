@@ -3,206 +3,206 @@ using System.Text.Json.Serialization;
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// Comprehensive MapLibre source model
+///     Comprehensive MapLibre source model
 /// </summary>
 public class MapSource
 {
     /// <summary>
-    /// Unique source identifier (not sent to MapLibre, used as key)
+    ///     Unique source identifier (not sent to MapLibre, used as key)
     /// </summary>
     [JsonIgnore]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Source type: vector, raster, raster-dem, geojson, image, video, canvas
+    ///     Source type: vector, raster, raster-dem, geojson, image, video, canvas
     /// </summary>
     [JsonPropertyName("type")]
     public string Type { get; set; } = MapSourceType.Vector;
 
     /// <summary>
-    /// Tile URL pattern for vector/raster sources
+    ///     Tile URL pattern for vector/raster sources
     /// </summary>
     [JsonPropertyName("tiles")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<string>? Tiles { get; set; }
 
     /// <summary>
-    /// TileJSON URL or style URL
+    ///     TileJSON URL or style URL
     /// </summary>
     [JsonPropertyName("url")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Url { get; set; }
 
     /// <summary>
-    /// GeoJSON data (object, URL string, or FeatureCollection)
+    ///     GeoJSON data (object, URL string, or FeatureCollection)
     /// </summary>
     [JsonPropertyName("data")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? Data { get; set; }
 
     /// <summary>
-    /// Tile size (default 512)
+    ///     Tile size (default 512)
     /// </summary>
     [JsonPropertyName("tileSize")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? TileSize { get; set; }
 
     /// <summary>
-    /// Attribution text
+    ///     Attribution text
     /// </summary>
     [JsonPropertyName("attribution")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Attribution { get; set; }
 
     /// <summary>
-    /// Tile scheme: xyz or tms
+    ///     Tile scheme: xyz or tms
     /// </summary>
     [JsonPropertyName("scheme")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Scheme { get; set; }
 
     /// <summary>
-    /// Minimum zoom level
+    ///     Minimum zoom level
     /// </summary>
     [JsonPropertyName("minzoom")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MinZoom { get; set; }
 
     /// <summary>
-    /// Maximum zoom level
+    ///     Maximum zoom level
     /// </summary>
     [JsonPropertyName("maxzoom")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaxZoom { get; set; }
 
     /// <summary>
-    /// Bounding box [sw_lng, sw_lat, ne_lng, ne_lat]
+    ///     Bounding box [sw_lng, sw_lat, ne_lng, ne_lat]
     /// </summary>
     [JsonPropertyName("bounds")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double[]? Bounds { get; set; }
 
     /// <summary>
-    /// Whether to generate feature IDs (GeoJSON only)
+    ///     Whether to generate feature IDs (GeoJSON only)
     /// </summary>
     [JsonPropertyName("generateId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? GenerateId { get; set; }
 
     /// <summary>
-    /// Property to use as feature ID (GeoJSON only)
+    ///     Property to use as feature ID (GeoJSON only)
     /// </summary>
     [JsonPropertyName("promoteId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public object? PromoteId { get; set; }
 
     /// <summary>
-    /// Cluster configuration (GeoJSON only)
+    ///     Cluster configuration (GeoJSON only)
     /// </summary>
     [JsonPropertyName("cluster")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Cluster { get; set; }
 
     /// <summary>
-    /// Cluster radius (GeoJSON only)
+    ///     Cluster radius (GeoJSON only)
     /// </summary>
     [JsonPropertyName("clusterRadius")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ClusterRadius { get; set; }
 
     /// <summary>
-    /// Maximum zoom to cluster points (GeoJSON only)
+    ///     Maximum zoom to cluster points (GeoJSON only)
     /// </summary>
     [JsonPropertyName("clusterMaxZoom")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? ClusterMaxZoom { get; set; }
 
     /// <summary>
-    /// Cluster properties (GeoJSON only)
+    ///     Cluster properties (GeoJSON only)
     /// </summary>
     [JsonPropertyName("clusterProperties")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, object>? ClusterProperties { get; set; }
 
     /// <summary>
-    /// Line metrics (GeoJSON only, for line-gradient)
+    ///     Line metrics (GeoJSON only, for line-gradient)
     /// </summary>
     [JsonPropertyName("lineMetrics")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? LineMetrics { get; set; }
 
     /// <summary>
-    /// Buffer size for tiles
+    ///     Buffer size for tiles
     /// </summary>
     [JsonPropertyName("buffer")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? Buffer { get; set; }
 
     /// <summary>
-    /// Tolerance for simplification (GeoJSON only)
+    ///     Tolerance for simplification (GeoJSON only)
     /// </summary>
     [JsonPropertyName("tolerance")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? Tolerance { get; set; }
 
     /// <summary>
-    /// Encoding for raster-dem: terrarium or mapbox
+    ///     Encoding for raster-dem: terrarium or mapbox
     /// </summary>
     [JsonPropertyName("encoding")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Encoding { get; set; }
 
     /// <summary>
-    /// Red factor for custom encoding
+    ///     Red factor for custom encoding
     /// </summary>
     [JsonPropertyName("redFactor")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? RedFactor { get; set; }
 
     /// <summary>
-    /// Blue factor for custom encoding
+    ///     Blue factor for custom encoding
     /// </summary>
     [JsonPropertyName("blueFactor")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? BlueFactor { get; set; }
 
     /// <summary>
-    /// Green factor for custom encoding
+    ///     Green factor for custom encoding
     /// </summary>
     [JsonPropertyName("greenFactor")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? GreenFactor { get; set; }
 
     /// <summary>
-    /// Base shift for custom encoding
+    ///     Base shift for custom encoding
     /// </summary>
     [JsonPropertyName("baseShift")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? BaseShift { get; set; }
 
     /// <summary>
-    /// Image coordinates (image source)
+    ///     Image coordinates (image source)
     /// </summary>
     [JsonPropertyName("coordinates")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double[][]? Coordinates { get; set; }
 
     /// <summary>
-    /// Video URLs (video source)
+    ///     Video URLs (video source)
     /// </summary>
     [JsonPropertyName("urls")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<string>? Urls { get; set; }
 
     /// <summary>
-    /// Whether source is volatile
+    ///     Whether source is volatile
     /// </summary>
     [JsonPropertyName("volatile")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Volatile { get; set; }
 
     /// <summary>
-    /// Converts this source to a JavaScript-compatible object
+    ///     Converts this source to a JavaScript-compatible object
     /// </summary>
     public object ToJsObject()
     {
@@ -238,12 +238,12 @@ public class MapSource
 }
 
 /// <summary>
-/// WMS source configuration helper
+///     WMS source configuration helper
 /// </summary>
 public static class WmsSourceHelper
 {
     /// <summary>
-    /// Creates a WMS raster source
+    ///     Creates a WMS raster source
     /// </summary>
     public static MapSource CreateWmsSource(
         string id,
@@ -275,12 +275,12 @@ public static class WmsSourceHelper
 }
 
 /// <summary>
-/// Martin tile server source helper
+///     Martin tile server source helper
 /// </summary>
 public static class MartinSourceHelper
 {
     /// <summary>
-    /// Creates a Martin vector tile source
+    ///     Creates a Martin vector tile source
     /// </summary>
     public static MapSource CreateMartinSource(
         string id,
@@ -303,12 +303,12 @@ public static class MartinSourceHelper
 }
 
 /// <summary>
-/// GeoServer source helper
+///     GeoServer source helper
 /// </summary>
 public static class GeoServerSourceHelper
 {
     /// <summary>
-    /// Creates a GeoServer WMS source
+    ///     Creates a GeoServer WMS source
     /// </summary>
     public static MapSource CreateGeoServerWmsSource(
         string id,
@@ -335,7 +335,7 @@ public static class GeoServerSourceHelper
     }
 
     /// <summary>
-    /// Creates a GeoServer WFS GeoJSON source
+    ///     Creates a GeoServer WFS GeoJSON source
     /// </summary>
     public static MapSource CreateGeoServerWfsSource(
         string id,
@@ -351,10 +351,7 @@ public static class GeoServerSourceHelper
                   $"&typeName={workspace}:{layerName}&outputFormat=application/json" +
                   $"&maxFeatures={maxFeatures}";
 
-        if (!string.IsNullOrEmpty(cqlFilter))
-        {
-            url += $"&CQL_FILTER={Uri.EscapeDataString(cqlFilter)}";
-        }
+        if (!string.IsNullOrEmpty(cqlFilter)) url += $"&CQL_FILTER={Uri.EscapeDataString(cqlFilter)}";
 
         return new MapSource
         {

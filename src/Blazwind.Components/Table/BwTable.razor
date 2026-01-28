@@ -1,8 +1,8 @@
 @namespace Blazwind.Components.Table
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Pagination
-@using Blazwind.Components.Input
 @typeparam TItem where TItem : notnull
+@using Blazwind.Components.Input
+@using Blazwind.Components.Pagination
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 <CascadingValue Value="this">
@@ -52,26 +52,30 @@
                         <div class="relative">
                             <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                             <input type="text" placeholder="Kolon ara..."
-                                class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                                @bind="_columnSearchQuery" @bind:event="oninput" />
+                                   class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                                   @bind="_columnSearchQuery" @bind:event="oninput"/>
                         </div>
                     </div>
                     <div class="py-1 max-h-64 overflow-y-auto">
                         @{
                             var filteredColumns = string.IsNullOrWhiteSpace(_columnSearchQuery)
-                            ? _columns
-                            : _columns.Where(c => c.Title?.Contains(_columnSearchQuery, StringComparison.OrdinalIgnoreCase) ==
-                            true).ToList();
+                                ? _columns
+                                : _columns.Where(c => c.Title?.Contains(_columnSearchQuery, StringComparison.OrdinalIgnoreCase) ==
+                                                      true).ToList();
                         }
                         @if (filteredColumns.Any())
                         {
                             @foreach (var col in filteredColumns)
                             {
-                                <div class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                                <div
+                                    class="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                                     @onclick="@(() => ToggleColumnVisibility(col))">
                                     <BwCheckbox IsChecked="@col.Visible"
-                                        IsCheckedChanged="@((e) => {/* Already handled by row click */})" Size="BwSize.Small"
-                                        Class="!m-0 pointer-events-none" />
+                                                IsCheckedChanged="@(e =>
+                                                                  {
+                                                                      /* Already handled by row click */
+                                                                  })" Size="BwSize.Small"
+                                                Class="!m-0 pointer-events-none"/>
                                     <span class="text-sm text-gray-700 dark:text-gray-300">@col.Title</span>
                                 </div>
                             }
@@ -86,10 +90,11 @@
                     </div>
                     <div
                         class="px-3 py-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 rounded-b flex justify-between items-center">
-                        <span class="text-xs text-gray-500 dark:text-gray-400">@_columns.Count(c => c.Visible) / @_columns.Count
+                        <span
+                            class="text-xs text-gray-500 dark:text-gray-400">@_columns.Count(c => c.Visible) / @_columns.Count
                             visible</span>
                         <button type="button" class="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                            @onclick="ToggleColumnSelector">
+                                @onclick="ToggleColumnSelector">
                             Kapat
                         </button>
                     </div>
@@ -101,108 +106,108 @@
     <div class="overflow-x-auto">
         <table class="bw-table @(Bordered ? "bw-table-bordered" : "")">
             <thead class="bw-table-header">
-                <tr>
-                    @if (SelectionMode != BwSelectionMode.None)
-                    {
-                        <th class="bw-table-header-cell @cellPadding w-12">
-                            @if (SelectionMode == BwSelectionMode.Multiple)
-                            {
-                                <BwCheckbox IsChecked="@IsAllSelected()" Size="BwSize.Small"
-                                    IsCheckedChanged="ToggleSelectAll" />
-                            }
-                        </th>
-                    }
-                    @foreach (var column in visibleColumns)
-                    {
-                        var isSorted = _sortColumn == column.GetFieldName();
-                        var sortIcon = isSorted ? (_sortDescending ? "fa-sort-down" : "fa-sort-up") : "fa-sort";
-                        var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
+            <tr>
+                @if (SelectionMode != BwSelectionMode.None)
+                {
+                    <th class="bw-table-header-cell @cellPadding w-12">
+                        @if (SelectionMode == BwSelectionMode.Multiple)
+                        {
+                            <BwCheckbox IsChecked="@IsAllSelected()" Size="BwSize.Small"
+                                        IsCheckedChanged="ToggleSelectAll"/>
+                        }
+                    </th>
+                }
+                @foreach (var column in visibleColumns)
+                {
+                    var isSorted = _sortColumn == column.GetFieldName();
+                    var sortIcon = isSorted ? _sortDescending ? "fa-sort-down" : "fa-sort-up" : "fa-sort";
+                    var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
 
-                        <th class="bw-table-header-cell @cellPadding" style="@widthStyle">
-                            @if (column.HeaderTemplate != null)
-                            {
-                                @column.HeaderTemplate
-                            }
-                            else if (EnableSorting && column.Sortable)
-                            {
-                                <button type="button" class="flex items-center gap-2 hover:text-gray-900 transition-colors"
+                    <th class="bw-table-header-cell @cellPadding" style="@widthStyle">
+                        @if (column.HeaderTemplate != null)
+                        {
+                            @column.HeaderTemplate
+                        }
+                        else if (EnableSorting && column.Sortable)
+                        {
+                            <button type="button" class="flex items-center gap-2 hover:text-gray-900 transition-colors"
                                     @onclick="() => HandleSort(column)">
-                                    <span>@column.Title</span>
-                                    <i
-                                        class="fa-solid @sortIcon text-xs @(isSorted ? "bw-table-sort-icon-active" : "bw-table-sort-icon")"></i>
-                                </button>
-                            }
-                            else
-                            {
-                                @column.Title
-                            }
-                        </th>
-                    }
-                </tr>
+                                <span>@column.Title</span>
+                                <i
+                                    class="fa-solid @sortIcon text-xs @(isSorted ? "bw-table-sort-icon-active" : "bw-table-sort-icon")"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            @column.Title
+                        }
+                    </th>
+                }
+            </tr>
             </thead>
             <tbody>
-                @if (processedItems.Any())
+            @if (processedItems.Any())
+            {
+                var rowIndex = 0;
+                foreach (var item in processedItems)
                 {
-                    var rowIndex = 0;
-                    foreach (var item in processedItems)
-                    {
-                        var isSelected = _selectedItems.Contains(item);
-                        var stripedClass = Striped && rowIndex % 2 == 1 ? "bw-table-row-striped" : "";
-                        var selectedClass = isSelected ? "bw-table-row-selected" : "";
-                        var hoverClass = Hoverable ? "bw-table-row-hover" : "";
-                        var customRowClass = RowClass?.Invoke(item) ?? "";
+                    var isSelected = _selectedItems.Contains(item);
+                    var stripedClass = Striped && rowIndex % 2 == 1 ? "bw-table-row-striped" : "";
+                    var selectedClass = isSelected ? "bw-table-row-selected" : "";
+                    var hoverClass = Hoverable ? "bw-table-row-hover" : "";
+                    var customRowClass = RowClass?.Invoke(item) ?? "";
 
-                        <tr class="bw-table-row @stripedClass @selectedClass @hoverClass @customRowClass">
-                            @if (SelectionMode != BwSelectionMode.None)
-                            {
-                                <td class="bw-table-cell @cellPadding w-12 text-center">
-                                    @if (SelectionMode == BwSelectionMode.Multiple)
-                                    {
-                                        <BwCheckbox IsChecked="@isSelected" Size="BwSize.Small"
-                                            IsCheckedChanged="@((_) => ToggleSelection(item))" />
-                                    }
-                                    else
-                                    {
-                                        <BwRadio TValue="TItem" Value="@item" IsChecked="@isSelected"
-                                            OnClick="@(() => ToggleSelection(item))" />
-                                    }
-                                </td>
-                            }
-                            @foreach (var column in visibleColumns)
-                            {
-                                var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
-                                <td class="bw-table-cell @cellPadding" style="@widthStyle">
-                                    @if (column.Template != null)
-                                    {
-                                        @column.Template(item)
-                                    }
-                                    else if (column.Ellipsis)
-                                    {
-                                        <div class="truncate" style="max-width: @(column.EllipsisMaxWidth ?? "200px");"
-                                            title="@(column.GetValue(item)?.ToString() ?? "")">
-                                            @(column.GetValue(item)?.ToString() ?? "")
-                                        </div>
-                                    }
-                                    else
-                                    {
+                    <tr class="bw-table-row @stripedClass @selectedClass @hoverClass @customRowClass">
+                        @if (SelectionMode != BwSelectionMode.None)
+                        {
+                            <td class="bw-table-cell @cellPadding w-12 text-center">
+                                @if (SelectionMode == BwSelectionMode.Multiple)
+                                {
+                                    <BwCheckbox IsChecked="@isSelected" Size="BwSize.Small"
+                                                IsCheckedChanged="@(_ => ToggleSelection(item))"/>
+                                }
+                                else
+                                {
+                                    <BwRadio TValue="TItem" Value="@item" IsChecked="@isSelected"
+                                             OnClick="@(() => ToggleSelection(item))"/>
+                                }
+                            </td>
+                        }
+                        @foreach (var column in visibleColumns)
+                        {
+                            var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width: {column.Width};" : "";
+                            <td class="bw-table-cell @cellPadding" style="@widthStyle">
+                                @if (column.Template != null)
+                                {
+                                    @column.Template(item)
+                                }
+                                else if (column.Ellipsis)
+                                {
+                                    <div class="truncate" style="max-width: @(column.EllipsisMaxWidth ?? "200px");"
+                                         title="@(column.GetValue(item)?.ToString() ?? "")">
                                         @(column.GetValue(item)?.ToString() ?? "")
-                                    }
-                                </td>
-                            }
-                        </tr>
-                        rowIndex++;
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0))"
-                            class="bw-table-cell bw-table-empty @cellPadding">
-                            <i class="fa-solid fa-inbox text-3xl mb-2"></i>
-                            <p>Veri bulunamadı</p>
-                        </td>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @(column.GetValue(item)?.ToString() ?? "")
+                                }
+                            </td>
+                        }
                     </tr>
+                    rowIndex++;
                 }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="@(visibleColumns.Count + (SelectionMode != BwSelectionMode.None ? 1 : 0))"
+                        class="bw-table-cell bw-table-empty @cellPadding">
+                        <i class="fa-solid fa-inbox text-3xl mb-2"></i>
+                        <p>Veri bulunamadı</p>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
     </div>
@@ -212,45 +217,86 @@
         var totalItems = GetFilteredItems().Count();
         <div class="mt-4">
             <BwPagination TotalItems="@totalItems" PageSize="@PageSize" CurrentPage="@CurrentPage"
-                CurrentPageChanged="OnPageChanged" PageSizeChanged="OnPageSizeChanged" ShowPageSizeSelector="true"
-                Compact="@CompactPagination" ShowInfo="true" />
+                          CurrentPageChanged="OnPageChanged" PageSizeChanged="OnPageSizeChanged"
+                          ShowPageSizeSelector="true"
+                          Compact="@CompactPagination" ShowInfo="true"/>
         </div>
     }
 </div>
 
 @code {
-    [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
-    [Parameter] public IEnumerable<TItem> SelectedItems { get; set; } = Enumerable.Empty<TItem>();
-    [Parameter] public EventCallback<IEnumerable<TItem>> SelectedItemsChanged { get; set; }
-    [Parameter] public Func<TItem, string>? RowClass { get; set; }
-    [Parameter] public bool Striped { get; set; } = true;
-    [Parameter] public bool Hoverable { get; set; } = true;
-    [Parameter] public bool Bordered { get; set; } = false;
-    [Parameter] public bool Compact { get; set; } = false;
-    [Parameter] public bool CompactPagination { get; set; } = false;
-    [Parameter] public bool ShowColumnSelector { get; set; } = false;
+
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwSelectionMode SelectionMode { get; set; } = BwSelectionMode.None;
+
+    [Parameter]
+    public IEnumerable<TItem> SelectedItems { get; set; } = Enumerable.Empty<TItem>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<TItem>> SelectedItemsChanged { get; set; }
+
+    [Parameter]
+    public Func<TItem, string>? RowClass { get; set; }
+
+    [Parameter]
+    public bool Striped { get; set; } = true;
+
+    [Parameter]
+    public bool Hoverable { get; set; } = true;
+
+    [Parameter]
+    public bool Bordered { get; set; }
+
+    [Parameter]
+    public bool Compact { get; set; }
+
+    [Parameter]
+    public bool CompactPagination { get; set; }
+
+    [Parameter]
+    public bool ShowColumnSelector { get; set; }
     // Removed Class parameter (inherited)
 
     // Pagination
-    [Parameter] public bool EnablePagination { get; set; } = false;
-    [Parameter] public int PageSize { get; set; } = 10;
-    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter]
+    public bool EnablePagination { get; set; }
+
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+
+    [Parameter]
+    public int CurrentPage { get; set; } = 1;
 
     // Sorting
-    [Parameter] public bool EnableSorting { get; set; } = true;
-    [Parameter] public string? DefaultSortColumn { get; set; }
-    [Parameter] public bool DefaultSortDescending { get; set; } = false;
+    [Parameter]
+    public bool EnableSorting { get; set; } = true;
+
+    [Parameter]
+    public string? DefaultSortColumn { get; set; }
+
+    [Parameter]
+    public bool DefaultSortDescending { get; set; }
 
     // Server-side
-    [Parameter] public bool ServerSide { get; set; } = false;
-    [Parameter] public EventCallback<BwTableState> OnStateChanged { get; set; }
+    [Parameter]
+    public bool ServerSide { get; set; }
 
-    [Parameter] public bool IsLoading { get; set; }
-    [Parameter] public RenderFragment? LoadingContent { get; set; }
+    [Parameter]
+    public EventCallback<BwTableState> OnStateChanged { get; set; }
 
-    private List<BwTableColumn<TItem>> _columns = new();
+    [Parameter]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingContent { get; set; }
+
+    private readonly List<BwTableColumn<TItem>> _columns = new();
     private HashSet<TItem> _selectedItems = new();
     private string? _sortColumn;
     private bool _sortDescending;
@@ -291,8 +337,8 @@
             if (column?.Field != null)
             {
                 items = _sortDescending
-                ? items.OrderByDescending(column.Field)
-                : items.OrderBy(column.Field);
+                    ? items.OrderByDescending(column.Field)
+                    : items.OrderBy(column.Field);
             }
         }
 
@@ -355,13 +401,16 @@
         }
     }
 
-    private BwTableState GetState() => new BwTableState
+    private BwTableState GetState()
     {
-        CurrentPage = CurrentPage,
-        PageSize = PageSize,
-        SortColumn = _sortColumn,
-        SortDescending = _sortDescending
-    };
+        return new BwTableState
+        {
+            CurrentPage = CurrentPage,
+            PageSize = PageSize,
+            SortColumn = _sortColumn,
+            SortDescending = _sortDescending
+        };
+    }
 
     private async Task ToggleSelection(TItem item)
     {
@@ -416,4 +465,5 @@
 #pragma warning restore BL0005
         StateHasChanged();
     }
+
 }

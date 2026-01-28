@@ -12,6 +12,7 @@ A specialized card component for dashboards and data visualization, used to disp
 ## Examples
 
 ### Sales Stat
+
 A standard metric with a positive trend.
 
 ```razor
@@ -24,6 +25,7 @@ A standard metric with a positive trend.
 ```
 
 ### User Feedback
+
 Metric with a negative trend using the `Danger` color.
 
 ```razor
@@ -37,14 +39,14 @@ Metric with a negative trend using the `Danger` color.
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Title` | `string` | `""` | The metric label. |
-| `Value` | `string` | `""` | The primary metric value. |
-| `Icon` | `string?` | `null` | Icon displayed prominently. |
-| `Color` | `BwColor` | `Primary` | Theme color for the icon background. |
-| `Trend` | `BwTrend` | `Neutral` | Trend direction (`Up`, `Down`, `Neutral`). |
-| `TrendValue` | `string?` | `null` | Text for the trend percentage or value. |
-| `TrendDescription`| `string?` | `null` | Supporting text for the trend (e.g., "vs last week"). |
-| `ChildContent`| `RenderFragment?`| `null` | Content for the bottom section of the card. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
+| Parameter          | Type              | Default   | Description                                           |
+|--------------------|-------------------|-----------|-------------------------------------------------------|
+| `Title`            | `string`          | `""`      | The metric label.                                     |
+| `Value`            | `string`          | `""`      | The primary metric value.                             |
+| `Icon`             | `string?`         | `null`    | Icon displayed prominently.                           |
+| `Color`            | `BwColor`         | `Primary` | Theme color for the icon background.                  |
+| `Trend`            | `BwTrend`         | `Neutral` | Trend direction (`Up`, `Down`, `Neutral`).            |
+| `TrendValue`       | `string?`         | `null`    | Text for the trend percentage or value.               |
+| `TrendDescription` | `string?`         | `null`    | Supporting text for the trend (e.g., "vs last week"). |
+| `ChildContent`     | `RenderFragment?` | `null`    | Content for the bottom section of the card.           |
+| `Class`            | `string?`         | `null`    | Additional CSS classes.                               |

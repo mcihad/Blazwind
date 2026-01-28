@@ -1,9 +1,8 @@
 @namespace Blazwind.Components.Printable
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Button
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
+@using Blazwind.Components.Button
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 <div class="@CombineClasses("bw-printable")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -13,14 +12,14 @@
             <BwButton Color="BwColor.Primary" Variant="BwVariant.Filled" OnClick="PrintAsync" Icon="fa-solid fa-print">
                 @PrintButtonText
             </BwButton>
-            
+
             @if (ToolbarContent != null)
             {
                 @ToolbarContent
             }
         </div>
     }
-    
+
     <div @ref="_printArea" class="@_printAreaClass">
         @if (HeaderTemplate != null)
         {
@@ -28,9 +27,9 @@
                 @HeaderTemplate
             </div>
         }
-        
+
         @ChildContent
-        
+
         @if (FooterTemplate != null)
         {
             <div class="bw-printable-footer">
@@ -42,90 +41,104 @@
 
 @code {
     private ElementReference _printArea;
-    
+
     private string _printAreaClass => $"bw-printable-area {(ShowBorder ? "has-border" : "")} {PrintAreaClass}";
-    
+
     #region Parameters
-    
+
     /// <summary>
     /// CSS class
     /// </summary>
     // Removed Class and Style parameters (inherited)
-    
+
     /// <summary>
-    /// Class for print area
+    ///     Class for print area
     /// </summary>
-    [Parameter] public string? PrintAreaClass { get; set; }
-    
+    [Parameter]
+    public string? PrintAreaClass { get; set; }
+
     /// <summary>
-    /// Content to print
+    ///     Content to print
     /// </summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>
-    /// Header template for print
+    ///     Header template for print
     /// </summary>
-    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
-    
+    [Parameter]
+    public RenderFragment? HeaderTemplate { get; set; }
+
     /// <summary>
-    /// Footer template for print
+    ///     Footer template for print
     /// </summary>
-    [Parameter] public RenderFragment? FooterTemplate { get; set; }
-    
+    [Parameter]
+    public RenderFragment? FooterTemplate { get; set; }
+
     /// <summary>
-    /// Additional toolbar content
+    ///     Additional toolbar content
     /// </summary>
-    [Parameter] public RenderFragment? ToolbarContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ToolbarContent { get; set; }
+
     /// <summary>
-    /// Show print toolbar
+    ///     Show print toolbar
     /// </summary>
-    [Parameter] public bool ShowToolbar { get; set; } = true;
-    
+    [Parameter]
+    public bool ShowToolbar { get; set; } = true;
+
     /// <summary>
-    /// Print button text
+    ///     Print button text
     /// </summary>
-    [Parameter] public string PrintButtonText { get; set; } = "Yazdır";
-    
+    [Parameter]
+    public string PrintButtonText { get; set; } = "Yazdır";
+
     /// <summary>
-    /// Document title
+    ///     Document title
     /// </summary>
-    [Parameter] public string? Title { get; set; }
-    
+    [Parameter]
+    public string? Title { get; set; }
+
     /// <summary>
-    /// Page size
+    ///     Page size
     /// </summary>
-    [Parameter] public PrintPageSize PageSize { get; set; } = PrintPageSize.A4;
-    
+    [Parameter]
+    public PrintPageSize PageSize { get; set; } = PrintPageSize.A4;
+
     /// <summary>
-    /// Page orientation
+    ///     Page orientation
     /// </summary>
-    [Parameter] public PrintOrientation Orientation { get; set; } = PrintOrientation.Portrait;
-    
+    [Parameter]
+    public PrintOrientation Orientation { get; set; } = PrintOrientation.Portrait;
+
     /// <summary>
-    /// Page margin
+    ///     Page margin
     /// </summary>
-    [Parameter] public string Margin { get; set; } = "20mm";
-    
+    [Parameter]
+    public string Margin { get; set; } = "20mm";
+
     /// <summary>
-    /// Show page numbers
+    ///     Show page numbers
     /// </summary>
-    [Parameter] public bool ShowPageNumbers { get; set; }
-    
+    [Parameter]
+    public bool ShowPageNumbers { get; set; }
+
     /// <summary>
-    /// Custom CSS styles for print
+    ///     Custom CSS styles for print
     /// </summary>
-    [Parameter] public string? CustomStyles { get; set; }
-    
+    [Parameter]
+    public string? CustomStyles { get; set; }
+
     /// <summary>
-    /// Show a dashed border around the print area on screen
+    ///     Show a dashed border around the print area on screen
     /// </summary>
-    [Parameter] public bool ShowBorder { get; set; }
-    
+    [Parameter]
+    public bool ShowBorder { get; set; }
+
     #endregion
-    
+
     /// <summary>
-    /// Print the content
+    ///     Print the content
     /// </summary>
     public async Task PrintAsync()
     {
@@ -138,15 +151,16 @@
             showPageNumbers = ShowPageNumbers,
             styles = CustomStyles
         };
-        
+
         await JS.InvokeVoidAsync("Blazwind.Printable.print", _printArea, options);
     }
-    
+
     /// <summary>
-    /// Get HTML content of print area
+    ///     Get HTML content of print area
     /// </summary>
     public async Task<string> GetHtmlAsync()
     {
         return await JS.InvokeAsync<string>("Blazwind.Printable.getElementHtml", _printArea);
     }
+
 }

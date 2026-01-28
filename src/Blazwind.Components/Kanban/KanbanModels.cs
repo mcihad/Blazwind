@@ -11,12 +11,14 @@ public class KanbanColumn
     public BwColor? Color { get; set; }
     public List<KanbanItem>? Items { get; set; }
     public RenderFragment? HeaderExtra { get; set; }
+
     /// <summary>
-    /// Max number of items allowed in column. If exceeded, visual warning is shown.
+    ///     Max number of items allowed in column. If exceeded, visual warning is shown.
     /// </summary>
     public int? MaxItems { get; set; }
+
     /// <summary>
-    /// Whether the column is currently collapsed.
+    ///     Whether the column is currently collapsed.
     /// </summary>
     public bool IsCollapsed { get; set; }
 }

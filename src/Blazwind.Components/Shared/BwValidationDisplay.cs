@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Validation message display mode for forms
+///     Validation message display mode for forms
 /// </summary>
 public enum BwValidationDisplay
 {

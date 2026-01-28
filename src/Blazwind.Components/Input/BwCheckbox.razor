@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
 @using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<bool>
 
 @{
@@ -13,41 +13,43 @@
 
     var iconSizeClass = Size switch
     {
-        BwSize.Small => "text-[10px]", 
-        BwSize.Large => "text-base", 
-        _ => "text-xs" 
+        BwSize.Small => "text-[10px]",
+        BwSize.Large => "text-base",
+        _ => "text-xs"
     };
-    
+
     var labelSizeClass = Size switch
     {
         BwSize.Small => "bw-label-small",
         BwSize.Large => "bw-label-large",
         _ => ""
     };
-    
-    var colorClass = Color switch {
+
+    var colorClass = Color switch
+    {
         BwColor.Success => "bw-checkbox-success",
         BwColor.Danger => "bw-checkbox-danger",
         BwColor.Warning => "bw-checkbox-warning",
         BwColor.Info => "bw-checkbox-info",
         _ => ""
     };
-    
+
     var errorClass = HasError ? "bw-input-error" : "";
     var marginClass = GetDensityMarginClass();
 }
 
 <div class="@CombineClasses(marginClass)" style="@Style" id="@Id">
     <div class="inline-flex items-center gap-2.5" @onclick="Toggle">
-        <div class="bw-checkbox @sizeClass @colorClass @(Value ? "checked" : "") @(IsDisabled ? "bw-checkbox-disabled" : "") @errorClass" 
-             tabindex="@(IsDisabled ? -1 : 0)" 
-             @onkeydown="OnKeyDownHandler"
-             @onclick:stopPropagation="true"
-             @onclick="Toggle"
-             @attributes="AdditionalAttributes">
+        <div
+            class="bw-checkbox @sizeClass @colorClass @(Value ? "checked" : "") @(IsDisabled ? "bw-checkbox-disabled" : "") @errorClass"
+            tabindex="@(IsDisabled ? -1 : 0)"
+            @onkeydown="OnKeyDownHandler"
+            @onclick:stopPropagation="true"
+            @onclick="Toggle"
+            @attributes="AdditionalAttributes">
             <i class="fa-solid fa-check bw-checkbox-icon @iconSizeClass"></i>
         </div>
-        
+
         @if (HasLabel)
         {
             <span class="bw-label @labelSizeClass @(IsDisabled ? "opacity-60" : "") select-none">
@@ -58,18 +60,18 @@
                 }
             </span>
         }
-        
+
         @if (ChildContent != null)
         {
             <span class="bw-label @labelSizeClass @(IsDisabled ? "opacity-60" : "") select-none">@ChildContent</span>
         }
-        
+
         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
         {
-            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
         }
     </div>
-    
+
     @* Error/Helper Messages *@
     @if (HasError)
     {
@@ -85,32 +87,36 @@
 </div>
 
 @code {
+
     /// <summary>Color scheme for the checkbox</summary>
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     /// <summary>Custom content to display as label</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Alias for Value - checked state</summary>
-    [Parameter] 
-    public bool IsChecked 
-    { 
-        get => Value; 
-        set => Value = value; 
+    [Parameter]
+    public bool IsChecked
+    {
+        get => Value;
+        set => Value = value;
     }
-    
+
     /// <summary>Callback when checked state changes</summary>
-    [Parameter] public EventCallback<bool> IsCheckedChanged { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsCheckedChanged { get; set; }
 
     private async Task Toggle()
     {
         if (IsDisabled) return;
-        
+
         Value = !Value;
         await ValueChanged.InvokeAsync(Value);
         await IsCheckedChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);
-        
+
         if (CascadedEditContext != null && For != null)
         {
             CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
@@ -123,6 +129,8 @@
         {
             await Toggle();
         }
+
         await HandleKeyDown(e);
     }
+
 }

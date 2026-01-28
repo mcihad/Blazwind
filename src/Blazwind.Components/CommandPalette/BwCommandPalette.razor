@@ -1,20 +1,18 @@
 @namespace Blazwind.Components.CommandPalette
-@using Microsoft.JSInterop
-@using Blazwind.Components.Shared
 @inherits BwBase
-@using Blazwind.Components.Services
-@using Blazwind.Components.Input
 @inject CommandPaletteService CommandService
 @inject IJSRuntime JS
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 @if (_isVisible)
 {
-    <div class="bw-cp-overlay animate-in fade-in duration-150" @onclick="Close" id="@Id" @attributes="AdditionalAttributes">
+    <div class="bw-cp-overlay animate-in fade-in duration-150" @onclick="Close" id="@Id"
+         @attributes="AdditionalAttributes">
         <div class="bw-cp-modal animate-in zoom-in-95 fade-in duration-200" @onclick:stopPropagation="true">
             <div class="bw-cp-header">
                 <i class="fa-solid fa-search bw-cp-icon"></i>
-                <input type="text" 
+                <input type="text"
                        id="@_inputId"
                        class="bw-cp-input"
                        placeholder="@Placeholder"
@@ -22,10 +20,10 @@
                        @bind:event="oninput"
                        @bind:after="OnSearchChanged"
                        @onkeydown="HandleKeyDown"
-                       @onkeydown:preventDefault="_preventKeyDefault" />
+                       @onkeydown:preventDefault="_preventKeyDefault"/>
                 <kbd class="bw-cp-esc-badge">ESC</kbd>
             </div>
-            
+
             <div class="bw-cp-results" id="@_resultsId">
                 @if (_filteredCommands.Any())
                 {
@@ -37,7 +35,7 @@
                             {
                                 var index = _filteredCommands.IndexOf(command);
                                 var activeClass = index == _activeIndex ? "bw-cp-item-active" : "";
-                                
+
                                 <button type="button"
                                         class="bw-cp-item @activeClass"
                                         @onclick="() => ExecuteCommand(command)">
@@ -69,7 +67,7 @@
                     </div>
                 }
             </div>
-            
+
             <div class="bw-cp-footer">
                 <span><kbd class="bw-cp-footer-key">↑↓</kbd> Navigate</span>
                 <span><kbd class="bw-cp-footer-key">↵</kbd> Select</span>
@@ -80,34 +78,36 @@
 }
 
 @code {
-    [Parameter] public string Placeholder { get; set; } = "Search command...";
-    
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Search command...";
+
     private DotNetObjectReference<BwCommandPalette>? _dotNetRef;
-    private string _inputId = $"cmd-input-{Guid.NewGuid():N}";
-    private string _resultsId = $"cmd-results-{Guid.NewGuid():N}";
+    private readonly string _inputId = $"cmd-input-{Guid.NewGuid():N}";
+    private readonly string _resultsId = $"cmd-results-{Guid.NewGuid():N}";
     private string _searchQuery = "";
-    private int _activeIndex = 0;
-    private bool _isVisible = false;
-    private bool _isInitialized = false;
-    
+    private int _activeIndex;
+    private bool _isVisible;
+    private bool _isInitialized;
+
     private List<CommandItem> _filteredCommands = new();
     private Dictionary<string, List<CommandItem>> _groupedCommands = new();
-    private bool _preventKeyDefault = false;
-    
+    private readonly bool _preventKeyDefault = false;
+
     protected override void OnInitialized()
     {
         CommandService.OnVisibilityChanged += HandleVisibilityChanged;
         CommandService.OnCommandsChanged += RefreshCommands;
-        
+
         _dotNetRef = DotNetObjectReference.Create(this);
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _isInitialized = true;
-            try 
+            try
             {
                 await JS.InvokeVoidAsync("Blazwind.commandPalette.registerKeyboardShortcut", _dotNetRef);
             }
@@ -116,7 +116,7 @@
                 // JS might not be ready
             }
         }
-        
+
         if (_isVisible && _isInitialized)
         {
             try
@@ -129,7 +129,7 @@
             }
         }
     }
-    
+
     private void HandleVisibilityChanged()
     {
         _isVisible = CommandService.IsVisible;
@@ -139,33 +139,34 @@
             _activeIndex = 0;
             RefreshCommands();
         }
+
         InvokeAsync(StateHasChanged);
     }
-    
+
     private void HandleInput(ChangeEventArgs e)
     {
         _searchQuery = e.Value?.ToString() ?? "";
         UpdateFilteredCommands();
     }
-    
+
     private void OnSearchChanged()
     {
         UpdateFilteredCommands();
     }
-    
+
     private void UpdateFilteredCommands()
     {
         _groupedCommands = CommandService.GetGroupedCommands(_searchQuery);
         _filteredCommands = _groupedCommands.Values.SelectMany(x => x).ToList();
         _activeIndex = Math.Min(_activeIndex, Math.Max(0, _filteredCommands.Count - 1));
     }
-    
+
     private void RefreshCommands()
     {
         UpdateFilteredCommands();
         InvokeAsync(StateHasChanged);
     }
-    
+
     private void HandleKeyDown(KeyboardEventArgs e)
     {
         switch (e.Key)
@@ -181,6 +182,7 @@
                 {
                     _ = ExecuteCommand(_filteredCommands[_activeIndex]);
                 }
+
                 break;
             case "Escape":
                 Close();
@@ -191,23 +193,23 @@
                 break;
         }
     }
-    
+
     private async Task ExecuteCommand(CommandItem command)
     {
         await CommandService.ExecuteCommand(command);
     }
-    
+
     private void Close()
     {
         CommandService.Hide();
     }
-    
+
     [JSInvokable]
     public void OnShortcutPressed()
     {
         CommandService.Toggle();
     }
-    
+
     [JSInvokable]
     public void OnEscapePressed()
     {
@@ -216,19 +218,19 @@
             CommandService.Hide();
         }
     }
-    
+
     [JSInvokable]
     public void SetActiveIndex(int index)
     {
         _activeIndex = index;
         StateHasChanged();
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         CommandService.OnVisibilityChanged -= HandleVisibilityChanged;
         CommandService.OnCommandsChanged -= RefreshCommands;
-        
+
         try
         {
             await JS.InvokeVoidAsync("Blazwind.commandPalette.unregisterKeyboardShortcut");
@@ -237,7 +239,8 @@
         {
             // Ignore disposal errors
         }
-        
+
         _dotNetRef?.Dispose();
     }
+
 }

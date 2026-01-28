@@ -19,14 +19,14 @@ A component used to pin content to a specific position during scrolling.
 
 ## Parameters
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `OffsetTop` | `int` | `0` | Distance from the top to pin the content (px). |
-| `OffsetBottom` | `int` | `0` | Distance from the bottom to pin the content (px). |
-| `UseBottom` | `bool` | `false` | If `true`, pins to the bottom; otherwise pins to the top. |
-| `Target` | `string?` | `null` | Selector for the scroll target (optional). |
-| `OnChange` | `EventCallback<bool>` | - | Callback triggered when the affix state changes. |
-| `ChildContent` | `RenderFragment` | - | The content to be pinned. |
+| Name           | Type                  | Default | Description                                               |
+|----------------|-----------------------|---------|-----------------------------------------------------------|
+| `OffsetTop`    | `int`                 | `0`     | Distance from the top to pin the content (px).            |
+| `OffsetBottom` | `int`                 | `0`     | Distance from the bottom to pin the content (px).         |
+| `UseBottom`    | `bool`                | `false` | If `true`, pins to the bottom; otherwise pins to the top. |
+| `Target`       | `string?`             | `null`  | Selector for the scroll target (optional).                |
+| `OnChange`     | `EventCallback<bool>` | -       | Callback triggered when the affix state changes.          |
+| `ChildContent` | `RenderFragment`      | -       | The content to be pinned.                                 |
 
 ## Examples
 

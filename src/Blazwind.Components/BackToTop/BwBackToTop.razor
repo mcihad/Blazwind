@@ -1,9 +1,8 @@
 @namespace Blazwind.Components.BackToTop
 @inherits BwBase
-@using Blazwind.Components.Shared
-@using Blazwind.Components
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 @{
@@ -37,8 +36,8 @@
 }
 
 <button type="button"
-    class="@CombineClasses($"{baseClass} {positionClass} {sizeClass} {colorClass} {shapeClass} {visibilityClass}")"
-    style="@Style" id="@Id" @onclick="ScrollToTop" title="@Tooltip" @attributes="AdditionalAttributes">
+        class="@CombineClasses($"{baseClass} {positionClass} {sizeClass} {colorClass} {shapeClass} {visibilityClass}")"
+        style="@Style" id="@Id" @onclick="ScrollToTop" title="@Tooltip" @attributes="AdditionalAttributes">
     @if (ChildContent != null)
     {
         @ChildContent
@@ -50,17 +49,35 @@
 </button>
 
 @code {
-    [Parameter] public string Icon { get; set; } = "fa-solid fa-arrow-up";
-    [Parameter] public string Tooltip { get; set; } = "Yukarı çık";
-    [Parameter] public int VisibilityThreshold { get; set; } = 300;
-    [Parameter] public bool Smooth { get; set; } = true;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwPosition Position { get; set; } = BwPosition.BottomRight;
-    [Parameter] public string Shape { get; set; } = "circle";
-    [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    private bool _isVisible = false;
+    [Parameter]
+    public string Icon { get; set; } = "fa-solid fa-arrow-up";
+
+    [Parameter]
+    public string Tooltip { get; set; } = "Yukarı çık";
+
+    [Parameter]
+    public int VisibilityThreshold { get; set; } = 300;
+
+    [Parameter]
+    public bool Smooth { get; set; } = true;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwPosition Position { get; set; } = BwPosition.BottomRight;
+
+    [Parameter]
+    public string Shape { get; set; } = "circle";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private readonly bool _isVisible = false;
     private DotNetObjectReference<BwBackToTop>? _dotNetRef;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -120,7 +137,7 @@ window['bwBackToTop_{Id}_cleanup'] = function() {{
     {
         var behavior = Smooth ? "smooth" : "instant";
         await JS.InvokeVoidAsync("eval", $@"
-            var container = null; // document.getElementById('{/*ScrollElementId*/""}'); 
+            var container = null; // document.getElementById('{ /*ScrollElementId*/""}'); 
             if (container) {{
                 container.scrollTo({{ top: 0, behavior: '{behavior}' }});
             }} else {{
@@ -135,7 +152,11 @@ window['bwBackToTop_{Id}_cleanup'] = function() {{
         {
             await JS.InvokeVoidAsync("eval", $"if(window['bwBackToTop_{Id}_cleanup']) window['bwBackToTop_{Id}_cleanup']();");
         }
-        catch { }
+        catch
+        {
+        }
+
         _dotNetRef?.Dispose();
     }
+
 }

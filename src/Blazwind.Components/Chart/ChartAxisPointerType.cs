@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// AxisPointer type constants for tooltip axis pointer
+///     AxisPointer type constants for tooltip axis pointer
 /// </summary>
 public static class ChartAxisPointerType
 {

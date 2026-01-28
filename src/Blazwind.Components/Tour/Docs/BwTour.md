@@ -1,11 +1,13 @@
 # Tour Service
 
-`TourService` is a fully TypeScript-based service for creating step-by-step guided tours to introduce features of your application to users.
+`TourService` is a fully TypeScript-based service for creating step-by-step guided tours to introduce features of your
+application to users.
 It replaces the component-based (`<BwTour>`) structure and works independently of the page structure.
 
 ## Usage
 
 ### 1. Inject the Service
+
 Inject `TourService` into your page or component.
 
 ```razor
@@ -13,6 +15,7 @@ Inject `TourService` into your page or component.
 ```
 
 ### 2. Define Steps and Start
+
 Start the tour by calling the `StartTour` method. Specify target elements using `TargetSelector` (ID or Class).
 
 ```csharp
@@ -50,19 +53,21 @@ private async Task StartTour()
 ## API Reference
 
 ### TourStep
-| Property | Type | Description |
-|---|---|---|
+
+| Property         | Type     | Description                                                                           |
+|------------------|----------|---------------------------------------------------------------------------------------|
 | `TargetSelector` | `string` | **Required.** CSS selector of the target element (e.g. `#my-button`, `.card-header`). |
-| `Title` | `string` | Step title (Optional). |
-| `Content` | `string` | **Required.** Step description. |
-| `Placement` | `string` | Tooltip placement: `top`, `bottom`, `left`, `right`. Default: `bottom`. |
+| `Title`          | `string` | Step title (Optional).                                                                |
+| `Content`        | `string` | **Required.** Step description.                                                       |
+| `Placement`      | `string` | Tooltip placement: `top`, `bottom`, `left`, `right`. Default: `bottom`.               |
 
 ### TourOptions
-| Property | Type | Default | Description |
-|---|---|---|---|
-| `SmoothScroll` | `bool` | `true` | Whether to automatically scroll to the target. |
-| `OverlayColor` | `string` | `rgba(0,0,0,0.5)` | Background dimming color. |
-| `AllowInteraction` | `bool` | `true` | Whether the target (inside the spotlight) is clickable. |
+
+| Property           | Type     | Default           | Description                                             |
+|--------------------|----------|-------------------|---------------------------------------------------------|
+| `SmoothScroll`     | `bool`   | `true`            | Whether to automatically scroll to the target.          |
+| `OverlayColor`     | `string` | `rgba(0,0,0,0.5)` | Background dimming color.                               |
+| `AllowInteraction` | `bool`   | `true`            | Whether the target (inside the spotlight) is clickable. |
 
 ## Methods
 

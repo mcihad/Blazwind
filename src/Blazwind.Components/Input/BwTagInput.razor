@@ -1,46 +1,43 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
 @using Blazwind.Components.HelpTooltip
-@using Blazwind.Components.Button
-@using Microsoft.AspNetCore.Components.Forms
-@using System.Linq.Expressions
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<List<string>>
 
 @{
     var hasError = !IsValid || !string.IsNullOrEmpty(ErrorMessage);
     var hasLabel = !string.IsNullOrEmpty(Label);
     var hasHelper = !string.IsNullOrEmpty(HelperText);
-    
+
     var sizeClass = Size switch
     {
         BwSize.Small => "p-1.5 min-h-[32px] text-xs gap-1.5",
         BwSize.Large => "p-4 min-h-[56px] text-base gap-3",
         _ => "p-3 min-h-[42px] text-sm gap-2"
     };
-    
+
     var tagSizeClass = Size switch
     {
         BwSize.Small => "px-1.5 py-0.5 text-xs",
         BwSize.Large => "px-3 py-1.5 text-sm",
         _ => "px-2.5 py-1 text-sm"
     };
-    
+
     var marginClass = EffectiveDensity switch
     {
         BwFormDensity.Compact => "mb-2",
         BwFormDensity.Relaxed => "mb-6",
         _ => "mb-4"
     };
-    
+
     var labelSpacingClass = EffectiveDensity switch
     {
         BwFormDensity.Compact => "mb-0.5",
         BwFormDensity.Relaxed => "mb-2",
         _ => "mb-1.5"
     };
-    
-    var borderClass = hasError 
-        ? "bw-input-error" 
+
+    var borderClass = hasError
+        ? "bw-input-error"
         : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)]";
 }
 
@@ -57,12 +54,13 @@
             </label>
             @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
             {
-                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
             }
         </div>
     }
-    
-    <div class="bw-tag-input-container flex flex-wrap rounded transition-colors duration-200 outline-none @(IsDisabled ? "bw-input-disabled" : "") @borderClass @sizeClass">
+
+    <div
+        class="bw-tag-input-container flex flex-wrap rounded transition-colors duration-200 outline-none @(IsDisabled ? "bw-input-disabled" : "") @borderClass @sizeClass">
         @* Tags *@
         @foreach (var tag in Tags)
         {
@@ -71,7 +69,7 @@
                 @tag
                 @if (!IsDisabled && !IsReadOnly)
                 {
-                    <button type="button" 
+                    <button type="button"
                             class="bw-tag-remove"
                             @onclick="() => RemoveTag(tagValue)"
                             @onclick:stopPropagation="true">
@@ -80,7 +78,7 @@
                 }
             </span>
         }
-        
+
         @* Input *@
         @if (!IsDisabled && !IsReadOnly && (!MaxTags.HasValue || Tags.Count < MaxTags))
         {
@@ -89,10 +87,10 @@
                    placeholder="@(Tags.Count == 0 ? Placeholder : "")"
                    @bind="_inputValue"
                    @bind:event="oninput"
-                   @onkeydown="HandleKeyDown" />
+                   @onkeydown="HandleKeyDown"/>
         }
     </div>
-    
+
     <div class="flex justify-between items-center mt-1">
         @if (hasError)
         {
@@ -109,10 +107,11 @@
         {
             <span></span>
         }
-        
+
         @if (MaxTags.HasValue)
         {
-            <span class="text-xs @(Tags.Count >= MaxTags ? "text-[color:var(--bw-color-danger)] font-medium" : "text-[color:var(--bw-color-text-muted)]")">
+            <span
+                class="text-xs @(Tags.Count >= MaxTags ? "text-[color:var(--bw-color-danger)] font-medium" : "text-[color:var(--bw-color-text-muted)]")">
                 @Tags.Count / @MaxTags
             </span>
         }
@@ -121,44 +120,39 @@
 
 @code {
     private string _inputValue = "";
-    
+
     /// <summary>List of tags</summary>
-    [Parameter] public List<string> Tags 
-    { 
-        get => Value ?? new List<string>(); 
+    [Parameter]
+    public List<string> Tags
+    {
+        get => Value ?? new List<string>();
         set => Value = value;
     }
-    
-    [Parameter] public EventCallback<List<string>> TagsChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<List<string>> TagsChanged { get; set; }
 
     /// <summary>Maximum number of tags</summary>
-    [Parameter] public int? MaxTags { get; set; }
-    
+    [Parameter]
+    public int? MaxTags { get; set; }
+
     /// <summary>Allow duplicate tags</summary>
-    [Parameter] public bool AllowDuplicates { get; set; }
-    
+    [Parameter]
+    public bool AllowDuplicates { get; set; }
+
     /// <summary>Keys that trigger tag addition</summary>
-    [Parameter] public string[] TriggerKeys { get; set; } = new[] { "Enter", "Tab", "," };
+    [Parameter]
+    public string[] TriggerKeys { get; set; } = new[] { "Enter", "Tab", "," };
 
-    [Parameter] public EventCallback<string> OnTagAdded { get; set; }
-    [Parameter] public EventCallback<string> OnTagRemoved { get; set; }
+    [Parameter]
+    public EventCallback<string> OnTagAdded { get; set; }
 
-    
+    [Parameter]
+    public EventCallback<string> OnTagRemoved { get; set; }
 
-    
-
-
-
-
-
-    #region Lifecycle
-    
-
-    
-    #endregion
 
     #region Event Handlers
-    
+
     protected override async Task HandleKeyDown(KeyboardEventArgs e)
     {
         await base.HandleKeyDown(e);
@@ -177,15 +171,15 @@
         if (string.IsNullOrWhiteSpace(tag)) return;
         if (!AllowDuplicates && Tags.Contains(tag)) return;
         if (MaxTags.HasValue && Tags.Count >= MaxTags) return;
-        
+
         Tags.Add(tag);
         _inputValue = "";
-        
+
         await TagsChanged.InvokeAsync(Tags);
         await ValueChanged.InvokeAsync(Tags);
         await OnTagAdded.InvokeAsync(tag);
         await OnChange.InvokeAsync(Tags);
-        
+
         if (CascadedEditContext != null && For != null)
         {
             CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
@@ -202,8 +196,8 @@
             await OnChange.InvokeAsync(Tags);
         }
     }
-    
+
     #endregion
-    
+
 
 }

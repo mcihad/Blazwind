@@ -26,6 +26,7 @@ Finansal grafiklerdeki gibi sürüklenebilir aralık seçimi bileşeni. Görsel 
 ```
 
 ### Başlangıç Değerleri ile
+
 ```razor
 <BwRangeBrush Start="10" 
               End="90" 
@@ -35,6 +36,7 @@ Finansal grafiklerdeki gibi sürüklenebilir aralık seçimi bileşeni. Görsel 
 ```
 
 ### ChildContent ile Özelleştirilmiş
+
 ```razor
 <BwRangeBrush Start="0" End="100" OnBrushChanged="OnBrushChanged">
     <div class="h-16 bg-gradient-to-r from-blue-200 to-blue-400 rounded"></div>
@@ -46,24 +48,24 @@ Finansal grafiklerdeki gibi sürüklenebilir aralık seçimi bileşeni. Görsel 
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `StartPercent` | `double` | `0` | Başlangıç yüzdesi (0-100, Two-way binding). |
-| `EndPercent` | `double` | `100` | Bitiş yüzdesi (0-100, Two-way binding). |
-| `Start` | `double` | `0` | Minimum ham değer. |
-| `End` | `double` | `100` | Maksimum ham değer. |
-| `Color` | `BwColor` | `Primary` | Vurgu rengi. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `MinWidthPercent` | `double` | `5` | Seçili alanın minimum genişliği (%). |
-| `ChildContent` | `RenderFragment` | `null` | Fırçalanacak görsel içerik (grafik vb.). |
+| Parametre         | Tip              | Varsayılan | Açıklama                                    |
+|:------------------|:-----------------|:-----------|:--------------------------------------------|
+| `StartPercent`    | `double`         | `0`        | Başlangıç yüzdesi (0-100, Two-way binding). |
+| `EndPercent`      | `double`         | `100`      | Bitiş yüzdesi (0-100, Two-way binding).     |
+| `Start`           | `double`         | `0`        | Minimum ham değer.                          |
+| `End`             | `double`         | `100`      | Maksimum ham değer.                         |
+| `Color`           | `BwColor`        | `Primary`  | Vurgu rengi.                                |
+| `Label`           | `string`         | `null`     | Alan etiketi.                               |
+| `MinWidthPercent` | `double`         | `5`        | Seçili alanın minimum genişliği (%).        |
+| `ChildContent`    | `RenderFragment` | `null`     | Fırçalanacak görsel içerik (grafik vb.).    |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
-| `StartPercentChanged` | `double` | Başlangıç yüzdesi değiştiğinde tetiklenir. |
-| `EndPercentChanged` | `double` | Bitiş yüzdesi değiştiğinde tetiklenir. |
-| `OnBrushChanged` | `BrushChangedEventArgs` | Fırça alanı her değiştiğinde tetiklenir. |
+| Olay                  | Paylaşım (Payload)      | Açıklama                                   |
+|:----------------------|:------------------------|:-------------------------------------------|
+| `StartPercentChanged` | `double`                | Başlangıç yüzdesi değiştiğinde tetiklenir. |
+| `EndPercentChanged`   | `double`                | Bitiş yüzdesi değiştiğinde tetiklenir.     |
+| `OnBrushChanged`      | `BrushChangedEventArgs` | Fırça alanı her değiştiğinde tetiklenir.   |
 
 ## Yardımcı Sınıflar
 
@@ -76,10 +78,12 @@ public class BrushChangedEventArgs : EventArgs
 ```
 
 ## Klavye Kısayolları
-| Tuş | Açıklama |
-| :--- | :--- |
-| `←` | Sol handle'ı sola kaydır |
-| `→` | Sağ handle'ı sağa kaydır |
-| `Shift + ←` | Tüm aralığı sola kaydır |
-| `Shift + →` | Tüm aralığı sağa kaydır |
+
+| Tuş         | Açıklama                 |
+|:------------|:-------------------------|
+| `←`         | Sol handle'ı sola kaydır |
+| `→`         | Sağ handle'ı sağa kaydır |
+| `Shift + ←` | Tüm aralığı sola kaydır  |
+| `Shift + →` | Tüm aralığı sağa kaydır  |
+
 ```

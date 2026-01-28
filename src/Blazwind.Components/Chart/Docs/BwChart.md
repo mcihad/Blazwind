@@ -1,6 +1,7 @@
 # BwChart
 
-A powerful data visualization component that integrates **Apache ECharts** into Blazor. It supports a wide range of chart types, from simple line and bar charts to complex radar, gauge, and calendar visualizations.
+A powerful data visualization component that integrates **Apache ECharts** into Blazor. It supports a wide range of
+chart types, from simple line and bar charts to complex radar, gauge, and calendar visualizations.
 
 ## Features
 
@@ -14,6 +15,7 @@ A powerful data visualization component that integrates **Apache ECharts** into 
 ## Usage
 
 ### Simple Configuration (Typed)
+
 Use the `ChartOptions` class for a structured, type-safe API for common chart types.
 
 ```razor
@@ -35,7 +37,9 @@ Use the `ChartOptions` class for a structured, type-safe API for common chart ty
 ```
 
 ### Advanced Configuration (Anonymous Object)
-For complex ECharts features not yet covered by `ChartOptions`, use an anonymous `object`. This provides 100% access to the ECharts API.
+
+For complex ECharts features not yet covered by `ChartOptions`, use an anonymous `object`. This provides 100% access to
+the ECharts API.
 
 ```razor
 <BwChart Options="_gaugeOptions" Height="300px" />
@@ -55,30 +59,30 @@ For complex ECharts features not yet covered by `ChartOptions`, use an anonymous
 
 ## Supported Chart Types
 
-| Type | Description |
-|------|-------------|
-| **Line** | Perfect for time series and trend analysis. Supports smooth, step, and stacked lines. |
-| **Bar** | Ideal for categorical comparisons. Supports horizontal, grouped, stacked, and waterfall bars. |
-| **Pie** | Visualizes proportional distributions. Supports Donut, Nightingale Rose, and Nested charts. |
-| **Radar** | Excellent for multi-dimensional comparisons (e.g., personnel skills). |
-| **Gauge** | Best for KPIs and performance metrics resembling speedometers or status bars. |
-| **Mixed** | Combine multiple types (e.g., Line + Bar) on the same axes. |
-| **Heatmap** | visualize density or activity, including GitHub-style **Calendar Heatmaps**. |
+| Type        | Description                                                                                   |
+|-------------|-----------------------------------------------------------------------------------------------|
+| **Line**    | Perfect for time series and trend analysis. Supports smooth, step, and stacked lines.         |
+| **Bar**     | Ideal for categorical comparisons. Supports horizontal, grouped, stacked, and waterfall bars. |
+| **Pie**     | Visualizes proportional distributions. Supports Donut, Nightingale Rose, and Nested charts.   |
+| **Radar**   | Excellent for multi-dimensional comparisons (e.g., personnel skills).                         |
+| **Gauge**   | Best for KPIs and performance metrics resembling speedometers or status bars.                 |
+| **Mixed**   | Combine multiple types (e.g., Line + Bar) on the same axes.                                   |
+| **Heatmap** | visualize density or activity, including GitHub-style **Calendar Heatmaps**.                  |
 
 ## API Reference
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Options` | `object?` | `null` | The configuration object (ECharts format). |
-| `Width` | `string` | `"100%"` | Container width (e.g., "600px"). |
-| `Height` | `string` | `"400px"` | Container height. |
-| `Theme` | `ChartTheme` | `Default` | Visual theme (`Default`, `Dark`, etc.). |
-| `ShowLoading` | `bool` | `false` | Whether to show a loading indicator initially. |
-| `OnClick` | `EventCallback<ChartClickEventArgs>` | `null` | Fired when a chart element is clicked. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
-| `Style` | `string?` | `null` | Inline CSS styles. |
+| Parameter     | Type                                 | Default   | Description                                    |
+|---------------|--------------------------------------|-----------|------------------------------------------------|
+| `Options`     | `object?`                            | `null`    | The configuration object (ECharts format).     |
+| `Width`       | `string`                             | `"100%"`  | Container width (e.g., "600px").               |
+| `Height`      | `string`                             | `"400px"` | Container height.                              |
+| `Theme`       | `ChartTheme`                         | `Default` | Visual theme (`Default`, `Dark`, etc.).        |
+| `ShowLoading` | `bool`                               | `false`   | Whether to show a loading indicator initially. |
+| `OnClick`     | `EventCallback<ChartClickEventArgs>` | `null`    | Fired when a chart element is clicked.         |
+| `Class`       | `string?`                            | `null`    | Additional CSS classes.                        |
+| `Style`       | `string?`                            | `null`    | Inline CSS styles.                             |
 
 ### Public Methods
 

@@ -5,6 +5,7 @@ A BPMN-style workflow visualization component with interactive pan/zoom, custom 
 ## Examples
 
 ### Basic Usage
+
 ```razor
 <BwWorkflow Nodes="_nodes" Edges="_edges" Height="300px" />
 
@@ -25,6 +26,7 @@ A BPMN-style workflow visualization component with interactive pan/zoom, custom 
 ```
 
 ### Zoom & Fit to Screen
+
 By default, the workflow will fit to the screen on load. You can disable this or control it programmatically.
 
 ```razor
@@ -35,20 +37,20 @@ By default, the workflow will fit to the screen on load. You can disable this or
 
 ## API
 
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `Nodes` | `List<WorkflowNode>` | `[]` | Workflow nodes |
-| `Edges` | `List<WorkflowEdge>` | `[]` | Connections between nodes |
-| `Height` | `string` | `400px` | Container height |
-| `NodeWidth` | `int` | `180` | Node width |
-| `NodeHeight` | `int` | `70` | Node height |
-| `HorizontalSpacing` | `int` | `100` | Horizontal gap |
-| `VerticalSpacing` | `int` | `80` | Vertical gap |
-| `Direction` | `WorkflowDirection` | `Horizontal` | Flow direction |
-| `ShowLabels` | `bool` | `true` | Show connection labels |
-| `Interactive` | `bool` | `true` | Make nodes clickable |
-| `FitToScreen` | `bool` | `true` | Auto-fit diagram on load |
-| `OnNodeClick` | `EventCallback<WorkflowNode>` | - | Node click event |
+| Parameter           | Type                          | Default      | Description               |
+|---------------------|-------------------------------|--------------|---------------------------|
+| `Nodes`             | `List<WorkflowNode>`          | `[]`         | Workflow nodes            |
+| `Edges`             | `List<WorkflowEdge>`          | `[]`         | Connections between nodes |
+| `Height`            | `string`                      | `400px`      | Container height          |
+| `NodeWidth`         | `int`                         | `180`        | Node width                |
+| `NodeHeight`        | `int`                         | `70`         | Node height               |
+| `HorizontalSpacing` | `int`                         | `100`        | Horizontal gap            |
+| `VerticalSpacing`   | `int`                         | `80`         | Vertical gap              |
+| `Direction`         | `WorkflowDirection`           | `Horizontal` | Flow direction            |
+| `ShowLabels`        | `bool`                        | `true`       | Show connection labels    |
+| `Interactive`       | `bool`                        | `true`       | Make nodes clickable      |
+| `FitToScreen`       | `bool`                        | `true`       | Auto-fit diagram on load  |
+| `OnNodeClick`       | `EventCallback<WorkflowNode>` | -            | Node click event          |
 
 ## Node Types
 
@@ -61,13 +63,13 @@ By default, the workflow will fit to the screen on load. You can disable this or
 
 ## Status Colors (Glassmorphism)
 
-| Status | Details |
-|---|---|
-| `Pending` | Neutral gray, ghost style |
-| `Active` | Blue gradient, glowing effect, animated edge |
-| `Completed` | Green gradient, success style |
-| `Error` | Red gradient, error style |
-| `Skipped` | Light gray, dimmed |
+| Status      | Details                                      |
+|-------------|----------------------------------------------|
+| `Pending`   | Neutral gray, ghost style                    |
+| `Active`    | Blue gradient, glowing effect, animated edge |
+| `Completed` | Green gradient, success style                |
+| `Error`     | Red gradient, error style                    |
+| `Skipped`   | Light gray, dimmed                           |
 
 ## Factory Methods
 
@@ -96,20 +98,20 @@ WorkflowEdge.Create("from", "to", "Yes")
 
 ## Methods
 
-| Method | Signature | Description |
-|---|---|---|
-| `UpdateNodeStatusAsync` | `Task UpdateNodeStatusAsync(string nodeId, WorkflowNodeStatus status)` | Updates the status of a node |
-| `ZoomInAsync` | `Task ZoomInAsync()` | Zooms in |
-| `ZoomOutAsync` | `Task ZoomOutAsync()` | Zooms out |
-| `FitToScreenAsync` | `Task FitToScreenAsync()` | Fits diagram to container |
-| `ExportPngAsync` | `Task ExportPngAsync()` | Exports workflow as PNG image |
-| `ToggleFullscreenAsync` | `Task ToggleFullscreenAsync()` | Toggles fullscreen mode |
+| Method                  | Signature                                                              | Description                   |
+|-------------------------|------------------------------------------------------------------------|-------------------------------|
+| `UpdateNodeStatusAsync` | `Task UpdateNodeStatusAsync(string nodeId, WorkflowNodeStatus status)` | Updates the status of a node  |
+| `ZoomInAsync`           | `Task ZoomInAsync()`                                                   | Zooms in                      |
+| `ZoomOutAsync`          | `Task ZoomOutAsync()`                                                  | Zooms out                     |
+| `FitToScreenAsync`      | `Task FitToScreenAsync()`                                              | Fits diagram to container     |
+| `ExportPngAsync`        | `Task ExportPngAsync()`                                                | Exports workflow as PNG image |
+| `ToggleFullscreenAsync` | `Task ToggleFullscreenAsync()`                                         | Toggles fullscreen mode       |
 
 ## Events
 
-| Event | Type | Description |
-|---|---|---|
-| `OnNodeClick` | `EventCallback<NodeClickedEventArgs>` | Fired when a node is clicked |
+| Event           | Type                                  | Description                   |
+|-----------------|---------------------------------------|-------------------------------|
+| `OnNodeClick`   | `EventCallback<NodeClickedEventArgs>` | Fired when a node is clicked  |
 | `OnNodeDragEnd` | `EventCallback<NodeDragEndEventArgs>` | Fired after a node is dragged |
 
 ## Node Types (Interfaces)

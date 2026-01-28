@@ -1,4 +1,3 @@
-@using Blazwind.Components.Shared
 @namespace Blazwind.Components.Result
 @inherits BwBase
 
@@ -14,7 +13,7 @@
         BwResultStatus.Forbidden403 => "bw-result-forbidden",
         _ => "bw-result-info"
     };
-    
+
     var containerClass = CombineClasses("bw-result", statusClass);
 }
 
@@ -22,9 +21,9 @@
     @* Icon *@
     @if (Icon != null)
     {
-         <div class="bw-result-icon">
-             @Icon
-         </div>
+        <div class="bw-result-icon">
+            @Icon
+        </div>
     }
     else
     {
@@ -39,7 +38,7 @@
             BwResultStatus.Forbidden403 => "fa-shield-halved",
             _ => "fa-circle-info"
         };
-        
+
         <div class="bw-result-icon">
             <i class="fa-solid @iconName"></i>
         </div>
@@ -51,19 +50,19 @@
         {
             <h3 class="bw-result-title">@Title</h3>
         }
-        
+
         @if (!string.IsNullOrEmpty(Subtitle))
         {
             <p class="bw-result-subtitle">@Subtitle</p>
         }
-        
+
         @if (Extra != null)
         {
             <div class="bw-result-extra">
                 @Extra
             </div>
         }
-        
+
         @if (ChildContent != null)
         {
             <div class="bw-result-content">
@@ -74,12 +73,24 @@
 </div>
 
 @code {
-    [Parameter] public BwResultStatus Status { get; set; } = BwResultStatus.Info;
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public RenderFragment? Icon { get; set; }
-    [Parameter] public RenderFragment? Extra { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwResultStatus Status { get; set; } = BwResultStatus.Info;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? Icon { get; set; }
+
+    [Parameter]
+    public RenderFragment? Extra { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
     // Removed Class parameter (inherited)
 
     public enum BwResultStatus
@@ -92,4 +103,5 @@
         Forbidden403,
         InternalError500
     }
+
 }

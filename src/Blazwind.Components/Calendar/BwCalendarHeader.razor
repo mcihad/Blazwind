@@ -1,13 +1,13 @@
-@namespace Blazwind.Components.Calendar
+@using System.Globalization
 @using Blazwind.Components.Shared
-@using Blazwind.Components.Button
+@namespace Blazwind.Components.Calendar
 
 @{
     var headerTitle = View switch
     {
-        BwCalendarView.Daily => SelectedDate.ToString("d MMMM yyyy, dddd", new System.Globalization.CultureInfo("tr-TR")),
+        BwCalendarView.Daily => SelectedDate.ToString("d MMMM yyyy, dddd", new CultureInfo("tr-TR")),
         BwCalendarView.Weekly => $"{WeekStart:d MMM} - {WeekEnd:d MMM yyyy}",
-        BwCalendarView.Monthly => SelectedDate.ToString("MMMM yyyy", new System.Globalization.CultureInfo("tr-TR")),
+        BwCalendarView.Monthly => SelectedDate.ToString("MMMM yyyy", new CultureInfo("tr-TR")),
         BwCalendarView.Agenda => "Ajanda",
         _ => ""
     };
@@ -17,32 +17,32 @@
     @* Left - Navigation and Title *@
     <div class="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
         @* Today Button *@
-        <button type="button" 
+        <button type="button"
                 class="bw-calendar-btn"
                 @onclick="OnToday">
             Bugün
         </button>
-        
+
         @* Navigation Buttons *@
         <div class="bw-calendar-nav-group">
-            <button type="button" 
+            <button type="button"
                     class="bw-calendar-nav-btn"
                     @onclick="PreviousPeriod">
                 <i class="fa-solid fa-chevron-left text-sm"></i>
             </button>
-            <button type="button" 
+            <button type="button"
                     class="bw-calendar-nav-btn bw-calendar-nav-btn-divider"
                     @onclick="NextPeriod">
                 <i class="fa-solid fa-chevron-right text-sm"></i>
             </button>
         </div>
-        
+
         @* Title *@
         <h2 class="bw-calendar-title">
             @headerTitle
         </h2>
     </div>
-    
+
     @* Right - View Selector & Fullscreen *@
     <div class="flex items-center gap-2 w-full sm:w-auto">
         @* View Selector *@
@@ -50,18 +50,18 @@
             @foreach (var view in Enum.GetValues<BwCalendarView>())
             {
                 var isActive = view == View;
-                var btnClass = isActive 
-                    ? "bw-calendar-view-btn bw-calendar-view-btn-active" 
+                var btnClass = isActive
+                    ? "bw-calendar-view-btn bw-calendar-view-btn-active"
                     : "bw-calendar-view-btn";
-                
-                <button type="button" 
+
+                <button type="button"
                         class="@btnClass"
                         @onclick="() => ChangeView(view)">
                     @GetViewName(view)
                 </button>
             }
         </div>
-        
+
         @* Fullscreen Button *@
         @if (ShowFullscreenButton)
         {
@@ -76,27 +76,46 @@
 </div>
 
 @code {
-    [Parameter] public DateTime SelectedDate { get; set; }
-    [Parameter] public BwCalendarView View { get; set; }
-    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
-    [Parameter] public bool ShowFullscreenButton { get; set; } = true;
-    [Parameter] public EventCallback<DateTime> OnDateChanged { get; set; }
-    [Parameter] public EventCallback<BwCalendarView> OnViewChanged { get; set; }
-    [Parameter] public EventCallback OnToday { get; set; }
-    [Parameter] public EventCallback OnFullscreenToggle { get; set; }
-    
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+
+    [Parameter]
+    public BwCalendarView View { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarInfo>? Calendars { get; set; }
+
+    [Parameter]
+    public bool ShowFullscreenButton { get; set; } = true;
+
+    [Parameter]
+    public EventCallback<DateTime> OnDateChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<BwCalendarView> OnViewChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnToday { get; set; }
+
+    [Parameter]
+    public EventCallback OnFullscreenToggle { get; set; }
+
     private DateTime WeekStart => SelectedDate.AddDays(-(((int)SelectedDate.DayOfWeek + 6) % 7));
     private DateTime WeekEnd => WeekStart.AddDays(6);
-    
-    private string GetViewName(BwCalendarView view) => view switch
+
+    private string GetViewName(BwCalendarView view)
     {
-        BwCalendarView.Agenda => "Ajanda",
-        BwCalendarView.Daily => "Gün",
-        BwCalendarView.Weekly => "Hafta",
-        BwCalendarView.Monthly => "Ay",
-        _ => ""
-    };
-    
+        return view switch
+        {
+            BwCalendarView.Agenda => "Ajanda",
+            BwCalendarView.Daily => "Gün",
+            BwCalendarView.Weekly => "Hafta",
+            BwCalendarView.Monthly => "Ay",
+            _ => ""
+        };
+    }
+
     private async Task PreviousPeriod()
     {
         var newDate = View switch
@@ -109,7 +128,7 @@
         };
         await OnDateChanged.InvokeAsync(newDate);
     }
-    
+
     private async Task NextPeriod()
     {
         var newDate = View switch
@@ -122,9 +141,10 @@
         };
         await OnDateChanged.InvokeAsync(newDate);
     }
-    
+
     private async Task ChangeView(BwCalendarView newView)
     {
         await OnViewChanged.InvokeAsync(newView);
     }
+
 }

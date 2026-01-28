@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Help text display mode for input components
+///     Help text display mode for input components
 /// </summary>
 public enum BwHelpTextMode
 {

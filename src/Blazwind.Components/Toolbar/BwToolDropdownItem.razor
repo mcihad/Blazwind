@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Toolbar
-@using Blazwind.Components.Shared
 @inherits BwBase
 
 @if (!string.IsNullOrEmpty(Href))
@@ -10,18 +9,31 @@
 }
 else
 {
-    <button type="button" class="@CombineClasses(AllClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes" disabled="@Disabled" @onclick="HandleClick">
+    <button type="button" class="@CombineClasses(AllClasses)" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+            disabled="@Disabled" @onclick="HandleClick">
         @RenderContent
     </button>
 }
 
 @code {
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Href { get; set; }
-    [Parameter] public bool Disabled { get; set; }
-    [Parameter] public bool IsActive { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public bool IsActive { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
 
     private string AllClasses => $"bw-tool-dropdown-item {(IsActive ? "active" : "")}";
 
@@ -31,6 +43,7 @@ else
         {
             <i class="@Icon"></i>
         }
+
         <span class="font-medium">@Label</span>
     };
 
@@ -41,4 +54,5 @@ else
             await OnClick.InvokeAsync();
         }
     }
+
 }

@@ -1,10 +1,12 @@
 # Popover
 
-A rich version of a Tooltip that can contain HTML content, headers, and footers. Ideal for displaying detailed information or small interactive forms on demand.
+A rich version of a Tooltip that can contain HTML content, headers, and footers. Ideal for displaying detailed
+information or small interactive forms on demand.
 
 ## Examples
 
 ### Basic Usage
+
 ```razor
 <BwPopover Title="Information" Content="This is a simple popover with a title and text content.">
     <BwButton Variant="BwVariant.Outline" Text="Click Me" />
@@ -12,6 +14,7 @@ A rich version of a Tooltip that can contain HTML content, headers, and footers.
 ```
 
 ### Rich Content
+
 Using slots for complex layouts.
 
 ```razor
@@ -41,31 +44,31 @@ Using slots for complex layouts.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Title` | `string?` | `null` | Primary header text. |
-| `Content` | `string?` | `null` | Plain text content for the body. |
+| Parameter   | Type          | Default  | Description                                                      |
+|:------------|:--------------|:---------|:-----------------------------------------------------------------|
+| `Title`     | `string?`     | `null`   | Primary header text.                                             |
+| `Content`   | `string?`     | `null`   | Plain text content for the body.                                 |
 | `Placement` | `BwPlacement` | `Bottom` | Position relative to trigger (`Top`, `Bottom`, `Left`, `Right`). |
-| `Trigger` | `BwTrigger` | `Click` | Interaction that opens the popover (`Click`, `Hover`, `Focus`). |
-| `ShowArrow` | `bool` | `true` | Show a pointer arrow directed at the trigger. |
-| `Closable` | `bool` | `false` | Show a close (X) button in the header. |
-| `IsOpen` | `bool` | `false` | Bound state of the popover (Two-way). |
-| `Class` | `string?` | `null` | Additional CSS class for the wrapper. |
+| `Trigger`   | `BwTrigger`   | `Click`  | Interaction that opens the popover (`Click`, `Hover`, `Focus`).  |
+| `ShowArrow` | `bool`        | `true`   | Show a pointer arrow directed at the trigger.                    |
+| `Closable`  | `bool`        | `false`  | Show a close (X) button in the header.                           |
+| `IsOpen`    | `bool`        | `false`  | Bound state of the popover (Two-way).                            |
+| `Class`     | `string?`     | `null`   | Additional CSS class for the wrapper.                            |
 
 ### Render Fragments (Slots)
 
-| Slot | Description |
-| :--- | :--- |
-| `ChildContent` | The trigger element (e.g., a button or link). |
-| `HeaderContent`| Custom content for the header area (Overrides `Title`). |
-| `BodyContent` | Custom content for the body area (Overrides `Content`). |
-| `FooterContent`| Content area at the bottom of the popover. |
+| Slot            | Description                                             |
+|:----------------|:--------------------------------------------------------|
+| `ChildContent`  | The trigger element (e.g., a button or link).           |
+| `HeaderContent` | Custom content for the header area (Overrides `Title`). |
+| `BodyContent`   | Custom content for the body area (Overrides `Content`). |
+| `FooterContent` | Content area at the bottom of the popover.              |
 
 ### Events
 
-| Event | Argument Type | Description |
-| :--- | :--- | :--- |
-| `IsOpenChanged` | `bool` | Fired when the popover opens or closes. |
+| Event           | Argument Type | Description                             |
+|:----------------|:--------------|:----------------------------------------|
+| `IsOpenChanged` | `bool`        | Fired when the popover opens or closes. |
 
 ## Features
 

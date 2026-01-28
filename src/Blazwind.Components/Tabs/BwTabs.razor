@@ -1,10 +1,10 @@
 @namespace Blazwind.Components.Tabs
+@implements IAsyncDisposable
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
-@implements IAsyncDisposable
 @inherits BwBase
 
-@inject Blazwind.Components.Services.DialogService DialogService
+@inject DialogService DialogService
 @inject IJSRuntime JS
 
 <CascadingValue Value="this">
@@ -21,7 +21,7 @@
 
         var tabListClass = GetTabListClass();
         var contentClass = "bw-tab-content";
-        
+
         var showControls = !Vertical && Scrollable && ShowScrollControls;
     }
     <div class="@CombineClasses("bw-tabs", layoutClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -30,21 +30,21 @@
         {
             <div class="bw-tablists-container">
                 @* Left Button *@
-                <button type="button" 
+                <button type="button"
                         @ref="_prevBtnRef"
                         class="bw-tabs-scroll-btn prev @(Variant == BwVariant.Outline || Variant == BwVariant.Ghost ? "on-surface" : "")">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
-                
+
                 @* Scroll Container *@
                 <div role="tablist" class="@tabListClass" @ref="_tabListRef">
                     @RenderTabItems()
                 </div>
-                
+
                 @* Right Button *@
-                <button type="button" 
+                <button type="button"
                         @ref="_nextBtnRef"
-                         class="bw-tabs-scroll-btn next @(Variant == BwVariant.Outline || Variant == BwVariant.Ghost ? "on-surface" : "")">
+                        class="bw-tabs-scroll-btn next @(Variant == BwVariant.Outline || Variant == BwVariant.Ghost ? "on-surface" : "")">
                     <i class="fa-solid fa-chevron-right text-xs"></i>
                 </button>
             </div>
@@ -55,7 +55,7 @@
                 @RenderTabItems()
             </div>
         }
-        
+
         @* Tab Content *@
         <div role="tabpanel" class="@contentClass">
             @ChildContent
@@ -64,21 +64,41 @@
 </CascadingValue>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Ghost;
-    [Parameter] public bool Vertical { get; set; } = false;
-    [Parameter] public int DefaultActiveIndex { get; set; } = 0;
-    [Parameter] public bool Justified { get; set; } = false;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Ghost;
+
+    [Parameter]
+    public bool Vertical { get; set; } = false;
+
+    [Parameter]
+    public int DefaultActiveIndex { get; set; } = 0;
+
+    [Parameter]
+    public bool Justified { get; set; } = false;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
     // Removed Class parameter (inherited)
-    [Parameter] public bool Scrollable { get; set; }
-    [Parameter] public bool ShowScrollControls { get; set; }
-    [Parameter] public int? MaxTabs { get; set; }
-    [Parameter] public EventCallback<int> ActiveIndexChanged { get; set; }
+    [Parameter]
+    public bool Scrollable { get; set; }
+
+    [Parameter]
+    public bool ShowScrollControls { get; set; }
+
+    [Parameter]
+    public int? MaxTabs { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ActiveIndexChanged { get; set; }
 
     private List<BwTabItem> _tabs = new();
     private int _activeIndex = 0;
-    
+
     private ElementReference _tabListRef;
     private ElementReference _prevBtnRef;
     private ElementReference _nextBtnRef;
@@ -87,7 +107,7 @@
     {
         _activeIndex = DefaultActiveIndex;
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && !Vertical && Scrollable && ShowScrollControls)
@@ -96,7 +116,9 @@
             {
                 await JS.InvokeVoidAsync("Blazwind.Tabs.init", _tabListRef, _prevBtnRef, _nextBtnRef);
             }
-            catch (JSDisconnectedException) { }
+            catch (JSDisconnectedException)
+            {
+            }
         }
     }
 
@@ -111,11 +133,12 @@
     {
         var index = _tabs.IndexOf(tab);
         _tabs.Remove(tab);
-        
+
         if (_activeIndex >= _tabs.Count && _tabs.Count > 0)
         {
             _activeIndex = _tabs.Count - 1;
         }
+
         StateHasChanged();
     }
 
@@ -125,7 +148,7 @@
     {
         if (index < 0 || index >= _tabs.Count) return;
         if (_tabs[index].IsDisabled) return;
-        
+
         _activeIndex = index;
         ActiveIndexChanged.InvokeAsync(index);
         StateHasChanged();
@@ -150,7 +173,7 @@
             SetActiveTab(_tabs.IndexOf(tab));
         }
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         if (!Vertical && Scrollable && ShowScrollControls)
@@ -159,7 +182,9 @@
             {
                 await JS.InvokeVoidAsync("Blazwind.Tabs.dispose", _tabListRef);
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
         }
     }
 
@@ -168,14 +193,15 @@
         var baseClass = "bw-tablist";
         var orientationClass = Vertical ? "vertical" : "horizontal";
 
-        var variantClass = Variant switch {
+        var variantClass = Variant switch
+        {
             BwVariant.Ghost => "variant-ghost",
             BwVariant.Outline => "variant-outline",
             BwVariant.Soft => "variant-soft",
             BwVariant.Filled => "variant-filled",
             _ => "variant-ghost"
         };
-        
+
         var scrollClass = Scrollable ? "scrollable" : "";
 
         return CombineClasses(baseClass, orientationClass, variantClass, scrollClass);
@@ -187,27 +213,28 @@
         var activeClass = isActive ? "active" : "";
         var verticalClass = Vertical ? "vertical" : "";
         var justifiedClass = Justified && !Vertical ? "justified" : "";
-        
-        var variantClass = Variant switch {
-             BwVariant.Ghost => "variant-ghost",
-             BwVariant.Outline => "variant-outline",
-             BwVariant.Soft => "variant-soft",
-             BwVariant.Filled => "variant-filled",
-             _ => "variant-ghost"
-         };
+
+        var variantClass = Variant switch
+        {
+            BwVariant.Ghost => "variant-ghost",
+            BwVariant.Outline => "variant-outline",
+            BwVariant.Soft => "variant-soft",
+            BwVariant.Filled => "variant-filled",
+            _ => "variant-ghost"
+        };
 
         return CombineClasses("bw-tab", sizeClass, activeClass, variantClass, verticalClass, justifiedClass);
     }
-    
+
     private RenderFragment RenderTabItems() => __builder =>
     {
-        for (int i = 0; i < _tabs.Count; i++)
+        for (var i = 0; i < _tabs.Count; i++)
         {
             var tab = _tabs[i];
             var index = i;
             var isActive = _activeIndex == index;
             var tabClass = GetTabClass(isActive, tab.IsDisabled);
-            
+
             <button type="button"
                     role="tab"
                     aria-selected="@isActive"
@@ -241,4 +268,5 @@
             </button>
         }
     };
+
 }

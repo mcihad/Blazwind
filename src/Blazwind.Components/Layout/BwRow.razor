@@ -1,70 +1,100 @@
 @namespace Blazwind.Components.Layout
+@using System.Text
 @using Blazwind.Components.Shared
 @inherits BwBase
 
-<div class="@CombineClasses(LayoutClass, JustifyClass, AlignClass, GapClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses(LayoutClass, JustifyClass, AlignClass, GapClass)" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
+
     // Helper returns explicit Tailwind class names (listed literals so Tailwind's scanner finds them)
     private static string GetGapClasses(int? gx, int? gy)
     {
-        string MapX(int? v) => v switch
+        string MapX(int? v)
         {
-            0 => "gap-x-0",
-            1 => "gap-x-1",
-            2 => "gap-x-2",
-            3 => "gap-x-3",
-            4 => "gap-x-4",
-            5 => "gap-x-5",
-            6 => "gap-x-6",
-            7 => "gap-x-7",
-            8 => "gap-x-8",
-            9 => "gap-x-9",
-            10 => "gap-x-10",
-            11 => "gap-x-11",
-            12 => "gap-x-12",
-            _ => ""
-        };
+            return v switch
+            {
+                0 => "gap-x-0",
+                1 => "gap-x-1",
+                2 => "gap-x-2",
+                3 => "gap-x-3",
+                4 => "gap-x-4",
+                5 => "gap-x-5",
+                6 => "gap-x-6",
+                7 => "gap-x-7",
+                8 => "gap-x-8",
+                9 => "gap-x-9",
+                10 => "gap-x-10",
+                11 => "gap-x-11",
+                12 => "gap-x-12",
+                _ => ""
+            };
+        }
 
-        string MapY(int? v) => v switch
+        string MapY(int? v)
         {
-            0 => "gap-y-0",
-            1 => "gap-y-1",
-            2 => "gap-y-2",
-            3 => "gap-y-3",
-            4 => "gap-y-4",
-            5 => "gap-y-5",
-            6 => "gap-y-6",
-            7 => "gap-y-7",
-            8 => "gap-y-8",
-            9 => "gap-y-9",
-            10 => "gap-y-10",
-            11 => "gap-y-11",
-            12 => "gap-y-12",
-            _ => ""
-        };
+            return v switch
+            {
+                0 => "gap-y-0",
+                1 => "gap-y-1",
+                2 => "gap-y-2",
+                3 => "gap-y-3",
+                4 => "gap-y-4",
+                5 => "gap-y-5",
+                6 => "gap-y-6",
+                7 => "gap-y-7",
+                8 => "gap-y-8",
+                9 => "gap-y-9",
+                10 => "gap-y-10",
+                11 => "gap-y-11",
+                12 => "gap-y-12",
+                _ => ""
+            };
+        }
 
         var xs = MapX(gx);
         var ys = MapY(gy);
         return string.Join(" ", new[] { xs, ys }.Where(s => !string.IsNullOrWhiteSpace(s)));
     }
 
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
-    [Parameter] public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
-    [Parameter] public BwSpacing Spacing { get; set; } = BwSpacing.Md;
-    [Parameter] public bool Wrap { get; set; } = true; // CHANGED DEFAULT TO TRUE for Grid behavior
-    
-    [Parameter] public int? GutterX { get; set; }
-    [Parameter] public int? GutterY { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public int? Cols { get; set; }
-    [Parameter] public int? SmCols { get; set; }
-    [Parameter] public int? MdCols { get; set; }
-    [Parameter] public int? LgCols { get; set; }
-    [Parameter] public int? XlCols { get; set; }
+    [Parameter]
+    public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
+
+    [Parameter]
+    public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
+
+    [Parameter]
+    public BwSpacing Spacing { get; set; } = BwSpacing.Md;
+
+    [Parameter]
+    public bool Wrap { get; set; } = true; // CHANGED DEFAULT TO TRUE for Grid behavior
+
+    [Parameter]
+    public int? GutterX { get; set; }
+
+    [Parameter]
+    public int? GutterY { get; set; }
+
+    [Parameter]
+    public int? Cols { get; set; }
+
+    [Parameter]
+    public int? SmCols { get; set; }
+
+    [Parameter]
+    public int? MdCols { get; set; }
+
+    [Parameter]
+    public int? LgCols { get; set; }
+
+    [Parameter]
+    public int? XlCols { get; set; }
 
     private bool IsGrid => Cols > 0 || SmCols > 0 || MdCols > 0 || LgCols > 0 || XlCols > 0;
 
@@ -97,6 +127,7 @@
             {
                 return GetGapClasses(GutterX, GutterY);
             }
+
             return Spacing switch
             {
                 BwSpacing.None => "",
@@ -119,6 +150,7 @@
             {
                 return GetGridClasses();
             }
+
             var wrapClass = Wrap ? "flex-wrap" : "flex-nowrap";
             return $"flex flex-row {wrapClass}";
         }
@@ -127,50 +159,66 @@
     private string GetGridClasses()
     {
         if (!IsGrid) return "";
-        var sb = new System.Text.StringBuilder();
+        var sb = new StringBuilder();
         sb.Append("grid");
-        
+
         if (Cols > 0) sb.Append(" " + GetBaseColClass(Cols.Value));
         if (SmCols > 0) sb.Append(" " + GetSmColClass(SmCols.Value));
         if (MdCols > 0) sb.Append(" " + GetMdColClass(MdCols.Value));
         if (LgCols > 0) sb.Append(" " + GetLgColClass(LgCols.Value));
         if (XlCols > 0) sb.Append(" " + GetXlColClass(XlCols.Value));
-        
+
         return sb.ToString();
     }
 
-    private string GetBaseColClass(int c) => c switch
+    private string GetBaseColClass(int c)
     {
-        1 => "grid-cols-1", 2 => "grid-cols-2", 3 => "grid-cols-3", 4 => "grid-cols-4",
-        5 => "grid-cols-5", 6 => "grid-cols-6", 7 => "grid-cols-7", 8 => "grid-cols-8",
-        _ => "grid-cols-1"
-    };
-
-    private string GetSmColClass(int c) => c switch
-    {
-        1 => "sm:grid-cols-1", 2 => "sm:grid-cols-2", 3 => "sm:grid-cols-3", 4 => "sm:grid-cols-4",
-        5 => "sm:grid-cols-5", 6 => "sm:grid-cols-6", 7 => "sm:grid-cols-7", 8 => "sm:grid-cols-8",
-        _ => "sm:grid-cols-1"
-    };
-
-    private string GetMdColClass(int c) => c switch
-    {
-        1 => "md:grid-cols-1", 2 => "md:grid-cols-2", 3 => "md:grid-cols-3", 4 => "md:grid-cols-4",
-        5 => "md:grid-cols-5", 6 => "md:grid-cols-6", 7 => "md:grid-cols-7", 8 => "md:grid-cols-8",
-        _ => "md:grid-cols-1"
-    };
-
-    private string GetLgColClass(int c) => c switch
-    {
-        1 => "lg:grid-cols-1", 2 => "lg:grid-cols-2", 3 => "lg:grid-cols-3", 4 => "lg:grid-cols-4",
-        5 => "lg:grid-cols-5", 6 => "lg:grid-cols-6", 7 => "lg:grid-cols-7", 8 => "lg:grid-cols-8",
-        _ => "lg:grid-cols-1"
-    };
-
-    private string GetXlColClass(int c) => c switch
-    {
-        1 => "xl:grid-cols-1", 2 => "xl:grid-cols-2", 3 => "xl:grid-cols-3", 4 => "xl:grid-cols-4",
-        5 => "xl:grid-cols-5", 6 => "xl:grid-cols-6", 7 => "xl:grid-cols-7", 8 => "xl:grid-cols-8",
-        _ => "xl:grid-cols-1"
-    };
+        return c switch
+        {
+            1 => "grid-cols-1", 2 => "grid-cols-2", 3 => "grid-cols-3", 4 => "grid-cols-4",
+            5 => "grid-cols-5", 6 => "grid-cols-6", 7 => "grid-cols-7", 8 => "grid-cols-8",
+            _ => "grid-cols-1"
+        };
     }
+
+    private string GetSmColClass(int c)
+    {
+        return c switch
+        {
+            1 => "sm:grid-cols-1", 2 => "sm:grid-cols-2", 3 => "sm:grid-cols-3", 4 => "sm:grid-cols-4",
+            5 => "sm:grid-cols-5", 6 => "sm:grid-cols-6", 7 => "sm:grid-cols-7", 8 => "sm:grid-cols-8",
+            _ => "sm:grid-cols-1"
+        };
+    }
+
+    private string GetMdColClass(int c)
+    {
+        return c switch
+        {
+            1 => "md:grid-cols-1", 2 => "md:grid-cols-2", 3 => "md:grid-cols-3", 4 => "md:grid-cols-4",
+            5 => "md:grid-cols-5", 6 => "md:grid-cols-6", 7 => "md:grid-cols-7", 8 => "md:grid-cols-8",
+            _ => "md:grid-cols-1"
+        };
+    }
+
+    private string GetLgColClass(int c)
+    {
+        return c switch
+        {
+            1 => "lg:grid-cols-1", 2 => "lg:grid-cols-2", 3 => "lg:grid-cols-3", 4 => "lg:grid-cols-4",
+            5 => "lg:grid-cols-5", 6 => "lg:grid-cols-6", 7 => "lg:grid-cols-7", 8 => "lg:grid-cols-8",
+            _ => "lg:grid-cols-1"
+        };
+    }
+
+    private string GetXlColClass(int c)
+    {
+        return c switch
+        {
+            1 => "xl:grid-cols-1", 2 => "xl:grid-cols-2", 3 => "xl:grid-cols-3", 4 => "xl:grid-cols-4",
+            5 => "xl:grid-cols-5", 6 => "xl:grid-cols-6", 7 => "xl:grid-cols-7", 8 => "xl:grid-cols-8",
+            _ => "xl:grid-cols-1"
+        };
+    }
+
+}

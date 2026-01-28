@@ -1,26 +1,36 @@
 @namespace Blazwind.Components.QRCode
 @inherits BwBase
-@using Blazwind.Components.Shared
-@using Blazwind.Components
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 <div class="@CombineClasses("inline-block")" style="width: @(Size)px; height: @(Size)px; @Style" id="@_elementId"
-    @attributes="AdditionalAttributes">
+     @attributes="AdditionalAttributes">
     <div class="bw-qr-svg w-full h-full"></div>
 </div>
 
 @code {
-    [Parameter] public string Value { get; set; } = "";
-    [Parameter] public int Size { get; set; } = 200;
-    [Parameter] public string ForegroundColor { get; set; } = "#000000";
-    [Parameter] public string BackgroundColor { get; set; } = "#FFFFFF";
-    [Parameter] public int Margin { get; set; } = 2;
-    [Parameter] public string ErrorCorrectionLevel { get; set; } = "M"; // L, M, Q, H
+
+    [Parameter]
+    public string Value { get; set; } = "";
+
+    [Parameter]
+    public int Size { get; set; } = 200;
+
+    [Parameter]
+    public string ForegroundColor { get; set; } = "#000000";
+
+    [Parameter]
+    public string BackgroundColor { get; set; } = "#FFFFFF";
+
+    [Parameter]
+    public int Margin { get; set; } = 2;
+
+    [Parameter]
+    public string ErrorCorrectionLevel { get; set; } = "M"; // L, M, Q, H
 
     private string _lastValue = "";
-    private bool _firstRenderComplete = false;
+    private bool _firstRenderComplete;
     private string _elementId = "";
 
     protected override void OnInitialized()
@@ -85,4 +95,5 @@
     {
         // Cleanup if needed
     }
+
 }

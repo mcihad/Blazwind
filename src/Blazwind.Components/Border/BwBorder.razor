@@ -5,8 +5,9 @@
 <div class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (Label != null || !string.IsNullOrEmpty(Title))
     {
-        <div class="absolute -top-3 @TitlePositionClass bw-border-title-bg px-2 text-sm font-medium @TitleColorClass @TitleClass">
-            @(Label ?? (RenderFragment)(builder => builder.AddContent(0, Title)))
+        <div
+            class="absolute -top-3 @TitlePositionClass bw-border-title-bg px-2 text-sm font-medium @TitleColorClass @TitleClass">
+            @(Label ?? (builder => builder.AddContent(0, Title)))
         </div>
     }
     <div class="@PaddingClass">
@@ -15,23 +16,45 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public RenderFragment? Label { get; set; }
-    
-    [Parameter] public BwColor Color { get; set; } = BwColor.Light;
-    [Parameter] public BwSize Width { get; set; } = BwSize.Small; // Uses BwSize: Small=1px, Medium=2px, Large=4px
-    [Parameter] public BwSize Radius { get; set; } = BwSize.Medium; // Uses BwSize: Small=Rounded-sm, Medium=Rounded, Large=Rounded-lg
-    [Parameter] public BwSize Padding { get; set; } = BwSize.Medium; // Padding inside border
-    [Parameter] public bool IsDashed { get; set; }
-    [Parameter] public bool IsDotted { get; set; }
-    [Parameter] public bool HasShadow { get; set; }
-    [Parameter] public BwDirection TitlePosition { get; set; } = BwDirection.Left;
-    
-    [Parameter] public string? TitleClass { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? Label { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Light;
+
+    [Parameter]
+    public BwSize Width { get; set; } = BwSize.Small; // Uses BwSize: Small=1px, Medium=2px, Large=4px
+
+    [Parameter]
+    public BwSize Radius { get; set; } = BwSize.Medium; // Uses BwSize: Small=Rounded-sm, Medium=Rounded, Large=Rounded-lg
+
+    [Parameter]
+    public BwSize Padding { get; set; } = BwSize.Medium; // Padding inside border
+
+    [Parameter]
+    public bool IsDashed { get; set; }
+
+    [Parameter]
+    public bool IsDotted { get; set; }
+
+    [Parameter]
+    public bool HasShadow { get; set; }
+
+    [Parameter]
+    public BwDirection TitlePosition { get; set; } = BwDirection.Left;
+
+    [Parameter]
+    public string? TitleClass { get; set; }
 
     private string AllClasses => CombineClasses($"relative {BorderClass} {RadiusClass} {StyleClass} {ShadowClass} {GetBorderColorClass(Color)} bw-border");
-    
+
     // Width handled by standard tailwind utility or custom if needed
     // Keeping utility for width as it maps well
     private string BorderClass => (Width, Color) switch
@@ -47,7 +70,7 @@
         BwSize.Small => "bw-radius-sm",
         BwSize.Medium => "bw-radius-md",
         BwSize.Large => "bw-radius-lg",
-        BwSize.ExtraSmall => "bw-radius-none", 
+        BwSize.ExtraSmall => "bw-radius-none",
         BwSize.ExtraLarge => "bw-radius-xl",
         _ => "bw-radius-md"
     };
@@ -62,8 +85,8 @@
         _ => "p-4"
     };
 
-    private string StyleClass => IsDashed ? "border-dashed" : (IsDotted ? "border-dotted" : "border-solid");
-    
+    private string StyleClass => IsDashed ? "border-dashed" : IsDotted ? "border-dotted" : "border-solid";
+
     private string ShadowClass => HasShadow ? "shadow-sm" : "";
 
     private string TitlePositionClass => TitlePosition switch
@@ -84,17 +107,21 @@
         _ => "bw-border-title-default"
     };
 
-    private string GetBorderColorClass(BwColor color) => color switch
+    private string GetBorderColorClass(BwColor color)
     {
-        BwColor.Primary => "bw-border-primary",
-        BwColor.Secondary => "bw-border-secondary",
-        BwColor.Success => "bw-border-success",
-        BwColor.Danger => "bw-border-danger",
-        BwColor.Warning => "bw-border-warning",
-        BwColor.Info => "bw-border-info",
-        BwColor.Light => "bw-border-light",
-        BwColor.Dark => "bw-border-dark",
-        _ => "bw-border-light"
-    };
+        return color switch
+        {
+            BwColor.Primary => "bw-border-primary",
+            BwColor.Secondary => "bw-border-secondary",
+            BwColor.Success => "bw-border-success",
+            BwColor.Danger => "bw-border-danger",
+            BwColor.Warning => "bw-border-warning",
+            BwColor.Info => "bw-border-info",
+            BwColor.Light => "bw-border-light",
+            BwColor.Dark => "bw-border-dark",
+            _ => "bw-border-light"
+        };
+    }
+
 }
 

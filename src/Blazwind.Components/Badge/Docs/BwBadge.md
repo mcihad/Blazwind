@@ -5,6 +5,7 @@ A badge component used to highlight status, counts, or labels.
 ## Examples
 
 ### Soft (Default)
+
 The most common style with a subtle background.
 
 ```razor
@@ -14,6 +15,7 @@ The most common style with a subtle background.
 ```
 
 ### Variants
+
 Visual styles are controlled via the `Variant` parameter.
 
 ```razor
@@ -23,6 +25,7 @@ Visual styles are controlled via the `Variant` parameter.
 ```
 
 ### Pill Shape
+
 Use the `IsPill` parameter for fully rounded corners.
 
 ```razor
@@ -30,6 +33,7 @@ Use the `IsPill` parameter for fully rounded corners.
 ```
 
 ### Icons and dots
+
 Add icons or a status dot to the badge.
 
 ```razor
@@ -39,6 +43,7 @@ Add icons or a status dot to the badge.
 ```
 
 ### Dismissible
+
 Badges can be dismissed with a close button.
 
 ```razor
@@ -49,16 +54,16 @@ Badges can be dismissed with a close button.
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Text` | `string?` | `null` | The text content of the badge. |
-| `ChildContent` | `RenderFragment?` | `null` | Custom content for the badge (can be used instead of or with `Text`). |
-| `Color` | `BwColor` | `BwColor.Primary` | The color theme of the badge. |
-| `Variant` | `BwVariant` | `BwVariant.Soft` | Visual style (`Soft`, `Outline`, `Filled`, `Ghost`). |
-| `Size` | `BwSize` | `BwSize.Small` | Detailed size control (`ExtraSmall`, `Small`, `Medium`, `Large`). |
-| `IsPill` | `bool` | `false` | If `true`, the badge will have fully rounded corners. |
-| `ShowDot` | `bool` | `false` | If `true`, a status dot is displayed before the text/icon. |
-| `Icon` | `string?` | `null` | CSS class for an icon to be displayed inside the badge. |
-| `Dismissible` | `bool` | `false` | If `true`, displays a close button. |
-| `OnDismiss` | `EventCallback` | - | Triggered when the dismiss button is clicked. |
-| `Class` | `string?` | `null` | Additional CSS classes for the badge. |
+| Parameter      | Type              | Default           | Description                                                           |
+|----------------|-------------------|-------------------|-----------------------------------------------------------------------|
+| `Text`         | `string?`         | `null`            | The text content of the badge.                                        |
+| `ChildContent` | `RenderFragment?` | `null`            | Custom content for the badge (can be used instead of or with `Text`). |
+| `Color`        | `BwColor`         | `BwColor.Primary` | The color theme of the badge.                                         |
+| `Variant`      | `BwVariant`       | `BwVariant.Soft`  | Visual style (`Soft`, `Outline`, `Filled`, `Ghost`).                  |
+| `Size`         | `BwSize`          | `BwSize.Small`    | Detailed size control (`ExtraSmall`, `Small`, `Medium`, `Large`).     |
+| `IsPill`       | `bool`            | `false`           | If `true`, the badge will have fully rounded corners.                 |
+| `ShowDot`      | `bool`            | `false`           | If `true`, a status dot is displayed before the text/icon.            |
+| `Icon`         | `string?`         | `null`            | CSS class for an icon to be displayed inside the badge.               |
+| `Dismissible`  | `bool`            | `false`           | If `true`, displays a close button.                                   |
+| `OnDismiss`    | `EventCallback`   | -                 | Triggered when the dismiss button is clicked.                         |
+| `Class`        | `string?`         | `null`            | Additional CSS classes for the badge.                                 |

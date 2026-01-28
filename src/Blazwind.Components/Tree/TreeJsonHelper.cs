@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace Blazwind.Components.Tree;
 
 /// <summary>
-/// Field mapping configuration for JSON to Tree conversion
+///     Field mapping configuration for JSON to Tree conversion
 /// </summary>
 public class TreeJsonFieldMapping
 {
@@ -28,7 +28,7 @@ public class TreeJsonFieldMapping
 }
 
 /// <summary>
-/// Helper class for JSON to Tree conversion and vice versa
+///     Helper class for JSON to Tree conversion and vice versa
 /// </summary>
 public static class TreeJsonHelper
 {
@@ -39,7 +39,7 @@ public static class TreeJsonHelper
     };
 
     /// <summary>
-    /// Create a tree from flat JSON array with parent-child relationships via ParentId
+    ///     Create a tree from flat JSON array with parent-child relationships via ParentId
     /// </summary>
     /// <typeparam name="T">Data type for tree nodes</typeparam>
     /// <param name="json">JSON array string</param>
@@ -87,18 +87,10 @@ public static class TreeJsonHelper
 
         // Second pass: build tree structure
         foreach (var kvp in childrenMap)
-        {
             if (allNodes.TryGetValue(kvp.Key, out var parent))
-            {
                 foreach (var childId in kvp.Value)
-                {
                     if (allNodes.TryGetValue(childId, out var child))
-                    {
                         parent.Children.Add(child);
-                    }
-                }
-            }
-        }
 
         // Return root nodes (nodes without parent)
         var childIds = childrenMap.Values.SelectMany(x => x).ToHashSet();
@@ -106,7 +98,7 @@ public static class TreeJsonHelper
     }
 
     /// <summary>
-    /// Create a tree from nested JSON with children arrays
+    ///     Create a tree from nested JSON with children arrays
     /// </summary>
     /// <typeparam name="T">Data type for tree nodes</typeparam>
     /// <param name="json">JSON array string with nested children</param>
@@ -142,14 +134,12 @@ public static class TreeJsonHelper
                 Id = id,
                 Title = title,
                 Icon = icon,
-                HasChildren = hasChildren || (childrenJson?.Count > 0),
+                HasChildren = hasChildren || childrenJson?.Count > 0,
                 Data = item.Deserialize<T>(DefaultOptions)
             };
 
             if (childrenJson != null && childrenJson.Count > 0)
-            {
                 node.Children = ParseNestedNodes<T>(childrenJson, mapping);
-            }
 
             nodes.Add(node);
         }
@@ -158,7 +148,7 @@ public static class TreeJsonHelper
     }
 
     /// <summary>
-    /// Export tree to JSON string
+    ///     Export tree to JSON string
     /// </summary>
     /// <typeparam name="T">Data type for tree nodes</typeparam>
     /// <param name="nodes">Tree nodes to export</param>

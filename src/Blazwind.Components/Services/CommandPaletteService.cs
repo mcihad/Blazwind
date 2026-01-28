@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Services;
 
 /// <summary>
-/// Command item for the command palette
+///     Command item for the command palette
 /// </summary>
 public class CommandItem
 {
@@ -16,48 +16,48 @@ public class CommandItem
 }
 
 /// <summary>
-/// Service for managing the command palette
+///     Service for managing the command palette
 /// </summary>
 public class CommandPaletteService
 {
     private readonly List<CommandItem> _commands = new();
-    private bool _isVisible = false;
+
+    public bool IsVisible { get; private set; }
+
+    public IReadOnlyList<CommandItem> Commands => _commands.AsReadOnly();
 
     public event Action? OnVisibilityChanged;
     public event Action? OnCommandsChanged;
 
-    public bool IsVisible => _isVisible;
-    public IReadOnlyList<CommandItem> Commands => _commands.AsReadOnly();
-
     /// <summary>
-    /// Show the command palette
+    ///     Show the command palette
     /// </summary>
     public void Show()
     {
-        _isVisible = true;
+        IsVisible = true;
         OnVisibilityChanged?.Invoke();
     }
 
     /// <summary>
-    /// Hide the command palette
+    ///     Hide the command palette
     /// </summary>
     public void Hide()
     {
-        _isVisible = false;
+        IsVisible = false;
         OnVisibilityChanged?.Invoke();
     }
 
     /// <summary>
-    /// Toggle visibility
+    ///     Toggle visibility
     /// </summary>
     public void Toggle()
     {
-        _isVisible = !_isVisible;
+        IsVisible = !IsVisible;
         OnVisibilityChanged?.Invoke();
     }
 
     /// <summary>
-    /// Register a new command
+    ///     Register a new command
     /// </summary>
     public void RegisterCommand(CommandItem command)
     {
@@ -69,23 +69,19 @@ public class CommandPaletteService
     }
 
     /// <summary>
-    /// Register multiple commands at once
+    ///     Register multiple commands at once
     /// </summary>
     public void RegisterCommands(IEnumerable<CommandItem> commands)
     {
         foreach (var command in commands)
-        {
             if (!_commands.Any(c => c.Id == command.Id))
-            {
                 _commands.Add(command);
-            }
-        }
 
         OnCommandsChanged?.Invoke();
     }
 
     /// <summary>
-    /// Unregister a command by ID
+    ///     Unregister a command by ID
     /// </summary>
     public void UnregisterCommand(string commandId)
     {
@@ -98,7 +94,7 @@ public class CommandPaletteService
     }
 
     /// <summary>
-    /// Execute a command and hide the palette
+    ///     Execute a command and hide the palette
     /// </summary>
     public async Task ExecuteCommand(CommandItem command)
     {
@@ -110,14 +106,11 @@ public class CommandPaletteService
     }
 
     /// <summary>
-    /// Search commands by query
+    ///     Search commands by query
     /// </summary>
     public IEnumerable<CommandItem> Search(string query)
     {
-        if (string.IsNullOrWhiteSpace(query))
-        {
-            return _commands.Where(c => !c.IsDisabled);
-        }
+        if (string.IsNullOrWhiteSpace(query)) return _commands.Where(c => !c.IsDisabled);
 
         var lowerQuery = query.ToLower();
         return _commands
@@ -130,7 +123,7 @@ public class CommandPaletteService
     }
 
     /// <summary>
-    /// Get commands grouped by category
+    ///     Get commands grouped by category
     /// </summary>
     public Dictionary<string, List<CommandItem>> GetGroupedCommands(string query = "")
     {

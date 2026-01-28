@@ -1,11 +1,10 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
-@using Microsoft.AspNetCore.Components.Web.Virtualization
-@using Microsoft.AspNetCore.Components.Forms
-@using System.Linq.Expressions
-@using System.Linq.Expressions
 @inherits BwBaseInput<TItem>
+@using System.Linq.Expressions
+@using Blazwind.Components.Shared
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
 @typeparam TItem
 
 @{
@@ -21,15 +20,16 @@
     };
 
     var borderClass = hasError
-    ? "border-[var(--bw-color-danger)] focus-within:border-[var(--bw-color-danger)] focus-within:ring-2 focus-within:ring-offset-0 focus-within:ring-[var(--bw-color-danger)]/20"
-    : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)] focus-within:ring-2 focus-within:ring-offset-0 focus-within:ring-[var(--bw-input-focus-ring)] hover:border-[var(--bw-color-border-strong)]";
+        ? "border-[var(--bw-color-danger)] focus-within:border-[var(--bw-color-danger)] focus-within:ring-2 focus-within:ring-offset-0 focus-within:ring-[var(--bw-color-danger)]/20"
+        : "border-[var(--bw-color-border)] focus-within:border-[var(--bw-color-primary)] focus-within:ring-2 focus-within:ring-offset-0 focus-within:ring-[var(--bw-input-focus-ring)] hover:border-[var(--bw-color-border-strong)]";
 
-    var disabledClass = IsDisabled 
-        ? "bg-[var(--bw-color-surface-muted)] text-[var(--bw-color-text-muted)] border-[var(--bw-color-border)] cursor-not-allowed opacity-60" 
+    var disabledClass = IsDisabled
+        ? "bg-[var(--bw-color-surface-muted)] text-[var(--bw-color-text-muted)] border-[var(--bw-color-border)] cursor-not-allowed opacity-60"
         : "bg-[var(--bw-color-surface)] text-[var(--bw-color-text)] cursor-text";
 }
 
-<div class="relative @CombineClasses(Class)" @onclick:stopPropagation="true" id="@Id" @attributes="AdditionalAttributes">
+<div class="relative @CombineClasses(Class)" @onclick:stopPropagation="true" id="@Id"
+     @attributes="AdditionalAttributes">
     @if (hasLabel)
     {
         <label class="bw-label @sizeClasses.Text mb-1">
@@ -42,8 +42,9 @@
     }
 
     <div class="relative">
-        <div class="@sizeClasses.Height flex items-center gap-1.5 @sizeClasses.Padding bg-[var(--bw-color-surface)] border rounded-[var(--bw-radius-default)] transition-all @borderClass @disabledClass"
-             @onclick="FocusInput" @onclick:stopPropagation="true">
+        <div
+            class="@sizeClasses.Height flex items-center gap-1.5 @sizeClasses.Padding bg-[var(--bw-color-surface)] border rounded-[var(--bw-radius-default)] transition-all @borderClass @disabledClass"
+            @onclick="FocusInput" @onclick:stopPropagation="true">
 
             @* Selected Tags (Multiple Mode) *@
             @if (Multiple && _selectedItems.Any())
@@ -51,11 +52,13 @@
                 <div class="flex flex-wrap gap-1 py-0.5 mr-1">
                     @foreach (var item in _selectedItems.Take(MaxTags))
                     {
-                        <span class="inline-flex items-center gap-1 @sizeClasses.Tag font-medium bg-[var(--bw-color-primary-soft-bg)] text-[var(--bw-color-primary)] rounded">
+                        <span
+                            class="inline-flex items-center gap-1 @sizeClasses.Tag font-medium bg-[var(--bw-color-primary-soft-bg)] text-[var(--bw-color-primary)] rounded">
                             @ItemText(item)
                             @if (!IsDisabled)
                             {
-                                <button type="button" class="text-[var(--bw-color-primary)] hover:opacity-70 focus:outline-none"
+                                <button type="button"
+                                        class="text-[var(--bw-color-primary)] hover:opacity-70 focus:outline-none"
                                         @onclick="() => RemoveItem(item)" @onclick:stopPropagation="true">
                                     <i class="fa-solid fa-xmark text-[10px]"></i>
                                 </button>
@@ -64,7 +67,8 @@
                     }
                     @if (_selectedItems.Count > MaxTags)
                     {
-                        <span class="@sizeClasses.Tag text-[var(--bw-color-text-muted)]">+@(_selectedItems.Count - MaxTags)</span>
+                        <span
+                            class="@sizeClasses.Tag text-[var(--bw-color-text-muted)]">+@(_selectedItems.Count - MaxTags)</span>
                     }
                 </div>
             }
@@ -74,7 +78,7 @@
                    class="flex-1 min-w-[60px] p-0 bg-transparent @sizeClasses.Text text-[var(--bw-color-text)] placeholder-[var(--bw-color-text-muted)] border-none outline-none ring-0 focus:ring-0 shadow-none appearance-none"
                    style="outline: none !important; border: none !important; box-shadow: none !important;"
                    placeholder="@GetPlaceholder()" value="@_searchText" disabled="@IsDisabled" @oninput="OnSearchInput"
-                   @onfocus="OpenDropdown" @onblur="HandleInputBlur" @onkeydown="HandleInputKeyDown" />
+                   @onfocus="OpenDropdown" @onblur="HandleInputBlur" @onkeydown="HandleInputKeyDown"/>
 
             @* Actions *@
             <div class="flex items-center gap-1 ml-auto">
@@ -86,7 +90,9 @@
                 }
                 else if ((_selectedItems.Any() || !string.IsNullOrEmpty(_searchText)) && !IsDisabled)
                 {
-                    <button type="button" class="p-1 text-[var(--bw-color-text-muted)] hover:text-[var(--bw-color-text-secondary)] focus:outline-none" @onclick="ClearAll"
+                    <button type="button"
+                            class="p-1 text-[var(--bw-color-text-muted)] hover:text-[var(--bw-color-text-secondary)] focus:outline-none"
+                            @onclick="ClearAll"
                             @onclick:stopPropagation="true">
                         <i class="fa-solid fa-xmark text-sm"></i>
                     </button>
@@ -101,7 +107,8 @@
         @* Dropdown *@
         @if (_isOpen && !IsDisabled)
         {
-            <div class="absolute z-50 w-full @_placementClass bg-[var(--bw-color-surface)] border border-[var(--bw-color-border)] rounded shadow-lg overflow-hidden">
+            <div
+                class="absolute z-50 w-full @_placementClass bg-[var(--bw-color-surface)] border border-[var(--bw-color-border)] rounded shadow-lg overflow-hidden">
                 @if (_isLoading)
                 {
                     <div class="@sizeClasses.Padding text-center text-[var(--bw-color-text-muted)]">
@@ -128,13 +135,13 @@
                                 // although O(N) inside loop is bad. 
                                 // Better: use styling based on equality with a tracked '_activeItem' instead of index?
                                 // But navigation is by index. 
-                                
+
                                 var isActive = EqualityComparer<TItem>.Default.Equals(item, _activeItem);
                                 var isSelected = Multiple ? _selectedItems.Contains(item) : EqualityComparer<TItem>.Default.Equals(item, _selectedItem);
                             }
 
                             @* Group Header *@
-                             @if (GroupBy != null)
+                            @if (GroupBy != null)
                             {
                                 var group = GroupBy(item);
                                 if (group != currentGroup)
@@ -147,7 +154,8 @@
                             }
 
                             <li class="@sizeClasses.Padding cursor-pointer transition-colors @(isActive ? "bg-[var(--bw-color-surface-muted)]" : "") @(isSelected ? "text-[var(--bw-color-primary)] font-medium" : "text-[var(--bw-color-text-secondary)] hover:bg-[var(--bw-color-surface-muted)]")"
-                                @onclick="() => SelectItem(item)" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
+                                @onclick="() => SelectItem(item)" @onclick:stopPropagation="true"
+                                @onmousedown:preventDefault="true">
                                 @if (ItemTemplate != null)
                                 {
                                     @ItemTemplate(item)
@@ -162,7 +170,8 @@
                                         <span class="truncate flex-1">@ItemText(item)</span>
                                         @if (ItemDescription != null)
                                         {
-                                            <span class="text-xs text-[var(--bw-color-text-muted)] truncate">@ItemDescription(item)</span>
+                                            <span
+                                                class="text-xs text-[var(--bw-color-text-muted)] truncate">@ItemDescription(item)</span>
                                         }
                                         @if (isSelected)
                                         {
@@ -176,12 +185,13 @@
 
                     @* Create New Option *@
                     @if (AllowCreate && !string.IsNullOrWhiteSpace(_searchText) && !_filteredItems.Any(x =>
-                            ItemText(x).Equals(_searchText, StringComparison.OrdinalIgnoreCase)))
+                                 ItemText(x).Equals(_searchText, StringComparison.OrdinalIgnoreCase)))
                     {
                         <div class="border-t border-[var(--bw-color-border)]">
                             <button type="button"
-                                class="w-full @sizeClasses.Padding text-left text-[var(--bw-color-primary)] hover:bg-[var(--bw-color-primary-soft-bg)] transition-colors flex items-center gap-2"
-                                @onclick="CreateNewItem" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
+                                    class="w-full @sizeClasses.Padding text-left text-[var(--bw-color-primary)] hover:bg-[var(--bw-color-primary-soft-bg)] transition-colors flex items-center gap-2"
+                                    @onclick="CreateNewItem" @onclick:stopPropagation="true"
+                                    @onmousedown:preventDefault="true">
                                 <i class="fa-solid fa-plus text-xs"></i>
                                 <span>"<strong>@_searchText</strong>" oluştur</span>
                             </button>
@@ -192,8 +202,9 @@
                 {
                     <div class="border-t border-gray-100 dark:border-gray-700">
                         <button type="button"
-                            class="w-full @sizeClasses.Padding text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-2"
-                            @onclick="CreateNewItem" @onclick:stopPropagation="true" @onmousedown:preventDefault="true">
+                                class="w-full @sizeClasses.Padding text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-center gap-2"
+                                @onclick="CreateNewItem" @onclick:stopPropagation="true"
+                                @onmousedown:preventDefault="true">
                             <i class="fa-solid fa-plus text-xs"></i>
                             <span>"<strong>@_searchText</strong>" oluştur</span>
                         </button>
@@ -204,8 +215,8 @@
                     <div class="@sizeClasses.Padding text-center text-[var(--bw-color-text-muted)]">
                         <i class="fa-solid fa-search mr-1"></i>
                         @(string.IsNullOrWhiteSpace(_searchText) && MinChars > 0
-                                    ? $"En az {MinChars} karakter girin"
-                                    : "Sonuç bulunamadı")
+                            ? $"En az {MinChars} karakter girin"
+                            : "Sonuç bulunamadı")
                     </div>
                 }
             </div>
@@ -226,70 +237,89 @@
 
 @code {
 
-    
-    [Parameter] public bool Multiple { get; set; }
-    [Parameter] public int MaxTags { get; set; } = 3;
-    
-    /// <summary>Static items list (for non-async usage)</summary>
+
+    [Parameter]
+    public bool Multiple { get; set; }
+
+    [Parameter]
+    public int MaxTags { get; set; } = 3;
 
     /// <summary>Static items list (for non-async usage)</summary>
-    [Parameter] public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+    /// <summary>Static items list (for non-async usage)</summary>
+    [Parameter]
+    public IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
 
     /// <summary>Function to get display text from item</summary>
-    [Parameter] public Func<TItem, string> ItemText { get; set; } = item => item?.ToString() ?? "";
+    [Parameter]
+    public Func<TItem, string> ItemText { get; set; } = item => item?.ToString() ?? "";
 
     /// <summary>Optional function to get icon class from item</summary>
-    [Parameter] public Func<TItem, string>? ItemIcon { get; set; }
+    [Parameter]
+    public Func<TItem, string>? ItemIcon { get; set; }
 
     /// <summary>Optional function to get description from item</summary>
-    [Parameter] public Func<TItem, string>? ItemDescription { get; set; }
+    [Parameter]
+    public Func<TItem, string>? ItemDescription { get; set; }
 
     /// <summary>Optional function to group items</summary>
-    [Parameter] public Func<TItem, string>? GroupBy { get; set; }
+    [Parameter]
+    public Func<TItem, string>? GroupBy { get; set; }
 
     /// <summary>Custom item template</summary>
-    [Parameter] public RenderFragment<TItem>? ItemTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<TItem>? ItemTemplate { get; set; }
 
     // Async Search Support
     /// <summary>Async function to search items (enables async mode)</summary>
-    [Parameter] public Func<string, CancellationToken, Task<IEnumerable<TItem>>>? SearchFunc { get; set; }
+    [Parameter]
+    public Func<string, CancellationToken, Task<IEnumerable<TItem>>>? SearchFunc { get; set; }
 
     /// <summary>Debounce delay in milliseconds for async search</summary>
-    [Parameter] public int DebounceMs { get; set; } = 300;
+    [Parameter]
+    public int DebounceMs { get; set; } = 300;
 
     /// <summary>Minimum characters before search is triggered</summary>
-    [Parameter] public int MinChars { get; set; } = 0;
+    [Parameter]
+    public int MinChars { get; set; }
 
     // Creatable
     /// <summary>Allow creating new items from search text</summary>
-    [Parameter] public bool AllowCreate { get; set; }
+    [Parameter]
+    public bool AllowCreate { get; set; }
 
     /// <summary>Callback when user wants to create a new item</summary>
-    [Parameter] public EventCallback<string> OnCreateNew { get; set; }
+    [Parameter]
+    public EventCallback<string> OnCreateNew { get; set; }
 
     // Single Selection
-    [Parameter] public TItem? SelectedItem 
-    { 
-        get => Value; 
+    [Parameter]
+    public TItem? SelectedItem
+    {
+        get => Value;
         set => Value = value;
     }
-    
-    [Parameter] public EventCallback<TItem?> SelectedItemChanged 
-    { 
-        get => ValueChanged; 
-        set => ValueChanged = value; 
+
+    [Parameter]
+    public EventCallback<TItem?> SelectedItemChanged
+    {
+        get => ValueChanged;
+        set => ValueChanged = value;
     }
 
     // Multiple Selection
-    [Parameter] public List<TItem> SelectedItems { get; set; } = new();
-    [Parameter] public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
+    [Parameter]
+    public List<TItem> SelectedItems { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<TItem>> SelectedItemsChanged { get; set; }
 
 
-    
     /// <summary>Expression for validation binding (multiple selection)</summary>
-    [Parameter] public Expression<Func<List<TItem>>>? ForMultiple { get; set; }
+    [Parameter]
+    public Expression<Func<List<TItem>>>? ForMultiple { get; set; }
 
-    [Inject] private IJSRuntime _js { get; set; } = default!;
+    [Inject]
+    private IJSRuntime _js { get; set; } = default!;
 
     private ElementReference _inputRef;
     private ElementReference _dropdownRef;
@@ -346,7 +376,7 @@
     private void FilterItems()
     {
         if (string.IsNullOrWhiteSpace(_searchText) && !(_selectedItem != null && !Multiple && _searchText ==
-        ItemText(_selectedItem)))
+                ItemText(_selectedItem)))
         {
             // If empty text, show all
             _filteredItems = Items.ToList();
@@ -359,9 +389,10 @@
         else
         {
             _filteredItems = Items
-            .Where(item => ItemText(item).Contains(_searchText, StringComparison.OrdinalIgnoreCase))
-            .ToList();
+                .Where(item => ItemText(item).Contains(_searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
+
         _activeIndex = _filteredItems.Any() ? 0 : -1;
         _activeItem = _activeIndex >= 0 ? _filteredItems[_activeIndex] : default;
     }
@@ -439,28 +470,30 @@
         {
             // Determine placement before showing
             // We use a small delay or check to ensure we have the input ref
-            try 
+            try
             {
-               var windowHeight = await _js.InvokeAsync<double>("eval", "window.innerHeight");
-               var rect = await _js.InvokeAsync<BoundingClientRect>("eval", 
-                   $"let el = document.getElementById('{_elementId}'); if(el) {{ let r = el.getBoundingClientRect(); ({{ top: r.top, bottom: r.bottom }}) }} else {{ ({{ top: 0, bottom: 0 }}) }}");
-               
-               // Note: This relies on specific ID or reference. 
-               // Better approach: Use a dedicated JS function for this component library if it existed.
-               // Since I can't easily add a global JS file right now without checking layout, 
-               // I will use a direct element reference approach if possible or a simpler eval.
-               
-               // Let's use the container div for reference
-               var placement = "bottom";
-               // Assuming dropdown height ~200px (max-h-48 = 12rem = 192px + borders)
-               if (windowHeight - rect.Bottom < 220 && rect.Top > 220)
-               {
-                   placement = "top";
-               }
-               
-               _placementClass = placement == "top" ? "bottom-full mb-0.5" : "mt-0.5";
+                var windowHeight = await _js.InvokeAsync<double>("eval", "window.innerHeight");
+                var rect = await _js.InvokeAsync<BoundingClientRect>("eval",
+                    $"let el = document.getElementById('{_elementId}'); if(el) {{ let r = el.getBoundingClientRect(); ({{ top: r.top, bottom: r.bottom }}) }} else {{ ({{ top: 0, bottom: 0 }}) }}");
+
+                // Note: This relies on specific ID or reference. 
+                // Better approach: Use a dedicated JS function for this component library if it existed.
+                // Since I can't easily add a global JS file right now without checking layout, 
+                // I will use a direct element reference approach if possible or a simpler eval.
+
+                // Let's use the container div for reference
+                var placement = "bottom";
+                // Assuming dropdown height ~200px (max-h-48 = 12rem = 192px + borders)
+                if (windowHeight - rect.Bottom < 220 && rect.Top > 220)
+                {
+                    placement = "top";
+                }
+
+                _placementClass = placement == "top" ? "bottom-full mb-0.5" : "mt-0.5";
             }
-            catch {}
+            catch
+            {
+            }
 
             _isOpen = true;
             StateHasChanged(); // Re-render to show with correct class
@@ -477,7 +510,7 @@
             {
                 FilterItems();
             }
-            
+
             // Wait for render then scroll
             // await Task.Delay(50); // Small delay to allow render
             // await ScrollToActive(); // Initial scroll not always needed unless navigating back
@@ -519,6 +552,7 @@
             {
                 _selectedItems.Add(item);
             }
+
             await SelectedItemsChanged.InvokeAsync(_selectedItems);
             _searchText = "";
             if (SearchFunc != null)
@@ -529,6 +563,7 @@
             {
                 FilterItems();
             }
+
             await FocusInputAsync();
         }
         else
@@ -558,6 +593,7 @@
             _selectedItem = default;
             await SelectedItemChanged.InvokeAsync(_selectedItem);
         }
+
         _searchText = "";
         _activeIndex = -1;
         _filteredItems = new List<TItem>();
@@ -581,6 +617,7 @@
             {
                 OpenDropdown();
             }
+
             return;
         }
 
@@ -599,6 +636,7 @@
                     _activeItem = _filteredItems[_activeIndex];
                     await ScrollToActive();
                 }
+
                 break;
 
             case "ArrowUp":
@@ -608,6 +646,7 @@
                     _activeItem = _filteredItems[_activeIndex];
                     await ScrollToActive();
                 }
+
                 break;
 
             case "Enter":
@@ -619,6 +658,7 @@
                 {
                     await CreateNewItem();
                 }
+
                 break;
 
             case "Backspace":
@@ -627,6 +667,7 @@
                     _selectedItems.RemoveAt(_selectedItems.Count - 1);
                     await SelectedItemsChanged.InvokeAsync(_selectedItems);
                 }
+
                 break;
         }
     }
@@ -641,18 +682,20 @@
             // But Virtualize component generally renders items based on scroll position.
             // To programmatic scroll, we can try setting scrollTop of the container.
             // Estimate item height: 32px (Small) - 40px (Medium) -> avg 36px.
-            
+
             // However, we can also try to find the active element if it IS rendered.
             // Or calculate position.
-            
+
             // Simple approach: scrollTop = index * estimatedHeight.
             // Let's assume 36px per item.
             var itemHeight = 36;
-            
+
             // Using eval to set scrollTop of the UL ref
             await _js.InvokeVoidAsync("eval", $"let el = document.querySelector('[_bl__{_dropdownRef.Id}]'); if(el) {{ el.scrollTop = {_activeIndex * itemHeight}; }}");
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     private void FocusInput()
@@ -665,7 +708,7 @@
         await _inputRef.FocusAsync();
     }
 
-    private string _elementId = "bw-ac-" + Guid.NewGuid().ToString("N");
+    private readonly string _elementId = "bw-ac-" + Guid.NewGuid().ToString("N");
 
     public override void Dispose()
     {
@@ -675,4 +718,5 @@
     }
 
     private record BoundingClientRect(double Top, double Bottom);
+
 }

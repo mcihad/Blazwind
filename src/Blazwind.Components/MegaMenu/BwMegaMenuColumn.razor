@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.MegaMenu
-@using Blazwind.Components.Shared
 @inherits BwBase
 
 <div class="@CombineClasses("bw-megamenu-column")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -19,7 +18,14 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Icon { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
 }

@@ -22,12 +22,13 @@ A component used for selecting time.
 ```
 
 > **Note**
-> This component uses the browser’s native time picker (`input type="time"`). The appearance depends on the user’s browser settings, but `Value` is always provided as `TimeSpan?`.
+> This component uses the browser’s native time picker (`input type="time"`). The appearance depends on the user’s
+> browser settings, but `Value` is always provided as `TimeSpan?`.
 
 ## Parameters
 
 | Parameter       | Type              | Default  | Description                                           |
-| :-------------- | :---------------- | :------- | :---------------------------------------------------- |
+|:----------------|:------------------|:---------|:------------------------------------------------------|
 | `Value`         | `TimeSpan?`       | `null`   | Selected time (two-way binding).                      |
 | `Label`         | `string`          | `null`   | Field label.                                          |
 | `LabelPosition` | `BwLabelPosition` | `Top`    | Label position (`Top`, `Left`, `Floating`, `Hidden`). |
@@ -41,7 +42,7 @@ A component used for selecting time.
 ## Events
 
 | Event          | Payload          | Description                                        |
-| :------------- | :--------------- | :------------------------------------------------- |
+|:---------------|:-----------------|:---------------------------------------------------|
 | `ValueChanged` | `TimeSpan?`      | Triggered when the time changes (two-way binding). |
 | `OnChange`     | `TimeSpan?`      | Triggered after the change.                        |
 | `OnFocus`      | `FocusEventArgs` | Triggered when the field gains focus.              |

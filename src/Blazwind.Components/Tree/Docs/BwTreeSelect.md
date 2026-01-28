@@ -22,14 +22,14 @@ A dropdown component that displays a hierarchical tree structure for selection.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `Nodes` | `List<TreeNode<TItem>>` | `[]` | Tree data structure. |
-| `Value` | `TItem` | `default` | Selected value (Single mode). |
-| `SelectedValues` | `IEnumerable<TItem>` | `[]` | Selected values (Multiple mode). |
-| `Multiple` | `bool` | `false` | Enables multiple selection. |
-| `ShowCheckbox` | `bool` | `false` | Shows checkboxes in the tree. |
-| `Placeholder` | `string` | `"Select..."` | Input placeholder text. |
-| `Searchable` | `bool` | `true` | Enables search filtering. |
-| `Clearable` | `bool` | `true` | Shows clear (X) button. |
-| `DisplayProperty` | `Func<TItem, string>` | `null` | Function to get display text from custom data object. |
+| Parameter         | Type                    | Default       | Description                                           |
+|:------------------|:------------------------|:--------------|:------------------------------------------------------|
+| `Nodes`           | `List<TreeNode<TItem>>` | `[]`          | Tree data structure.                                  |
+| `Value`           | `TItem`                 | `default`     | Selected value (Single mode).                         |
+| `SelectedValues`  | `IEnumerable<TItem>`    | `[]`          | Selected values (Multiple mode).                      |
+| `Multiple`        | `bool`                  | `false`       | Enables multiple selection.                           |
+| `ShowCheckbox`    | `bool`                  | `false`       | Shows checkboxes in the tree.                         |
+| `Placeholder`     | `string`                | `"Select..."` | Input placeholder text.                               |
+| `Searchable`      | `bool`                  | `true`        | Enables search filtering.                             |
+| `Clearable`       | `bool`                  | `true`        | Shows clear (X) button.                               |
+| `DisplayProperty` | `Func<TItem, string>`   | `null`        | Function to get display text from custom data object. |

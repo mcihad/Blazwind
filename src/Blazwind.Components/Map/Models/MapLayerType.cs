@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// MapLibre layer types
+///     MapLibre layer types
 /// </summary>
 public static class MapLayerType
 {

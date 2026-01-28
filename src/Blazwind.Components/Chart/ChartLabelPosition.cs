@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Label position constants
+///     Label position constants
 /// </summary>
 public static class ChartLabelPosition
 {

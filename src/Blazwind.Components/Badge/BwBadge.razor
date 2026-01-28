@@ -1,5 +1,5 @@
-@using Blazwind.Components.Shared
 @namespace Blazwind.Components.Badge
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 @{
@@ -15,11 +15,11 @@
     };
 
     var roundedClass = IsPill ? "bw-badge-pill" : "";
-    
+
     // Theme-aware variant formatting: bw-badge-[variant]-[color]
     var variantName = Variant.ToString().ToLower();
     var colorName = Color.ToString().ToLower();
-    
+
     // Special handling for legacy/specific variants if needed, otherwise generic mapping
     var variantClass = $"bw-badge-{variantName}-{colorName}";
 
@@ -27,7 +27,8 @@
     var dotColorClass = $"bw-badge-dot-{colorName}";
 }
 
-<span class="@CombineClasses($"{baseClass} {sizeClass} {roundedClass} {variantClass}")" id="@Id" style="@Style" @attributes="AdditionalAttributes">
+<span class="@CombineClasses($"{baseClass} {sizeClass} {roundedClass} {variantClass}")" id="@Id" style="@Style"
+      @attributes="AdditionalAttributes">
     @if (ShowDot)
     {
         <span class="w-1.5 h-1.5 rounded-full @dotColorClass @(HasContent ? "mr-1.5" : "")"></span>
@@ -43,8 +44,8 @@
     @ChildContent
     @if (Dismissible)
     {
-        <button type="button" 
-                class="ml-1.5 -mr-0.5 hover:opacity-70 transition-opacity" 
+        <button type="button"
+                class="ml-1.5 -mr-0.5 hover:opacity-70 transition-opacity"
                 @onclick="HandleDismiss"
                 @onclick:stopPropagation="true">
             <i class="fa-solid fa-xmark text-[0.65em]"></i>
@@ -53,21 +54,42 @@
 </span>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Soft;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Small;
-    [Parameter] public bool IsPill { get; set; }
-    [Parameter] public bool ShowDot { get; set; }
-    [Parameter] public bool Dismissible { get; set; }
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public EventCallback OnDismiss { get; set; }
-    
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Soft;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Small;
+
+    [Parameter]
+    public bool IsPill { get; set; }
+
+    [Parameter]
+    public bool ShowDot { get; set; }
+
+    [Parameter]
+    public bool Dismissible { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public EventCallback OnDismiss { get; set; }
+
     private bool HasContent => !string.IsNullOrEmpty(Text) || ChildContent != null;
-    
+
     private async Task HandleDismiss()
     {
         await OnDismiss.InvokeAsync();
     }
+
 }

@@ -9,16 +9,16 @@
         BwSize.Large => "large",
         _ => ""
     };
-    
+
     var layoutClass = Horizontal ? "horizontal" : Alternate ? "alternate" : "vertical";
-    
+
     var variantClass = Variant switch
     {
         BwVariant.Ghost => "minimal",
         BwVariant.Outline => "cards",
         _ => ""
     };
-    
+
     var connectorClass = ConnectorStyle switch
     {
         "dashed" => "dashed",
@@ -28,48 +28,69 @@
 }
 
 <CascadingValue Value="this">
-    <div class="@CombineClasses("bw-timeline", layoutClass, sizeClass, variantClass, connectorClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+    <div class="@CombineClasses("bw-timeline", layoutClass, sizeClass, variantClass, connectorClass)" style="@Style"
+         id="@Id" @attributes="AdditionalAttributes">
         @ChildContent
     </div>
 </CascadingValue>
 
 @code {
+
     /// <summary>Visual style variant</summary>
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Filled;
-    
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Filled;
+
     /// <summary>Alternate items left/right (zig-zag layout)</summary>
-    [Parameter] public bool Alternate { get; set; }
-    
+    [Parameter]
+    public bool Alternate { get; set; }
+
     /// <summary>Horizontal orientation instead of vertical</summary>
-    [Parameter] public bool Horizontal { get; set; }
-    
+    [Parameter]
+    public bool Horizontal { get; set; }
+
     /// <summary>Reverse item order</summary>
-    [Parameter] public bool Reverse { get; set; }
-    
+    [Parameter]
+    public bool Reverse { get; set; }
+
     /// <summary>Size of dots and connectors</summary>
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
     /// <summary>Connector line style (solid, dashed, dotted)</summary>
-    [Parameter] public string ConnectorStyle { get; set; } = "solid";
-    
+    [Parameter]
+    public string ConnectorStyle { get; set; } = "solid";
+
     /// <summary>Custom CSS classes</summary>
     // Removed Class parameter (inherited)
-    
+
     /// <summary>Timeline items</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     // Internal tracking
-    private int _itemIndex = 0;
-    private int _totalItems = 0;
-    
-    internal int GetNextItemIndex() => _itemIndex++;
-    internal void IncrementTotalItems() => _totalItems++;
-    internal int TotalItems => _totalItems;
-    internal bool IsLastItem(int index) => index == _totalItems - 1;
-    
+    private int _itemIndex;
+
+    internal int GetNextItemIndex()
+    {
+        return _itemIndex++;
+    }
+
+    internal void IncrementTotalItems()
+    {
+        TotalItems++;
+    }
+
+    internal int TotalItems { get; private set; }
+
+    internal bool IsLastItem(int index)
+    {
+        return index == TotalItems - 1;
+    }
+
     protected override void OnParametersSet()
     {
         _itemIndex = 0;
-        _totalItems = 0;
+        TotalItems = 0;
     }
+
 }

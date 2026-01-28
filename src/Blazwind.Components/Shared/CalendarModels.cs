@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Calendar event model - extensible structure
+///     Calendar event model - extensible structure
 /// </summary>
 public class CalendarEvent
 {
@@ -49,7 +49,7 @@ public class CalendarEvent
 }
 
 /// <summary>
-/// Calendar model - for multiple calendar support
+///     Calendar model - for multiple calendar support
 /// </summary>
 public class CalendarInfo
 {

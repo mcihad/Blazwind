@@ -1,8 +1,9 @@
 @namespace Blazwind.Components.Range
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inject IJSRuntime JS
 @implements IAsyncDisposable
+@using System.Globalization
+@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 @{
@@ -27,9 +28,10 @@
         <div class="h-10 flex items-end gap-px mb-1 px-0.5 relative">
             @foreach (var (point, index) in Data.Select((v, i) => (v, i)))
             {
-                var height = MaxValue > 0 ? (point.Value / MaxValue) * 100 : 0;
+                var height = MaxValue > 0 ? point.Value / MaxValue * 100 : 0;
                 var isInRange = IsPointInRange(point.Date);
-                <div class="flex-1 rounded-t transition-all duration-150 @(isInRange? barActiveClass : "bg-gray-200 dark:bg-gray-700")"
+                <div
+                    class="flex-1 rounded-t transition-all duration-150 @(isInRange ? barActiveClass : "bg-gray-200 dark:bg-gray-700")"
                     style="height: @(Math.Max(2, height))%;" title="@point.Date.ToString("d") - @point.Value">
                 </div>
             }
@@ -44,7 +46,7 @@
 
         @* Selection Brush *@
         <div class="bw-brush-selection @brushFillClass"
-            style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
+             style="left: @GetInvariantPercent(StartPercent)%; width: @GetInvariantPercent(EndPercent - StartPercent)%;">
 
             @* Left Handle *@
             <div class="bw-brush-handle-left @handleClass">
@@ -53,7 +55,7 @@
 
             @* Center Drag Area *@
             <div class="bw-brush-grip">
-                @for (int i = 0; i < 3; i++)
+                @for (var i = 0; i < 3; i++)
                 {
                     <div class="bw-brush-grip-bar" style="height: 0.5rem;"></div>
                 }
@@ -116,9 +118,9 @@
             @foreach (var preset in Presets)
             {
                 <button type="button"
-                    class="px-2.5 py-1 text-xs font-medium rounded-md transition-all
+                        class="px-2.5 py-1 text-xs font-medium rounded-md transition-all
                                                                        @(IsPresetActive(preset) ? presetActiveClass : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600")"
-                    @onclick="() => ApplyPreset(preset)">
+                        @onclick="() => ApplyPreset(preset)">
                     @preset.Label
                 </button>
             }
@@ -127,29 +129,61 @@
 </div>
 
 @code {
-    [Parameter] public DateTime MinDate { get; set; } = DateTime.Today.AddMonths(-3);
-    [Parameter] public DateTime MaxDate { get; set; } = DateTime.Today;
-    [Parameter] public DateTime StartDate { get; set; } = DateTime.Today.AddMonths(-1);
-    [Parameter] public DateTime EndDate { get; set; } = DateTime.Today;
-    [Parameter] public DateStepUnit StepUnit { get; set; } = DateStepUnit.Day;
-    [Parameter] public int StepValue { get; set; } = 1;
-    [Parameter] public double MinWidthPercent { get; set; } = 5;
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string DateFormat { get; set; } = "dd MMM yyyy";
-    [Parameter] public string DateLabelFormat { get; set; } = "MMM yy";
-    [Parameter] public bool ShowSelectedRange { get; set; } = true;
-    [Parameter] public bool ShowDateMarkers { get; set; } = true;
-    [Parameter] public bool ShowTimeline { get; set; } = true;
-    [Parameter] public List<TimeSeriesPoint>? Data { get; set; }
-    [Parameter] public List<DateBrushPreset>? Presets { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public DateTime MinDate { get; set; } = DateTime.Today.AddMonths(-3);
+
+    [Parameter]
+    public DateTime MaxDate { get; set; } = DateTime.Today;
+
+    [Parameter]
+    public DateTime StartDate { get; set; } = DateTime.Today.AddMonths(-1);
+
+    [Parameter]
+    public DateTime EndDate { get; set; } = DateTime.Today;
+
+    [Parameter]
+    public DateStepUnit StepUnit { get; set; } = DateStepUnit.Day;
+
+    [Parameter]
+    public int StepValue { get; set; } = 1;
+
+    [Parameter]
+    public double MinWidthPercent { get; set; } = 5;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string DateFormat { get; set; } = "dd MMM yyyy";
+
+    [Parameter]
+    public string DateLabelFormat { get; set; } = "MMM yy";
+
+    [Parameter]
+    public bool ShowSelectedRange { get; set; } = true;
+
+    [Parameter]
+    public bool ShowDateMarkers { get; set; } = true;
+
+    [Parameter]
+    public bool ShowTimeline { get; set; } = true;
+
+    [Parameter]
+    public List<TimeSeriesPoint>? Data { get; set; }
+
+    [Parameter]
+    public List<DateBrushPreset>? Presets { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public EventCallback<BrushChangedEventArgs<DateTime>> OnBrushChanged { get; set; }
+    [Parameter]
+    public EventCallback<BrushChangedEventArgs<DateTime>> OnBrushChanged { get; set; }
 
     private string _elementId = "";
     private DotNetObjectReference<BwDateRangeBrush>? _dotNetRef;
-    private double _startPercent;
-    private double _endPercent;
 
     private bool _isDragging;
 
@@ -158,14 +192,19 @@
     private DateTime _prevMin;
     private DateTime _prevMax;
 
-    private double StartPercent => _startPercent;
-    private double EndPercent => _endPercent;
+    private double StartPercent { get; set; }
+
+    private double EndPercent { get; set; }
+
     private int TotalDays => (int)(MaxDate - MinDate).TotalDays;
-    private DateTime CurrentStartDate => SnapToStep(MinDate.AddDays(TotalDays * (_startPercent / 100)));
-    private DateTime CurrentEndDate => SnapToStep(MinDate.AddDays(TotalDays * (_endPercent / 100)));
+    private DateTime CurrentStartDate => SnapToStep(MinDate.AddDays(TotalDays * (StartPercent / 100)));
+    private DateTime CurrentEndDate => SnapToStep(MinDate.AddDays(TotalDays * (EndPercent / 100)));
     private double MaxValue => Data?.Max(x => x.Value) ?? 0;
 
-    protected override bool ShouldRender() => !_isDragging;
+    protected override bool ShouldRender()
+    {
+        return !_isDragging;
+    }
 
     private string RangeText => StepUnit switch
     {
@@ -179,7 +218,7 @@
 
     private string GetMonthDiff()
     {
-        var months = ((CurrentEndDate.Year - CurrentStartDate.Year) * 12) + (CurrentEndDate.Month - CurrentStartDate.Month);
+        var months = (CurrentEndDate.Year - CurrentStartDate.Year) * 12 + (CurrentEndDate.Month - CurrentStartDate.Month);
         return months.ToString();
     }
 
@@ -205,8 +244,8 @@
     private void InitializeState()
     {
         var totalDays = (double)TotalDays;
-        _startPercent = totalDays > 0 ? ((StartDate - MinDate).TotalDays / totalDays) * 100 : 0;
-        _endPercent = totalDays > 0 ? ((EndDate - MinDate).TotalDays / totalDays) * 100 : 100;
+        StartPercent = totalDays > 0 ? (StartDate - MinDate).TotalDays / totalDays * 100 : 0;
+        EndPercent = totalDays > 0 ? (EndDate - MinDate).TotalDays / totalDays * 100 : 100;
 
         _prevStart = StartDate;
         _prevEnd = EndDate;
@@ -218,16 +257,16 @@
     {
         if (_isDragging) return;
 
-        bool paramsChanged = StartDate != _prevStart ||
-        EndDate != _prevEnd ||
-        MinDate != _prevMin ||
-        MaxDate != _prevMax;
+        var paramsChanged = StartDate != _prevStart ||
+                            EndDate != _prevEnd ||
+                            MinDate != _prevMin ||
+                            MaxDate != _prevMax;
 
         if (!paramsChanged) return;
 
         var totalDays = (double)TotalDays;
-        _startPercent = totalDays > 0 ? ((StartDate - MinDate).TotalDays / totalDays) * 100 : 0;
-        _endPercent = totalDays > 0 ? ((EndDate - MinDate).TotalDays / totalDays) * 100 : 100;
+        StartPercent = totalDays > 0 ? (StartDate - MinDate).TotalDays / totalDays * 100 : 0;
+        EndPercent = totalDays > 0 ? (EndDate - MinDate).TotalDays / totalDays * 100 : 100;
 
         _prevStart = StartDate;
         _prevEnd = EndDate;
@@ -253,16 +292,16 @@
         if (firstRender)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
-            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, _startPercent, _endPercent,
-            MinWidthPercent);
+            await JS.InvokeVoidAsync("Blazwind.RangeBrush.initialize", _elementId, _dotNetRef, StartPercent, EndPercent,
+                MinWidthPercent);
         }
     }
 
     [JSInvokable]
     public async Task HandleBrushChanged(double startPercent, double endPercent)
     {
-        _startPercent = Math.Round(startPercent, 2);
-        _endPercent = Math.Round(endPercent, 2);
+        StartPercent = Math.Round(startPercent, 2);
+        EndPercent = Math.Round(endPercent, 2);
 
         await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<DateTime>
         {
@@ -270,8 +309,8 @@
             End = CurrentEndDate,
             Min = MinDate,
             Max = MaxDate,
-            StartPercent = _startPercent,
-            EndPercent = _endPercent
+            StartPercent = StartPercent,
+            EndPercent = EndPercent
         });
 
         await InvokeAsync(StateHasChanged);
@@ -286,10 +325,10 @@
         var start = preset.StartDate < MinDate ? MinDate : preset.StartDate;
         var end = preset.EndDate > MaxDate ? MaxDate : preset.EndDate;
 
-        _startPercent = ((start - MinDate).TotalDays / totalDays) * 100;
-        _endPercent = ((end - MinDate).TotalDays / totalDays) * 100;
+        StartPercent = (start - MinDate).TotalDays / totalDays * 100;
+        EndPercent = (end - MinDate).TotalDays / totalDays * 100;
 
-        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, _startPercent, _endPercent);
+        await JS.InvokeVoidAsync("Blazwind.RangeBrush.updatePosition", _elementId, StartPercent, EndPercent);
 
         await OnBrushChanged.InvokeAsync(new BrushChangedEventArgs<DateTime>
         {
@@ -297,15 +336,15 @@
             End = end,
             Min = MinDate,
             Max = MaxDate,
-            StartPercent = _startPercent,
-            EndPercent = _endPercent
+            StartPercent = StartPercent,
+            EndPercent = EndPercent
         });
     }
 
     private bool IsPresetActive(DateBrushPreset preset)
     {
         return Math.Abs((CurrentStartDate - preset.StartDate).TotalDays) < 1 &&
-        Math.Abs((CurrentEndDate - preset.EndDate).TotalDays) < 1;
+               Math.Abs((CurrentEndDate - preset.EndDate).TotalDays) < 1;
     }
 
     private bool IsPointInRange(DateTime date)
@@ -313,12 +352,14 @@
         var totalDays = (MaxDate - MinDate).TotalDays;
         if (totalDays <= 0) return false;
 
-        var percent = ((date - MinDate).TotalDays / totalDays) * 100;
-        return percent >= _startPercent && percent <= _endPercent;
+        var percent = (date - MinDate).TotalDays / totalDays * 100;
+        return percent >= StartPercent && percent <= EndPercent;
     }
 
-    private string GetInvariantPercent(double value) =>
-    value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+    private string GetInvariantPercent(double value)
+    {
+        return value.ToString("0.##", CultureInfo.InvariantCulture);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -326,7 +367,9 @@
         {
             await JS.InvokeVoidAsync("Blazwind.RangeBrush.dispose", _elementId);
         }
-        catch { }
+        catch
+        {
+        }
 
         _dotNetRef?.Dispose();
     }
@@ -343,4 +386,5 @@
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
+
 }

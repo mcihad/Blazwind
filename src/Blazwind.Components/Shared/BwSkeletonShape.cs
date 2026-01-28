@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Shape options for skeleton loading component
+///     Shape options for skeleton loading component
 /// </summary>
 public enum BwSkeletonShape
 {

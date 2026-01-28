@@ -21,11 +21,11 @@ Inject `ToastService` to use it.
 
 ## Methods
 
-*   `SuccessAsync(message, title, duration)`: Shows a success notification.
-*   `ErrorAsync(message, title, duration)`: Shows an error notification.
-*   `WarningAsync(message, title, duration)`: Shows a warning notification.
-*   `InfoAsync(message, title, duration)`: Shows an info notification.
-*   `ShowAsync(options)`: Shows a notification with custom options.
+* `SuccessAsync(message, title, duration)`: Shows a success notification.
+* `ErrorAsync(message, title, duration)`: Shows an error notification.
+* `WarningAsync(message, title, duration)`: Shows a warning notification.
+* `InfoAsync(message, title, duration)`: Shows an info notification.
+* `ShowAsync(options)`: Shows a notification with custom options.
 
 ## ToastOptions
 
@@ -43,7 +43,7 @@ await ToastService.ShowAsync(new ToastOptions
 });
 ```
 
-*   **Position:** Notification position (`TopRight`, `TopLeft`, `BottomRight`, `BottomLeft`, etc.).
-*   **Duration:** Display duration in milliseconds.
-*   **ShowProgress:** Show a progress bar.
-*   **ShowClose:** Show a close button.
+* **Position:** Notification position (`TopRight`, `TopLeft`, `BottomRight`, `BottomLeft`, etc.).
+* **Duration:** Display duration in milliseconds.
+* **ShowProgress:** Show a progress bar.
+* **ShowClose:** Show a close button.

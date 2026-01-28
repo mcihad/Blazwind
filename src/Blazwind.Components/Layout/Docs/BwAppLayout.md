@@ -1,6 +1,7 @@
 # AppLayout
 
-The root layout shell component that orchestrates the sidebar, header, footer, and main content area of your application.
+The root layout shell component that orchestrates the sidebar, header, footer, and main content area of your
+application.
 
 ## Usage
 
@@ -41,17 +42,18 @@ Typically used in `MainLayout.razor` to define the overall structure of the app.
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Sidebar` | `RenderFragment` | - | Content area for the navigation drawer. |
-| `Header` | `RenderFragment` | - | Content area for the top toolbar. |
-| `ChildContent` | `RenderFragment` | - | The main Body area of the page. |
-| `Footer` | `RenderFragment` | - | Content area for the bottom bar. |
-| `SidebarPosition` | `BwDirection` | `Left` | Anchors the sidebar to the `Left` or `Right` of the screen. |
-| `Class` | `string?` | `null` | Custom CSS classes for the main wrapper. |
+| Parameter         | Type             | Default | Description                                                 |
+|:------------------|:-----------------|:--------|:------------------------------------------------------------|
+| `Sidebar`         | `RenderFragment` | -       | Content area for the navigation drawer.                     |
+| `Header`          | `RenderFragment` | -       | Content area for the top toolbar.                           |
+| `ChildContent`    | `RenderFragment` | -       | The main Body area of the page.                             |
+| `Footer`          | `RenderFragment` | -       | Content area for the bottom bar.                            |
+| `SidebarPosition` | `BwDirection`    | `Left`  | Anchors the sidebar to the `Left` or `Right` of the screen. |
+| `Class`           | `string?`        | `null`  | Custom CSS classes for the main wrapper.                    |
 
 ## Features
 
-- **Responsive Design**: The sidebar automatically collapses on mobile devices (under 1024px) and becomes accessible via a toggle button.
+- **Responsive Design**: The sidebar automatically collapses on mobile devices (under 1024px) and becomes accessible via
+  a toggle button.
 - **Fixed Shell**: The sidebar and header remain fixed to the viewport while the main content scrolls naturally.
 - **Cascading Themes**: Pass colors or styles to the sidebar fragments easily.

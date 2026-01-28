@@ -55,56 +55,61 @@ A professional, drag-and-drop enabled Kanban board component for managing tasks,
 
 ### BwKanban
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Columns` | `List<KanbanColumn>` | `new()` | The list of columns and their respective items. |
-| `ItemTemplate` | `RenderFragment<KanbanItem>` | `null` | Custom template for rendering individual cards. |
-| `ShowAddButton` | `bool` | `true` | Whether to show the "Add card" button at the bottom of columns. |
+| Parameter       | Type                         | Default | Description                                                     |
+|:----------------|:-----------------------------|:--------|:----------------------------------------------------------------|
+| `Columns`       | `List<KanbanColumn>`         | `new()` | The list of columns and their respective items.                 |
+| `ItemTemplate`  | `RenderFragment<KanbanItem>` | `null`  | Custom template for rendering individual cards.                 |
+| `ShowAddButton` | `bool`                       | `true`  | Whether to show the "Add card" button at the bottom of columns. |
 
 ### Event Callbacks
 
-| Event | Payload | Description |
-| :--- | :--- | :--- |
+| Event         | Payload           | Description                                                                   |
+|:--------------|:------------------|:------------------------------------------------------------------------------|
 | `OnItemMoved` | `KanbanMoveEvent` | Triggered when a card is dropped into a target column (including reordering). |
-| `OnItemClick` | `KanbanItem` | Triggered when a card is clicked. |
-| `OnAddClick` | `KanbanColumn` | Triggered when the "Add Card" button is clicked. |
+| `OnItemClick` | `KanbanItem`      | Triggered when a card is clicked.                                             |
+| `OnAddClick`  | `KanbanColumn`    | Triggered when the "Add Card" button is clicked.                              |
 
 ### Data Models
 
 #### KanbanColumn
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| `Id` | `string` | Unique identifier for the column. |
-| `Title` | `string?` | Header title of the column. |
-| `Icon` | `string?` | FontAwesome icon class for the header. |
-| `Color` | `BwColor?` | Theme color for the header border. |
-| `Items` | `List<KanbanItem>?` | Cards contained in this column. |
-| `MaxItems` | `int?` | **[New]** Visual limit for WIP. Header turns red if count exceeds this. |
-| `IsCollapsed` | `bool` | **[New]** Whether the column is collapsed to a narrow strip. |
-| `HeaderExtra` | `RenderFragment?` | Custom content to show on the right side of the header. |
+
+| Property      | Type                | Description                                                             |
+|:--------------|:--------------------|:------------------------------------------------------------------------|
+| `Id`          | `string`            | Unique identifier for the column.                                       |
+| `Title`       | `string?`           | Header title of the column.                                             |
+| `Icon`        | `string?`           | FontAwesome icon class for the header.                                  |
+| `Color`       | `BwColor?`          | Theme color for the header border.                                      |
+| `Items`       | `List<KanbanItem>?` | Cards contained in this column.                                         |
+| `MaxItems`    | `int?`              | **[New]** Visual limit for WIP. Header turns red if count exceeds this. |
+| `IsCollapsed` | `bool`              | **[New]** Whether the column is collapsed to a narrow strip.            |
+| `HeaderExtra` | `RenderFragment?`   | Custom content to show on the right side of the header.                 |
 
 #### KanbanItem
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| `Id` | `string` | Unique identifier for the card. |
-| `Title` | `string?` | Principal text of the card. |
-| `Description` | `string?` | Subtext or details of the card. |
-| `Tags` | `List<string>?` | Small badges displayed on the card. |
-| `Assignee` | `KanbanAssignee?` | User assigned to the task (shows avatar). |
-| `DueDate` | `DateTime?` | Deadline for the task (shows calendar icon). |
-| `Data` | `object?` | Custom user data attached to the item. |
+
+| Property      | Type              | Description                                  |
+|:--------------|:------------------|:---------------------------------------------|
+| `Id`          | `string`          | Unique identifier for the card.              |
+| `Title`       | `string?`         | Principal text of the card.                  |
+| `Description` | `string?`         | Subtext or details of the card.              |
+| `Tags`        | `List<string>?`   | Small badges displayed on the card.          |
+| `Assignee`    | `KanbanAssignee?` | User assigned to the task (shows avatar).    |
+| `DueDate`     | `DateTime?`       | Deadline for the task (shows calendar icon). |
+| `Data`        | `object?`         | Custom user data attached to the item.       |
 
 #### KanbanMoveEvent
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| `Item` | `KanbanItem?` | The card that was moved. |
-| `SourceColumn` | `KanbanColumn?` | The column where the card originated. |
+
+| Property       | Type            | Description                            |
+|:---------------|:----------------|:---------------------------------------|
+| `Item`         | `KanbanItem?`   | The card that was moved.               |
+| `SourceColumn` | `KanbanColumn?` | The column where the card originated.  |
 | `TargetColumn` | `KanbanColumn?` | The column where the card was dropped. |
 
 ## Examples
 
 ### Reordering & WIP Limits
-Items can now be reordered within or between columns. Set `MaxItems` on a column to show a warning when the limit is exceeded.
+
+Items can now be reordered within or between columns. Set `MaxItems` on a column to show a warning when the limit is
+exceeded.
 
 ```razor
 @code {
@@ -122,9 +127,11 @@ Items can now be reordered within or between columns. Set `MaxItems` on a column
 ```
 
 ### Collapsible Columns
+
 Columns can be collapsed by clicking the compress icon in the header. The state is tracked in `IsCollapsed`.
 
 ### Using ItemTemplate
+
 You can override the default card look by using a custom template.
 
 ```razor

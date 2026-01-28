@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart tooltip trigger types (ECharts tooltip.trigger)
+///     Chart tooltip trigger types (ECharts tooltip.trigger)
 /// </summary>
 public static class ChartTooltipTrigger
 {

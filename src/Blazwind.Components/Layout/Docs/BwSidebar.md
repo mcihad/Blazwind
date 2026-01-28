@@ -17,15 +17,16 @@ A navigation drawer component that provides the main menu structure for the appl
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Width` | `string` | `"w-64"` | Tailwind width class for the sidebar. |
-| `Position` | `BwDirection` | `Left` | Anchors the sidebar to the `Left` or `Right`. |
-| `Color` | `BwColor` | `Light` | Theme style (`Light`, `Dark`, `Primary`). |
-| `Class` | `string?` | `null` | Custom CSS classes. |
+| Parameter  | Type          | Default  | Description                                   |
+|:-----------|:--------------|:---------|:----------------------------------------------|
+| `Width`    | `string`      | `"w-64"` | Tailwind width class for the sidebar.         |
+| `Position` | `BwDirection` | `Left`   | Anchors the sidebar to the `Left` or `Right`. |
+| `Color`    | `BwColor`     | `Light`  | Theme style (`Light`, `Dark`, `Primary`).     |
+| `Class`    | `string?`     | `null`   | Custom CSS classes.                           |
 
 ## JS Interop
 
 The sidebar visibility on mobile is managed via JavaScript:
+
 - `Blazwind.Sidebar.toggle()`: Toggles the visibility.
 - `Blazwind.Sidebar.close()`: Forces the sidebar to close (e.g., after a navigation event).

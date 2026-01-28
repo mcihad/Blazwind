@@ -6,23 +6,24 @@
     var isHorizontal = Orientation == BwOrientation.Horizontal;
     var containerClass = isHorizontal ? "flex flex-row" : "flex flex-col";
     var dividerOrientationClass = isHorizontal ? "bw-split-divider-horizontal" : "bw-split-divider-vertical";
-    var firstPanelStyle = isHorizontal 
-        ? $"width: {_size}px; min-width: 50px;" 
+    var firstPanelStyle = isHorizontal
+        ? $"width: {_size}px; min-width: 50px;"
         : $"height: {_size}px; min-height: 50px;";
 }
 
-<div class="@CombineClasses(containerClass, "h-full w-full select-none")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses(containerClass, "h-full w-full select-none")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @* First Panel *@
     <div class="overflow-auto flex-shrink-0" style="@firstPanelStyle">
         @FirstPanel
     </div>
-    
+
     @* Resizable Divider *@
     <div class="bw-split-divider @dividerOrientationClass"
          @onmousedown="OnDividerMouseDown"
          @onmousedown:preventDefault="true">
     </div>
-    
+
     @* Second Panel *@
     <div class="flex-1 overflow-auto min-w-0 min-h-0">
         @SecondPanel
@@ -31,52 +32,66 @@
 
 @if (_isDragging)
 {
-    <div class="fixed inset-0 z-50 @(Orientation == BwOrientation.Horizontal ? "cursor-col-resize" : "cursor-row-resize")"
-         @onmousemove="OnMouseMove"
-         @onmouseup="OnMouseUp"
-         @onmouseleave="OnMouseUp">
+    <div
+        class="fixed inset-0 z-50 @(Orientation == BwOrientation.Horizontal ? "cursor-col-resize" : "cursor-row-resize")"
+        @onmousemove="OnMouseMove"
+        @onmouseup="OnMouseUp"
+        @onmouseleave="OnMouseUp">
     </div>
 }
 
 @code {
-    [Parameter] public RenderFragment? FirstPanel { get; set; }
-    [Parameter] public RenderFragment? SecondPanel { get; set; }
-    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
-    [Parameter] public int DefaultSize { get; set; } = 250;
-    [Parameter] public int MinSize { get; set; } = 100;
-    [Parameter] public int MaxSize { get; set; } = 600;
 
-    [Parameter] public EventCallback<int> OnResize { get; set; }
-    
+    [Parameter]
+    public RenderFragment? FirstPanel { get; set; }
+
+    [Parameter]
+    public RenderFragment? SecondPanel { get; set; }
+
+    [Parameter]
+    public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
+
+    [Parameter]
+    public int DefaultSize { get; set; } = 250;
+
+    [Parameter]
+    public int MinSize { get; set; } = 100;
+
+    [Parameter]
+    public int MaxSize { get; set; } = 600;
+
+    [Parameter]
+    public EventCallback<int> OnResize { get; set; }
+
     private int _size;
-    private bool _isDragging = false;
+    private bool _isDragging;
     private double _startPos;
     private int _startSize;
-    
+
     protected override void OnInitialized()
     {
         _size = DefaultSize;
     }
-    
-    private void OnDividerMouseDown(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+
+    private void OnDividerMouseDown(MouseEventArgs e)
     {
         _isDragging = true;
         _startPos = Orientation == BwOrientation.Horizontal ? e.ClientX : e.ClientY;
         _startSize = _size;
     }
-    
-    private void OnMouseMove(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+
+    private void OnMouseMove(MouseEventArgs e)
     {
         if (!_isDragging) return;
-        
+
         var currentPos = Orientation == BwOrientation.Horizontal ? e.ClientX : e.ClientY;
         var delta = currentPos - _startPos;
         var newSize = _startSize + (int)delta;
-        
+
         _size = Math.Max(MinSize, Math.Min(MaxSize, newSize));
     }
-    
-    private async Task OnMouseUp(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+
+    private async Task OnMouseUp(MouseEventArgs e)
     {
         if (_isDragging)
         {
@@ -84,4 +99,5 @@
             await OnResize.InvokeAsync(_size);
         }
     }
+
 }

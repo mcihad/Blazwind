@@ -33,7 +33,7 @@ Star-based rating component.
 ## Parameters
 
 | Parameter    | Type      | Default                | Description                                                |
-| :----------- | :-------- | :--------------------- | :--------------------------------------------------------- |
+|:-------------|:----------|:-----------------------|:-----------------------------------------------------------|
 | `Value`      | `double`  | `0`                    | Current rating (two-way binding).                          |
 | `MaxValue`   | `int`     | `5`                    | Maximum number of stars (or icons).                        |
 | `AllowHalf`  | `bool`    | `false`                | Allows half-step selection.                                |
@@ -50,5 +50,5 @@ Star-based rating component.
 ## Events
 
 | Event          | Payload  | Description                                          |
-| :------------- | :------- | :--------------------------------------------------- |
+|:---------------|:---------|:-----------------------------------------------------|
 | `ValueChanged` | `double` | Triggered when the rating changes (two-way binding). |

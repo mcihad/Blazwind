@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.ApprovalChain
-@using Blazwind.Components.Shared
 @using Blazwind.Components.Avatar
+@using Blazwind.Components.Shared
 @inherits BwBase
 
 <div class="@CombineClasses("bw-approval-chain-wrapper")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -9,7 +9,7 @@
     {
         <div class="bw-approval-progress-wrapper">
             <div class="bw-approval-progress-track">
-                <div class="bw-approval-progress-fill" 
+                <div class="bw-approval-progress-fill"
                      style="width: @ProgressPercent%"></div>
             </div>
             <span class="bw-approval-progress-text">
@@ -17,144 +17,170 @@
             </span>
         </div>
     }
-    
+
     <div class="@DirectionClass">
-    @for (int i = 0; i < Steps.Count; i++)
-    {
-        var step = Steps[i];
-        var isLast = i == Steps.Count - 1;
-        var isActive = step.Status == ApprovalStatus.Pending && (i == 0 || Steps[i - 1].Status == ApprovalStatus.Approved);
-        var stepIndex = i;
-        
-        @* Step Card *@
-        <div class="@GetStepCardClass(step.Status, isActive)" @onclick="() => HandleStepClick(step)">
-            @* Status Icon *@
-            <div class="@GetStatusBadgeClass(step.Status, isActive)">
-                @if (step.Status == ApprovalStatus.Approved)
-                {
-                    <i class="fa-solid fa-check text-xs"></i>
-                }
-                else if (step.Status == ApprovalStatus.Rejected)
-                {
-                    <i class="fa-solid fa-xmark text-xs"></i>
-                }
-                else if (step.Status == ApprovalStatus.Skipped)
-                {
-                    <i class="fa-solid fa-forward text-xs"></i>
-                }
-                else if (isActive)
-                {
-                    <i class="fa-solid fa-hourglass-half text-xs"></i>
-                }
-                else
-                {
-                    <span class="text-xs font-bold">@(stepIndex + 1)</span>
-                }
-            </div>
-
-            @* Step Info *@
-            <div class="flex-1 min-w-0">
-                <div class="@GetTitleClass(step.Status, isActive)">@step.Title</div>
-                @if (!string.IsNullOrEmpty(step.ApproverName))
-                {
-                    <div class="flex items-center gap-2 mt-1.5">
-                        @if (!string.IsNullOrEmpty(step.ApproverAvatar))
-                        {
-                            <BwAvatar Name="@step.ApproverName" Src="@step.ApproverAvatar" Size="BwSize.ExtraSmall" />
-                        }
-                        <div class="text-xs text-gray-600 truncate">
-                            <span class="font-medium">@step.ApproverName</span>
-                            @if (!string.IsNullOrEmpty(step.ApproverRole))
-                            {
-                                <span class="text-gray-400 ml-1">• @step.ApproverRole</span>
-                            }
-                        </div>
-                    </div>
-                }
-                @if (step.Date.HasValue)
-                {
-                    <div class="text-[11px] text-gray-400 mt-1 flex items-center gap-1">
-                        <i class="fa-regular fa-clock"></i>
-                        <span>@step.Date.Value.ToString("dd.MM.yyyy HH:mm")</span>
-                    </div>
-                }
-                @if (!string.IsNullOrEmpty(step.Comment))
-                {
-                    <div class="text-xs text-gray-500 mt-1.5 italic bg-gray-50 rounded px-2 py-1 border-l-2 @GetCommentBorderClass(step.Status)">
-                        "@step.Comment"
-                    </div>
-                }
-            </div>
-        </div>
-
-        @* Connector Arrow *@
-        @if (!isLast && ShowConnectors)
+        @for (var i = 0; i < Steps.Count; i++)
         {
-            <div class="@GetConnectorClass(step.Status, isActive)">
-                @if (Direction == ApprovalDirection.Horizontal)
-                {
+            var step = Steps[i];
+            var isLast = i == Steps.Count - 1;
+            var isActive = step.Status == ApprovalStatus.Pending && (i == 0 || Steps[i - 1].Status == ApprovalStatus.Approved);
+            var stepIndex = i;
+
+            @* Step Card *@
+            <div class="@GetStepCardClass(step.Status, isActive)" @onclick="() => HandleStepClick(step)">
+                @* Status Icon *@
+                <div class="@GetStatusBadgeClass(step.Status, isActive)">
                     @if (step.Status == ApprovalStatus.Approved)
                     {
-                        @* Mobile: vertical, Desktop: horizontal *@
-                        <div class="hidden sm:flex items-center">
-                            <div class="w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
-                            <i class="fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
-                        </div>
-                        <div class="flex sm:hidden flex-col items-center">
-                             <div class="h-6 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
-                             <i class="fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
-                        </div>
+                        <i class="fa-solid fa-check text-xs"></i>
+                    }
+                    else if (step.Status == ApprovalStatus.Rejected)
+                    {
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    }
+                    else if (step.Status == ApprovalStatus.Skipped)
+                    {
+                        <i class="fa-solid fa-forward text-xs"></i>
+                    }
+                    else if (isActive)
+                    {
+                        <i class="fa-solid fa-hourglass-half text-xs"></i>
                     }
                     else
                     {
-                         <div class="hidden sm:flex items-center">
-                            <div class="w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
-                            <i class="fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
-                         </div>
-                         <div class="flex sm:hidden flex-col items-center">
-                            <div class="h-6 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
-                            <i class="fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
-                         </div>
+                        <span class="text-xs font-bold">@(stepIndex + 1)</span>
                     }
-                }
-                else
-                {
-                    @if (step.Status == ApprovalStatus.Approved)
+                </div>
+
+                @* Step Info *@
+                <div class="flex-1 min-w-0">
+                    <div class="@GetTitleClass(step.Status, isActive)">@step.Title</div>
+                    @if (!string.IsNullOrEmpty(step.ApproverName))
                     {
-                        <div class="h-8 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
-                        <i class="fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            @if (!string.IsNullOrEmpty(step.ApproverAvatar))
+                            {
+                                <BwAvatar Name="@step.ApproverName" Src="@step.ApproverAvatar"
+                                          Size="BwSize.ExtraSmall"/>
+                            }
+                            <div class="text-xs text-gray-600 truncate">
+                                <span class="font-medium">@step.ApproverName</span>
+                                @if (!string.IsNullOrEmpty(step.ApproverRole))
+                                {
+                                    <span class="text-gray-400 ml-1">• @step.ApproverRole</span>
+                                }
+                            </div>
+                        </div>
                     }
-                    else
+                    @if (step.Date.HasValue)
                     {
-                        <div class="h-8 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
-                        <i class="fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
+                        <div class="text-[11px] text-gray-400 mt-1 flex items-center gap-1">
+                            <i class="fa-regular fa-clock"></i>
+                            <span>@step.Date.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
                     }
-                }
+                    @if (!string.IsNullOrEmpty(step.Comment))
+                    {
+                        <div
+                            class="text-xs text-gray-500 mt-1.5 italic bg-gray-50 rounded px-2 py-1 border-l-2 @GetCommentBorderClass(step.Status)">
+                            "@step.Comment"
+                        </div>
+                    }
+                </div>
             </div>
+
+            @* Connector Arrow *@
+            @if (!isLast && ShowConnectors)
+            {
+                <div class="@GetConnectorClass(step.Status, isActive)">
+                    @if (Direction == ApprovalDirection.Horizontal)
+                    {
+                        @if (step.Status == ApprovalStatus.Approved)
+                        {
+                            @* Mobile: vertical, Desktop: horizontal *@
+                            <div class="hidden sm:flex items-center">
+                                <div
+                                    class="w-8 h-0.5 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full"></div>
+                                <i class="fa-solid fa-chevron-right text-emerald-400 text-xs -ml-1"></i>
+                            </div>
+                            <div class="flex sm:hidden flex-col items-center">
+                                <div
+                                    class="h-6 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
+                                <i class="fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="hidden sm:flex items-center">
+                                <div
+                                    class="w-8 h-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                                <i class="fa-solid fa-chevron-right text-gray-300 text-xs -ml-1"></i>
+                            </div>
+                            <div class="flex sm:hidden flex-col items-center">
+                                <div
+                                    class="h-6 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                                <i class="fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        @if (step.Status == ApprovalStatus.Approved)
+                        {
+                            <div class="h-8 w-0.5 bg-gradient-to-b from-emerald-400 to-emerald-300 rounded-full"></div>
+                            <i class="fa-solid fa-chevron-down text-emerald-400 text-xs -mt-1"></i>
+                        }
+                        else
+                        {
+                            <div class="h-8 w-0.5 bg-gray-200 rounded-full border border-dashed border-gray-300"></div>
+                            <i class="fa-solid fa-chevron-down text-gray-300 text-xs -mt-1"></i>
+                        }
+                    }
+                </div>
+            }
         }
-    }
     </div>
 </div>
 
 @code {
-    [Parameter] public List<ApprovalStep> Steps { get; set; } = new();
-    [Parameter] public ApprovalDirection Direction { get; set; } = ApprovalDirection.Horizontal;
-    [Parameter] public bool ShowConnectors { get; set; } = true;
-    [Parameter] public bool Interactive { get; set; } = true;
-    [Parameter] public bool ShowActions { get; set; } = false;
-    [Parameter] public bool ShowProgress { get; set; } = true;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public EventCallback<ApprovalStep> OnStepClick { get; set; }
-    [Parameter] public EventCallback<ApprovalStep> OnApprove { get; set; }
-    [Parameter] public EventCallback<ApprovalStep> OnReject { get; set; }
+
+    [Parameter]
+    public List<ApprovalStep> Steps { get; set; } = new();
+
+    [Parameter]
+    public ApprovalDirection Direction { get; set; } = ApprovalDirection.Horizontal;
+
+    [Parameter]
+    public bool ShowConnectors { get; set; } = true;
+
+    [Parameter]
+    public bool Interactive { get; set; } = true;
+
+    [Parameter]
+    public bool ShowActions { get; set; }
+
+    [Parameter]
+    public bool ShowProgress { get; set; } = true;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public EventCallback<ApprovalStep> OnStepClick { get; set; }
+
+    [Parameter]
+    public EventCallback<ApprovalStep> OnApprove { get; set; }
+
+    [Parameter]
+    public EventCallback<ApprovalStep> OnReject { get; set; }
 
     // Calculated completion percentage
     private int CompletedCount => Steps.Count(s => s.Status == ApprovalStatus.Approved);
     private int TotalCount => Steps.Count;
     private double ProgressPercent => TotalCount > 0 ? (double)CompletedCount / TotalCount * 100 : 0;
 
-    private string DirectionClass => Direction == ApprovalDirection.Horizontal 
-        ? "bw-approval-steps-horizontal" 
+    private string DirectionClass => Direction == ApprovalDirection.Horizontal
+        ? "bw-approval-steps-horizontal"
         : "bw-approval-steps-vertical";
 
     private string GetStepCardClass(ApprovalStatus status, bool isActive)
@@ -165,10 +191,10 @@
             BwSize.Large => "bw-approval-step-card-lg",
             _ => "bw-approval-step-card-md"
         };
-        
+
         var baseClass = $"bw-approval-step-card {sizeClass}";
         var cursorClass = Interactive ? "bw-approval-step-card-interactive" : "";
-        
+
         var statusClass = status switch
         {
             ApprovalStatus.Approved => "bw-approval-step-card-approved",
@@ -189,9 +215,9 @@
             BwSize.Large => "bw-approval-badge-lg",
             _ => "bw-approval-badge-md"
         };
-        
+
         var baseClass = $"bw-approval-badge {sizeClass}";
-        
+
         var statusClass = status switch
         {
             ApprovalStatus.Approved => "bw-approval-badge-approved",
@@ -200,7 +226,7 @@
             _ when isActive => "bw-approval-badge-active",
             _ => "bw-approval-badge-pending"
         };
-        
+
         return $"{baseClass} {statusClass}";
     }
 
@@ -212,7 +238,7 @@
             BwSize.Large => "bw-approval-title-lg",
             _ => "bw-approval-title-md"
         };
-        
+
         var colorClass = status switch
         {
             ApprovalStatus.Approved => "bw-approval-title-approved",
@@ -221,7 +247,7 @@
             _ when isActive => "bw-approval-title-active",
             _ => "bw-approval-title-pending"
         };
-        
+
         return $"bw-approval-title {sizeClass} {colorClass}";
     }
 
@@ -237,8 +263,8 @@
 
     private string GetConnectorClass(ApprovalStatus status, bool isActive)
     {
-        return Direction == ApprovalDirection.Horizontal 
-            ? "bw-approval-connector-horizontal" 
+        return Direction == ApprovalDirection.Horizontal
+            ? "bw-approval-connector-horizontal"
             : "bw-approval-connector-vertical";
     }
 
@@ -249,4 +275,5 @@
             await OnStepClick.InvokeAsync(step);
         }
     }
+
 }

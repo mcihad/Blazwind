@@ -1,7 +1,6 @@
 @namespace Blazwind.Components.Accordion
 @inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
 @implements IDisposable
 
 @{
@@ -10,7 +9,7 @@
 }
 
 <div class="@_itemClasses" @attributes="AdditionalAttributes" style="@Style">
-    <button type="button" 
+    <button type="button"
             class="@_headerClasses"
             disabled="@IsDisabled"
             @onclick="HandleToggle">
@@ -34,7 +33,7 @@
         </div>
         <i class="fa-solid fa-chevron-down opacity-50 transition-transform duration-300 ease-in-out @iconRotation"></i>
     </button>
-    
+
     @if (isExpanded)
     {
         <div class="@_contentClasses">
@@ -44,14 +43,27 @@
 </div>
 
 @code {
-    [CascadingParameter] public BwAccordion? ParentAccordion { get; set; }
-    
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public RenderFragment? TitleTemplate { get; set; }
-    [Parameter] public RenderFragment? Badge { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [CascadingParameter]
+    public BwAccordion? ParentAccordion { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? TitleTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? Badge { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     private string _itemClasses => CombineClasses("bw-accordion-item"); // Parent handles borders via divide-y
 
@@ -77,7 +89,7 @@
 
             // State & Color
             var isExpanded = ParentAccordion?.IsExpanded(this) ?? false;
-            
+
             if (IsDisabled)
             {
                 // Disabled styles handled by CSS :disabled selector
@@ -102,8 +114,8 @@
         {
             var classes = new List<string> { "bw-accordion-content" };
             // Padding based on size
-             var size = ParentAccordion?.Size ?? BwSize.Medium;
-             switch (size)
+            var size = ParentAccordion?.Size ?? BwSize.Medium;
+            switch (size)
             {
                 case BwSize.ExtraSmall: classes.Add("bw-accordion-content-xs"); break;
                 case BwSize.Small: classes.Add("bw-accordion-content-sm"); break;
@@ -111,6 +123,7 @@
                 case BwSize.Large: classes.Add("bw-accordion-content-lg"); break;
                 case BwSize.ExtraLarge: classes.Add("bw-accordion-content-xl"); break;
             }
+
             return string.Join(" ", classes);
         }
     }
@@ -139,5 +152,6 @@
     {
         ParentAccordion?.UnregisterItem(this);
     }
+
 }
 

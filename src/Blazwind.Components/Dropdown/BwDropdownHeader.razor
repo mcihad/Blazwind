@@ -1,22 +1,29 @@
 @namespace Blazwind.Components.Dropdown
 @inherits BwBase
 
-<div class="@CombineClasses($"bw-dropdown-header")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses("bw-dropdown-header")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @if (!string.IsNullOrEmpty(Title))
     {
         <p class="bw-dropdown-title">@Title</p>
     }
-    
+
     @if (!string.IsNullOrEmpty(Subtitle))
     {
         <p class="bw-dropdown-subtitle">@Subtitle</p>
     }
-    
+
     @ChildContent
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
 }

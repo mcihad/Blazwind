@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart axis types (ECharts axis.type)
+///     Chart axis types (ECharts axis.type)
 /// </summary>
 public static class ChartAxisType
 {

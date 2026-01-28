@@ -29,6 +29,7 @@ A flexible toolbar component for grouping buttons, dropdowns, and other actions.
 ```
 
 ### Positioning (Floating Toolbar)
+
 Use `Position` to stick the toolbar to a specific part of the screen.
 
 ```razor
@@ -40,6 +41,7 @@ Use `Position` to stick the toolbar to a specific part of the screen.
 ```
 
 ### Vertical
+
 Set `Orientation` to `Vertical` for a sidebar-like toolbar.
 
 ```razor
@@ -52,18 +54,18 @@ Set `Orientation` to `Vertical` for a sidebar-like toolbar.
 
 ### BwToolbar Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Orientation` | `ToolbarOrientation` | `Horizontal` | Layout direction: `Horizontal`, `Vertical`. |
-| `Position` | `ToolbarPosition` | `None` | Fixed position: `Top`, `Bottom`, `Left`, `Right`, etc. |
-| `Size` | `BwSize` | `Medium` | Size of the toolbar items. |
-| `Color` | `BwColor` | `Secondary` | Theme color. |
-| `Rounded` | `bool` | `true` | Whether the toolbar has rounded corners. |
-| `Shadow` | `bool` | `true` | Whether to show a shadow. |
-| `Glass` | `bool` | `true` | Enables glassmorphism effect (backdrop blur). |
-| `Offset` | `int` | `16` | Distance in pixels from the edge (when positioned). |
-| `Wrap` | `bool` | `false` | Allow items to wrap on multiple lines (mobile-friendly). |
-| `MaxWidth` | `string?` | `null` | Max width constraint (e.g., `"100%"`, `"400px"`). |
+| Parameter     | Type                 | Default      | Description                                              |
+|:--------------|:---------------------|:-------------|:---------------------------------------------------------|
+| `Orientation` | `ToolbarOrientation` | `Horizontal` | Layout direction: `Horizontal`, `Vertical`.              |
+| `Position`    | `ToolbarPosition`    | `None`       | Fixed position: `Top`, `Bottom`, `Left`, `Right`, etc.   |
+| `Size`        | `BwSize`             | `Medium`     | Size of the toolbar items.                               |
+| `Color`       | `BwColor`            | `Secondary`  | Theme color.                                             |
+| `Rounded`     | `bool`               | `true`       | Whether the toolbar has rounded corners.                 |
+| `Shadow`      | `bool`               | `true`       | Whether to show a shadow.                                |
+| `Glass`       | `bool`               | `true`       | Enables glassmorphism effect (backdrop blur).            |
+| `Offset`      | `int`                | `16`         | Distance in pixels from the edge (when positioned).      |
+| `Wrap`        | `bool`               | `false`      | Allow items to wrap on multiple lines (mobile-friendly). |
+| `MaxWidth`    | `string?`            | `null`       | Max width constraint (e.g., `"100%"`, `"400px"`).        |
 
 ### Mobile Responsiveness
 
@@ -78,10 +80,12 @@ For toolbars with many items, use `Wrap` and `MaxWidth` to prevent overflow:
 ### Smart Dropdown Positioning
 
 Dropdown menus automatically detect viewport position and adjust direction:
+
 - Opens **upward** if near bottom of screen
 - Aligns **right** if near right edge
 
 ### Helper Components
+
 - **BwToolButton**: A button within the toolbar.
 - **BwToolDropdown**: A dropdown menu within the toolbar.
 - **BwToolSeparator**: A visual separator line.

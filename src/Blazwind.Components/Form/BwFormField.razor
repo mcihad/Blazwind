@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.Form
-@using Blazwind.Components.Shared
 @using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @using Microsoft.AspNetCore.Components.Forms
 @inherits BwBase
 
@@ -9,7 +9,7 @@
     var hasError = !string.IsNullOrEmpty(ErrorMessage) || _fieldErrors.Any();
     var hasHelper = !string.IsNullOrEmpty(HelperText);
     var displayError = ErrorMessage ?? _fieldErrors.FirstOrDefault();
-    
+
     // Density-based spacing
     var densityClass = EffectiveDensity switch
     {
@@ -17,21 +17,22 @@
         BwFormDensity.Relaxed => "mb-6",
         _ => "mb-4"
     };
-    
+
     var labelSpacingClass = EffectiveDensity switch
     {
         BwFormDensity.Compact => "mb-0.5",
         BwFormDensity.Relaxed => "mb-2",
         _ => "mb-1.5"
     };
-    
+
     // Label width for left position
-    var labelWidthStyle = EffectiveLabelPosition == BwLabelPosition.Left 
+    var labelWidthStyle = EffectiveLabelPosition == BwLabelPosition.Left
         ? $"width: {LabelWidth}; min-width: {LabelWidth}; flex-shrink: 0;"
         : "";
 }
 
-<div class="@CombineClasses($"bw-form-field {densityClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"bw-form-field {densityClass}")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @switch (EffectiveLabelPosition)
     {
         case BwLabelPosition.Top:
@@ -47,15 +48,16 @@
                     </label>
                     @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                     {
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                     }
                 </div>
             }
+
             <div class="relative">
                 @ChildContent
             </div>
             break;
-            
+
         case BwLabelPosition.Left:
             <div class="flex items-start gap-3">
                 @if (hasLabel)
@@ -70,7 +72,7 @@
                         </label>
                         @if (hasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                         {
-                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                         }
                     </div>
                 }
@@ -79,7 +81,7 @@
                 </div>
             </div>
             break;
-            
+
         case BwLabelPosition.Floating:
             <div class="relative">
                 <div class="relative">
@@ -87,7 +89,8 @@
                 </div>
                 @if (hasLabel)
                 {
-                    <label class="@(_hasValue || _isFocused ? "bw-form-label-floating-active" : "bw-form-label-floating top-1/2 -translate-y-1/2 text-sm")">
+                    <label
+                        class="@(_hasValue || _isFocused ? "bw-form-label-floating-active" : "bw-form-label-floating top-1/2 -translate-y-1/2 text-sm")">
                         @Label
                         @if (IsRequired)
                         {
@@ -97,14 +100,14 @@
                 }
             </div>
             break;
-            
+
         case BwLabelPosition.Hidden:
             <div class="relative">
                 @ChildContent
             </div>
             break;
     }
-    
+
     @* Error/Helper Messages *@
     @if (hasError)
     {
@@ -120,42 +123,63 @@
 </div>
 
 @code {
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
-    [CascadingParameter] private BwLabelPosition? CascadedLabelPosition { get; set; }
-    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
-    [CascadingParameter] private BwHelpTextMode? CascadedHelpTextMode { get; set; }
-    
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? HelperText { get; set; }
-    [Parameter] public string? ErrorMessage { get; set; }
-    [Parameter] public bool IsRequired { get; set; }
 
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [CascadingParameter]
+    private EditContext? CascadedEditContext { get; set; }
+
+    [CascadingParameter]
+    private BwLabelPosition? CascadedLabelPosition { get; set; }
+
+    [CascadingParameter]
+    private BwFormDensity? CascadedDensity { get; set; }
+
+    [CascadingParameter]
+    private BwHelpTextMode? CascadedHelpTextMode { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? HelperText { get; set; }
+
+    [Parameter]
+    public string? ErrorMessage { get; set; }
+
+    [Parameter]
+    public bool IsRequired { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Label position - overrides cascade if set</summary>
-    [Parameter] public BwLabelPosition? LabelPosition { get; set; }
-    
+    [Parameter]
+    public BwLabelPosition? LabelPosition { get; set; }
+
     /// <summary>Form density - overrides cascade if set</summary>
-    [Parameter] public BwFormDensity? Density { get; set; }
-    
+    [Parameter]
+    public BwFormDensity? Density { get; set; }
+
     /// <summary>Label width for Left position (e.g., "120px", "30%")</summary>
-    [Parameter] public string LabelWidth { get; set; } = "120px";
-    
+    [Parameter]
+    public string LabelWidth { get; set; } = "120px";
+
     /// <summary>Field identifier for validation binding</summary>
-    [Parameter] public FieldIdentifier? For { get; set; }
-    
+    [Parameter]
+    public FieldIdentifier? For { get; set; }
+
     /// <summary>Help text display mode</summary>
-    [Parameter] public BwHelpTextMode? HelpTextMode { get; set; }
-    
+    [Parameter]
+    public BwHelpTextMode? HelpTextMode { get; set; }
+
     // Internal state for floating label
     private bool _hasValue;
     private bool _isFocused;
     private IEnumerable<string> _fieldErrors = Enumerable.Empty<string>();
-    
+
     private BwLabelPosition EffectiveLabelPosition => LabelPosition ?? CascadedLabelPosition ?? BwLabelPosition.Top;
     private BwFormDensity EffectiveDensity => Density ?? CascadedDensity ?? BwFormDensity.Normal;
     private BwHelpTextMode EffectiveHelpTextMode => HelpTextMode ?? CascadedHelpTextMode ?? BwHelpTextMode.Inline;
-    
+
     protected override void OnInitialized()
     {
         if (CascadedEditContext != null && For.HasValue)
@@ -163,7 +187,7 @@
             CascadedEditContext.OnValidationStateChanged += HandleValidationStateChanged;
         }
     }
-    
+
     private void HandleValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
     {
         if (For.HasValue)
@@ -172,21 +196,21 @@
             StateHasChanged();
         }
     }
-    
+
     /// <summary>Call from child input when value changes (for floating label)</summary>
     public void NotifyValueChanged(bool hasValue)
     {
         _hasValue = hasValue;
         StateHasChanged();
     }
-    
+
     /// <summary>Call from child input on focus (for floating label)</summary>
     public void NotifyFocus(bool isFocused)
     {
         _isFocused = isFocused;
         StateHasChanged();
     }
-    
+
     public void Dispose()
     {
         if (CascadedEditContext != null)
@@ -194,4 +218,5 @@
             CascadedEditContext.OnValidationStateChanged -= HandleValidationStateChanged;
         }
     }
+
 }

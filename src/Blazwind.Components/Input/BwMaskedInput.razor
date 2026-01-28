@@ -1,6 +1,6 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
 @using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<string>
 
 @{
@@ -10,7 +10,7 @@
         BwSize.Large => "bw-input-large tracking-widest",
         _ => "bw-input-medium tracking-wide"
     };
-    
+
     var baseClass = "bw-input font-mono";
     var stateClass = GetStateClass();
     var disabledClass = GetDisabledClass();
@@ -34,10 +34,11 @@
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                     {
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                     }
                 </div>
             }
+
             <div class="relative">
                 <input type="text"
                        class="@baseClass @sizeClass @stateClass @disabledClass"
@@ -50,15 +51,16 @@
                        @onkeydown="HandleKeyDownEvent"
                        @onfocus="HandleFocusEvent"
                        @onblur="HandleBlurEvent"
-                       @attributes="AdditionalAttributes" />
+                       @attributes="AdditionalAttributes"/>
             </div>
             break;
-            
+
         case BwLabelPosition.Left:
             <div class="flex items-start gap-3">
                 @if (HasLabel)
                 {
-                    <div class="flex items-center gap-1 pt-2.5 shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                    <div class="flex items-center gap-1 pt-2.5 shrink-0"
+                         style="width: @LabelWidth; min-width: @LabelWidth;">
                         <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
@@ -68,7 +70,7 @@
                         </label>
                         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                         {
-                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                         }
                     </div>
                 }
@@ -84,11 +86,11 @@
                            @onkeydown="HandleKeyDownEvent"
                            @onfocus="HandleFocusEvent"
                            @onblur="HandleBlurEvent"
-                           @attributes="AdditionalAttributes" />
+                           @attributes="AdditionalAttributes"/>
                 </div>
             </div>
             break;
-            
+
         default:
             <div class="relative">
                 <input type="text"
@@ -102,11 +104,11 @@
                        @onkeydown="HandleKeyDownEvent"
                        @onfocus="HandleFocusEvent"
                        @onblur="HandleBlurEvent"
-                       @attributes="AdditionalAttributes" />
+                       @attributes="AdditionalAttributes"/>
             </div>
             break;
     }
-    
+
     @* Error/Helper Messages *@
     @if (HasError)
     {
@@ -122,20 +124,26 @@
 </div>
 
 @code {
+
     /// <summary>Mask pattern. Use # for digits, A for letters, * for any character.</summary>
-    [Parameter] public string Mask { get; set; } = "";
-    
+    [Parameter]
+    public string Mask { get; set; } = "";
+
     /// <summary>Character shown for unfilled positions</summary>
-    [Parameter] public char MaskChar { get; set; } = '_';
-    
+    [Parameter]
+    public char MaskChar { get; set; } = '_';
+
     /// <summary>Preset mask type</summary>
-    [Parameter] public BwMaskPreset? Preset { get; set; }
-    
+    [Parameter]
+    public BwMaskPreset? Preset { get; set; }
+
     /// <summary>If true (default), Value returns raw characters only. If false, Value includes mask literals.</summary>
-    [Parameter] public bool UnmaskValue { get; set; } = true;
-    
+    [Parameter]
+    public bool UnmaskValue { get; set; } = true;
+
     /// <summary>Triggered when Enter key is pressed</summary>
-    [Parameter] public EventCallback OnEnter { get; set; }
+    [Parameter]
+    public EventCallback OnEnter { get; set; }
 
     private string _displayValue = "";
     private string _activeMask = "";
@@ -148,15 +156,18 @@
         UpdateDisplayValue();
     }
 
-    private string GetPresetMask(BwMaskPreset preset) => preset switch
+    private string GetPresetMask(BwMaskPreset preset)
     {
-        BwMaskPreset.Phone => "(###) ### ## ##",
-        BwMaskPreset.CreditCard => "#### #### #### ####",
-        BwMaskPreset.Date => "##/##/####",
-        BwMaskPreset.Time => "##:##",
-        BwMaskPreset.Iban => "TR## #### #### #### #### #### ##",
-        _ => Mask
-    };
+        return preset switch
+        {
+            BwMaskPreset.Phone => "(###) ### ## ##",
+            BwMaskPreset.CreditCard => "#### #### #### ####",
+            BwMaskPreset.Date => "##/##/####",
+            BwMaskPreset.Time => "##:##",
+            BwMaskPreset.Iban => "TR## #### #### #### #### #### ##",
+            _ => Mask
+        };
+    }
 
     private void UpdateDisplayValue()
     {
@@ -165,11 +176,11 @@
             _displayValue = Value ?? "";
             return;
         }
-        
+
         var rawValue = Value ?? "";
         var result = "";
         var rawIndex = 0;
-        
+
         foreach (var maskChar in _activeMask)
         {
             if (maskChar == '#' || maskChar == 'A' || maskChar == '*')
@@ -192,7 +203,7 @@
                 }
             }
         }
-        
+
         _displayValue = result;
     }
 
@@ -207,16 +218,16 @@
     {
         var input = e.Value?.ToString() ?? "";
         var rawValue = "";
-        
+
         foreach (var ch in input)
         {
             if (rawValue.Length >= _maxRawLength) break;
-            
+
             var maskIndex = GetMaskIndexForRawPosition(rawValue.Length);
             if (maskIndex < 0 || maskIndex >= _activeMask.Length) break;
-            
+
             var expectedMask = _activeMask[maskIndex];
-            
+
             if (expectedMask == '#' && char.IsDigit(ch))
             {
                 rawValue += ch;
@@ -230,7 +241,7 @@
                 rawValue += ch;
             }
         }
-        
+
         // Set Value based on UnmaskValue parameter
         if (UnmaskValue)
         {
@@ -241,29 +252,29 @@
             // Build formatted value with mask literals
             Value = BuildFormattedValue(rawValue);
         }
-        
+
         await ValueChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);
         UpdateDisplayValue();
-        
+
         if (CascadedEditContext != null && For != null)
         {
             CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
         }
     }
-    
+
     private string BuildFormattedValue(string rawValue)
     {
         if (string.IsNullOrEmpty(_activeMask) || string.IsNullOrEmpty(rawValue))
             return rawValue;
-            
+
         var result = "";
         var rawIndex = 0;
-        
+
         foreach (var maskChar in _activeMask)
         {
             if (rawIndex >= rawValue.Length) break;
-            
+
             if (maskChar == '#' || maskChar == 'A' || maskChar == '*')
             {
                 result += rawValue[rawIndex];
@@ -274,7 +285,7 @@
                 result += maskChar;
             }
         }
-        
+
         return result;
     }
 
@@ -290,6 +301,7 @@
                 rawCount++;
             }
         }
+
         return -1;
     }
 
@@ -301,7 +313,7 @@
             await OnEnter.InvokeAsync();
         }
     }
-    
+
     private async Task HandleFocusEvent(FocusEventArgs e)
     {
         IsFocused = true;
@@ -313,4 +325,5 @@
         IsFocused = false;
         await HandleBlur(e);
     }
+
 }

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Visual style variants for the Stepper component.
+///     Visual style variants for the Stepper component.
 /// </summary>
 public enum BwStepperVariant
 {

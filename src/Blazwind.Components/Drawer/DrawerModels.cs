@@ -3,7 +3,7 @@ using Blazwind.Components.Shared;
 namespace Blazwind.Components.Drawer;
 
 /// <summary>
-/// Options for configuring a drawer instance
+///     Options for configuring a drawer instance
 /// </summary>
 public class DrawerOptions
 {
@@ -59,38 +59,52 @@ public class DrawerOptions
 }
 
 /// <summary>
-/// Result returned when a drawer is closed
+///     Result returned when a drawer is closed
 /// </summary>
 public class DrawerResult
 {
-    public bool Canceled { get; }
-    public object? Data { get; }
-
     internal DrawerResult(bool canceled, object? data)
     {
         Canceled = canceled;
         Data = data;
     }
 
-    public static DrawerResult Ok(object? data = null) => new(false, data);
-    public static DrawerResult Cancel() => new(true, null);
+    public bool Canceled { get; }
+    public object? Data { get; }
+
+    public static DrawerResult Ok(object? data = null)
+    {
+        return new DrawerResult(false, data);
+    }
+
+    public static DrawerResult Cancel()
+    {
+        return new DrawerResult(true, null);
+    }
 
     // Generic Helper
-    public static DrawerResult<T> Ok<T>(T data) => new(false, data);
-    public static DrawerResult<T> Cancel<T>() => new(true, default);
+    public static DrawerResult<T> Ok<T>(T data)
+    {
+        return new DrawerResult<T>(false, data);
+    }
+
+    public static DrawerResult<T> Cancel<T>()
+    {
+        return new DrawerResult<T>(true, default);
+    }
 }
 
 /// <summary>
-/// Generic result for typed data return
+///     Generic result for typed data return
 /// </summary>
 public class DrawerResult<T>
 {
-    public bool Canceled { get; }
-    public T? Data { get; }
-
     internal DrawerResult(bool canceled, T? data)
     {
         Canceled = canceled;
         Data = data;
     }
+
+    public bool Canceled { get; }
+    public T? Data { get; }
 }

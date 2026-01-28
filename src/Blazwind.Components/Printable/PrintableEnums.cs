@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Printable;
 
 /// <summary>
-/// Print page sizes
+///     Print page sizes
 /// </summary>
 public enum PrintPageSize
 {
@@ -12,7 +12,7 @@ public enum PrintPageSize
 }
 
 /// <summary>
-/// Print orientation
+///     Print orientation
 /// </summary>
 public enum PrintOrientation
 {

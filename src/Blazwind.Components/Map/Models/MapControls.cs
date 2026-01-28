@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// Control position on the map
+///     Control position on the map
 /// </summary>
 public static class ControlPosition
 {
@@ -14,21 +14,25 @@ public static class ControlPosition
 }
 
 /// <summary>
-/// Navigation control options
+///     Navigation control options
 /// </summary>
 public class NavigationControlOptions
 {
-    [JsonPropertyName("showCompass")] public bool ShowCompass { get; set; } = true;
+    [JsonPropertyName("showCompass")]
+    public bool ShowCompass { get; set; } = true;
 
-    [JsonPropertyName("showZoom")] public bool ShowZoom { get; set; } = true;
+    [JsonPropertyName("showZoom")]
+    public bool ShowZoom { get; set; } = true;
 
-    [JsonPropertyName("visualizePitch")] public bool VisualizePitch { get; set; }
+    [JsonPropertyName("visualizePitch")]
+    public bool VisualizePitch { get; set; }
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.TopRight;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.TopRight;
 }
 
 /// <summary>
-/// Scale control options
+///     Scale control options
 /// </summary>
 public class ScaleControlOptions
 {
@@ -36,13 +40,15 @@ public class ScaleControlOptions
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? MaxWidth { get; set; }
 
-    [JsonPropertyName("unit")] public string Unit { get; set; } = "metric";
+    [JsonPropertyName("unit")]
+    public string Unit { get; set; } = "metric";
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.BottomLeft;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.BottomLeft;
 }
 
 /// <summary>
-/// Fullscreen control options
+///     Fullscreen control options
 /// </summary>
 public class FullscreenControlOptions
 {
@@ -50,11 +56,12 @@ public class FullscreenControlOptions
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Container { get; set; }
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.TopRight;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.TopRight;
 }
 
 /// <summary>
-/// Geolocate control options
+///     Geolocate control options
 /// </summary>
 public class GeolocateControlOptions
 {
@@ -72,15 +79,18 @@ public class GeolocateControlOptions
     [JsonPropertyName("showAccuracyCircle")]
     public bool ShowAccuracyCircle { get; set; } = true;
 
-    [JsonPropertyName("showUserLocation")] public bool ShowUserLocation { get; set; } = true;
+    [JsonPropertyName("showUserLocation")]
+    public bool ShowUserLocation { get; set; } = true;
 
-    [JsonPropertyName("showUserHeading")] public bool ShowUserHeading { get; set; }
+    [JsonPropertyName("showUserHeading")]
+    public bool ShowUserHeading { get; set; }
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.TopRight;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.TopRight;
 }
 
 /// <summary>
-/// Position options for geolocation
+///     Position options for geolocation
 /// </summary>
 public class PositionOptions
 {
@@ -97,43 +107,50 @@ public class PositionOptions
 }
 
 /// <summary>
-/// Attribution control options
+///     Attribution control options
 /// </summary>
 public class AttributionControlOptions
 {
-    [JsonPropertyName("compact")] public bool Compact { get; set; } = true;
+    [JsonPropertyName("compact")]
+    public bool Compact { get; set; } = true;
 
     [JsonPropertyName("customAttribution")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? CustomAttribution { get; set; }
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.BottomRight;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.BottomRight;
 }
 
 /// <summary>
-/// Terrain control options
+///     Terrain control options
 /// </summary>
 public class TerrainControlOptions
 {
-    [JsonPropertyName("source")] public string Source { get; set; } = string.Empty;
+    [JsonPropertyName("source")]
+    public string Source { get; set; } = string.Empty;
 
-    [JsonPropertyName("exaggeration")] public double Exaggeration { get; set; } = 1.0;
+    [JsonPropertyName("exaggeration")]
+    public double Exaggeration { get; set; } = 1.0;
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.TopRight;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.TopRight;
 }
 
 /// <summary>
-/// Logo control options
+///     Logo control options
 /// </summary>
 public class LogoControlOptions
 {
-    [JsonPropertyName("compact")] public bool Compact { get; set; }
+    [JsonPropertyName("compact")]
+    public bool Compact { get; set; }
 
-    [JsonPropertyName("position")] public string Position { get; set; } = ControlPosition.BottomLeft;
+    [JsonPropertyName("position")]
+    public string Position { get; set; } = ControlPosition.BottomLeft;
 }
 
 /// <summary>
-/// All map control configuration
+///     All map control configuration
 /// </summary>
 public class MapControlsConfig
 {

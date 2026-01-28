@@ -1,7 +1,7 @@
 @namespace Blazwind.Components.Input
-@using Blazwind.Components.Shared
-@using Blazwind.Components.HelpTooltip
 @using System.Globalization
+@using Blazwind.Components.HelpTooltip
+@using Blazwind.Components.Shared
 @inherits BwBaseInput<DateTime?>
 
 @{
@@ -29,10 +29,11 @@
                     </label>
                     @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                     {
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                     }
                 </div>
             }
+
             <div class="relative">
                 <input type="date"
                        class="@baseClass @sizeClass @stateClass @disabledClass"
@@ -43,15 +44,16 @@
                        readonly="@IsReadOnly"
                        @onchange="HandleDateChange"
                        @onfocus="HandleFocusEvent"
-                       @onblur="HandleBlurEvent" />
+                       @onblur="HandleBlurEvent"/>
             </div>
             break;
-            
+
         case BwLabelPosition.Left:
             <div class="flex items-start gap-3">
                 @if (HasLabel)
                 {
-                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0" style="width: @LabelWidth; min-width: @LabelWidth;">
+                    <div class="flex items-center gap-1 pt-2.5 flex-shrink-0"
+                         style="width: @LabelWidth; min-width: @LabelWidth;">
                         <label class="bw-label text-right flex-1">
                             @Label
                             @if (IsRequired)
@@ -61,7 +63,7 @@
                         </label>
                         @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                         {
-                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                            <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                         }
                     </div>
                 }
@@ -75,11 +77,11 @@
                            readonly="@IsReadOnly"
                            @onchange="HandleDateChange"
                            @onfocus="HandleFocusEvent"
-                           @onblur="HandleBlurEvent" />
+                           @onblur="HandleBlurEvent"/>
                 </div>
             </div>
             break;
-            
+
         case BwLabelPosition.Floating:
             <div class="relative">
                 <input type="date"
@@ -91,13 +93,13 @@
                        readonly="@IsReadOnly"
                        @onchange="HandleDateChange"
                        @onfocus="HandleFocusEvent"
-                       @onblur="HandleBlurEvent" />
+                       @onblur="HandleBlurEvent"/>
                 @if (HasLabel)
                 {
                     <label class="absolute left-3 transition-all duration-200 pointer-events-none
-                                  @(Value.HasValue || IsFocused 
-                                      ? "bw-floating-label active" 
-                                      : "bw-floating-label")">
+                                  @(Value.HasValue || IsFocused
+                                                                        ? "bw-floating-label active"
+                                                                        : "bw-floating-label")">
                         @Label
                         @if (IsRequired)
                         {
@@ -108,12 +110,12 @@
                 @if (HasHelper && EffectiveHelpTextMode == BwHelpTextMode.Popup)
                 {
                     <div class="absolute right-10 top-1/2 -translate-y-1/2">
-                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small" />
+                        <BwHelpTooltip Content="@HelperText" Size="BwSize.Small"/>
                     </div>
                 }
             </div>
             break;
-            
+
         default:
             <input type="date"
                    class="@baseClass @sizeClass @stateClass @disabledClass"
@@ -125,10 +127,10 @@
                    @onchange="HandleDateChange"
                    @onfocus="HandleFocusEvent"
                    @onblur="HandleBlurEvent"
-                   @attributes="AdditionalAttributes" />
+                   @attributes="AdditionalAttributes"/>
             break;
     }
-    
+
     @* Error/Helper Messages *@
     @if (HasError)
     {
@@ -144,17 +146,22 @@
 </div>
 
 @code {
+
     /// <summary>Minimum selectable date</summary>
-    [Parameter] public DateTime? Min { get; set; }
-    
+    [Parameter]
+    public DateTime? Min { get; set; }
+
     /// <summary>Maximum selectable date</summary>
-    [Parameter] public DateTime? Max { get; set; }
-    
+    [Parameter]
+    public DateTime? Max { get; set; }
+
     /// <summary>Culture for date formatting (default: Turkish)</summary>
-    [Parameter] public CultureInfo Culture { get; set; } = new CultureInfo("tr-TR");
-    
+    [Parameter]
+    public CultureInfo Culture { get; set; } = new("tr-TR");
+
     /// <summary>Date format string</summary>
-    [Parameter] public string Format { get; set; } = "dd.MM.yyyy";
+    [Parameter]
+    public string Format { get; set; } = "dd.MM.yyyy";
 
     private async Task HandleDateChange(ChangeEventArgs e)
     {
@@ -166,16 +173,16 @@
         {
             Value = null;
         }
-        
+
         await ValueChanged.InvokeAsync(Value);
         await OnChange.InvokeAsync(Value);
-        
+
         if (CascadedEditContext != null && For != null)
         {
             CascadedEditContext.NotifyFieldChanged(FieldIdentifier);
         }
     }
-    
+
     private async Task HandleFocusEvent(FocusEventArgs e)
     {
         IsFocused = true;
@@ -187,10 +194,11 @@
         IsFocused = false;
         await HandleBlur(e);
     }
-    
+
     /// <summary>Get formatted date string</summary>
     public string GetFormattedDate()
     {
         return Value?.ToString(Format, Culture) ?? string.Empty;
     }
+
 }

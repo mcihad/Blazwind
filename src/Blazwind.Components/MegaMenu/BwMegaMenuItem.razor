@@ -5,7 +5,8 @@
 
 @if (!string.IsNullOrEmpty(Href))
 {
-    <NavLink href="@Href" class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes" Match="NavLinkMatch.All">
+    <NavLink href="@Href" class="@AllClasses" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+             Match="NavLinkMatch.All">
         @RenderContent
     </NavLink>
 }
@@ -17,15 +18,33 @@ else
 }
 
 @code {
-    [Parameter] public string? Label { get; set; }
-    [Parameter] public string? Description { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Href { get; set; }
-    [Parameter] public string? Badge { get; set; }
-    [Parameter] public BwColor BadgeColor { get; set; } = BwColor.Primary;
-    [Parameter] public bool IsNew { get; set; }
-    [Parameter] public bool Disabled { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? Href { get; set; }
+
+    [Parameter]
+    public string? Badge { get; set; }
+
+    [Parameter]
+    public BwColor BadgeColor { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public bool IsNew { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
 
     private string AllClasses => CombineClasses("bw-megamenu-item", Disabled ? "bw-megamenu-item--disabled" : null);
 
@@ -35,6 +54,7 @@ else
         {
             <i class="@Icon bw-megamenu-item-icon"></i>
         }
+
         <span class="bw-megamenu-item-label">@Label</span>
         @if (IsNew)
         {
@@ -42,6 +62,7 @@ else
                 Yeni
             </span>
         }
+
         @if (!string.IsNullOrEmpty(Badge))
         {
             <span class="bw-megamenu-badge @BadgeClasses">@Badge</span>
@@ -65,4 +86,5 @@ else
             await OnClick.InvokeAsync();
         }
     }
+
 }

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Map.Models;
 
 /// <summary>
-/// MapLibre source types
+///     MapLibre source types
 /// </summary>
 public static class MapSourceType
 {

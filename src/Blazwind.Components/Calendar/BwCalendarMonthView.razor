@@ -1,16 +1,17 @@
-@namespace Blazwind.Components.Calendar
+@using System.Globalization
 @using Blazwind.Components.Shared
+@namespace Blazwind.Components.Calendar
 
 @{
-    var culture = new System.Globalization.CultureInfo("tr-TR");
+    var culture = new CultureInfo("tr-TR");
     var monthStart = new DateTime(SelectedDate.Year, SelectedDate.Month, 1);
     var monthEnd = monthStart.AddMonths(1).AddDays(-1);
-    
+
     // Calculate offset for Monday-starting week
     var firstDayOffset = ((int)monthStart.DayOfWeek + 6) % 7;
     var totalDays = DateTime.DaysInMonth(SelectedDate.Year, SelectedDate.Month);
     var weekCount = (int)Math.Ceiling((firstDayOffset + totalDays) / 7.0);
-    
+
     var dayNames = new[] { "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz" };
 }
 
@@ -25,7 +26,7 @@
             </div>
         }
     </div>
-    
+
     @* Month Grid - Square Cells *@
     <div class="flex-1 grid" style="grid-template-rows: repeat(@weekCount, 1fr);">
         @for (var week = 0; week < weekCount; week++)
@@ -34,47 +35,47 @@
                 @for (var day = 0; day < 7; day++)
                 {
                     var dayIndex = week * 7 + day - firstDayOffset + 1;
-                    var date = dayIndex >= 1 && dayIndex <= totalDays 
-                        ? new DateTime(SelectedDate.Year, SelectedDate.Month, dayIndex) 
+                    var date = dayIndex >= 1 && dayIndex <= totalDays
+                        ? new DateTime(SelectedDate.Year, SelectedDate.Month, dayIndex)
                         : (DateTime?)null;
-                    
+
                     var isToday = date?.Date == DateTime.Today;
                     var isSelected = date?.Date == SelectedDate.Date;
                     var isCurrentMonth = date.HasValue;
                     var isWeekend = day >= 5;
-                    
-                    var cellClass = isCurrentMonth 
-                        ? "bw-calendar-day-cell cursor-pointer" 
+
+                    var cellClass = isCurrentMonth
+                        ? "bw-calendar-day-cell cursor-pointer"
                         : "bw-calendar-day-cell bw-calendar-day-cell-inactive";
-                    
-                    var dayEvents = date.HasValue 
-                        ? Events?.Where(e => e.StartTime.Date == date.Value.Date).Take(3).ToList() 
+
+                    var dayEvents = date.HasValue
+                        ? Events?.Where(e => e.StartTime.Date == date.Value.Date).Take(3).ToList()
                         : null;
-                    var extraEventCount = date.HasValue 
-                        ? (Events?.Count(e => e.StartTime.Date == date.Value.Date) ?? 0) - 3 
+                    var extraEventCount = date.HasValue
+                        ? (Events?.Count(e => e.StartTime.Date == date.Value.Date) ?? 0) - 3
                         : 0;
-                    
+
                     <div class="@cellClass"
                          @onclick="() => date.HasValue ? HandleDateSelected(date.Value) : Task.CompletedTask">
-                        
+
                         @* Day Number *@
                         <div class="flex justify-end mb-0.5">
                             @if (date.HasValue)
                             {
-                                var numberClass = isToday 
-                                    ? "bw-calendar-day-number bw-calendar-day-number-today" 
-                                    : isSelected 
-                                        ? "bw-calendar-day-number bw-calendar-day-number-selected" 
-                                        : isWeekend 
+                                var numberClass = isToday
+                                    ? "bw-calendar-day-number bw-calendar-day-number-today"
+                                    : isSelected
+                                        ? "bw-calendar-day-number bw-calendar-day-number-selected"
+                                        : isWeekend
                                             ? "bw-calendar-day-number bw-calendar-day-number-weekend"
                                             : "bw-calendar-day-number";
-                                
+
                                 <span class="@numberClass">
                                     @date.Value.Day
                                 </span>
                             }
                         </div>
-                        
+
                         @* Events *@
                         @if (dayEvents?.Any() == true)
                         {
@@ -83,11 +84,12 @@
                                 {
                                     var calendar = Calendars?.FirstOrDefault(c => c.Id == calendarEvent.CalendarId);
                                     var color = calendarEvent.Color ?? calendar?.Color ?? "#3B82F6";
-                                    
-                                    <div class="text-[10px] sm:text-xs px-1 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity leading-tight"
-                                         style="background-color: @(color)15; color: @color; border-left: 2px solid @color;"
-                                         @onclick="() => HandleEventClicked(calendarEvent)"
-                                         @onclick:stopPropagation="true">
+
+                                    <div
+                                        class="text-[10px] sm:text-xs px-1 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity leading-tight"
+                                        style="background-color: @(color)15; color: @color; border-left: 2px solid @color;"
+                                        @onclick="() => HandleEventClicked(calendarEvent)"
+                                        @onclick:stopPropagation="true">
                                         @if (EventTemplate != null)
                                         {
                                             @EventTemplate(calendarEvent)
@@ -96,13 +98,15 @@
                                         {
                                             @if (!calendarEvent.IsAllDay)
                                             {
-                                                <span class="font-medium hidden sm:inline">@calendarEvent.StartTime.ToString("HH:mm") </span>
+                                                <span
+                                                    class="font-medium hidden sm:inline">@calendarEvent.StartTime.ToString("HH:mm") </span>
                                             }
+
                                             @calendarEvent.Title
                                         }
                                     </div>
                                 }
-                                
+
                                 @if (extraEventCount > 0)
                                 {
                                     <div class="bw-calendar-extra-events">
@@ -119,20 +123,33 @@
 </div>
 
 @code {
-    [Parameter] public DateTime SelectedDate { get; set; }
-    [Parameter] public IEnumerable<CalendarEvent>? Events { get; set; }
-    [Parameter] public IEnumerable<CalendarInfo>? Calendars { get; set; }
-    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
-    [Parameter] public EventCallback<DateTime> OnDateSelected { get; set; }
-    [Parameter] public EventCallback<CalendarEvent> OnEventClicked { get; set; }
-    
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarEvent>? Events { get; set; }
+
+    [Parameter]
+    public IEnumerable<CalendarInfo>? Calendars { get; set; }
+
+    [Parameter]
+    public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> OnDateSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarEvent> OnEventClicked { get; set; }
+
     private async Task HandleDateSelected(DateTime date)
     {
         await OnDateSelected.InvokeAsync(date);
     }
-    
+
     private async Task HandleEventClicked(CalendarEvent calendarEvent)
     {
         await OnEventClicked.InvokeAsync(calendarEvent);
     }
+
 }

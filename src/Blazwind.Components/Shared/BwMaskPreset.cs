@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Preset mask types for common input formats
+///     Preset mask types for common input formats
 /// </summary>
 public enum BwMaskPreset
 {

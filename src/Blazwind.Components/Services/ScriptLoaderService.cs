@@ -3,8 +3,8 @@ using Microsoft.JSInterop;
 namespace Blazwind.Components.Services;
 
 /// <summary>
-/// Service for dynamically loading JavaScript and CSS files on demand.
-/// This enables lazy loading of heavy dependencies like MapLibre, ECharts, etc.
+///     Service for dynamically loading JavaScript and CSS files on demand.
+///     This enables lazy loading of heavy dependencies like MapLibre, ECharts, etc.
 /// </summary>
 public class ScriptLoaderService : IAsyncDisposable
 {
@@ -19,13 +19,19 @@ public class ScriptLoaderService : IAsyncDisposable
         _jsRuntime = jsRuntime;
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null) await _module.DisposeAsync();
+
+        _lock.Dispose();
+    }
+
     /// <summary>
-    /// Ensures the loader module is initialized
+    ///     Ensures the loader module is initialized
     /// </summary>
     private async Task<IJSObjectReference> GetModuleAsync()
     {
         if (_module is null)
-        {
             // We need to create the loader inline since this is a bootstrap module
             _module = await _jsRuntime.InvokeAsync<IJSObjectReference>(
                 "eval",
@@ -95,13 +101,12 @@ public class ScriptLoaderService : IAsyncDisposable
                     };
                 })()
                 """);
-        }
 
         return _module;
     }
 
     /// <summary>
-    /// Loads a JavaScript file dynamically
+    ///     Loads a JavaScript file dynamically
     /// </summary>
     /// <param name="src">Script source URL</param>
     /// <returns>True if loaded successfully</returns>
@@ -128,7 +133,7 @@ public class ScriptLoaderService : IAsyncDisposable
     }
 
     /// <summary>
-    /// Loads a CSS file dynamically
+    ///     Loads a CSS file dynamically
     /// </summary>
     /// <param name="href">Stylesheet URL</param>
     /// <returns>True if loaded successfully</returns>
@@ -155,7 +160,7 @@ public class ScriptLoaderService : IAsyncDisposable
     }
 
     /// <summary>
-    /// Loads both script and style files
+    ///     Loads both script and style files
     /// </summary>
     public async Task LoadScriptAndStyleAsync(string scriptSrc, string styleSrc)
     {
@@ -166,22 +171,18 @@ public class ScriptLoaderService : IAsyncDisposable
     }
 
     /// <summary>
-    /// Checks if a script is already loaded
+    ///     Checks if a script is already loaded
     /// </summary>
-    public bool IsScriptLoaded(string src) => _loadedScripts.Contains(src);
+    public bool IsScriptLoaded(string src)
+    {
+        return _loadedScripts.Contains(src);
+    }
 
     /// <summary>
-    /// Checks if a style is already loaded
+    ///     Checks if a style is already loaded
     /// </summary>
-    public bool IsStyleLoaded(string href) => _loadedStyles.Contains(href);
-
-    public async ValueTask DisposeAsync()
+    public bool IsStyleLoaded(string href)
     {
-        if (_module is not null)
-        {
-            await _module.DisposeAsync();
-        }
-
-        _lock.Dispose();
+        return _loadedStyles.Contains(href);
     }
 }

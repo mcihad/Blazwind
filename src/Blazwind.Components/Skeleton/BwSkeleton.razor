@@ -4,7 +4,7 @@
 
 @{
     var baseClass = "bw-skeleton";
-    
+
     var shapeClass = Shape switch
     {
         BwSkeletonShape.Circle => "rounded-full",
@@ -12,15 +12,15 @@
         BwSkeletonShape.Text => "rounded h-4",
         _ => "rounded"
     };
-    
+
     var widthStyle = !string.IsNullOrEmpty(Width) ? $"width: {Width};" : "width: 100%;";
-    var heightStyle = !string.IsNullOrEmpty(Height) ? $"height: {Height};" : (Shape == BwSkeletonShape.Text ? "" : "height: 100px;");
+    var heightStyle = !string.IsNullOrEmpty(Height) ? $"height: {Height};" : Shape == BwSkeletonShape.Text ? "" : "height: 100px;";
 }
 
 @if (Lines > 1)
 {
     <div class="@CombineClasses("bw-skeleton-group")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
-        @for (int i = 0; i < Lines; i++)
+        @for (var i = 0; i < Lines; i++)
         {
             var lineWidth = i == Lines - 1 ? "60%" : "100%";
             <div class="@baseClass rounded h-4" style="width: @lineWidth;"></div>
@@ -29,13 +29,23 @@
 }
 else
 {
-    <div class="@CombineClasses(baseClass, shapeClass)" style="@widthStyle @heightStyle @Style" id="@Id" @attributes="AdditionalAttributes"></div>
+    <div class="@CombineClasses(baseClass, shapeClass)" style="@widthStyle @heightStyle @Style" id="@Id"
+         @attributes="AdditionalAttributes"></div>
 }
 
 @code {
-    [Parameter] public BwSkeletonShape Shape { get; set; } = BwSkeletonShape.Rectangle;
-    [Parameter] public string? Width { get; set; }
-    [Parameter] public string? Height { get; set; }
-    [Parameter] public int Lines { get; set; } = 1;
+
+    [Parameter]
+    public BwSkeletonShape Shape { get; set; } = BwSkeletonShape.Rectangle;
+
+    [Parameter]
+    public string? Width { get; set; }
+
+    [Parameter]
+    public string? Height { get; set; }
+
+    [Parameter]
+    public int Lines { get; set; } = 1;
+
     // Removed Class parameter (inherited)
 }

@@ -1,9 +1,11 @@
 # BwAlert
+
 A static alert component used for providing contextual feedback messages, warnings, and error notifications to users.
 
 ## Examples
 
 ### Soft (Default)
+
 The most common alert style with a subtle background and colored text.
 
 ```razor
@@ -17,6 +19,7 @@ The most common alert style with a subtle background and colored text.
 ```
 
 ### Outline
+
 Transparent background with a colored border.
 
 ```razor
@@ -27,6 +30,7 @@ Transparent background with a colored border.
 ```
 
 ### Filled
+
 Solid background with white text.
 
 ```razor
@@ -37,6 +41,7 @@ Solid background with white text.
 ```
 
 ### Dismissible
+
 Alerts that can be closed by the user.
 
 ```razor
@@ -46,6 +51,7 @@ Alerts that can be closed by the user.
 ```
 
 ### Actions
+
 Alerts containing buttons or other interactive elements.
 
 ```razor
@@ -59,15 +65,15 @@ Alerts containing buttons or other interactive elements.
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Title` | `string?` | `null` | The title of the alert. |
-| `Message` | `string?` | `null` | The main message content of the alert. |
-| `Color` | `BwColor` | `BwColor.Info` | The color theme of the alert (Success, Danger, Warning, etc.). |
-| `Variant` | `BwVariant` | `BwVariant.Soft` | The visual style (Soft, Outline, Filled, Ghost). |
-| `Icon` | `string?` | `null` | Custom icon class (e.g., "fa-solid fa-star"). If null, a default icon based on `Color` is used. |
-| `ShowIcon` | `bool` | `true` | Whether to display the icon. |
-| `Dismissible` | `bool` | `false` | If `true`, displays a close button in the top-right corner. |
-| `ChildContent` | `RenderFragment?` | `null` | Custom content area. |
-| `Actions` | `RenderFragment?` | `null` | Area for action buttons at the bottom. |
-| `Class` | `string?` | `null` | Additional CSS classes for the container. |
+| Parameter      | Type              | Default          | Description                                                                                     |
+|----------------|-------------------|------------------|-------------------------------------------------------------------------------------------------|
+| `Title`        | `string?`         | `null`           | The title of the alert.                                                                         |
+| `Message`      | `string?`         | `null`           | The main message content of the alert.                                                          |
+| `Color`        | `BwColor`         | `BwColor.Info`   | The color theme of the alert (Success, Danger, Warning, etc.).                                  |
+| `Variant`      | `BwVariant`       | `BwVariant.Soft` | The visual style (Soft, Outline, Filled, Ghost).                                                |
+| `Icon`         | `string?`         | `null`           | Custom icon class (e.g., "fa-solid fa-star"). If null, a default icon based on `Color` is used. |
+| `ShowIcon`     | `bool`            | `true`           | Whether to display the icon.                                                                    |
+| `Dismissible`  | `bool`            | `false`          | If `true`, displays a close button in the top-right corner.                                     |
+| `ChildContent` | `RenderFragment?` | `null`           | Custom content area.                                                                            |
+| `Actions`      | `RenderFragment?` | `null`           | Area for action buttons at the bottom.                                                          |
+| `Class`        | `string?`         | `null`           | Additional CSS classes for the container.                                                       |

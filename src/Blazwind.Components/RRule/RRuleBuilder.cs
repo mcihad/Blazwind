@@ -5,8 +5,8 @@ using System.Text.RegularExpressions;
 namespace Blazwind.Components.RRule;
 
 /// <summary>
-/// RRULE string builder ve parser (RFC 5545)
-/// Bidirectional: Options ↔ RRULE string
+///     RRULE string builder ve parser (RFC 5545)
+///     Bidirectional: Options ↔ RRULE string
 /// </summary>
 public static class RRuleBuilder
 {
@@ -25,7 +25,7 @@ public static class RRuleBuilder
         DayToRRule.ToDictionary(x => x.Value, x => x.Key);
 
     /// <summary>
-    /// RRuleOptions'ı RRULE string'e çevir
+    ///     RRuleOptions'ı RRULE string'e çevir
     /// </summary>
     public static string Build(RRuleOptions options)
     {
@@ -35,10 +35,7 @@ public static class RRuleBuilder
         parts.Add($"FREQ={options.Frequency.ToString().ToUpper()}");
 
         // INTERVAL (1 ise genellikle yazılmaz ama biz yazalım netlik için)
-        if (options.Interval > 1)
-        {
-            parts.Add($"INTERVAL={options.Interval}");
-        }
+        if (options.Interval > 1) parts.Add($"INTERVAL={options.Interval}");
 
         // BYDAY (Haftalık veya Aylık WeekdayOfMonth için)
         if (options.Frequency == RRuleFrequency.Weekly && options.ByDays.Count > 0)
@@ -58,9 +55,7 @@ public static class RRuleBuilder
 
         // BYMONTHDAY (Aylık DayOfMonth için)
         if (options.Frequency == RRuleFrequency.Monthly && options.MonthlyType == RRuleMonthlyType.DayOfMonth)
-        {
             parts.Add($"BYMONTHDAY={options.ByMonthDay}");
-        }
 
         // BYMONTH (Yıllık için)
         if (options.Frequency == RRuleFrequency.Yearly)
@@ -84,7 +79,7 @@ public static class RRuleBuilder
     }
 
     /// <summary>
-    /// RRULE string'i RRuleOptions'a çevir (parse)
+    ///     RRULE string'i RRuleOptions'a çevir (parse)
     /// </summary>
     public static RRuleOptions Parse(string rrule)
     {
@@ -206,16 +201,14 @@ public static class RRuleBuilder
             var dateStr = value[..8];
             if (DateTime.TryParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None,
                     out result))
-            {
                 return true;
-            }
         }
 
         return false;
     }
 
     /// <summary>
-    /// İnsan okunabilir önizleme metni oluştur (English)
+    ///     İnsan okunabilir önizleme metni oluştur (English)
     /// </summary>
     public static string GetHumanReadable(RRuleOptions options)
     {
@@ -314,32 +307,38 @@ public static class RRuleBuilder
         };
     }
 
-    private static string GetEnglishDayName(DayOfWeek day) => day switch
+    private static string GetEnglishDayName(DayOfWeek day)
     {
-        DayOfWeek.Monday => "Monday",
-        DayOfWeek.Tuesday => "Tuesday",
-        DayOfWeek.Wednesday => "Wednesday",
-        DayOfWeek.Thursday => "Thursday",
-        DayOfWeek.Friday => "Friday",
-        DayOfWeek.Saturday => "Saturday",
-        DayOfWeek.Sunday => "Sunday",
-        _ => day.ToString()
-    };
+        return day switch
+        {
+            DayOfWeek.Monday => "Monday",
+            DayOfWeek.Tuesday => "Tuesday",
+            DayOfWeek.Wednesday => "Wednesday",
+            DayOfWeek.Thursday => "Thursday",
+            DayOfWeek.Friday => "Friday",
+            DayOfWeek.Saturday => "Saturday",
+            DayOfWeek.Sunday => "Sunday",
+            _ => day.ToString()
+        };
+    }
 
-    private static string GetEnglishMonthName(int month) => month switch
+    private static string GetEnglishMonthName(int month)
     {
-        1 => "January",
-        2 => "February",
-        3 => "March",
-        4 => "April",
-        5 => "May",
-        6 => "June",
-        7 => "July",
-        8 => "August",
-        9 => "September",
-        10 => "October",
-        11 => "November",
-        12 => "December",
-        _ => month.ToString()
-    };
+        return month switch
+        {
+            1 => "January",
+            2 => "February",
+            3 => "March",
+            4 => "April",
+            5 => "May",
+            6 => "June",
+            7 => "July",
+            8 => "August",
+            9 => "September",
+            10 => "October",
+            11 => "November",
+            12 => "December",
+            _ => month.ToString()
+        };
+    }
 }

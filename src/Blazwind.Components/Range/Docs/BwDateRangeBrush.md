@@ -34,6 +34,7 @@ Zaman serisi verisi üzerinde tarih aralığı seçimi yapan bileşen. Finansal 
 ```
 
 ### Özelleştirilmiş Görünüm
+
 ```razor
 <BwDateRangeBrush Data="stockPrices" 
                   Label="Hisse Fiyatları"
@@ -44,6 +45,7 @@ Zaman serisi verisi üzerinde tarih aralığı seçimi yapan bileşen. Finansal 
 ```
 
 ### Finansal Dashboard
+
 ```razor
 <BwDateRangeBrush Data="revenueData" 
                   Label="Gelir Trendi"
@@ -56,27 +58,27 @@ Zaman serisi verisi üzerinde tarih aralığı seçimi yapan bileşen. Finansal 
 
 ## Parametreler
 
-| Parametre | Tip | Varsayılan | Açıklama |
-| :--- | :--- | :--- | :--- |
-| `Data` | `List<TimeSeriesPoint>` | `null` | Zaman serisi veri noktaları. |
-| `MinDate` | `DateTime` | `-3 ay` | Zaman çizelgesinin başlangıç tarihi. |
-| `MaxDate` | `DateTime` | `Bugün` | Zaman çizelgesinin bitiş tarihi. |
-| `StartDate` | `DateTime` | `-1 ay` | Başlangıç seçili tarih. |
-| `EndDate` | `DateTime` | `Bugün` | Bitiş seçili tarih. |
-| `StepUnit` | `DateStepUnit` | `Day` | Seçim adım birimi (`Hour`, `Day`, `Week`, `Month`, `Year`). |
-| `StepValue` | `int` | `1` | Adım değeri. |
-| `Color` | `BwColor` | `Primary` | Fırça ve grafik vurgu rengi. |
-| `Height` | `int` | `80` | Bileşen yüksekliği (px). |
-| `ShowTimeline` | `bool` | `true` | Mini grafik önizlemesini gösterir. |
-| `ShowDateMarkers` | `bool` | `true` | Alt kısımdaki tarih işaretçilerini gösterir. |
-| `ShowSelectedRange` | `bool` | `true` | Seçili aralık özetini gösterir. |
-| `Label` | `string` | `null` | Alan etiketi. |
-| `Presets` | `List<DateBrushPreset>` | `null` | Hızlı seçim seçenekleri. |
+| Parametre           | Tip                     | Varsayılan | Açıklama                                                    |
+|:--------------------|:------------------------|:-----------|:------------------------------------------------------------|
+| `Data`              | `List<TimeSeriesPoint>` | `null`     | Zaman serisi veri noktaları.                                |
+| `MinDate`           | `DateTime`              | `-3 ay`    | Zaman çizelgesinin başlangıç tarihi.                        |
+| `MaxDate`           | `DateTime`              | `Bugün`    | Zaman çizelgesinin bitiş tarihi.                            |
+| `StartDate`         | `DateTime`              | `-1 ay`    | Başlangıç seçili tarih.                                     |
+| `EndDate`           | `DateTime`              | `Bugün`    | Bitiş seçili tarih.                                         |
+| `StepUnit`          | `DateStepUnit`          | `Day`      | Seçim adım birimi (`Hour`, `Day`, `Week`, `Month`, `Year`). |
+| `StepValue`         | `int`                   | `1`        | Adım değeri.                                                |
+| `Color`             | `BwColor`               | `Primary`  | Fırça ve grafik vurgu rengi.                                |
+| `Height`            | `int`                   | `80`       | Bileşen yüksekliği (px).                                    |
+| `ShowTimeline`      | `bool`                  | `true`     | Mini grafik önizlemesini gösterir.                          |
+| `ShowDateMarkers`   | `bool`                  | `true`     | Alt kısımdaki tarih işaretçilerini gösterir.                |
+| `ShowSelectedRange` | `bool`                  | `true`     | Seçili aralık özetini gösterir.                             |
+| `Label`             | `string`                | `null`     | Alan etiketi.                                               |
+| `Presets`           | `List<DateBrushPreset>` | `null`     | Hızlı seçim seçenekleri.                                    |
 
 ## Olaylar (Events)
 
-| Olay | Paylaşım (Payload) | Açıklama |
-| :--- | :--- | :--- |
+| Olay             | Paylaşım (Payload)                | Açıklama                                 |
+|:-----------------|:----------------------------------|:-----------------------------------------|
 | `OnBrushChanged` | `BrushChangedEventArgs<DateTime>` | Fırça alanı her değiştiğinde tetiklenir. |
 
 ## Yardımcı Sınıflar
@@ -97,8 +99,10 @@ public class DateBrushPreset
 ```
 
 ## Kullanım Senaryoları
+
 - **Finansal Grafikler:** Hisse senedi, kripto para grafikleri
 - **Analitik Dashboard:** Web sitesi trafiği, satış analizi
 - **Raporlama:** Dönemsel raporlar için tarih seçimi
 - **Trend Analizi:** Uzun vadeli trend inceleme
+
 ```

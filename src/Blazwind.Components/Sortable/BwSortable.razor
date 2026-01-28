@@ -1,5 +1,4 @@
 @namespace Blazwind.Components.Sortable
-@using Blazwind.Components.Shared
 @inherits BwBase
 
 @typeparam TItem
@@ -9,7 +8,7 @@
     {
         var isDragging = _dragIndex == index;
         var isOver = _overIndex == index && _dragIndex != index;
-        
+
         <div class="bw-sortable-item @(isDragging ? "is-dragging" : "") @(isOver ? "is-over" : "")"
              draggable="true"
              @ondragstart="() => HandleDragStart(index)"
@@ -33,45 +32,56 @@
 </div>
 
 @code {
-    [Parameter, EditorRequired] public List<TItem> Items { get; set; } = new();
-    [Parameter, EditorRequired] public RenderFragment<TItem> ItemTemplate { get; set; } = default!;
-    [Parameter] public bool ShowHandle { get; set; } = true;
-    [Parameter] public string HandleIcon { get; set; } = "fa-solid fa-grip-vertical";
+
+    [Parameter][EditorRequired]
+    public List<TItem> Items { get; set; } = new();
+
+    [Parameter][EditorRequired]
+    public RenderFragment<TItem> ItemTemplate { get; set; } = default!;
+
+    [Parameter]
+    public bool ShowHandle { get; set; } = true;
+
+    [Parameter]
+    public string HandleIcon { get; set; } = "fa-solid fa-grip-vertical";
+
     // Removed Class and Style parameters (inherited)
-    [Parameter] public EventCallback<List<TItem>> OnReorder { get; set; }
-    
+    [Parameter]
+    public EventCallback<List<TItem>> OnReorder { get; set; }
+
     private int _dragIndex = -1;
     private int _overIndex = -1;
-    
+
     private void HandleDragStart(int index)
     {
         _dragIndex = index;
     }
-    
+
     private void HandleDragOver(int index)
     {
         _overIndex = index;
     }
-    
+
     private async Task HandleDrop(int targetIndex)
     {
         if (_dragIndex < 0 || _dragIndex == targetIndex) return;
-        
+
         var item = Items[_dragIndex];
         Items.RemoveAt(_dragIndex);
-        
+
         if (targetIndex > _dragIndex) targetIndex--;
         Items.Insert(targetIndex, item);
-        
+
         await OnReorder.InvokeAsync(Items);
-        
+
         _dragIndex = -1;
         _overIndex = -1;
     }
-    
+
     private void HandleDragEnd()
     {
         _dragIndex = -1;
         _overIndex = -1;
     }
+
 }

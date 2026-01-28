@@ -1,6 +1,5 @@
 @namespace Blazwind.Components.Form
 @using Blazwind.Components.Shared
-@using Blazwind.Components.Button
 @inherits BwBase
 
 @{
@@ -10,7 +9,7 @@
         BwFormDensity.Relaxed => "mt-8 gap-4",
         _ => "mt-6 gap-3"
     };
-    
+
     var alignClass = Align switch
     {
         BwAlignment.Left => "justify-start",
@@ -20,23 +19,28 @@
     };
 }
 
-<div class="@CombineClasses($"bw-form-actions {alignClass} {densityClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"bw-form-actions {alignClass} {densityClass}")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
-    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
-    
-    /// <summary>Button alignment</summary>
-    [Parameter] public BwAlignment Align { get; set; } = BwAlignment.Right;
-    
-    /// <summary>Density override</summary>
-    [Parameter] public BwFormDensity? DensityOverride { get; set; }
-    
 
-    
+    [CascadingParameter]
+    private BwFormDensity? CascadedDensity { get; set; }
+
+    /// <summary>Button alignment</summary>
+    [Parameter]
+    public BwAlignment Align { get; set; } = BwAlignment.Right;
+
+    /// <summary>Density override</summary>
+    [Parameter]
+    public BwFormDensity? DensityOverride { get; set; }
+
+
     /// <summary>Child content (buttons)</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     private BwFormDensity Density => DensityOverride ?? CascadedDensity ?? BwFormDensity.Normal;
 }

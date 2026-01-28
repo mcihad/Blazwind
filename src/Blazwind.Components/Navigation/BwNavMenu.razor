@@ -7,13 +7,13 @@
     {
         @Header
     }
-    
+
     @* Search Slot *@
     @if (Search != null)
     {
         @Search
     }
-    
+
     @* Navigation Items *@
     <nav class="flex-1 overflow-y-auto p-2">
         <CascadingValue Value="this">
@@ -24,7 +24,7 @@
             </CascadingValue>
         </CascadingValue>
     </nav>
-    
+
     @* Footer Slot *@
     @if (Footer != null)
     {
@@ -33,19 +33,31 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? Header { get; set; }
-    [Parameter] public RenderFragment? Search { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? Footer { get; set; }
-    
+
+    [Parameter]
+    public RenderFragment? Header { get; set; }
+
+    [Parameter]
+    public RenderFragment? Search { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? Footer { get; set; }
+
     // Removed Class parameter (inherited)
-    
+
     /// <summary>Width of the navigation menu. Default: w-full (fills container). Use Tailwind width classes.</summary>
-    [Parameter] public string Width { get; set; } = "w-full";
-    
+    [Parameter]
+    public string Width { get; set; } = "w-full";
+
     /// <summary>Custom template for menu items. Cascaded to all BwNavMenuItem children.</summary>
-    [Parameter] public RenderFragment<BwNavMenuItemContext>? ItemTemplate { get; set; }
-    
+    [Parameter]
+    public RenderFragment<BwNavMenuItemContext>? ItemTemplate { get; set; }
+
     /// <summary>Custom template for group headers. Cascaded to all BwNavMenuGroup children.</summary>
-    [Parameter] public RenderFragment<BwNavMenuGroupContext>? GroupHeaderTemplate { get; set; }
+    [Parameter]
+    public RenderFragment<BwNavMenuGroupContext>? GroupHeaderTemplate { get; set; }
+
 }

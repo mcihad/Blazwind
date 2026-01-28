@@ -1,20 +1,22 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Horizontal alignment options
+///     Horizontal alignment options
 /// </summary>
 public enum BwAlignment
 {
     /// <summary>
-    /// Left alignment
+    ///     Left alignment
     /// </summary>
     Left,
+
     /// <summary>
-    /// Center alignment
+    ///     Center alignment
     /// </summary>
     Center,
+
     /// <summary>
-    /// Right alignment
+    ///     Right alignment
     /// </summary>
     Right
 }

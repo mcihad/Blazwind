@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Trend direction
+///     Trend direction
 /// </summary>
 public enum BwTrend
 {

@@ -1,10 +1,12 @@
 # Skeleton
 
-A placeholder component used to represent the layout of content while it's still loading. It helps reduce perceived loading time by providing immediate visual feedback.
+A placeholder component used to represent the layout of content while it's still loading. It helps reduce perceived
+loading time by providing immediate visual feedback.
 
 ## Examples
 
 ### Basic Shapes
+
 ```razor
 <!-- Circle (for avatars) -->
 <BwSkeleton Shape="BwSkeletonShape.Circle" Width="50px" Height="50px" />
@@ -14,6 +16,7 @@ A placeholder component used to represent the layout of content while it's still
 ```
 
 ### Text and Paragraphs
+
 ```razor
 <!-- Single text line -->
 <BwSkeleton Shape="BwSkeletonShape.Text" Width="80%" />
@@ -23,6 +26,7 @@ A placeholder component used to represent the layout of content while it's still
 ```
 
 ### Card Layout Example
+
 ```razor
 <div class="border p-4 rounded-lg flex items-center gap-4">
     <BwSkeleton Shape="BwSkeletonShape.Circle" Width="48px" Height="48px" />
@@ -37,17 +41,18 @@ A placeholder component used to represent the layout of content while it's still
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Shape` | `BwSkeletonShape` | `Rectangle` | The geometric shape of the skeleton (`Rectangle`, `Circle`, `Text`). |
-| `Width` | `string?` | `"100%"` | CSS width of the skeleton (e.g., `200px`, `50%`). |
-| `Height` | `string?` | - | CSS height of the skeleton. Defaults to `100px` for rectangles or `1rem` for text. |
-| `Lines` | `int` | `1` | Number of text lines to generate. If > 1, it automatically creates a stacked layout. |
-| `Class` | `string?` | `null` | Additional CSS class for the skeleton element. |
+| Parameter | Type              | Default     | Description                                                                          |
+|:----------|:------------------|:------------|:-------------------------------------------------------------------------------------|
+| `Shape`   | `BwSkeletonShape` | `Rectangle` | The geometric shape of the skeleton (`Rectangle`, `Circle`, `Text`).                 |
+| `Width`   | `string?`         | `"100%"`    | CSS width of the skeleton (e.g., `200px`, `50%`).                                    |
+| `Height`  | `string?`         | -           | CSS height of the skeleton. Defaults to `100px` for rectangles or `1rem` for text.   |
+| `Lines`   | `int`             | `1`         | Number of text lines to generate. If > 1, it automatically creates a stacked layout. |
+| `Class`   | `string?`         | `null`      | Additional CSS class for the skeleton element.                                       |
 
 ## Enums
 
 ### BwSkeletonShape
+
 `Rectangle`, `Circle`, `Text`
 
 ## Features

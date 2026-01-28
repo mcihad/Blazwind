@@ -1,16 +1,21 @@
 @namespace Blazwind.Components.Breadcrumb
-@using Blazwind.Components.Shared
 @inherits BwBase
 
-<nav aria-label="Breadcrumb" class="@CombineClasses("bw-breadcrumb")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<nav aria-label="Breadcrumb" class="@CombineClasses("bw-breadcrumb")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     <ol class="bw-breadcrumb-list">
         <CascadingValue Value="SeparatorTemplate" Name="BreadcrumbSeparator">
-             @ChildContent
+            @ChildContent
         </CascadingValue>
     </ol>
 </nav>
 
 @code {
-    [Parameter] public RenderFragment? SeparatorTemplate { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? SeparatorTemplate { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
 }

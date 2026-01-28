@@ -1,6 +1,7 @@
 # BwDropdown
 
-A flexible dropdown menu component that displays a list of options or custom content when triggered by a button, icon, or any other element.
+A flexible dropdown menu component that displays a list of options or custom content when triggered by a button, icon,
+or any other element.
 
 ## Features
 
@@ -13,6 +14,7 @@ A flexible dropdown menu component that displays a list of options or custom con
 ## Usage
 
 ### Basic Usage with Standard Items
+
 ```razor
 <BwDropdown>
     <TriggerContent>
@@ -26,7 +28,9 @@ A flexible dropdown menu component that displays a list of options or custom con
 ```
 
 ### Left Alignment
+
 The menu expands from the left edge of the trigger.
+
 ```razor
 <BwDropdown Alignment="BwDirection.Left">
     <TriggerContent>
@@ -43,23 +47,26 @@ The menu expands from the left edge of the trigger.
 
 ### BwDropdown Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `TriggerContent` | `RenderFragment` | `null` | The element that opens the menu via click. |
-| `ChildContent` | `RenderFragment` | `null` | The content of the dropdown menu. |
-| `Alignment` | `BwDirection` | `Right` | `Right` or `Left` horizontal alignment. |
-| `VPosition` | `BwDirection` | `Auto` | `Bottom` (default), `Top`, or `Auto` (smart flipping). |
-| `EstimatedMenuHeight`| `int` | `200` | Height in px used for `Auto` position calculation. |
+| Parameter             | Type             | Default | Description                                            |
+|-----------------------|------------------|---------|--------------------------------------------------------|
+| `TriggerContent`      | `RenderFragment` | `null`  | The element that opens the menu via click.             |
+| `ChildContent`        | `RenderFragment` | `null`  | The content of the dropdown menu.                      |
+| `Alignment`           | `BwDirection`    | `Right` | `Right` or `Left` horizontal alignment.                |
+| `VPosition`           | `BwDirection`    | `Auto`  | `Bottom` (default), `Top`, or `Auto` (smart flipping). |
+| `EstimatedMenuHeight` | `int`            | `200`   | Height in px used for `Auto` position calculation.     |
 
 ### BwDropdownItem Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Text` | `string` | `null` | Item label. |
-| `Icon` | `string` | `null` | FontAwesome icon class. |
-| `IsDivider` | `bool` | `false` | Renders a horizontal separator line instead of an item. |
-| `OnClick` | `EventCallback` | `null` | Triggered when the item is clicked. |
-| `Class` | `string` | `null` | Additional CSS classes for styling (e.g., text colors). |
+| Parameter   | Type            | Default | Description                                             |
+|-------------|-----------------|---------|---------------------------------------------------------|
+| `Text`      | `string`        | `null`  | Item label.                                             |
+| `Icon`      | `string`        | `null`  | FontAwesome icon class.                                 |
+| `IsDivider` | `bool`          | `false` | Renders a horizontal separator line instead of an item. |
+| `OnClick`   | `EventCallback` | `null`  | Triggered when the item is clicked.                     |
+| `Class`     | `string`        | `null`  | Additional CSS classes for styling (e.g., text colors). |
 
 ## Advanced Positioning
-When `VPosition` is set to `Auto` (default), the component uses JS interop to measure the trigger's distance from the bottom of the viewport. If the remaining space is less than `EstimatedMenuHeight`, the menu will automatically open upwards.
+
+When `VPosition` is set to `Auto` (default), the component uses JS interop to measure the trigger's distance from the
+bottom of the viewport. If the remaining space is less than `EstimatedMenuHeight`, the menu will automatically open
+upwards.

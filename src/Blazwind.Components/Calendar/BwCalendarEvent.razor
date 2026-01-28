@@ -1,14 +1,14 @@
-@namespace Blazwind.Components.Calendar
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
+@namespace Blazwind.Components.Calendar
 
 @inject IJSRuntime JS
 
 @{
-    var eventColor = !string.IsNullOrEmpty(Event.Color) 
-        ? Event.Color 
+    var eventColor = !string.IsNullOrEmpty(Event.Color)
+        ? Event.Color
         : CalendarColor ?? "#3B82F6";
-    
+
     var isHex = eventColor.StartsWith("#");
     var bgStyle = isHex ? $"background-color: {eventColor}20; border-left-color: {eventColor};" : "";
     var textStyle = isHex ? $"color: {eventColor};" : "";
@@ -22,7 +22,7 @@
      @ontouchstart="HandleTouchStart"
      @onclick="HandleClick"
      @onclick:stopPropagation="true">
-    
+
     @if (EventTemplate != null)
     {
         @* Custom template provided by user *@
@@ -32,20 +32,21 @@
     {
         @* Default event rendering *@
         @* Title *@
-        <div class="font-medium truncate @(!isHex ? $"text-{eventColor}-700 dark:text-{eventColor}-300" : "")" 
+        <div class="font-medium truncate @(!isHex ? $"text-{eventColor}-700 dark:text-{eventColor}-300" : "")"
              style="@textStyle">
             @Event.Title
         </div>
-        
+
         @if (!Compact && !Event.IsAllDay)
         {
             @* Time *@
-            <div class="text-xs opacity-70 truncate @(!isHex ? $"text-{eventColor}-600 dark:text-{eventColor}-400" : "")"
-                 style="@textStyle">
+            <div
+                class="text-xs opacity-70 truncate @(!isHex ? $"text-{eventColor}-600 dark:text-{eventColor}-400" : "")"
+                style="@textStyle">
                 @Event.StartTime.ToString("HH:mm") - @Event.EndTime.ToString("HH:mm")
             </div>
         }
-        
+
         @if (!Compact && !string.IsNullOrEmpty(Event.Location))
         {
             @* Location *@
@@ -55,7 +56,7 @@
             </div>
         }
     }
-    
+
     @if (AllowResize && !Compact)
     {
         @* Resize Handle *@
@@ -70,36 +71,60 @@
 </div>
 
 @code {
-    [Parameter, EditorRequired] public CalendarEvent Event { get; set; } = default!;
-    [Parameter] public string? CalendarColor { get; set; }
-    [Parameter] public bool Compact { get; set; }
-    [Parameter] public bool AllowResize { get; set; }
-    [Parameter] public bool AllowDrag { get; set; } = true;
-    [Parameter] public int DayIndex { get; set; }
-    [Parameter] public int SlotHeight { get; set; } = 48;
-    [Parameter] public int SlotMinutes { get; set; } = 30;
-    [Parameter] public string? StyleOverride { get; set; }
-    [Parameter] public EventCallback<CalendarEvent> OnClick { get; set; }
-    [Parameter] public EventCallback<(string EventId, double ClientY)> OnResizeStart { get; set; }
-    [Parameter] public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
-    
-    private bool _isDragging = false;
+
+    [Parameter][EditorRequired]
+    public CalendarEvent Event { get; set; } = default!;
+
+    [Parameter]
+    public string? CalendarColor { get; set; }
+
+    [Parameter]
+    public bool Compact { get; set; }
+
+    [Parameter]
+    public bool AllowResize { get; set; }
+
+    [Parameter]
+    public bool AllowDrag { get; set; } = true;
+
+    [Parameter]
+    public int DayIndex { get; set; }
+
+    [Parameter]
+    public int SlotHeight { get; set; } = 48;
+
+    [Parameter]
+    public int SlotMinutes { get; set; } = 30;
+
+    [Parameter]
+    public string? StyleOverride { get; set; }
+
+    [Parameter]
+    public EventCallback<CalendarEvent> OnClick { get; set; }
+
+    [Parameter]
+    public EventCallback<(string EventId, double ClientY)> OnResizeStart { get; set; }
+
+    [Parameter]
+    public RenderFragment<CalendarEvent>? EventTemplate { get; set; }
+
+    private bool _isDragging;
     private double _startX;
     private double _startY;
-    
-    private async Task HandleMouseDown(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+
+    private async Task HandleMouseDown(MouseEventArgs e)
     {
         if (!AllowDrag) return;
-        
+
         _startX = e.ClientX;
         _startY = e.ClientY;
         _isDragging = true;
-        
+
         // Start drag via JS
         await JS.InvokeVoidAsync("Blazwind.Calendar.startDrag", Event.Id, DayIndex, e.ClientX, e.ClientY, SlotHeight, SlotMinutes);
     }
-    
-    private async Task HandleClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs e)
+
+    private async Task HandleClick(MouseEventArgs e)
     {
         // Calculate distance to differentiate between click and drag
         var dx = e.ClientX - _startX;
@@ -112,31 +137,33 @@
         {
             await OnClick.InvokeAsync(Event);
         }
+
         _isDragging = false;
     }
-    
-    private async Task HandleTouchStart(Microsoft.AspNetCore.Components.Web.TouchEventArgs e)
+
+    private async Task HandleTouchStart(TouchEventArgs e)
     {
         if (!AllowDrag || e.Touches.Length == 0) return;
-        
+
         var touch = e.Touches[0];
         _startX = touch.ClientX;
         _startY = touch.ClientY;
         _isDragging = true;
-        
+
         // Start drag via JS
         await JS.InvokeVoidAsync("Blazwind.Calendar.startDrag", Event.Id, DayIndex, touch.ClientX, touch.ClientY, SlotHeight, SlotMinutes);
     }
-    
+
     private async Task HandleResizeStart(EventArgs e)
     {
-        if (e is Microsoft.AspNetCore.Components.Web.MouseEventArgs me)
+        if (e is MouseEventArgs me)
         {
             await OnResizeStart.InvokeAsync((Event.Id, me.ClientY));
         }
-        else if (e is Microsoft.AspNetCore.Components.Web.TouchEventArgs te && te.Touches.Length > 0)
+        else if (e is TouchEventArgs te && te.Touches.Length > 0)
         {
             await OnResizeStart.InvokeAsync((Event.Id, te.Touches[0].ClientY));
         }
     }
+
 }

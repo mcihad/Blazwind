@@ -1,10 +1,13 @@
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using Blazwind.Components.DataGrid.Models;
+using ClosedXML.Excel;
 
 namespace Blazwind.Components.DataGrid.Services;
 
 /// <summary>
-/// CSV format exporter
+///     CSV format exporter
 /// </summary>
 public class CsvExporter : IDataGridExporter
 {
@@ -25,9 +28,7 @@ public class CsvExporter : IDataGridExporter
 
         // Headers
         if (options.IncludeHeaders)
-        {
             sb.AppendLine(string.Join(delimiter, columnList.Select(c => EscapeCsvField(c.Title, delimiter))));
-        }
 
         // Data rows
         foreach (var item in items)
@@ -46,16 +47,14 @@ public class CsvExporter : IDataGridExporter
     private static string EscapeCsvField(string field, char delimiter)
     {
         if (field.Contains(delimiter) || field.Contains('"') || field.Contains('\n') || field.Contains('\r'))
-        {
             return $"\"{field.Replace("\"", "\"\"")}\"";
-        }
 
         return field;
     }
 }
 
 /// <summary>
-/// TSV (Tab-Separated Values) format exporter
+///     TSV (Tab-Separated Values) format exporter
 /// </summary>
 public class TsvExporter : IDataGridExporter
 {
@@ -74,10 +73,7 @@ public class TsvExporter : IDataGridExporter
         var columnList = columns.ToList();
 
         // Headers
-        if (options.IncludeHeaders)
-        {
-            sb.AppendLine(string.Join('\t', columnList.Select(c => EscapeTsvField(c.Title))));
-        }
+        if (options.IncludeHeaders) sb.AppendLine(string.Join('\t', columnList.Select(c => EscapeTsvField(c.Title))));
 
         // Data rows
         foreach (var item in items)
@@ -101,7 +97,7 @@ public class TsvExporter : IDataGridExporter
 }
 
 /// <summary>
-/// JSON format exporter
+///     JSON format exporter
 /// </summary>
 public class JsonExporter : IDataGridExporter
 {
@@ -120,27 +116,24 @@ public class JsonExporter : IDataGridExporter
         var data = items.Select(item =>
         {
             var row = new Dictionary<string, object?>();
-            foreach (var col in columnList)
-            {
-                row[col.Field ?? col.Title] = getValue(item, col);
-            }
+            foreach (var col in columnList) row[col.Field ?? col.Title] = getValue(item, col);
 
             return row;
         }).ToList();
 
-        var jsonOptions = new System.Text.Json.JsonSerializerOptions
+        var jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = options.JsonIndented,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
-        var json = System.Text.Json.JsonSerializer.Serialize(data, jsonOptions);
+        var json = JsonSerializer.Serialize(data, jsonOptions);
         return Task.FromResult(Encoding.UTF8.GetBytes(json));
     }
 }
 
 /// <summary>
-/// Excel (.xlsx) format exporter using ClosedXML
+///     Excel (.xlsx) format exporter using ClosedXML
 /// </summary>
 public class ExcelExporter : IDataGridExporter
 {
@@ -155,7 +148,7 @@ public class ExcelExporter : IDataGridExporter
         ExportOptions options,
         Func<TItem, ColumnDefinition, object?> getValue)
     {
-        using var workbook = new ClosedXML.Excel.XLWorkbook();
+        using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add(options.ExcelSheetName ?? "Data");
         var columnList = columns.ToList();
 
@@ -169,8 +162,8 @@ public class ExcelExporter : IDataGridExporter
                 var cell = worksheet.Cell(row, col + 1);
                 cell.Value = columnList[col].Title;
                 cell.Style.Font.Bold = true;
-                cell.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGray;
-                cell.Style.Border.BottomBorder = ClosedXML.Excel.XLBorderStyleValues.Thin;
+                cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                cell.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             }
 
             row++;
@@ -185,7 +178,6 @@ public class ExcelExporter : IDataGridExporter
                 var cell = worksheet.Cell(row, col + 1);
 
                 if (value != null)
-                {
                     switch (value)
                     {
                         case DateTime dt:
@@ -212,7 +204,6 @@ public class ExcelExporter : IDataGridExporter
                             cell.Value = value.ToString();
                             break;
                     }
-                }
             }
 
             row++;

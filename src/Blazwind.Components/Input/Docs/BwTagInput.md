@@ -47,7 +47,7 @@ By default, `Enter`, `Tab`, and `,` add a new tag. You can customize this using 
 ## Parameters
 
 | Parameter         | Type              | Default                 | Description                               |
-| :---------------- | :---------------- | :---------------------- | :---------------------------------------- |
+|:------------------|:------------------|:------------------------|:------------------------------------------|
 | `Tags`            | `List<string>`    | `new()`                 | Tag list (two-way binding).               |
 | `MaxTags`         | `int?`            | `null`                  | Maximum number of tags that can be added. |
 | `AllowDuplicates` | `bool`            | `false`                 | Allows adding duplicate tags.             |
@@ -67,7 +67,7 @@ By default, `Enter`, `Tab`, and `,` add a new tag. You can customize this using 
 ## Events
 
 | Event          | Payload        | Description                                            |
-| :------------- | :------------- | :----------------------------------------------------- |
+|:---------------|:---------------|:-------------------------------------------------------|
 | `TagsChanged`  | `List<string>` | Triggered when the tag list changes (two-way binding). |
 | `OnTagAdded`   | `string`       | Triggered when a new tag is added.                     |
 | `OnTagRemoved` | `string`       | Triggered when a tag is removed.                       |

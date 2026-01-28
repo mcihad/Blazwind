@@ -5,6 +5,7 @@ A multi-column dropdown navigation menu, ideal for e-commerce, corporate sites, 
 ## Examples
 
 ### E-Commerce Navigation
+
 A feature-rich mega menu with icons, labels, and descriptions across multiple columns.
 
 ```razor
@@ -26,6 +27,7 @@ A feature-rich mega menu with icons, labels, and descriptions across multiple co
 ```
 
 ### Trigger Modes
+
 The menu can be opened by hovering or clicking.
 
 ```razor
@@ -41,6 +43,7 @@ The menu can be opened by hovering or clicking.
 ```
 
 ### Custom Sizing
+
 Control the width of the dropdown and individual columns.
 
 ```razor
@@ -56,50 +59,50 @@ Control the width of the dropdown and individual columns.
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `TriggerContent` | `RenderFragment?`| `null` | Custom render fragment for the trigger element. |
-| `Text` | `string?` | `null` | Text to display on the default trigger button. |
-| `Icon` | `string?` | `null` | Icon to display on the default trigger button. |
-| `Color` | `BwColor` | `Primary` | Color of the trigger button. |
-| `Variant` | `BwVariant` | `Ghost` | Styling variant of the trigger button. |
-| `Columns` | `int` | `3` | Number of columns in the dropdown (1-6). |
-| `ColumnWidth` | `string?` | `null` | CSS width for each column (e.g., `200px`). |
-| `Width` | `MegaMenuWidth` | `Auto` | Overall width preset (`Small`, `Medium`, `Large`, `XLarge`, `Full`). |
-| `Alignment` | `MegaMenuAlignment`| `Start` | Horizontal alignment relative to trigger (`Start`, `Center`, `End`). |
-| `Trigger` | `MegaMenuTrigger` | `Hover` | Interaction that opens the menu (`Hover`, `Click`). |
-| `OpenUpward` | `bool` | `false` | If true, the menu opens above the trigger. |
-| `ShowDelay` | `int` | `50` | Milliseconds delay before opening (Hover only). |
-| `HideDelay` | `int` | `150` | Milliseconds delay before closing (Hover only). |
+| Parameter        | Type                | Default   | Description                                                          |
+|:-----------------|:--------------------|:----------|:---------------------------------------------------------------------|
+| `TriggerContent` | `RenderFragment?`   | `null`    | Custom render fragment for the trigger element.                      |
+| `Text`           | `string?`           | `null`    | Text to display on the default trigger button.                       |
+| `Icon`           | `string?`           | `null`    | Icon to display on the default trigger button.                       |
+| `Color`          | `BwColor`           | `Primary` | Color of the trigger button.                                         |
+| `Variant`        | `BwVariant`         | `Ghost`   | Styling variant of the trigger button.                               |
+| `Columns`        | `int`               | `3`       | Number of columns in the dropdown (1-6).                             |
+| `ColumnWidth`    | `string?`           | `null`    | CSS width for each column (e.g., `200px`).                           |
+| `Width`          | `MegaMenuWidth`     | `Auto`    | Overall width preset (`Small`, `Medium`, `Large`, `XLarge`, `Full`). |
+| `Alignment`      | `MegaMenuAlignment` | `Start`   | Horizontal alignment relative to trigger (`Start`, `Center`, `End`). |
+| `Trigger`        | `MegaMenuTrigger`   | `Hover`   | Interaction that opens the menu (`Hover`, `Click`).                  |
+| `OpenUpward`     | `bool`              | `false`   | If true, the menu opens above the trigger.                           |
+| `ShowDelay`      | `int`               | `50`      | Milliseconds delay before opening (Hover only).                      |
+| `HideDelay`      | `int`               | `150`     | Milliseconds delay before closing (Hover only).                      |
 
 ### Events
 
-| Event | Argument Type | Description |
-| :--- | :--- | :--- |
-| `OnOpenChanged`| `EventCallback<bool>` | Fired when the menu opens or closes. |
+| Event           | Argument Type         | Description                          |
+|:----------------|:----------------------|:-------------------------------------|
+| `OnOpenChanged` | `EventCallback<bool>` | Fired when the menu opens or closes. |
 
 ## API - BwMegaMenuColumn
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Title` | `string?` | `null` | Column header text. |
-| `Icon` | `string?` | `null` | Column header icon. |
-| `ChildContent`| `RenderFragment?` | `null` | List of `BwMegaMenuItem` components. |
+| Parameter      | Type              | Default | Description                          |
+|:---------------|:------------------|:--------|:-------------------------------------|
+| `Title`        | `string?`         | `null`  | Column header text.                  |
+| `Icon`         | `string?`         | `null`  | Column header icon.                  |
+| `ChildContent` | `RenderFragment?` | `null`  | List of `BwMegaMenuItem` components. |
 
 ## API - BwMegaMenuItem
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `Label` | `string?` | `null` | Item text. |
-| `Description`| `string?` | `null` | Sub-text displayed below the label. |
-| `Icon` | `string?` | `null` | Item icon. |
-| `Href` | `string?` | `null` | Navigation URL. |
-| `Badge` | `string?` | `null` | Text for the item badge. |
-| `BadgeColor` | `BwColor` | `Primary` | Color of the badge. |
-| `IsNew` | `bool` | `false` | If true, displays a "New" (Yeni) tag. |
-| `Disabled` | `bool` | `false` | If true, the item is not interactive. |
-| `OnClick` | `EventCallback` | - | Fired when the item is clicked. |
+| Parameter     | Type            | Default   | Description                           |
+|:--------------|:----------------|:----------|:--------------------------------------|
+| `Label`       | `string?`       | `null`    | Item text.                            |
+| `Description` | `string?`       | `null`    | Sub-text displayed below the label.   |
+| `Icon`        | `string?`       | `null`    | Item icon.                            |
+| `Href`        | `string?`       | `null`    | Navigation URL.                       |
+| `Badge`       | `string?`       | `null`    | Text for the item badge.              |
+| `BadgeColor`  | `BwColor`       | `Primary` | Color of the badge.                   |
+| `IsNew`       | `bool`          | `false`   | If true, displays a "New" (Yeni) tag. |
+| `Disabled`    | `bool`          | `false`   | If true, the item is not interactive. |
+| `OnClick`     | `EventCallback` | -         | Fired when the item is clicked.       |

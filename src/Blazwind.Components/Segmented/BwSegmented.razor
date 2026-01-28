@@ -1,7 +1,6 @@
 @namespace Blazwind.Components.Segmented
-@inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
+@inherits BwBase
 
 @{
     var baseClasses = "bw-segmented";
@@ -16,14 +15,14 @@
 }
 
 <div class="@CombineClasses(baseClasses, variantClasses, sizeClasses)" style="@Style" id="@Id" role="group"
-    @attributes="AdditionalAttributes">
+     @attributes="AdditionalAttributes">
     @foreach (var option in Options)
     {
         var isSelected = option.Value?.Equals(Value) == true;
         var itemClasses = GetItemClasses(isSelected);
 
         <button type="button" class="@itemClasses" disabled="@(option.Disabled || IsDisabled)"
-            @onclick="() => SelectOption(option)">
+                @onclick="() => SelectOption(option)">
             @if (!string.IsNullOrEmpty(option.Icon))
             {
                 <i class="@option.Icon @(string.IsNullOrEmpty(option.Label) ? "" : "mr-1.5")"></i>
@@ -34,29 +33,46 @@
 </div>
 
 @code {
-    [Parameter] public List<SegmentedOption> Options { get; set; } = new();
-    [Parameter] public object? Value { get; set; }
-    [Parameter] public bool IsDisabled { get; set; } = false;
-    [Parameter] public bool Block { get; set; } = false;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Filled;
 
-    [Parameter] public EventCallback<object?> ValueChanged { get; set; }
-    [Parameter] public EventCallback<SegmentedOption> OnChange { get; set; }
+    [Parameter]
+    public List<SegmentedOption> Options { get; set; } = new();
+
+    [Parameter]
+    public object? Value { get; set; }
+
+    [Parameter]
+    public bool IsDisabled { get; set; }
+
+    [Parameter]
+    public bool Block { get; set; }
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Filled;
+
+    [Parameter]
+    public EventCallback<object?> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<SegmentedOption> OnChange { get; set; }
 
     private string GetItemClasses(bool isSelected)
     {
         var sizeClass = Size.ToString().ToLower();
         var selectedClass = isSelected ? "is-selected" : "";
-        
+
         var colorVariant = isSelected ? $"variant-{Color.ToString().ToLower()}" : "";
         if (isSelected && (Color == BwColor.White || Color == BwColor.Gray))
         {
-             // Default coloring for "default" or neutral types
-             colorVariant = "variant-default";
+            // Default coloring for "default" or neutral types
+            colorVariant = "variant-default";
         }
-        
+
         // Handling specific non-selected hover variants if needed, but CSS handles standard hover. 
         // We can pass color variant even if not selected to allow hover text color:
         var hoverVariant = !isSelected ? $"variant-{Color.ToString().ToLower()}" : "";
@@ -80,4 +96,5 @@
         public string? Icon { get; set; }
         public bool Disabled { get; set; } = false;
     }
+
 }

@@ -1,10 +1,9 @@
 @namespace Blazwind.Components.Map
-@using Blazwind.Components.Map.Models
 @inherits BwBase
 
 <CascadingValue Value="this" IsFixed="true">
     <div @ref="_mapContainer" id="@Id" class="@ComputedClass" style="@ComputedStyle" @attributes="AdditionalAttributes">
-        @if (_isLoaded)
+        @if (IsLoaded)
         {
             @ChildContent
         }
@@ -23,5 +22,6 @@
             Id = $"bw-map-{Guid.NewGuid():N}";
         }
     }
+
 }
 

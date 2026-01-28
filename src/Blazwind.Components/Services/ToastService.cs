@@ -1,14 +1,14 @@
+using Blazwind.Components.Shared;
 using Microsoft.JSInterop;
 
 namespace Blazwind.Components.Services;
 
-using Blazwind.Components.Shared;
-
 /// <summary>
-/// Toast notification service using JSInterop
+///     Toast notification service using JSInterop
 /// </summary>
 public class ToastService
 {
+    private readonly Dictionary<string, Func<Task>> _actionCallbacks = new();
     private readonly IJSRuntime _js;
 
     public ToastService(IJSRuntime js)
@@ -40,8 +40,6 @@ public class ToastService
         return await _js.InvokeAsync<string>("Blazwind.Toast.info", message, title, duration);
     }
 
-    private readonly Dictionary<string, Func<Task>> _actionCallbacks = new();
-
     /// <summary>Show a toast with custom options</summary>
     public async Task<string> ShowAsync(ToastOptions options)
     {
@@ -59,14 +57,11 @@ public class ToastService
         var actions = options.Actions?.Select(a =>
         {
             var actionId = Guid.NewGuid().ToString("N");
-            if (a.OnClick != null)
-            {
-                _actionCallbacks[actionId] = a.OnClick;
-            }
+            if (a.OnClick != null) _actionCallbacks[actionId] = a.OnClick;
 
             return new
             {
-                Text = a.Text,
+                a.Text,
                 Variant = a.Color.ToString().ToLower(),
                 ActionId = actionId
             };
@@ -116,7 +111,7 @@ public class ToastService
 }
 
 /// <summary>
-/// Toast options for custom toast display
+///     Toast options for custom toast display
 /// </summary>
 public class ToastOptions
 {

@@ -8,15 +8,15 @@
     @if (ShowBackdrop)
     {
         <div class="bw-sidepanel-backdrop @(IsOpen ? "opacity-100" : "opacity-0")"
-            @onclick="HandleBackdropClick"></div>
+             @onclick="HandleBackdropClick"></div>
     }
 
     @* Panel *@
     <div class="@CombineClasses("bw-sidepanel", PositionClasses, SizeClasses, IsOpen ? OpenTransform : ClosedTransform)"
-        style="@Style"
-        id="@Id"
-        @attributes="AdditionalAttributes"
-        @onclick:stopPropagation="true">
+         style="@Style"
+         id="@Id"
+         @attributes="AdditionalAttributes"
+         @onclick:stopPropagation="true">
 
         @* Header *@
         @if (ShowHeader)
@@ -43,8 +43,8 @@
                 @if (Closable)
                 {
                     <button type="button"
-                        class="bw-sidepanel-close"
-                        @onclick="Close">
+                            class="bw-sidepanel-close"
+                            @onclick="Close">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 }
@@ -67,23 +67,57 @@
 }
 
 @code {
-    [Parameter] public bool IsOpen { get; set; }
-    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? FooterContent { get; set; }
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Subtitle { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwPosition Position { get; set; } = BwPosition.Right;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public bool ShowHeader { get; set; } = true;
-    [Parameter] public bool ShowBackdrop { get; set; } = true;
-    [Parameter] public bool Closable { get; set; } = true;
-    [Parameter] public bool CloseOnBackdropClick { get; set; } = true;
-    [Parameter] public bool CloseOnEscape { get; set; } = true;
-    [Parameter] public string? BodyClass { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? FooterContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwPosition Position { get; set; } = BwPosition.Right;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public bool ShowHeader { get; set; } = true;
+
+    [Parameter]
+    public bool ShowBackdrop { get; set; } = true;
+
+    [Parameter]
+    public bool Closable { get; set; } = true;
+
+    [Parameter]
+    public bool CloseOnBackdropClick { get; set; } = true;
+
+    [Parameter]
+    public bool CloseOnEscape { get; set; } = true;
+
+    [Parameter]
+    public string? BodyClass { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
 
     private string PositionClasses => Position switch
     {
@@ -120,7 +154,10 @@
         _ => "translate-x-full"
     };
 
-    private string GetColorClass() => Color.ToString().ToLower();
+    private string GetColorClass()
+    {
+        return Color.ToString().ToLower();
+    }
 
     private async Task HandleBackdropClick()
     {
@@ -150,4 +187,5 @@
         else
             await Open();
     }
+
 }

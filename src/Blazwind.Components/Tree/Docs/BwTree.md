@@ -27,11 +27,13 @@ A tree view component for hierarchical data structures with unlimited depth.
 ## Features
 
 ### Search
+
 ```razor
 <BwTree TItem="string" Nodes="@nodes" ShowSearch="true" ShowToolbar="true" />
 ```
 
 ### Selection Modes
+
 ```razor
 @* Checkbox (Multiple) *@
 <BwTree TItem="string" Nodes="@nodes" SelectionMode="BwSelectionMode.Multiple" @bind-SelectedNodes="selected" />
@@ -44,11 +46,13 @@ A tree view component for hierarchical data structures with unlimited depth.
 ```
 
 ### Row Selection (Selectable)
+
 ```razor
 <BwTree TItem="string" Nodes="@nodes" Selectable="true" @bind-ClickedNode="clickedNode" />
 ```
 
 ### Table Mode
+
 ```razor
 <BwTree TItem="FileItem" Nodes="@nodes" ShowTableMode="true">
     <ColumnsTemplate>
@@ -59,6 +63,7 @@ A tree view component for hierarchical data structures with unlimited depth.
 ```
 
 ### Lazy Loading
+
 ```razor
 <BwTree TItem="string" 
         Nodes="@lazyNodes" 
@@ -80,33 +85,35 @@ A tree view component for hierarchical data structures with unlimited depth.
 ```
 
 ### Show Child Count
+
 ```razor
 <BwTree TItem="string" Nodes="@nodes" ShowChildCount="true" />
 ```
+
 Shows the number of children in parentheses next to each node: `(3)`
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-|:---|:---|:---|:---|
-| `Nodes` | `List<TreeNode<TItem>>` | `[]` | List of root nodes. |
-| `SelectionMode` | `BwSelectionMode` | `None` | Selection mode (`None`, `Single`, `Multiple`). |
-| `Selectable` | `bool` | `false` | Enables row clicking/selection. |
-| `CascadeSelection` | `bool` | `false` | Selecting parent selects all children. |
-| `Draggable` | `bool` | `false` | Enables drag-and-drop. |
-| `ShowSearch` | `bool` | `false` | Shows the search bar. |
-| `ShowToolbar` | `bool` | `false` | Shows toolbar (Expand/Collapse All). |
-| `ShowTableMode` | `bool` | `false` | Enables table-like display mode. |
-| `ShowChildCount` | `bool` | `false` | Shows child count next to node. |
-| `OnLoadChildren` | `Func` | `null` | Callback for lazy loading. |
-| `NodeTemplate` | `RenderFragment` | `null` | Custom template for nodes. |
-| `ColumnsTemplate` | `RenderFragment` | `null` | Template for additional columns (Table mode). |
+| Parameter          | Type                    | Default | Description                                    |
+|:-------------------|:------------------------|:--------|:-----------------------------------------------|
+| `Nodes`            | `List<TreeNode<TItem>>` | `[]`    | List of root nodes.                            |
+| `SelectionMode`    | `BwSelectionMode`       | `None`  | Selection mode (`None`, `Single`, `Multiple`). |
+| `Selectable`       | `bool`                  | `false` | Enables row clicking/selection.                |
+| `CascadeSelection` | `bool`                  | `false` | Selecting parent selects all children.         |
+| `Draggable`        | `bool`                  | `false` | Enables drag-and-drop.                         |
+| `ShowSearch`       | `bool`                  | `false` | Shows the search bar.                          |
+| `ShowToolbar`      | `bool`                  | `false` | Shows toolbar (Expand/Collapse All).           |
+| `ShowTableMode`    | `bool`                  | `false` | Enables table-like display mode.               |
+| `ShowChildCount`   | `bool`                  | `false` | Shows child count next to node.                |
+| `OnLoadChildren`   | `Func`                  | `null`  | Callback for lazy loading.                     |
+| `NodeTemplate`     | `RenderFragment`        | `null`  | Custom template for nodes.                     |
+| `ColumnsTemplate`  | `RenderFragment`        | `null`  | Template for additional columns (Table mode).  |
 
 ## Events
 
-| Event | Description |
-|:---|:---|
-| `OnNodeClick` | Triggered when a node is clicked. |
-| `OnNodeExpand` | Triggered when a node is expanded (used for lazy loading). |
-| `SelectedNodesChanged` | Triggered when selection changes. |
-| `ClickedNodeChanged` | Triggered when the clicked node changes (Selectable mode). |
+| Event                  | Description                                                |
+|:-----------------------|:-----------------------------------------------------------|
+| `OnNodeClick`          | Triggered when a node is clicked.                          |
+| `OnNodeExpand`         | Triggered when a node is expanded (used for lazy loading). |
+| `SelectedNodesChanged` | Triggered when selection changes.                          |
+| `ClickedNodeChanged`   | Triggered when the clicked node changes (Selectable mode). |

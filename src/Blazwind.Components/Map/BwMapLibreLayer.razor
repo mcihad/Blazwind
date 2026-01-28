@@ -3,132 +3,158 @@
 @implements IAsyncDisposable
 
 @code {
-    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
-    [CascadingParameter(Name = "LayerGroup")] public BwMapLibreLayerGroup? LayerGroup { get; set; }
+
+    [CascadingParameter]
+    public BwMapLibre? ParentMap { get; set; }
+
+    [CascadingParameter(Name = "LayerGroup")]
+    public BwMapLibreLayerGroup? LayerGroup { get; set; }
 
     #region Required Parameters
 
     /// <summary>
-    /// Unique layer identifier
+    ///     Unique layer identifier
     /// </summary>
-    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Layer type: fill, line, symbol, circle, heatmap, fill-extrusion, raster, hillshade, background, sky
+    ///     Layer type: fill, line, symbol, circle, heatmap, fill-extrusion, raster, hillshade, background, sky
     /// </summary>
-    [Parameter] public string Type { get; set; } = MapLayerType.Fill;
+    [Parameter]
+    public string Type { get; set; } = MapLayerType.Fill;
 
     /// <summary>
-    /// Source ID (required for all types except background and sky)
+    ///     Source ID (required for all types except background and sky)
     /// </summary>
-    [Parameter] public string? SourceId { get; set; }
+    [Parameter]
+    public string? SourceId { get; set; }
 
     #endregion
 
     #region Layer Configuration
 
     /// <summary>
-    /// Source layer (for vector tile sources)
+    ///     Source layer (for vector tile sources)
     /// </summary>
-    [Parameter] public string? SourceLayer { get; set; }
+    [Parameter]
+    public string? SourceLayer { get; set; }
 
     /// <summary>
-    /// Paint properties (fill-color, line-width, etc.)
+    ///     Paint properties (fill-color, line-width, etc.)
     /// </summary>
-    [Parameter] public object? Paint { get; set; }
+    [Parameter]
+    public object? Paint { get; set; }
 
     /// <summary>
-    /// Layout properties (visibility, text-field, icon-image, etc.)
+    ///     Layout properties (visibility, text-field, icon-image, etc.)
     /// </summary>
-    [Parameter] public object? Layout { get; set; }
+    [Parameter]
+    public object? Layout { get; set; }
 
     /// <summary>
-    /// Filter expression
+    ///     Filter expression
     /// </summary>
-    [Parameter] public object[]? Filter { get; set; }
+    [Parameter]
+    public object[]? Filter { get; set; }
 
     /// <summary>
-    /// Minimum zoom level (0-24)
+    ///     Minimum zoom level (0-24)
     /// </summary>
-    [Parameter] public float? MinZoom { get; set; }
+    [Parameter]
+    public float? MinZoom { get; set; }
 
     /// <summary>
-    /// Maximum zoom level (0-24)
+    ///     Maximum zoom level (0-24)
     /// </summary>
-    [Parameter] public float? MaxZoom { get; set; }
+    [Parameter]
+    public float? MaxZoom { get; set; }
 
     /// <summary>
-    /// Whether the layer is initially visible
+    ///     Whether the layer is initially visible
     /// </summary>
-    [Parameter] public bool Visible { get; set; } = true;
+    [Parameter]
+    public bool Visible { get; set; } = true;
 
     /// <summary>
-    /// Layer metadata (custom properties)
+    ///     Layer metadata (custom properties)
     /// </summary>
-    [Parameter] public Dictionary<string, object>? Metadata { get; set; }
+    [Parameter]
+    public Dictionary<string, object>? Metadata { get; set; }
 
     /// <summary>
-    /// ID of an existing layer to insert this layer before
+    ///     ID of an existing layer to insert this layer before
     /// </summary>
-    [Parameter] public string? BeforeId { get; set; }
+    [Parameter]
+    public string? BeforeId { get; set; }
 
     #endregion
 
     #region Interaction
 
     /// <summary>
-    /// Whether the layer is interactive (receives click/hover events)
+    ///     Whether the layer is interactive (receives click/hover events)
     /// </summary>
-    [Parameter] public bool Interactive { get; set; }
+    [Parameter]
+    public bool Interactive { get; set; }
 
     /// <summary>
-    /// Click order/priority - higher value = clicked first when layers overlap (like z-index)
+    ///     Click order/priority - higher value = clicked first when layers overlap (like z-index)
     /// </summary>
-    [Parameter] public int ClickOrder { get; set; }
+    [Parameter]
+    public int ClickOrder { get; set; }
 
     /// <summary>
-    /// Fired when the layer is clicked
+    ///     Fired when the layer is clicked
     /// </summary>
-    [Parameter] public EventCallback<MapLayerClickEventArgs> OnClick { get; set; }
+    [Parameter]
+    public EventCallback<MapLayerClickEventArgs> OnClick { get; set; }
 
     /// <summary>
-    /// Fired when mouse enters the layer
+    ///     Fired when mouse enters the layer
     /// </summary>
-    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseEnter { get; set; }
+    [Parameter]
+    public EventCallback<MapLayerEventArgs> OnMouseEnter { get; set; }
 
     /// <summary>
-    /// Fired when mouse leaves the layer
+    ///     Fired when mouse leaves the layer
     /// </summary>
-    [Parameter] public EventCallback<MapLayerEventArgs> OnMouseLeave { get; set; }
+    [Parameter]
+    public EventCallback<MapLayerEventArgs> OnMouseLeave { get; set; }
 
     #endregion
 
     #region Display Metadata
 
     /// <summary>
-    /// Display name for layer (for UI/legend)
+    ///     Display name for layer (for UI/legend)
     /// </summary>
-    [Parameter] public string? Name { get; set; }
+    [Parameter]
+    public string? Name { get; set; }
 
     /// <summary>
-    /// Layer description
+    ///     Layer description
     /// </summary>
-    [Parameter] public string? Description { get; set; }
+    [Parameter]
+    public string? Description { get; set; }
 
     /// <summary>
-    /// Layer group for organization
+    ///     Layer group for organization
     /// </summary>
-    [Parameter] public string? Group { get; set; }
+    [Parameter]
+    public string? Group { get; set; }
 
     /// <summary>
-    /// Layer order for sorting
+    ///     Layer order for sorting
     /// </summary>
-    [Parameter] public int Order { get; set; }
+    [Parameter]
+    public int Order { get; set; }
 
     /// <summary>
-    /// Legend configuration
+    ///     Legend configuration
     /// </summary>
-    [Parameter] public LayerLegend? Legend { get; set; }
+    [Parameter]
+    public LayerLegend? Legend { get; set; }
 
     #endregion
 
@@ -176,8 +202,8 @@
             MinZoom = MinZoom,
             MaxZoom = MaxZoom,
             Visible = effectiveVisible,
-            Interactive = Interactive || OnClick.HasDelegate || OnMouseEnter.HasDelegate || OnMouseLeave.HasDelegate 
-                         || (LayerGroup != null && (LayerGroup.OnClick.HasDelegate || LayerGroup.OnMouseEnter.HasDelegate || LayerGroup.OnMouseLeave.HasDelegate)),
+            Interactive = Interactive || OnClick.HasDelegate || OnMouseEnter.HasDelegate || OnMouseLeave.HasDelegate
+                          || (LayerGroup != null && (LayerGroup.OnClick.HasDelegate || LayerGroup.OnMouseEnter.HasDelegate || LayerGroup.OnMouseLeave.HasDelegate)),
             ClickOrder = effectiveClickOrder,
             BeforeId = BeforeId,
             Name = Name ?? Id,
@@ -197,13 +223,13 @@
         // Register layer event handlers with parent map
         var hasEvents = OnClick.HasDelegate || OnMouseEnter.HasDelegate || OnMouseLeave.HasDelegate;
         var groupHasEvents = LayerGroup != null && (LayerGroup.OnClick.HasDelegate || LayerGroup.OnMouseEnter.HasDelegate || LayerGroup.OnMouseLeave.HasDelegate);
-        
+
         if (hasEvents || groupHasEvents)
         {
-            ParentMap.RegisterLayerEvents(Id, effectiveClickOrder, 
-                (hasEvents || groupHasEvents) ? HandleClick : null,
-                (OnMouseEnter.HasDelegate || (LayerGroup?.OnMouseEnter.HasDelegate ?? false)) ? HandleMouseEnter : null,
-                (OnMouseLeave.HasDelegate || (LayerGroup?.OnMouseLeave.HasDelegate ?? false)) ? HandleMouseLeave : null);
+            ParentMap.RegisterLayerEvents(Id, effectiveClickOrder,
+                hasEvents || groupHasEvents ? HandleClick : null,
+                OnMouseEnter.HasDelegate || (LayerGroup?.OnMouseEnter.HasDelegate ?? false) ? HandleMouseEnter : null,
+                OnMouseLeave.HasDelegate || (LayerGroup?.OnMouseLeave.HasDelegate ?? false) ? HandleMouseLeave : null);
         }
     }
 
@@ -211,7 +237,7 @@
     {
         // Fire individual layer event first
         await OnClick.InvokeAsync(e);
-        
+
         // Then route to group if present
         if (LayerGroup != null)
         {
@@ -222,7 +248,7 @@
     private async Task HandleMouseEnter(MapLayerEventArgs e)
     {
         await OnMouseEnter.InvokeAsync(e);
-        
+
         if (LayerGroup != null)
         {
             await LayerGroup.HandleChildMouseEnter(e);
@@ -232,7 +258,7 @@
     private async Task HandleMouseLeave(MapLayerEventArgs e)
     {
         await OnMouseLeave.InvokeAsync(e);
-        
+
         if (LayerGroup != null)
         {
             await LayerGroup.HandleChildMouseLeave(e);
@@ -240,7 +266,7 @@
     }
 
     /// <summary>
-    /// Update layer visibility
+    ///     Update layer visibility
     /// </summary>
     public async Task SetVisibilityAsync(bool visible)
     {
@@ -252,7 +278,7 @@
     }
 
     /// <summary>
-    /// Update paint property
+    ///     Update paint property
     /// </summary>
     public async Task SetPaintPropertyAsync(string name, object value)
     {
@@ -263,7 +289,7 @@
     }
 
     /// <summary>
-    /// Update layout property
+    ///     Update layout property
     /// </summary>
     public async Task SetLayoutPropertyAsync(string name, object value)
     {
@@ -274,7 +300,7 @@
     }
 
     /// <summary>
-    /// Update filter
+    ///     Update filter
     /// </summary>
     public async Task SetFilterAsync(object[] filter)
     {
@@ -295,7 +321,10 @@
                 ParentMap.UnregisterLayerEvents(Id);
                 await ParentMap.RemoveLayerAsync(Id);
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
+
 }

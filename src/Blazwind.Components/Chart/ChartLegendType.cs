@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart legend type (ECharts legend.type)
+///     Chart legend type (ECharts legend.type)
 /// </summary>
 public static class ChartLegendType
 {

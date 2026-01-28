@@ -1,13 +1,12 @@
+using Blazwind.Components.Dialog;
+using Blazwind.Components.Shared;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Blazwind.Components.Shared;
 
 namespace Blazwind.Components.Services;
 
-using Blazwind.Components.Dialog;
-
 /// <summary>
-/// Dialog service for managing both JS-based and Razor component-based dialogs.
+///     Dialog service for managing both JS-based and Razor component-based dialogs.
 /// </summary>
 public class DialogService
 {
@@ -105,21 +104,24 @@ public class DialogService
     /// <summary>Show a loading dialog</summary>
     public async Task<LoadingHandle> ShowLoadingAsync(string? message = null)
     {
-        var closeFunc = await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showLoading", new { Message = message });
+        var closeFunc =
+            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showLoading", new { Message = message });
         return new LoadingHandle(closeFunc);
     }
 
     /// <summary>Show a SQUARE loading dialog (Compact)</summary>
     public async Task<LoadingHandle> ShowSquareLoadingAsync(string? message = null)
     {
-        var closeFunc = await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showSquareLoading", new { Message = message });
+        var closeFunc =
+            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showSquareLoading", new { Message = message });
         return new LoadingHandle(closeFunc);
     }
 
     /// <summary>Show a busy dialog (Blocking full screen)</summary>
     public async Task<LoadingHandle> ShowBusyAsync(string? message = null)
     {
-        var closeFunc = await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showBusy", new { Message = message });
+        var closeFunc =
+            await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showBusy", new { Message = message });
         return new LoadingHandle(closeFunc);
     }
 
@@ -140,7 +142,8 @@ public class DialogService
     /// <summary>Show a progress dialog</summary>
     public async Task<ProgressHandle> ShowProgressAsync(string title, string? message = null)
     {
-        var handle = await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showProgress", new { Title = title, Message = message });
+        var handle = await _js.InvokeAsync<IJSObjectReference>("Blazwind.Dialog.showProgress",
+            new { Title = title, Message = message });
         return new ProgressHandle(handle);
     }
 
@@ -206,16 +209,10 @@ public class DialogService
     {
         var result = await ShowAsync<TComponent>(title, parameters, options);
 
-        if (result.Canceled)
-        {
-            return DialogResult.Cancel<TResult>();
-        }
+        if (result.Canceled) return DialogResult.Cancel<TResult>();
 
         // Try to cast data
-        if (result.Data is TResult typedData)
-        {
-            return DialogResult.Ok(typedData);
-        }
+        if (result.Data is TResult typedData) return DialogResult.Ok(typedData);
 
         // Handle value types or nulls
         try
@@ -236,10 +233,7 @@ public class DialogService
     public void Close(Guid dialogId)
     {
         var instance = Dialogs.FirstOrDefault(x => x.Id == dialogId);
-        if (instance != null)
-        {
-            Close(instance);
-        }
+        if (instance != null) Close(instance);
     }
 
     public void Close(DialogInstance instance, DialogResult result)
@@ -265,7 +259,7 @@ public class DialogService
     /// <summary>Show an info dialog</summary>
     public async Task ShowInfoAsync(string title, string message)
     {
-        await ShowAlertAsync(title, message, BwColor.Info);
+        await ShowAlertAsync(title, message);
     }
 
     /// <summary>Show a success dialog</summary>
@@ -297,13 +291,6 @@ public class DialogService
 
 public class DialogInstance
 {
-    public Guid Id { get; } = Guid.NewGuid();
-    public string Title { get; }
-    public Type ComponentType { get; }
-    public Dictionary<string, object>? Parameters { get; }
-    public DialogOptions Options { get; }
-    internal TaskCompletionSource<DialogResult> TaskCompletionSource { get; }
-
     public DialogInstance(string title, Type componentType, Dictionary<string, object>? parameters,
         DialogOptions options, TaskCompletionSource<DialogResult> tcs)
     {
@@ -313,11 +300,14 @@ public class DialogInstance
         Options = options;
         TaskCompletionSource = tcs;
     }
+
+    public Guid Id { get; } = Guid.NewGuid();
+    public string Title { get; }
+    public Type ComponentType { get; }
+    public Dictionary<string, object>? Parameters { get; }
+    public DialogOptions Options { get; }
+    internal TaskCompletionSource<DialogResult> TaskCompletionSource { get; }
 }
-
-#region Options Classes
-
-#endregion
 
 #region Handle Classes
 
@@ -332,6 +322,12 @@ public class LoadingHandle : IAsyncDisposable
         _closeFunc = closeFunc;
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        await CloseAsync();
+        await _closeFunc.DisposeAsync();
+    }
+
     public async Task CloseAsync()
     {
         if (!_disposed)
@@ -339,12 +335,6 @@ public class LoadingHandle : IAsyncDisposable
             await _closeFunc.InvokeVoidAsync("call");
             _disposed = true;
         }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await CloseAsync();
-        await _closeFunc.DisposeAsync();
     }
 }
 
@@ -359,12 +349,15 @@ public class ProgressHandle : IAsyncDisposable
         _handle = handle;
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        await CloseAsync();
+        await _handle.DisposeAsync();
+    }
+
     public async Task UpdateAsync(int progress, string? message = null)
     {
-        if (!_disposed)
-        {
-            await _handle.InvokeVoidAsync("update", progress, message);
-        }
+        if (!_disposed) await _handle.InvokeVoidAsync("update", progress, message);
     }
 
     public async Task CloseAsync()
@@ -374,12 +367,6 @@ public class ProgressHandle : IAsyncDisposable
             await _handle.InvokeVoidAsync("close");
             _disposed = true;
         }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        await CloseAsync();
-        await _handle.DisposeAsync();
     }
 }
 

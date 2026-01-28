@@ -5,6 +5,7 @@ A layout component for the top section of a card, supporting titles, subtitles, 
 ## Examples
 
 ### Basic Header
+
 Standard title and subtitle with an icon.
 
 ```razor
@@ -14,6 +15,7 @@ Standard title and subtitle with an icon.
 ```
 
 ### Custom Content
+
 Use `ChildContent` for complex layouts like adding buttons or badges.
 
 ```razor
@@ -27,12 +29,12 @@ Use `ChildContent` for complex layouts like adding buttons or badges.
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Title` | `string?` | `null` | Main header text. |
-| `SubTitle` | `string?` | `null` | Secondary descriptive text. |
-| `Icon` | `string?` | `null` | Icon class (e.g., "fa-solid fa-star"). |
-| `IconBgClass`| `string` | `"bg-blue-100 dark:bg-blue-900/30"` | CSS class for icon background. |
-| `IconClass` | `string` | `"text-blue-600 dark:text-blue-400"` | CSS class for icon itself. |
-| `ChildContent`| `RenderFragment?`| `null` | Custom content inside the header. |
-| `Class` | `string?` | `null` | Additional CSS classes for the container. |
+| Parameter      | Type              | Default                              | Description                               |
+|----------------|-------------------|--------------------------------------|-------------------------------------------|
+| `Title`        | `string?`         | `null`                               | Main header text.                         |
+| `SubTitle`     | `string?`         | `null`                               | Secondary descriptive text.               |
+| `Icon`         | `string?`         | `null`                               | Icon class (e.g., "fa-solid fa-star").    |
+| `IconBgClass`  | `string`          | `"bg-blue-100 dark:bg-blue-900/30"`  | CSS class for icon background.            |
+| `IconClass`    | `string`          | `"text-blue-600 dark:text-blue-400"` | CSS class for icon itself.                |
+| `ChildContent` | `RenderFragment?` | `null`                               | Custom content inside the header.         |
+| `Class`        | `string?`         | `null`                               | Additional CSS classes for the container. |

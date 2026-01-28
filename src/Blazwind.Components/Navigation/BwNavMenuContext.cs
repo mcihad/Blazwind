@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Navigation;
 
 /// <summary>
-/// Context for custom menu item templates
+///     Context for custom menu item templates
 /// </summary>
 public class BwNavMenuItemContext
 {
@@ -14,7 +14,7 @@ public class BwNavMenuItemContext
 }
 
 /// <summary>
-/// Context for custom group header templates
+///     Context for custom group header templates
 /// </summary>
 public class BwNavMenuGroupContext
 {

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Chart symbol types (ECharts symbol)
+///     Chart symbol types (ECharts symbol)
 /// </summary>
 public static class ChartSymbol
 {

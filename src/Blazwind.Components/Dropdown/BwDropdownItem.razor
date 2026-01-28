@@ -1,6 +1,4 @@
 @namespace Blazwind.Components.Dropdown
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Button
 @inherits BwBase
 
 @if (IsDivider)
@@ -9,8 +7,8 @@
 }
 else
 {
-    <button type="button" 
-            class="@CombineClasses($"bw-dropdown-item")"
+    <button type="button"
+            class="@CombineClasses("bw-dropdown-item")"
             role="menuitem"
             @onclick="HandleClick"
             style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -24,15 +22,30 @@ else
 }
 
 @code {
-    [CascadingParameter] public BwDropdown? Dropdown { get; set; }
 
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? IconClass { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool IsDivider { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
-    [Parameter] public bool CloseOnClick { get; set; } = true;
+    [CascadingParameter]
+    public BwDropdown? Dropdown { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? IconClass { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool IsDivider { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public bool CloseOnClick { get; set; } = true;
 
     private async Task HandleClick()
     {
@@ -46,4 +59,5 @@ else
             await OnClick.InvokeAsync();
         }
     }
+
 }

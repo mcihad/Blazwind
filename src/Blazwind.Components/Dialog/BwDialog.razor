@@ -1,9 +1,7 @@
 @namespace Blazwind.Components.Dialog
-@using Blazwind.Components.Button
 @using Blazwind.Components.Shared
-@inherits BwBase
-
 @using Microsoft.JSInterop
+@inherits BwBase
 @inject IJSRuntime JS
 
 @{
@@ -11,7 +9,7 @@
     var draggableClass = Draggable ? "cursor-move" : "";
     var dialogId = $"bw-dialog-{Id}";
     var handleId = $"bw-dialog-handle-{Id}";
-    
+
     // Header variant class
     var headerVariantClass = TitleColor switch
     {
@@ -38,34 +36,34 @@
 <div class="bw-dialog-overlay @(FullScreen ? "!p-0" : "")">
     @if (IsRaw)
     {
-         <div id="@dialogId" 
-             class="@CombineClasses($"bw-dialog-container flex flex-col {AnimationClass} {fullscreenClass}")" 
+        <div id="@dialogId"
+             class="@CombineClasses($"bw-dialog-container flex flex-col {AnimationClass} {fullscreenClass}")"
              style="@ComputedStyle" @attributes="AdditionalAttributes">
             @ChildContent
-         </div>
+        </div>
     }
     else
     {
         @* Dialog Frame *@
-        <div id="@dialogId" 
+        <div id="@dialogId"
              class="@CombineClasses($"bw-dialog-container w-full {AnimationClass} {fullscreenClass}")"
              style="@ComputedStyle" @attributes="AdditionalAttributes">
-            
+
             @* Header *@
-            <div id="@handleId" 
+            <div id="@handleId"
                  class="bw-dialog-header @headerVariantClass @draggableClass">
                 <h3 class="bw-dialog-title @headerTextClass">@Title</h3>
-                
+
                 @if (ShowClose)
                 {
-                    <button type="button" 
+                    <button type="button"
                             class="bw-dialog-close"
                             @onclick="OnClose">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 }
             </div>
-            
+
             @* Content *@
             <div class="bw-dialog-content">
                 @ChildContent
@@ -75,11 +73,11 @@
             @if (Resizable && !FullScreen)
             {
                 @* Bottom Right Corner Handle *@
-                <div id="@dialogId-resize-handle" 
+                <div id="@dialogId-resize-handle"
                      class="bw-dialog-resize-handle">
-                        <svg class="w-3 h-3 opacity-50" viewBox="0 0 10 10" fill="currentColor">
-                            <path d="M 10 10 L 10 2 L 2 10 Z" />
-                        </svg>
+                    <svg class="w-3 h-3 opacity-50" viewBox="0 0 10 10" fill="currentColor">
+                        <path d="M 10 10 L 10 2 L 2 10 Z"/>
+                    </svg>
                 </div>
             }
         </div>
@@ -88,26 +86,50 @@
 
 @code {
 
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool ShowClose { get; set; } = true;
-    [Parameter] public string? Width { get; set; }
-    [Parameter] public string? Height { get; set; }
-    [Parameter] public string? MaxWidth { get; set; }
-    [Parameter] public string? AnimationClass { get; set; } = "animate-scale-in";
-    [Parameter] public EventCallback OnClose { get; set; }
-    
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool ShowClose { get; set; } = true;
+
+    [Parameter]
+    public string? Width { get; set; }
+
+    [Parameter]
+    public string? Height { get; set; }
+
+    [Parameter]
+    public string? MaxWidth { get; set; }
+
+    [Parameter]
+    public string? AnimationClass { get; set; } = "animate-scale-in";
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
     /// <summary>Title text color. Default is Primary (gray-900).</summary>
-    [Parameter] public BwColor TitleColor { get; set; } = BwColor.Primary;
-    
+    [Parameter]
+    public BwColor TitleColor { get; set; } = BwColor.Primary;
+
     /// <summary>Title text size. Default is Medium (text-lg).</summary>
-    [Parameter] public BwSize TitleSize { get; set; } = BwSize.Medium;
-    
+    [Parameter]
+    public BwSize TitleSize { get; set; } = BwSize.Medium;
+
     // New Features
-    [Parameter] public bool Draggable { get; set; }
-    [Parameter] public bool Resizable { get; set; }
-    [Parameter] public bool FullScreen { get; set; }
-    [Parameter] public bool IsRaw { get; set; }
+    [Parameter]
+    public bool Draggable { get; set; }
+
+    [Parameter]
+    public bool Resizable { get; set; }
+
+    [Parameter]
+    public bool FullScreen { get; set; }
+
+    [Parameter]
+    public bool IsRaw { get; set; }
 
     // Computed style that merges dimension constraints with user-provided Style
     private string ComputedStyle
@@ -115,16 +137,16 @@
         get
         {
             var dimensionStyle = FullScreen ? "" : $"width: {Width ?? "500px"}; max-width: {MaxWidth ?? "90vw"}; height: {Height ?? "auto"};";
-            
+
             if (string.IsNullOrWhiteSpace(Style) && string.IsNullOrWhiteSpace(dimensionStyle))
                 return "";
-            
+
             if (string.IsNullOrWhiteSpace(Style))
                 return dimensionStyle;
-            
+
             if (string.IsNullOrWhiteSpace(dimensionStyle))
                 return Style;
-            
+
             return $"{dimensionStyle} {Style}";
         }
     }
@@ -135,20 +157,20 @@
         {
             Id = Guid.NewGuid().ToString("N");
         }
-        
+
         if (firstRender)
         {
             if (Draggable && !FullScreen)
             {
                 await JS.InvokeVoidAsync("Blazwind.Dialog.makeDraggable", $"bw-dialog-{Id}", $"bw-dialog-handle-{Id}");
             }
-            
+
             if (Resizable && !FullScreen)
             {
                 await JS.InvokeVoidAsync("Blazwind.Dialog.makeResizable", $"bw-dialog-{Id}");
             }
         }
     }
-    
+
 
 }

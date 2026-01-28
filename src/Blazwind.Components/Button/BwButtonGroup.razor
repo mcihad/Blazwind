@@ -7,24 +7,39 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
-    [Parameter] public bool IsFullWidth { get; set; }
-    [Parameter] public bool IsAttached { get; set; } = true;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Filled;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
+
+    [Parameter]
+    public bool IsFullWidth { get; set; }
+
+    [Parameter]
+    public bool IsAttached { get; set; } = true;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Filled;
 
     private string AllClasses => $"{ContainerClasses} {GroupClasses} {Class}".Trim();
 
     private string ContainerClasses => Orientation == BwOrientation.Vertical
         ? $"inline-flex flex-col {WidthClass}"
         : $"inline-flex flex-row {WidthClass}";
-    
+
     private string WidthClass => IsFullWidth ? "w-full" : "w-fit";
 
     // Use semantic class .bw-btn-group if attached, otherwise just gap
-    private string GroupClasses => IsAttached 
+    private string GroupClasses => IsAttached
         ? "bw-btn-group" + (Orientation == BwOrientation.Vertical ? " bw-btn-group-vertical" : "")
-        : (Orientation == BwOrientation.Vertical ? "gap-1" : "gap-1");
+        : Orientation == BwOrientation.Vertical ? "gap-1" : "gap-1";
+
 }

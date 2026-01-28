@@ -13,7 +13,7 @@
         BwMainAxisAlignment.SpaceEvenly => "justify-evenly",
         _ => "justify-start"
     };
-    
+
     var alignClass = CrossAxisAlignment switch
     {
         BwCrossAxisAlignment.Start => "items-start",
@@ -23,7 +23,7 @@
         BwCrossAxisAlignment.Baseline => "items-baseline",
         _ => "items-stretch"
     };
-    
+
     var gapClass = Spacing switch
     {
         BwSpacing.None => "",
@@ -40,16 +40,17 @@
     {
         if (!span.HasValue) return "";
         if (span.Value < 1 || span.Value > 12) return "";
-        
-        var w = span.Value switch {
+
+        var w = span.Value switch
+        {
             1 => "1/12", 2 => "2/12", 3 => "3/12", 4 => "4/12", 5 => "5/12", 6 => "6/12",
             7 => "7/12", 8 => "8/12", 9 => "9/12", 10 => "10/12", 11 => "11/12", 12 => "full",
             _ => "full"
         };
-        
+
         return string.IsNullOrEmpty(prefix) ? $"w-{w}" : $"{prefix}:w-{w}";
     }
-    
+
     var spanClass = GetSpanClass(Span);
     var smClass = GetSpanClass(Sm, "sm");
     var mdClass = GetSpanClass(Md, "md");
@@ -58,22 +59,44 @@
     var xxlClass = GetSpanClass(Xxl, "2xl");
 }
 
-<div class="@CombineClasses("flex flex-col", spanClass, smClass, mdClass, lgClass, xlClass, xxlClass, justifyClass, alignClass, gapClass)" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div
+    class="@CombineClasses("flex flex-col", spanClass, smClass, mdClass, lgClass, xlClass, xxlClass, justifyClass, alignClass, gapClass)"
+    style="@Style" id="@Id" @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
-    [Parameter] public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
-    [Parameter] public BwSpacing Spacing { get; set; } = BwSpacing.Md;
 
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public BwMainAxisAlignment MainAxisAlignment { get; set; } = BwMainAxisAlignment.Start;
+
+    [Parameter]
+    public BwCrossAxisAlignment CrossAxisAlignment { get; set; } = BwCrossAxisAlignment.Stretch;
+
+    [Parameter]
+    public BwSpacing Spacing { get; set; } = BwSpacing.Md;
+
+
     // Grid Props
-    [Parameter] public int? Span { get; set; } // Default width (mobile)
-    [Parameter] public int? Sm { get; set; }
-    [Parameter] public int? Md { get; set; }
-    [Parameter] public int? Lg { get; set; }
-    [Parameter] public int? Xl { get; set; }
-    [Parameter] public int? Xxl { get; set; }
+    [Parameter]
+    public int? Span { get; set; } // Default width (mobile)
+
+    [Parameter]
+    public int? Sm { get; set; }
+
+    [Parameter]
+    public int? Md { get; set; }
+
+    [Parameter]
+    public int? Lg { get; set; }
+
+    [Parameter]
+    public int? Xl { get; set; }
+
+    [Parameter]
+    public int? Xxl { get; set; }
+
 }

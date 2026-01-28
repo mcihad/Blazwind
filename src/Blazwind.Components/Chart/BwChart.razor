@@ -1,16 +1,14 @@
 @namespace Blazwind.Components.Chart
-@using Blazwind.Components.Shared
 @inherits BwBase
-@using Blazwind.Components.Services
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.JSInterop
-@using System.Text.Json
 @inject IJSRuntime JS
 @inject ScriptLoaderService ScriptLoader
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 <div @ref="_container" class="@CombineClasses("bw-chart")" style="@_containerStyle" id="@Id"
-    @attributes="AdditionalAttributes"></div>
+     @attributes="AdditionalAttributes"></div>
 
 @code {
     private const string ScriptPath = "_content/Blazwind.Components/blazwind.chart.js";
@@ -26,39 +24,44 @@
     #region Parameters
 
     /// <summary>
-    /// CSS style - Inherited from BwBase but overriding for custom usage if needed, though BwBase handles it.
-    /// Actually, let's remove them to avoid hiding BwBase members.
+    ///     CSS style - Inherited from BwBase but overriding for custom usage if needed, though BwBase handles it.
+    ///     Actually, let's remove them to avoid hiding BwBase members.
     /// </summary>
+    /// <summary>
+    ///     Chart width
+    /// </summary>
+    [Parameter]
+    public string Width { get; set; } = "100%";
 
     /// <summary>
-    /// Chart width
+    ///     Chart height
     /// </summary>
-    [Parameter] public string Width { get; set; } = "100%";
+    [Parameter]
+    public string Height { get; set; } = "400px";
 
     /// <summary>
-    /// Chart height
+    ///     Chart options (ECharts format) - can be ChartOptions or anonymous object
     /// </summary>
-    [Parameter] public string Height { get; set; } = "400px";
+    [Parameter]
+    public object? Options { get; set; }
 
     /// <summary>
-    /// Chart options (ECharts format) - can be ChartOptions or anonymous object
+    ///     Chart theme
     /// </summary>
-    [Parameter] public object? Options { get; set; }
+    [Parameter]
+    public ChartTheme Theme { get; set; } = ChartTheme.Default;
 
     /// <summary>
-    /// Chart theme
+    ///     Show loading indicator initially
     /// </summary>
-    [Parameter] public ChartTheme Theme { get; set; } = ChartTheme.Default;
+    [Parameter]
+    public bool ShowLoading { get; set; }
 
     /// <summary>
-    /// Show loading indicator initially
+    ///     Click event callback
     /// </summary>
-    [Parameter] public bool ShowLoading { get; set; } = false;
-
-    /// <summary>
-    /// Click event callback
-    /// </summary>
-    [Parameter] public EventCallback<ChartClickEventArgs> OnClick { get; set; }
+    [Parameter]
+    public EventCallback<ChartClickEventArgs> OnClick { get; set; }
 
     #endregion
 
@@ -77,8 +80,12 @@
                     await InitializeAsync();
                 }
             }
-            catch (JSDisconnectedException) { }
-            catch (ObjectDisposedException) { }
+            catch (JSDisconnectedException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 
@@ -90,8 +97,12 @@
             {
                 await SetOptionAsync(Options);
             }
-            catch (JSDisconnectedException) { }
-            catch (ObjectDisposedException) { }
+            catch (JSDisconnectedException)
+            {
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 
@@ -105,15 +116,15 @@
         var optionsJson = JsonSerializer.Serialize(Options, new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         });
 
         _instanceId = await JS.InvokeAsync<string>(
-        "BwChart.init",
-        _container,
-        JsonSerializer.Deserialize<object>(optionsJson),
-        themeStr,
-        _netRef
+            "BwChart.init",
+            _container,
+            JsonSerializer.Deserialize<object>(optionsJson),
+            themeStr,
+            _netRef
         );
         _isInitialized = true;
 
@@ -137,11 +148,13 @@
                 await OnClick.InvokeAsync(eventData);
             }
         }
-        catch { }
+        catch
+        {
+        }
     }
 
     /// <summary>
-    /// Update chart options
+    ///     Update chart options
     /// </summary>
     public async Task SetOptionAsync(object options, bool notMerge = false)
     {
@@ -150,7 +163,7 @@
             var optionsJson = JsonSerializer.Serialize(options, new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             });
 
             await JS.InvokeVoidAsync("BwChart.setOption", _instanceId, JsonSerializer.Deserialize<object>(optionsJson), notMerge);
@@ -158,7 +171,7 @@
     }
 
     /// <summary>
-    /// Resize chart
+    ///     Resize chart
     /// </summary>
     public async Task ResizeAsync()
     {
@@ -169,7 +182,7 @@
     }
 
     /// <summary>
-    /// Get chart as data URL
+    ///     Get chart as data URL
     /// </summary>
     public async Task<string> GetDataUrlAsync(string type = "png")
     {
@@ -177,11 +190,12 @@
         {
             return await JS.InvokeAsync<string>("BwChart.getDataURL", _instanceId, type);
         }
+
         return string.Empty;
     }
 
     /// <summary>
-    /// Show loading indicator
+    ///     Show loading indicator
     /// </summary>
     public async Task ShowLoadingAsync(string text = "Loading...")
     {
@@ -192,7 +206,7 @@
     }
 
     /// <summary>
-    /// Hide loading indicator
+    ///     Hide loading indicator
     /// </summary>
     public async Task HideLoadingAsync()
     {
@@ -203,7 +217,7 @@
     }
 
     /// <summary>
-    /// Clear chart
+    ///     Clear chart
     /// </summary>
     public async Task ClearAsync()
     {
@@ -221,8 +235,12 @@
             {
                 await JS.InvokeVoidAsync("BwChart.dispose", _instanceId);
             }
-            catch { }
+            catch
+            {
+            }
         }
+
         _netRef?.Dispose();
     }
+
 }

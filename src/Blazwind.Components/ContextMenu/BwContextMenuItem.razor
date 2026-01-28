@@ -1,7 +1,5 @@
-@using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
-
-@using Blazwind.Components.Shared
+@using Microsoft.JSInterop
 @inherits BwBase
 
 @if (IsDivider)
@@ -11,11 +9,11 @@
 else
 {
     @* Wrapper div for relative positioning of submenu *@
-    <div class="relative w-full group" 
-         @onmouseenter="HandleMouseEnter" 
+    <div class="relative w-full group"
+         @onmouseenter="HandleMouseEnter"
          @onmouseleave="HandleMouseLeave">
-         
-        <button type="button" 
+
+        <button type="button"
                 class="bw-context-menu-item @Class"
                 role="menuitem"
                 @onclick="HandleClick"
@@ -26,12 +24,12 @@ else
                 <i class="@Icon bw-context-menu-icon @IconClass" aria-hidden="true"></i>
             }
             <span class="flex-grow text-left">@Text</span>
-            
+
             @if (SubMenu != null)
             {
                 <i class="fa-solid fa-chevron-right ml-2 text-xs text-gray-400"></i>
             }
-            
+
             @ChildContent
         </button>
 
@@ -40,25 +38,42 @@ else
             <div class="bw-context-submenu"
                  style="top: 0; left: 100%; opacity: 0;"
                  @ref="_submenuElement">
-                 <CascadingValue Value="ContextMenu">
+                <CascadingValue Value="ContextMenu">
                     @SubMenu
-                 </CascadingValue>
+                </CascadingValue>
             </div>
         }
     </div>
 }
 
 @code {
-    [CascadingParameter] public BwContextMenu? ContextMenu { get; set; }
 
-    [Parameter] public string? Text { get; set; }
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? IconClass { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? SubMenu { get; set; }
-    [Parameter] public bool IsDivider { get; set; }
-    [Parameter] public EventCallback OnClick { get; set; }
-    [Parameter] public bool CloseOnClick { get; set; } = true;
+    [CascadingParameter]
+    public BwContextMenu? ContextMenu { get; set; }
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? IconClass { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? SubMenu { get; set; }
+
+    [Parameter]
+    public bool IsDivider { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    [Parameter]
+    public bool CloseOnClick { get; set; } = true;
 
     private bool _isSubMenuOpen;
     private ElementReference _triggerElement;
@@ -73,13 +88,14 @@ else
 
         if (SubMenu != null)
         {
-             // Toggle or open
-             _isSubMenuOpen = !_isSubMenuOpen;
-             if (_isSubMenuOpen)
-             {
-                 await AdjustPositionAsync();
-             }
-             return;
+            // Toggle or open
+            _isSubMenuOpen = !_isSubMenuOpen;
+            if (_isSubMenuOpen)
+            {
+                await AdjustPositionAsync();
+            }
+
+            return;
         }
 
         if (CloseOnClick && ContextMenu != null)
@@ -107,34 +123,34 @@ else
     {
         if (SubMenu != null)
         {
-             // Delay closing to allow moving mouse diagonally
-             _closeCts = new CancellationTokenSource();
-             var token = _closeCts.Token;
-             
-             Task.Delay(100, token).ContinueWith(t => 
-             {
-                 if (!t.IsCanceled)
-                 {
-                     _isSubMenuOpen = false;
-                     InvokeAsync(StateHasChanged);
-                 }
-             });
+            // Delay closing to allow moving mouse diagonally
+            _closeCts = new CancellationTokenSource();
+            var token = _closeCts.Token;
+
+            Task.Delay(100, token).ContinueWith(t =>
+            {
+                if (!t.IsCanceled)
+                {
+                    _isSubMenuOpen = false;
+                    InvokeAsync(StateHasChanged);
+                }
+            });
         }
     }
 
     private async Task AdjustPositionAsync()
     {
         // Wait for render
-        await Task.Yield(); 
-        
+        await Task.Yield();
+
         try
         {
             await InvokeAsync(StateHasChanged); // Ensure rendered
             if (_isSubMenuOpen)
             {
-                 // We access the global Blazwind object effectively
-                 // Use JS to adjust position
-                 await JSRuntime.InvokeVoidAsync("Blazwind.ContextMenu.adjustSubmenuPosition", _triggerElement, _submenuElement);
+                // We access the global Blazwind object effectively
+                // Use JS to adjust position
+                await JSRuntime.InvokeVoidAsync("Blazwind.ContextMenu.adjustSubmenuPosition", _triggerElement, _submenuElement);
             }
         }
         catch (Exception ex)
@@ -142,4 +158,5 @@ else
             Console.WriteLine($"Error adjusting submenu: {ex.Message}");
         }
     }
+
 }

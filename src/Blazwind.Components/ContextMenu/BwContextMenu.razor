@@ -1,38 +1,43 @@
 @namespace Blazwind.Components.ContextMenu
-@using Blazwind.Components.Shared
-@using Microsoft.JSInterop
 @inject IJSRuntime JSRuntime
+@using Microsoft.JSInterop
 @inherits BwBase
 
-<div @oncontextmenu="HandleContextMenu" @oncontextmenu:preventDefault="true" class="@Class" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div @oncontextmenu="HandleContextMenu" @oncontextmenu:preventDefault="true" class="@Class" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @if (IsOpen)
 {
     @* Backdrop *@
-    <div class="fixed inset-0 z-40 bg-transparent" @onclick="Close" @oncontextmenu="Close" @oncontextmenu:preventDefault="true"></div>
+    <div class="fixed inset-0 z-40 bg-transparent" @onclick="Close" @oncontextmenu="Close"
+         @oncontextmenu:preventDefault="true"></div>
 
     @* Menu *@
     <div class="bw-context-menu focus:outline-none"
          style="top: @(Y)px; left: @(X)px; opacity: @(Opacity);"
          role="menu"
          @ref="_menuElement">
-         <CascadingValue Value="this">
-             @MenuContent
-         </CascadingValue>
+        <CascadingValue Value="this">
+            @MenuContent
+        </CascadingValue>
     </div>
 }
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? MenuContent { get; set; }
-    
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? MenuContent { get; set; }
+
     public bool IsOpen { get; private set; }
     public double X { get; private set; }
     public double Y { get; private set; }
-    public double Opacity { get; private set; } = 0;
-    
+    public double Opacity { get; private set; }
+
     private ElementReference _menuElement;
     private bool _shouldAdjustPosition;
 
@@ -43,12 +48,12 @@
             _shouldAdjustPosition = false;
             try
             {
-                 // Call JS to measure and calculate position
-                 var position = await JSRuntime.InvokeAsync<Position>("Blazwind.ContextMenu.calculateMenuPosition", _menuElement, X, Y);
-                 X = position.X;
-                 Y = position.Y;
-                 Opacity = 1;
-                 StateHasChanged();
+                // Call JS to measure and calculate position
+                var position = await JSRuntime.InvokeAsync<Position>("Blazwind.ContextMenu.calculateMenuPosition", _menuElement, X, Y);
+                X = position.X;
+                Y = position.Y;
+                Opacity = 1;
+                StateHasChanged();
             }
             catch (Exception ex)
             {
@@ -65,7 +70,7 @@
         X = e.ClientX;
         Y = e.ClientY;
         Opacity = 0;
-        
+
         IsOpen = true;
         _shouldAdjustPosition = true;
         StateHasChanged();
@@ -76,7 +81,7 @@
         IsOpen = false;
         StateHasChanged();
     }
-    
+
     public async Task ShowAsync(double x, double y)
     {
         X = x;
@@ -100,4 +105,5 @@
         IsOpen = false;
         StateHasChanged();
     }
+
 }

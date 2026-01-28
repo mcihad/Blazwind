@@ -1,7 +1,6 @@
 @namespace Blazwind.Components.Accordion
-@inherits BwBase
 @using Blazwind.Components.Shared
-@using Blazwind.Components
+@inherits BwBase
 
 <CascadingValue Value="this">
     <div class="@_classes" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -10,22 +9,34 @@
 </CascadingValue>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public bool AllowMultiple { get; set; } = false;
-    [Parameter] public int? DefaultOpenIndex { get; set; }
-    [Parameter] public BwVariant Variant { get; set; } = BwVariant.Outline;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
 
-    private List<BwAccordionItem> _items = new();
-    private HashSet<BwAccordionItem> _expandedItems = new();
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public bool AllowMultiple { get; set; }
+
+    [Parameter]
+    public int? DefaultOpenIndex { get; set; }
+
+    [Parameter]
+    public BwVariant Variant { get; set; } = BwVariant.Outline;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    private readonly List<BwAccordionItem> _items = new();
+    private readonly HashSet<BwAccordionItem> _expandedItems = new();
 
     private string _classes => CombineClasses(GetBaseClasses());
 
     private string GetBaseClasses()
     {
         var classes = new List<string> { "bw-accordion" };
-        
+
         // Variant classes
         classes.Add(Variant switch
         {
@@ -34,7 +45,7 @@
             BwVariant.Ghost => "bw-accordion-ghost",
             _ => "bw-accordion-outline"
         });
-        
+
         // Size handling
         classes.Add(Size switch
         {
@@ -56,12 +67,13 @@
     internal void RegisterItem(BwAccordionItem item)
     {
         _items.Add(item);
-        
+
         // Check if this item should be open by default
         if (DefaultOpenIndex.HasValue && _items.Count - 1 == DefaultOpenIndex.Value)
         {
             _expandedItems.Add(item);
         }
+
         StateHasChanged();
     }
 
@@ -86,10 +98,16 @@
             {
                 _expandedItems.Clear();
             }
+
             _expandedItems.Add(item);
         }
+
         StateHasChanged();
     }
 
-    internal bool IsExpanded(BwAccordionItem item) => _expandedItems.Contains(item);
+    internal bool IsExpanded(BwAccordionItem item)
+    {
+        return _expandedItems.Contains(item);
+    }
+
 }

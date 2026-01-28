@@ -5,6 +5,7 @@ The primary button component for user interaction, supporting various variants, 
 ## Examples
 
 ### Basic Usage
+
 Standard buttons with different colors and sizes.
 
 ```razor
@@ -14,6 +15,7 @@ Standard buttons with different colors and sizes.
 ```
 
 ### Variants
+
 Customize the visual style using the `Variant` parameter.
 
 ```razor
@@ -25,6 +27,7 @@ Customize the visual style using the `Variant` parameter.
 ```
 
 ### Icons
+
 Support for left, right, or icon-only configurations.
 
 ```razor
@@ -34,6 +37,7 @@ Support for left, right, or icon-only configurations.
 ```
 
 ### States
+
 Handle loading and disabled states efficiently.
 
 ```razor
@@ -42,6 +46,7 @@ Handle loading and disabled states efficiently.
 ```
 
 ### Badges
+
 Display small notifications or counts on buttons.
 
 ```razor
@@ -54,18 +59,18 @@ Display small notifications or counts on buttons.
 
 ## API
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `Text` | `string?` | `null` | The button label. |
-| `ChildContent` | `RenderFragment?` | `null` | Custom content inside the button. |
-| `BadgeContent` | `RenderFragment?` | `null` | Content to be displayed as a badge on the button. |
-| `Variant` | `BwVariant` | `Filled` | Visual style (`Filled`, `Outline`, `Soft`, `Ghost`, `Link`). |
-| `Color` | `BwColor` | `Primary` | The button's color theme. |
-| `Size` | `BwSize` | `Medium` | Button size (`Small`, `Medium`, `Large`). |
-| `Icon` | `string?` | `null` | CSS class for the icon (e.g., "fa-solid fa-save"). |
-| `IconPosition` | `BwIconPosition` | `Left` | Icon placement (`Left`, `Right`, `Only`). |
-| `Disabled` | `bool` | `false` | If `true`, prevents user interaction. |
-| `IsLoading` | `bool` | `false` | Shows a loading spinner and disables interaction. |
-| `HtmlType` | `string` | `"button"` | HTML `type` attribute (`button`, `submit`, `reset`). |
-| `OnClick` | `EventCallback<MouseEventArgs>` | - | Triggered when the button is clicked. |
-| `Class` | `string?` | `null` | Additional CSS classes. |
+| Parameter      | Type                            | Default    | Description                                                  |
+|----------------|---------------------------------|------------|--------------------------------------------------------------|
+| `Text`         | `string?`                       | `null`     | The button label.                                            |
+| `ChildContent` | `RenderFragment?`               | `null`     | Custom content inside the button.                            |
+| `BadgeContent` | `RenderFragment?`               | `null`     | Content to be displayed as a badge on the button.            |
+| `Variant`      | `BwVariant`                     | `Filled`   | Visual style (`Filled`, `Outline`, `Soft`, `Ghost`, `Link`). |
+| `Color`        | `BwColor`                       | `Primary`  | The button's color theme.                                    |
+| `Size`         | `BwSize`                        | `Medium`   | Button size (`Small`, `Medium`, `Large`).                    |
+| `Icon`         | `string?`                       | `null`     | CSS class for the icon (e.g., "fa-solid fa-save").           |
+| `IconPosition` | `BwIconPosition`                | `Left`     | Icon placement (`Left`, `Right`, `Only`).                    |
+| `Disabled`     | `bool`                          | `false`    | If `true`, prevents user interaction.                        |
+| `IsLoading`    | `bool`                          | `false`    | Shows a loading spinner and disables interaction.            |
+| `HtmlType`     | `string`                        | `"button"` | HTML `type` attribute (`button`, `submit`, `reset`).         |
+| `OnClick`      | `EventCallback<MouseEventArgs>` | -          | Triggered when the button is clicked.                        |
+| `Class`        | `string?`                       | `null`     | Additional CSS classes.                                      |

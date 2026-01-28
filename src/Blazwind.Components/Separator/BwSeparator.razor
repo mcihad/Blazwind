@@ -23,11 +23,21 @@
 </div>
 
 @code {
-    [Parameter] public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
-    [Parameter] public BwBorderStyle Variant { get; set; } = BwBorderStyle.Solid;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Gray;
-    [Parameter] public BwAlignment TextAlignment { get; set; } = BwAlignment.Center;
-    [Parameter] public string? Text { get; set; }
+
+    [Parameter]
+    public BwOrientation Orientation { get; set; } = BwOrientation.Horizontal;
+
+    [Parameter]
+    public BwBorderStyle Variant { get; set; } = BwBorderStyle.Solid;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Gray;
+
+    [Parameter]
+    public BwAlignment TextAlignment { get; set; } = BwAlignment.Center;
+
+    [Parameter]
+    public string? Text { get; set; }
     // Removed Class and Style parameters (inherited)
 
     private string GetBaseClass()
@@ -67,4 +77,5 @@
 
         return $"{borderStyle} {colorClass}";
     }
+
 }

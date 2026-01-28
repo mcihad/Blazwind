@@ -5,39 +5,55 @@
 @{
     var sizeClass = Size.ToString().ToLower();
     var colorClass = $"bw-progress-{Color.ToString().ToLower()}";
-    
+
     // Add conditional classes for stripes/animation
     var stripedClass = Striped ? "bw-progress-striped" : "";
     var animatedClass = Animated ? "bw-progress-animated" : "";
-    
+
     var containerClass = CombineClasses("bw-progress", sizeClass, colorClass, stripedClass, animatedClass);
     var barStyle = $"width: {Percentage}%;";
 }
 
 <div class="@containerClass" style="@Style" id="@Id" @attributes="AdditionalAttributes">
-    <div class="bw-progress-bar" 
-         role="progressbar" 
-         style="@barStyle" 
-         aria-valuenow="@Value" 
-         aria-valuemin="0" 
+    <div class="bw-progress-bar"
+         role="progressbar"
+         style="@barStyle"
+         aria-valuenow="@Value"
+         aria-valuemin="0"
          aria-valuemax="@Max">
         @if (ShowLabel)
         {
-            @((!string.IsNullOrEmpty(LabelFormat) ? LabelFormat.Replace("{0}", Percentage.ToString("0")) : $"{Percentage:0}%"))
+            @(!string.IsNullOrEmpty(LabelFormat) ? LabelFormat.Replace("{0}", Percentage.ToString("0")) : $"{Percentage:0}%")
         }
     </div>
 </div>
 
 @code {
-    [Parameter] public double Value { get; set; } = 0;
-    [Parameter] public double Max { get; set; } = 100;
-    [Parameter] public BwColor Color { get; set; } = BwColor.Primary;
-    [Parameter] public BwSize Size { get; set; } = BwSize.Medium;
-    [Parameter] public bool ShowLabel { get; set; } = false;
-    [Parameter] public string? LabelFormat { get; set; } // e.g. "{0}% Completed"
-    [Parameter] public bool Striped { get; set; }
-    [Parameter] public bool Animated { get; set; }
+
+    [Parameter]
+    public double Value { get; set; }
+
+    [Parameter]
+    public double Max { get; set; } = 100;
+
+    [Parameter]
+    public BwColor Color { get; set; } = BwColor.Primary;
+
+    [Parameter]
+    public BwSize Size { get; set; } = BwSize.Medium;
+
+    [Parameter]
+    public bool ShowLabel { get; set; }
+
+    [Parameter]
+    public string? LabelFormat { get; set; } // e.g. "{0}% Completed"
+
+    [Parameter]
+    public bool Striped { get; set; }
+
+    [Parameter]
+    public bool Animated { get; set; }
     // Removed Class parameter (inherited)
 
-    private double Percentage => Math.Clamp((Value / Max) * 100, 0, 100);
+    private double Percentage => Math.Clamp(Value / Max * 100, 0, 100);
 }

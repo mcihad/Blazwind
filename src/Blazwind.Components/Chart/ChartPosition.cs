@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Chart;
 
 /// <summary>
-/// Common position values for chart elements
+///     Common position values for chart elements
 /// </summary>
 public static class ChartPosition
 {

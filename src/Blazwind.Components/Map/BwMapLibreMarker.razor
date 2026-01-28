@@ -3,32 +3,38 @@
 @implements IAsyncDisposable
 
 @code {
-    [CascadingParameter] public BwMapLibre? ParentMap { get; set; }
+
+    [CascadingParameter]
+    public BwMapLibre? ParentMap { get; set; }
 
     #region Required Parameters
 
     /// <summary>
-    /// Unique marker identifier
+    ///     Unique marker identifier
     /// </summary>
-    [Parameter] public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     /// <summary>
-    /// Marker position [longitude, latitude]. Can also use Longitude/Latitude properties.
+    ///     Marker position [longitude, latitude]. Can also use Longitude/Latitude properties.
     /// </summary>
-    [Parameter] public double[]? LngLat { get; set; }
+    [Parameter]
+    public double[]? LngLat { get; set; }
 
     /// <summary>
-    /// Longitude coordinate (alternative to LngLat)
+    ///     Longitude coordinate (alternative to LngLat)
     /// </summary>
-    [Parameter] public double? Longitude { get; set; }
+    [Parameter]
+    public double? Longitude { get; set; }
 
     /// <summary>
-    /// Latitude coordinate (alternative to LngLat)
+    ///     Latitude coordinate (alternative to LngLat)
     /// </summary>
-    [Parameter] public double? Latitude { get; set; }
+    [Parameter]
+    public double? Latitude { get; set; }
 
     /// <summary>
-    /// Gets the effective coordinates
+    ///     Gets the effective coordinates
     /// </summary>
     private double[] EffectiveLngLat => LngLat ?? new[] { Longitude ?? 0, Latitude ?? 0 };
 
@@ -37,96 +43,111 @@
     #region Appearance
 
     /// <summary>
-    /// Marker color (CSS color string)
+    ///     Marker color (CSS color string)
     /// </summary>
-    [Parameter] public string? Color { get; set; }
+    [Parameter]
+    public string? Color { get; set; }
 
     /// <summary>
-    /// Marker scale (default: 1)
+    ///     Marker scale (default: 1)
     /// </summary>
-    [Parameter] public double? Scale { get; set; }
+    [Parameter]
+    public double? Scale { get; set; }
 
     /// <summary>
-    /// Marker rotation in degrees
+    ///     Marker rotation in degrees
     /// </summary>
-    [Parameter] public double? Rotation { get; set; }
+    [Parameter]
+    public double? Rotation { get; set; }
 
     /// <summary>
-    /// Custom HTML element for marker
+    ///     Custom HTML element for marker
     /// </summary>
-    [Parameter] public string? Element { get; set; }
+    [Parameter]
+    public string? Element { get; set; }
 
     /// <summary>
-    /// Anchor position: center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right
+    ///     Anchor position: center, top, bottom, left, right, top-left, top-right, bottom-left, bottom-right
     /// </summary>
-    [Parameter] public string? Anchor { get; set; }
+    [Parameter]
+    public string? Anchor { get; set; }
 
     /// <summary>
-    /// Offset from anchor [x, y] in pixels
+    ///     Offset from anchor [x, y] in pixels
     /// </summary>
-    [Parameter] public double[]? Offset { get; set; }
+    [Parameter]
+    public double[]? Offset { get; set; }
 
     /// <summary>
-    /// Rotation alignment: map, viewport, auto
+    ///     Rotation alignment: map, viewport, auto
     /// </summary>
-    [Parameter] public string? RotationAlignment { get; set; }
+    [Parameter]
+    public string? RotationAlignment { get; set; }
 
     /// <summary>
-    /// Pitch alignment: map, viewport, auto
+    ///     Pitch alignment: map, viewport, auto
     /// </summary>
-    [Parameter] public string? PitchAlignment { get; set; }
+    [Parameter]
+    public string? PitchAlignment { get; set; }
 
     #endregion
 
     #region Behavior
 
     /// <summary>
-    /// Whether the marker is draggable
+    ///     Whether the marker is draggable
     /// </summary>
-    [Parameter] public bool Draggable { get; set; }
+    [Parameter]
+    public bool Draggable { get; set; }
 
     #endregion
 
     #region Popup
 
     /// <summary>
-    /// HTML content for popup (alias for PopupHtml)
+    ///     HTML content for popup (alias for PopupHtml)
     /// </summary>
-    [Parameter] public string? PopupContent { get; set; }
+    [Parameter]
+    public string? PopupContent { get; set; }
 
     /// <summary>
-    /// HTML content for popup
+    ///     HTML content for popup
     /// </summary>
-    [Parameter] public string? PopupHtml { get; set; }
+    [Parameter]
+    public string? PopupHtml { get; set; }
 
     /// <summary>
-    /// Gets effective popup content
+    ///     Gets effective popup content
     /// </summary>
     private string? EffectivePopupHtml => PopupContent ?? PopupHtml;
 
     /// <summary>
-    /// Popup options
+    ///     Popup options
     /// </summary>
-    [Parameter] public MapPopupOptions? PopupOptions { get; set; }
+    [Parameter]
+    public MapPopupOptions? PopupOptions { get; set; }
 
     #endregion
 
     #region Events
 
     /// <summary>
-    /// Fired when marker drag starts
+    ///     Fired when marker drag starts
     /// </summary>
-    [Parameter] public EventCallback<double[]> OnDragStart { get; set; }
+    [Parameter]
+    public EventCallback<double[]> OnDragStart { get; set; }
 
     /// <summary>
-    /// Fired during marker drag
+    ///     Fired during marker drag
     /// </summary>
-    [Parameter] public EventCallback<double[]> OnDrag { get; set; }
+    [Parameter]
+    public EventCallback<double[]> OnDrag { get; set; }
 
     /// <summary>
-    /// Fired when marker drag ends
+    ///     Fired when marker drag ends
     /// </summary>
-    [Parameter] public EventCallback<double[]> OnDragEnd { get; set; }
+    [Parameter]
+    public EventCallback<double[]> OnDragEnd { get; set; }
 
     #endregion
 
@@ -166,7 +187,7 @@
     }
 
     /// <summary>
-    /// Update marker position
+    ///     Update marker position
     /// </summary>
     public async Task SetLngLatAsync(double[] lngLat)
     {
@@ -178,7 +199,7 @@
     }
 
     /// <summary>
-    /// Set or update popup
+    ///     Set or update popup
     /// </summary>
     public async Task SetPopupAsync(string html, MapPopupOptions? options = null)
     {
@@ -191,7 +212,7 @@
     }
 
     /// <summary>
-    /// Toggle popup visibility
+    ///     Toggle popup visibility
     /// </summary>
     public async Task TogglePopupAsync()
     {
@@ -209,7 +230,10 @@
             {
                 await ParentMap.RemoveMarkerAsync(Id);
             }
-            catch { }
+            catch
+            {
+            }
         }
     }
+
 }

@@ -1,7 +1,7 @@
 namespace Blazwind.Components.Shared;
 
 /// <summary>
-/// Label position relative to form input
+///     Label position relative to form input
 /// </summary>
 public enum BwLabelPosition
 {

@@ -9,7 +9,7 @@
         BwFormDensity.Relaxed => "gap-6",
         _ => "gap-4"
     };
-    
+
     var columnsClass = Columns switch
     {
         1 => "grid-cols-1",
@@ -22,23 +22,28 @@
     };
 }
 
-<div class="@CombineClasses($"bw-form-grid {columnsClass} {gapClass}")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
+<div class="@CombineClasses($"bw-form-grid {columnsClass} {gapClass}")" style="@Style" id="@Id"
+     @attributes="AdditionalAttributes">
     @ChildContent
 </div>
 
 @code {
-    [CascadingParameter] private BwFormDensity? CascadedDensity { get; set; }
-    
-    /// <summary>Number of columns (1-6)</summary>
-    [Parameter] public int Columns { get; set; } = 3;
-    
-    /// <summary>Density override</summary>
-    [Parameter] public BwFormDensity? DensityOverride { get; set; }
-    
 
-    
+    [CascadingParameter]
+    private BwFormDensity? CascadedDensity { get; set; }
+
+    /// <summary>Number of columns (1-6)</summary>
+    [Parameter]
+    public int Columns { get; set; } = 3;
+
+    /// <summary>Density override</summary>
+    [Parameter]
+    public BwFormDensity? DensityOverride { get; set; }
+
+
     /// <summary>Child content (form fields)</summary>
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     private BwFormDensity Density => DensityOverride ?? CascadedDensity ?? BwFormDensity.Normal;
 }

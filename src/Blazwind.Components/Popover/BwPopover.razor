@@ -10,7 +10,7 @@
         BwPlacement.Right => "left-full top-1/2 -translate-y-1/2 ml-2",
         _ => "top-full left-1/2 -translate-x-1/2 mt-2" // Bottom
     };
-    
+
     var arrowClasses = Placement switch
     {
         BwPlacement.Top => "bottom-[-6px] left-1/2 -translate-x-1/2 border-r border-b border-gray-200 dark:border-gray-700",
@@ -20,11 +20,12 @@
     };
 }
 
-<div class="@CombineClasses("bw-popover-container")" style="@Style" id="@Id" @attributes="AdditionalAttributes" @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
+<div class="@CombineClasses("bw-popover-container")" style="@Style" id="@Id" @attributes="AdditionalAttributes"
+     @onmouseenter="HandleMouseEnter" @onmouseleave="HandleMouseLeave">
     <div class="inline-block cursor-pointer" @onclick="HandleTriggerClick">
         @ChildContent
     </div>
-    
+
     @if (_isOpen)
     {
         <div class="bw-popover-content animate-in fade-in zoom-in-95 duration-150 @placementClasses">
@@ -32,7 +33,7 @@
             {
                 <div class="bw-popover-arrow @arrowClasses"></div>
             }
-            
+
             @if (HeaderContent != null || !string.IsNullOrEmpty(Title))
             {
                 <div class="bw-popover-header">
@@ -52,7 +53,7 @@
                     }
                 </div>
             }
-            
+
             <div class="bw-popover-body">
                 @if (BodyContent != null)
                 {
@@ -63,7 +64,7 @@
                     @Content
                 }
             </div>
-            
+
             @if (FooterContent != null)
             {
                 <div class="bw-popover-footer">
@@ -75,29 +76,51 @@
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? HeaderContent { get; set; }
-    [Parameter] public RenderFragment? BodyContent { get; set; }
-    [Parameter] public RenderFragment? FooterContent { get; set; }
-    
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public string? Content { get; set; }
-    [Parameter] public BwPlacement Placement { get; set; } = BwPlacement.Bottom;
-    [Parameter] public bool ShowArrow { get; set; } = true;
-    [Parameter] public bool Closable { get; set; } = false;
-    [Parameter] public BwTrigger Trigger { get; set; } = BwTrigger.Click;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? HeaderContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? BodyContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? FooterContent { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Content { get; set; }
+
+    [Parameter]
+    public BwPlacement Placement { get; set; } = BwPlacement.Bottom;
+
+    [Parameter]
+    public bool ShowArrow { get; set; } = true;
+
+    [Parameter]
+    public bool Closable { get; set; }
+
+    [Parameter]
+    public BwTrigger Trigger { get; set; } = BwTrigger.Click;
     // Removed Class parameter (inherited)
-    
-    [Parameter] public bool IsOpen { get; set; } = false;
-    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
-    
-    private bool _isOpen = false;
-    
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private bool _isOpen;
+
     protected override void OnParametersSet()
     {
         _isOpen = IsOpen;
     }
-    
+
     private async Task HandleTriggerClick()
     {
         if (Trigger == BwTrigger.Click || Trigger == BwTrigger.Focus)
@@ -105,7 +128,7 @@
             await Toggle();
         }
     }
-    
+
     private async Task HandleMouseEnter()
     {
         if (Trigger == BwTrigger.Hover)
@@ -113,7 +136,7 @@
             await Open();
         }
     }
-    
+
     private async Task HandleMouseLeave()
     {
         if (Trigger == BwTrigger.Hover)
@@ -121,22 +144,23 @@
             await Close();
         }
     }
-    
+
     private async Task Toggle()
     {
         _isOpen = !_isOpen;
         await IsOpenChanged.InvokeAsync(_isOpen);
     }
-    
+
     private async Task Open()
     {
         _isOpen = true;
         await IsOpenChanged.InvokeAsync(true);
     }
-    
+
     private async Task Close()
     {
         _isOpen = false;
         await IsOpenChanged.InvokeAsync(false);
     }
+
 }

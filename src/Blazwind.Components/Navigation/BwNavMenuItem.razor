@@ -1,13 +1,11 @@
 @namespace Blazwind.Components.Navigation
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.JSInterop
 @inject NavigationManager NavigationManager
 @inherits BwBase
 
 @{
     UpdateActiveState();
     var itemClass = _isActive ? "bw-nav-item bw-nav-item-active" : "bw-nav-item";
-    
+
     var _context = new BwNavMenuItemContext
     {
         Label = Label,
@@ -28,7 +26,7 @@
 }
 else
 {
-    <a href="@Href" 
+    <a href="@Href"
        class="@CombineClasses(itemClass)"
        style="padding-left: @(Level * 12 + 12)px; @Style"
        id="@Id" @attributes="AdditionalAttributes"
@@ -47,24 +45,42 @@ else
     </a>
 }
 
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.JSInterop
 @implements IDisposable
 
 @code {
-    [CascadingParameter(Name = "ParentGroupId")] public string? ParentGroupId { get; set; }
-    [CascadingParameter(Name = "Level")] public int Level { get; set; } = 0;
-    [CascadingParameter(Name = "NavItemTemplate")] 
+
+    [CascadingParameter(Name = "ParentGroupId")]
+    public string? ParentGroupId { get; set; }
+
+    [CascadingParameter(Name = "Level")]
+    public int Level { get; set; }
+
+    [CascadingParameter(Name = "NavItemTemplate")]
     public RenderFragment<BwNavMenuItemContext>? _cascadedItemTemplate { get; set; }
-    
-    [Parameter] public string Label { get; set; } = "";
-    [Parameter] public string Href { get; set; } = "";
-    [Parameter] public string? Icon { get; set; }
-    [Parameter] public string? Badge { get; set; }
-    [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
-    
+
+    [Parameter]
+    public string Label { get; set; } = "";
+
+    [Parameter]
+    public string Href { get; set; } = "";
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public string? Badge { get; set; }
+
+    [Parameter]
+    public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
+
     /// <summary>Custom template for this menu item. Overrides cascaded template.</summary>
-    [Parameter] public RenderFragment<BwNavMenuItemContext>? ItemTemplate { get; set; }
-    
-    [Inject] IJSRuntime JS { get; set; } = default!;
+    [Parameter]
+    public RenderFragment<BwNavMenuItemContext>? ItemTemplate { get; set; }
+
+    [Inject]
+    IJSRuntime JS { get; set; } = default!;
 
     private bool _isActive;
 
@@ -83,7 +99,7 @@ else
 
     private async Task HandleClick()
     {
-        try 
+        try
         {
             await JS.InvokeVoidAsync("Blazwind.Sidebar.close");
         }
@@ -96,15 +112,15 @@ else
     {
         var currentUri = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         var targetUri = Href.TrimStart('/');
-        
+
         if (Match == NavLinkMatch.All)
         {
             _isActive = string.Equals(currentUri, targetUri, StringComparison.OrdinalIgnoreCase);
         }
         else
         {
-            _isActive = (!string.IsNullOrEmpty(targetUri) && currentUri.StartsWith(targetUri, StringComparison.OrdinalIgnoreCase)) || 
-                       (string.IsNullOrEmpty(targetUri) && string.IsNullOrEmpty(currentUri));
+            _isActive = (!string.IsNullOrEmpty(targetUri) && currentUri.StartsWith(targetUri, StringComparison.OrdinalIgnoreCase)) ||
+                        (string.IsNullOrEmpty(targetUri) && string.IsNullOrEmpty(currentUri));
         }
     }
 
@@ -117,8 +133,9 @@ else
     {
         if (firstRender && _isActive)
         {
-             await Task.Delay(50); 
-             await JS.InvokeVoidAsync("Blazwind.Nav.expandParentsForActive");
+            await Task.Delay(50);
+            await JS.InvokeVoidAsync("Blazwind.Nav.expandParentsForActive");
         }
     }
+
 }

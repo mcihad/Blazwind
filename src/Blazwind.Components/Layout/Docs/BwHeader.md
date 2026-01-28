@@ -21,9 +21,9 @@ A standardized top toolbar component for navigation, branding, and user actions.
 
 ## Parameters
 
-| Parameter | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `LeftContent` | `RenderFragment` | - | Slot for left-aligned items (e.g., Logo, Toggles). |
-| `RightContent` | `RenderFragment` | - | Slot for right-aligned items (e.g., Profile, Notifications). |
-| `Class` | `string?` | `null` | Custom CSS classes. |
-| `Style` | `string?` | `null` | Custom inline CSS styles. |
+| Parameter      | Type             | Default | Description                                                  |
+|:---------------|:-----------------|:--------|:-------------------------------------------------------------|
+| `LeftContent`  | `RenderFragment` | -       | Slot for left-aligned items (e.g., Logo, Toggles).           |
+| `RightContent` | `RenderFragment` | -       | Slot for right-aligned items (e.g., Profile, Notifications). |
+| `Class`        | `string?`        | `null`  | Custom CSS classes.                                          |
+| `Style`        | `string?`        | `null`  | Custom inline CSS styles.                                    |

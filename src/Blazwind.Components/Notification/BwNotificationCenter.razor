@@ -1,6 +1,4 @@
 @namespace Blazwind.Components.Notification
-@using Blazwind.Components.Shared
-@using Blazwind.Components.Services
 @inject NotificationService NotificationService
 @inherits BwBase
 
@@ -14,7 +12,7 @@
             </span>
         }
     </button>
-    
+
     @if (_isOpen)
     {
         <div class="bw-notification-panel animate-in fade-in slide-in-from-top-2 duration-150">
@@ -27,7 +25,7 @@
                     </button>
                 }
             </div>
-            
+
             <div class="bw-notification-list">
                 @if (_notifications.Any())
                 {
@@ -41,7 +39,7 @@
                             NotificationType.Error => "error",
                             _ => "info"
                         };
-                        
+
                         <div class="bw-notification-item @itemClass group"
                              @onclick="() => MarkAsRead(notification)">
                             <div class="bw-notification-icon @iconTypeClass">
@@ -51,7 +49,8 @@
                                 <p class="bw-notification-message">@notification.Message</p>
                                 <span class="bw-notification-time">@GetTimeAgo(notification.CreatedAt)</span>
                             </div>
-                            <button type="button" class="bw-notification-dismiss group-hover:opacity-100" @onclick:stopPropagation="true" @onclick="() => Dismiss(notification)">
+                            <button type="button" class="bw-notification-dismiss group-hover:opacity-100"
+                                    @onclick:stopPropagation="true" @onclick="() => Dismiss(notification)">
                                 <i class="fa-solid fa-times text-xs"></i>
                             </button>
                         </div>
@@ -71,49 +70,55 @@
 
 @code {
     // Removed Class parameter (inherited)
-    
-    private bool _isOpen = false;
+
+    private bool _isOpen;
     private List<NotificationItem> _notifications = new();
     private int _unreadCount => _notifications.Count(n => !n.IsRead);
-    
+
     protected override void OnInitialized()
     {
         NotificationService.OnNotificationsChanged += RefreshNotifications;
         RefreshNotifications();
     }
-    
+
     private void RefreshNotifications()
     {
         _notifications = NotificationService.Notifications.OrderByDescending(n => n.CreatedAt).ToList();
         InvokeAsync(StateHasChanged);
     }
-    
-    private void TogglePanel() => _isOpen = !_isOpen;
-    
+
+    private void TogglePanel()
+    {
+        _isOpen = !_isOpen;
+    }
+
     private void MarkAsRead(NotificationItem notification)
     {
         NotificationService.MarkAsRead(notification.Id);
     }
-    
+
     private void Dismiss(NotificationItem notification)
     {
         NotificationService.Remove(notification.Id);
     }
-    
+
     private void ClearAll()
     {
         NotificationService.ClearAll();
         _isOpen = false;
     }
-    
-    private string GetIcon(NotificationType type) => type switch
+
+    private string GetIcon(NotificationType type)
     {
-        NotificationType.Success => "fa-solid fa-check-circle",
-        NotificationType.Warning => "fa-solid fa-exclamation-triangle",
-        NotificationType.Error => "fa-solid fa-times-circle",
-        _ => "fa-solid fa-info-circle"
-    };
-    
+        return type switch
+        {
+            NotificationType.Success => "fa-solid fa-check-circle",
+            NotificationType.Warning => "fa-solid fa-exclamation-triangle",
+            NotificationType.Error => "fa-solid fa-times-circle",
+            _ => "fa-solid fa-info-circle"
+        };
+    }
+
     private string GetTimeAgo(DateTime time)
     {
         var diff = DateTime.Now - time;
@@ -122,9 +127,10 @@
         if (diff.TotalHours < 24) return $"{(int)diff.TotalHours} saat önce";
         return $"{(int)diff.TotalDays} gün önce";
     }
-    
+
     public void Dispose()
     {
         NotificationService.OnNotificationsChanged -= RefreshNotifications;
     }
+
 }
