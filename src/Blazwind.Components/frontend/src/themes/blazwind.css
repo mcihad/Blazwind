@@ -140,6 +140,7 @@
     --bw-color-background: var(--bw-gray-50);
     --bw-color-surface: #ffffff;
     --bw-color-surface-elevated: #ffffff;
+    --bw-color-surface-muted: var(--bw-gray-100);
     --bw-control-hover-bg: var(--bw-primary-50);
 
     /* Text */
@@ -456,6 +457,7 @@
     --bw-color-background: var(--bw-gray-900);
     --bw-color-surface: var(--bw-gray-800);
     --bw-color-surface-elevated: var(--bw-gray-700);
+    --bw-color-surface-muted: var(--bw-gray-700);
     --bw-control-hover-bg: rgba(59, 130, 246, 0.15);
 
     /* Text overrides */

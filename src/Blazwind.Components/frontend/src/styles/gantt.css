@@ -200,7 +200,7 @@
 .bw-gantt-task-list-header {
     position: sticky;
     top: 0;
-    background-color: var(--bw-color-surface-muted);
+    background-color: var(--bw-color-surface-muted, #f3f4f6);
     border-bottom: 1px solid var(--bw-color-border);
     padding: 0 0.75rem;
     height: 2rem;
@@ -210,7 +210,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--bw-color-text-secondary);
-    z-index: 32;
+    z-index: 36;
 }
 
 .bw-gantt-task-list-toggle {
@@ -278,13 +278,13 @@
 .bw-gantt-task-list-collapsed-header {
     position: sticky;
     top: 0;
-    background-color: var(--bw-color-surface-muted);
+    background-color: var(--bw-color-surface-muted, #f3f4f6);
     border-bottom: 1px solid var(--bw-color-border);
     height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 32;
+    z-index: 36;
 }
 
 .bw-gantt-task-list-collapsed-row {
@@ -300,10 +300,10 @@
 .bw-gantt-timeline-header {
     position: sticky;
     top: 0;
-    background-color: var(--bw-color-surface-muted);
+    background-color: var(--bw-color-surface-muted, #f3f4f6);
     border-bottom: 1px solid var(--bw-color-border);
     display: flex;
-    z-index: 30;
+    z-index: 35;
     height: 2rem;
 }
 
