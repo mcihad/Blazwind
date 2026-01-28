@@ -51,7 +51,7 @@
     </div>
 
     @* Main Content with unified vertical scroll *@
-    <div class="overflow-auto" style="height: @(_isFullScreen ? "calc(100vh - 46px)" : Height);">
+    <div class="bw-gantt-scroll-container overflow-auto" style="height: @(_isFullScreen ? "100%" : Height);">
         <div class="flex min-w-max">
             @* Task List (Left Panel - Sticky) *@
             @if (ShowTaskList && _isTaskListVisible)
