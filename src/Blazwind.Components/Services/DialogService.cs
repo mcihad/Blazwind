@@ -28,7 +28,7 @@ public class DialogService
             { "Title", title },
             { "Message", message },
             { "Color", color },
-            { "ConfirmText", "Tamam" }
+            { "ConfirmText", "OK" }
         };
 
         var options = new DialogOptions { Width = "420px", CloseOnOverlayClick = true, IsRaw = true };
@@ -50,8 +50,8 @@ public class DialogService
             { "Title", title },
             { "Message", message },
             { "Color", color },
-            { "ConfirmText", "Onayla" },
-            { "CancelText", "İptal" }
+            { "ConfirmText", "Confirm" },
+            { "CancelText", "Cancel" }
         };
 
         var options = new DialogOptions { Width = "440px", CloseOnOverlayClick = false, IsRaw = true };
@@ -67,8 +67,8 @@ public class DialogService
     }
 
     /// <summary>Show a confirm dialog with custom buttons</summary>
-    public async Task<bool> ShowConfirmAsync(string title, string message, string okText = "Onayla",
-        string cancelText = "İptal", BwColor color = BwColor.Warning)
+    public async Task<bool> ShowConfirmAsync(string title, string message, string okText = "Confirm",
+        string cancelText = "Cancel", BwColor color = BwColor.Warning)
     {
         var parameters = new Dictionary<string, object>
         {
@@ -92,7 +92,7 @@ public class DialogService
         {
             { "Title", title },
             { "Message", message },
-            { "Placeholder", placeholder ?? "Değer" },
+            { "Placeholder", placeholder ?? "Value" },
             { "DefaultValue", defaultValue ?? "" },
             { "Color", color }
         };

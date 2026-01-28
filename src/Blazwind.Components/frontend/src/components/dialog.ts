@@ -54,13 +54,13 @@ export function showProgress(options: any): any {
 
     container.innerHTML = `
         <div class="mb-4 flex justify-between items-center">
-            <h4 class="bw-dialog-progress-title" id="progress-title">${options.Title || 'İşlem Yapılıyor'}</h4>
+            <h4 class="bw-dialog-progress-title" id="progress-title">${options.Title || 'Processing'}</h4>
             <span class="bw-dialog-progress-percent" id="progress-percent">0%</span>
         </div>
         <div class="bw-dialog-progress-track">
             <div class="bw-dialog-progress-fill" style="width: 0%" id="progress-bar"></div>
         </div>
-        <p class="bw-dialog-progress-message" id="progress-msg">${options.Message || 'Lütfen bekleyin...'}</p>
+        <p class="bw-dialog-progress-message" id="progress-msg">${options.Message || 'Please wait...'}</p>
     `;
 
     overlay.appendChild(container);
@@ -90,8 +90,8 @@ export function showLoading(options: any): any {
         <div class="bw-dialog-loading">
             <div class="bw-dialog-spinner"></div>
             <div>
-                <h4 class="bw-dialog-title">Yükleniyor</h4>
-                <p class="bw-dialog-message text-sm text-[var(--bw-color-text-secondary)]">${options.Message || 'Lütfen bekleyin...'}</p>
+                <h4 class="bw-dialog-title">Loading</h4>
+                <p class="bw-dialog-message text-sm text-[var(--bw-color-text-secondary)]">${options.Message || 'Please wait...'}</p>
             </div>
         </div>
     `;
@@ -117,7 +117,7 @@ export function showSquareLoading(options: any): any {
     container.innerHTML = `
         <div class="bw-dialog-loading-square">
             <i class="fa-solid fa-circle-notch bw-dialog-icon-loading"></i>
-            <span class="text-xs font-semibold tracking-wide opacity-90 text-center px-2 text-[var(--bw-color-text)]">${options.Message || 'Yükleniyor'}</span>
+            <span class="text-xs font-semibold tracking-wide opacity-90 text-center px-2 text-[var(--bw-color-text)]">${options.Message || 'Loading'}</span>
         </div>
     `;
 
@@ -141,8 +141,8 @@ export function showBusy(options: any): any {
                     <i class="fa-solid fa-arrows-rotate fa-spin text-5xl text-white relative z-10"></i>
                  </div>
             </div>
-            <h2 class="text-2xl font-bold mb-2 tracking-tight text-white">İşlem Sürüyor</h2>
-            <p class="bw-dialog-pulse-message opacity-80 font-light">${options.Message || 'Lütfen bekleyiniz, işlem tamamlanana kadar sayfayı kapatmayınız.'}</p>
+            <h2 class="text-2xl font-bold mb-2 tracking-tight text-white">Operation in Progress</h2>
+            <p class="bw-dialog-pulse-message opacity-80 font-light">${options.Message || 'Please wait, do not close the page until the operation is complete.'}</p>
         </div>
     `;
 
@@ -167,11 +167,11 @@ export function showCountdown(options: any): any {
             </svg>
             <div class="absolute inset-0 flex items-center justify-center flex-col">
                 <span class="bw-dialog-countdown-text" id="countdown-text">${seconds}</span>
-                <span class="bw-dialog-countdown-subtext">Saniye</span>
+                <span class="bw-dialog-countdown-subtext">Seconds</span>
             </div>
         </div>
-        <h3 class="bw-dialog-title mb-2 text-xl font-bold">${options.Title || 'Otomatik Kapanış'}</h3>
-        <p class="text-sm leading-relaxed text-[var(--bw-color-text-secondary)]">${options.Message || 'Pencere otomatik olarak kapanacak...'}</p>
+        <h3 class="bw-dialog-title mb-2 text-xl font-bold">${options.Title || 'Auto Close'}</h3>
+        <p class="text-sm leading-relaxed text-[var(--bw-color-text-secondary)]">${options.Message || 'The window will close automatically...'}</p>
     `;
 
     overlay.appendChild(container);
@@ -213,8 +213,8 @@ export function showSuccess(options: any): any {
                 <path class="text-[var(--bw-color-success)]" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="32" stroke-dashoffset="32" d="M14 27l7 7 16-16" style="animation: checkmark 0.4s 0.4s ease-in-out forwards;"/>
             </svg>
         </div>
-        <h3 class="bw-dialog-title mb-2 text-xl font-bold">${options.Title || 'Başarılı!'}</h3>
-        <p class="text-sm text-[var(--bw-color-text-secondary)]">${options.Message || 'İşlem başarıyla tamamlandı.'}</p>
+        <h3 class="bw-dialog-title mb-2 text-xl font-bold">${options.Title || 'Success!'}</h3>
+        <p class="text-sm text-[var(--bw-color-text-secondary)]">${options.Message || 'Operation completed successfully.'}</p>
     `;
 
     const style = document.createElement('style');
@@ -252,8 +252,8 @@ export function showError(options: any): any {
                 <path class="text-[var(--bw-color-danger)]" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="32" stroke-dashoffset="32" d="M16 16 36 36 M36 16 16 36" style="animation: checkmark 0.4s 0.4s ease-in-out forwards;"/>
             </svg>
         </div>
-        <h3 class="bw-dialog-title mb-2 text-xl font-bold">${options.Title || 'Hata!'}</h3>
-        <p class="text-sm text-[var(--bw-color-text-secondary)]">${options.Message || 'Bir hata oluştu.'}</p>
+        <h3 class="bw-dialog-title mb-2 text-xl font-bold">${options.Title || 'Error!'}</h3>
+        <p class="text-sm text-[var(--bw-color-text-secondary)]">${options.Message || 'An error occurred.'}</p>
     `;
 
     const style = document.createElement('style');
@@ -286,7 +286,7 @@ export function showImagePreview(options: any): any {
     container.onclick = (e) => e.stopPropagation();
 
     container.innerHTML = `
-        <img src="${options.Src}" alt="${options.Alt || 'Görsel'}" class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain" />
+        <img src="${options.Src}" alt="${options.Alt || 'Image'}" class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain" />
         ${options.Caption ? `<p class="text-white text-center mt-4 text-sm font-medium drop-shadow-lg">${options.Caption}</p>` : ''}
         <button class="bw-dialog-close absolute -top-3 -right-3 !bg-white !text-gray-800 shadow-lg !w-8 !h-8" onclick="this.closest('.fixed').remove()">
             <i class="fa-solid fa-xmark"></i>
@@ -314,7 +314,7 @@ export function showPulseLoading(options: any): any {
                 <i class="fa-solid fa-${options.Icon || 'sync'} bw-dialog-pulse-icon"></i>
             </div>
         </div>
-        <p class="bw-dialog-pulse-message">${options.Message || 'İşlem devam ediyor...'}</p>
+        <p class="bw-dialog-pulse-message">${options.Message || 'Operation in progress...'}</p>
     `;
 
     overlay.appendChild(container);

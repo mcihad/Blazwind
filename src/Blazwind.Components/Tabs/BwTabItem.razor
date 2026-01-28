@@ -4,9 +4,9 @@
 
 @if (ParentTabs?.IsActive(this) ?? false)
 {
-    // Keeping py-4 as standard padding class or moving to theme? 
+    // Keeping py-4 as standard padding class or moving to theme?
     // Usually tab content padding is utility. Let's stick with utility unless strict theming required.
-    // User requested "theme support", mostly colors. 
+    // User requested "theme support", mostly colors.
     // But I will move py-4 to style if I want consistency.
     // Let's use a class "bw-tab-panel"
     <div class="@CombineClasses("bw-tab-panel", "py-4")" style="@Style" id="@Id" @attributes="AdditionalAttributes">
@@ -16,7 +16,7 @@
 
 @code {
     [CascadingParameter] public BwTabs? ParentTabs { get; set; }
-    
+
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Name { get; set; }
     [Parameter] public RenderFragment? TitleTemplate { get; set; }
@@ -25,7 +25,7 @@
     [Parameter] public bool IsDisabled { get; set; } = false;
     [Parameter] public bool Closable { get; set; } = false;
     [Parameter] public bool ConfirmClose { get; set; } = false;
-    [Parameter] public string ConfirmCloseMessage { get; set; } = "Bu sekmeyi kapatmak istediğinize emin misiniz?";
+    [Parameter] public string ConfirmCloseMessage { get; set; } = "Are you sure you want to close this tab?";
     [Parameter] public EventCallback<string> OnClose { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 

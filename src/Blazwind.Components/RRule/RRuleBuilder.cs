@@ -215,7 +215,7 @@ public static class RRuleBuilder
     }
 
     /// <summary>
-    /// İnsan okunabilir önizleme metni oluştur (Türkçe)
+    /// İnsan okunabilir önizleme metni oluştur (English)
     /// </summary>
     public static string GetHumanReadable(RRuleOptions options)
     {
@@ -227,59 +227,59 @@ public static class RRuleBuilder
         switch (options.Frequency)
         {
             case RRuleFrequency.Daily:
-                sb.Append(options.Interval == 1 ? "Her gün" : $"Her {options.Interval} günde bir");
+                sb.Append(options.Interval == 1 ? "Every day" : $"Every {options.Interval} days");
                 break;
 
             case RRuleFrequency.Weekly:
                 if (options.Interval == 1)
-                    sb.Append("Her hafta");
+                    sb.Append("Every week");
                 else
-                    sb.Append($"Her {options.Interval} haftada bir");
+                    sb.Append($"Every {options.Interval} weeks");
 
                 if (options.ByDays.Count > 0)
                 {
                     var dayNames = options.ByDays
                         .OrderBy(d => ((int)d + 6) % 7)
-                        .Select(GetTurkishDayName);
-                    sb.Append($" {string.Join(", ", dayNames)}");
+                        .Select(GetEnglishDayName);
+                    sb.Append($" on {string.Join(", ", dayNames)}");
                 }
 
                 break;
 
             case RRuleFrequency.Monthly:
                 if (options.Interval == 1)
-                    sb.Append("Her ay");
+                    sb.Append("Every month");
                 else
-                    sb.Append($"Her {options.Interval} ayda bir");
+                    sb.Append($"Every {options.Interval} months");
 
                 if (options.MonthlyType == RRuleMonthlyType.DayOfMonth)
                 {
-                    sb.Append($" {options.ByMonthDay}. gün");
+                    sb.Append($" on the {options.ByMonthDay}{GetOrdinalSuffix(options.ByMonthDay)}");
                 }
                 else
                 {
                     var posText = options.BySetPos switch
                     {
-                        1 => "ilk",
-                        2 => "ikinci",
-                        3 => "üçüncü",
-                        4 => "dördüncü",
-                        -1 => "son",
-                        _ => $"{options.BySetPos}."
+                        1 => "first",
+                        2 => "second",
+                        3 => "third",
+                        4 => "fourth",
+                        -1 => "last",
+                        _ => $"{options.BySetPos}th"
                     };
-                    sb.Append($" {posText} {GetTurkishDayName(options.ByWeekDay)}");
+                    sb.Append($" on the {posText} {GetEnglishDayName(options.ByWeekDay)}");
                 }
 
                 break;
 
             case RRuleFrequency.Yearly:
                 if (options.Interval == 1)
-                    sb.Append("Her yıl");
+                    sb.Append("Every year");
                 else
-                    sb.Append($"Her {options.Interval} yılda bir");
+                    sb.Append($"Every {options.Interval} years");
 
-                var monthName = GetTurkishMonthName(options.ByMonth);
-                sb.Append($" {options.ByMonthDay} {monthName}");
+                var monthName = GetEnglishMonthName(options.ByMonth);
+                sb.Append($" on {monthName} {options.ByMonthDay}{GetOrdinalSuffix(options.ByMonthDay)}");
                 break;
         }
 
@@ -287,42 +287,59 @@ public static class RRuleBuilder
         switch (options.EndType)
         {
             case RRuleEndType.AfterCount:
-                sb.Append($", {options.Count} kez");
+                sb.Append($", {options.Count} times");
                 break;
             case RRuleEndType.UntilDate when options.Until.HasValue:
-                sb.Append($", {options.Until.Value:dd MMMM yyyy} tarihine kadar");
+                sb.Append($", until {options.Until.Value:MMMM dd, yyyy}");
                 break;
         }
 
         return sb.ToString();
     }
 
-    private static string GetTurkishDayName(DayOfWeek day) => day switch
+    private static string GetOrdinalSuffix(int number)
     {
-        DayOfWeek.Monday => "Pazartesi",
-        DayOfWeek.Tuesday => "Salı",
-        DayOfWeek.Wednesday => "Çarşamba",
-        DayOfWeek.Thursday => "Perşembe",
-        DayOfWeek.Friday => "Cuma",
-        DayOfWeek.Saturday => "Cumartesi",
-        DayOfWeek.Sunday => "Pazar",
+        if (number <= 0) return number.ToString();
+
+        return (number % 100) switch
+        {
+            11 or 12 or 13 => "th",
+            _ => (number % 10) switch
+            {
+                1 => "st",
+                2 => "nd",
+                3 => "rd",
+                _ => "th"
+            }
+        };
+    }
+
+    private static string GetEnglishDayName(DayOfWeek day) => day switch
+    {
+        DayOfWeek.Monday => "Monday",
+        DayOfWeek.Tuesday => "Tuesday",
+        DayOfWeek.Wednesday => "Wednesday",
+        DayOfWeek.Thursday => "Thursday",
+        DayOfWeek.Friday => "Friday",
+        DayOfWeek.Saturday => "Saturday",
+        DayOfWeek.Sunday => "Sunday",
         _ => day.ToString()
     };
 
-    private static string GetTurkishMonthName(int month) => month switch
+    private static string GetEnglishMonthName(int month) => month switch
     {
-        1 => "Ocak",
-        2 => "Şubat",
-        3 => "Mart",
-        4 => "Nisan",
-        5 => "Mayıs",
-        6 => "Haziran",
-        7 => "Temmuz",
-        8 => "Ağustos",
-        9 => "Eylül",
-        10 => "Ekim",
-        11 => "Kasım",
-        12 => "Aralık",
+        1 => "January",
+        2 => "February",
+        3 => "March",
+        4 => "April",
+        5 => "May",
+        6 => "June",
+        7 => "July",
+        8 => "August",
+        9 => "September",
+        10 => "October",
+        11 => "November",
+        12 => "December",
         _ => month.ToString()
     };
 }

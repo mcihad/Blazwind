@@ -10,20 +10,20 @@
 
 <BwColumn Spacing="BwSpacing.Md" Class="@CombineClasses("")" Style="@Style" Id="@Id" @attributes="AdditionalAttributes">
     @* Frequency & Interval Section *@
-    <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Tekrarlama">
+    <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Recurrence">
         <BwColumn Spacing="BwSpacing.Md">
             <BwRow Spacing="BwSpacing.Lg" Wrap="true" CrossAxisAlignment="BwCrossAxisAlignment.End">
                 <BwColumn Spacing="BwSpacing.Xs" Class="min-w-32">
-                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Sıklık
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Frequency
                     </BwTypography>
                     <BwSelect @bind-Value="_frequencyValue" Items="@_frequencyItems" />
                 </BwColumn>
 
                 <BwColumn Spacing="BwSpacing.Xs">
-                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Aralık
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary" Weight="BwFontWeight.Medium">Interval
                     </BwTypography>
                     <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
-                        <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Her</BwTypography>
+                        <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Every</BwTypography>
                         <BwInput Type="number" @bind-Value="@_intervalValue" Class="w-16" />
                         <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">@IntervalLabel</BwTypography>
                     </BwRow>
@@ -35,7 +35,7 @@
     @* Weekly: Day Selection *@
     @if (Options.Frequency == RRuleFrequency.Weekly)
     {
-        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Günler">
+        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Days">
             <BwRow Spacing="BwSpacing.Xs" Wrap="true">
                 @foreach (var day in _weekDays)
                 {
@@ -50,10 +50,10 @@
     @* Monthly: Type Selection *@
     @if (Options.Frequency == RRuleFrequency.Monthly)
     {
-        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Aylık Seçenekler">
+        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Monthly Options">
             <BwColumn Spacing="BwSpacing.Sm">
                 @* Day of Month *@
-                    <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
                     <div class="bw-rrule-radio @(Options.MonthlyType == RRuleMonthlyType.DayOfMonth ? "selected" : "")"
                         @onclick="@(() => { Options.MonthlyType = RRuleMonthlyType.DayOfMonth; NotifyChange(); })">
                         @if (Options.MonthlyType == RRuleMonthlyType.DayOfMonth)
@@ -61,14 +61,14 @@
                             <div class="bw-rrule-radio-dot"></div>
                         }
                     </div>
-                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Ayın</BwTypography>
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">Day of month</BwTypography>
                     <BwInput Type="number" @bind-Value="@_monthDayValue" Class="w-16"
                         IsDisabled="@(Options.MonthlyType != RRuleMonthlyType.DayOfMonth)" />
-                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">. günü</BwTypography>
+                    <BwTypography Size="BwSize.Small" Color="BwColor.Secondary">th day</BwTypography>
                 </BwRow>
 
                 @* Weekday of Month *@
-                    <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center" Wrap="true">
+                <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center" Wrap="true">
                     <div class="bw-rrule-radio @(Options.MonthlyType == RRuleMonthlyType.WeekdayOfMonth ? "selected" : "")"
                         @onclick="@(() => { Options.MonthlyType = RRuleMonthlyType.WeekdayOfMonth; NotifyChange(); })">
                         @if (Options.MonthlyType == RRuleMonthlyType.WeekdayOfMonth)
@@ -89,7 +89,7 @@
     @* Yearly: Month and Day *@
     @if (Options.Frequency == RRuleFrequency.Yearly)
     {
-        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Yıllık Tarih">
+        <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Yearly Date">
             <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
                 <BwInput Type="number" @bind-Value="@_monthDayValue" Class="w-16" />
                 <BwSelect @bind-Value="_monthValue" Class="w-28" Items="@_monthItems" />
@@ -98,7 +98,7 @@
     }
 
     @* End Type *@
-    <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="Bitiş">
+    <BwBorder Color="BwColor.Light" Padding="BwSize.Medium" Title="End">
         <BwColumn Spacing="BwSpacing.Sm">
             @* Never *@
             <BwRow Spacing="BwSpacing.Sm" CrossAxisAlignment="BwCrossAxisAlignment.Center">
@@ -109,7 +109,7 @@
                         <div class="bw-rrule-radio-dot"></div>
                     }
                 </div>
-                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">Süresiz devam et</BwTypography>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">Continue indefinitely</BwTypography>
             </BwRow>
 
             @* After Count *@
@@ -123,7 +123,7 @@
                 </div>
                 <BwInput Type="number" @bind-Value="@_countValue" Class="w-16"
                     IsDisabled="@(Options.EndType != RRuleEndType.AfterCount)" />
-                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">tekrar sonra</BwTypography>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">occurrences</BwTypography>
             </BwRow>
 
             @* Until Date *@
@@ -137,7 +137,7 @@
                 </div>
                 <BwInput Type="date" @bind-Value="@_untilValue" Class="w-36"
                     IsDisabled="@(Options.EndType != RRuleEndType.UntilDate)" />
-                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">tarihine kadar</BwTypography>
+                <BwTypography Size="BwSize.Small" Color="BwColor.Dark">until</BwTypography>
             </BwRow>
         </BwColumn>
     </BwBorder>
@@ -145,12 +145,12 @@
     @* Preview *@
     @if (ShowPreview)
     {
-        <BwBorder Color="BwColor.Info" Padding="BwSize.Medium" Title="Önizleme" HasShadow="true">
+        <BwBorder Color="BwColor.Info" Padding="BwSize.Medium" Title="Preview" HasShadow="true">
             <BwColumn Spacing="BwSpacing.Sm">
                 <BwTypography Color="BwColor.Dark">@HumanReadableText</BwTypography>
                 <code class="bw-rrule-preview-code">
-                        @RRuleString
-                    </code>
+                            @RRuleString
+                        </code>
             </BwColumn>
         </BwBorder>
     }
@@ -178,38 +178,38 @@
     // Select Items
     private static readonly List<BwSelectItem<string>> _frequencyItems = new()
 {
-new("Daily", "Günlük"),
-new("Weekly", "Haftalık"),
-new("Monthly", "Aylık"),
-new("Yearly", "Yıllık")
+new("Daily", "Daily"),
+new("Weekly", "Weekly"),
+new("Monthly", "Monthly"),
+new("Yearly", "Yearly")
 };
 
     private static readonly List<BwSelectItem<string>> _setPosItems = new()
 {
-new("1", "1."),
-new("2", "2."),
-new("3", "3."),
-new("4", "4."),
-new("-1", "Son")
+new("1", "1st"),
+new("2", "2nd"),
+new("3", "3rd"),
+new("4", "4th"),
+new("-1", "Last")
 };
 
     private static readonly List<BwSelectItem<string>> _weekDayItems = new()
 {
-new("1", "Pazartesi"),
-new("2", "Salı"),
-new("3", "Çarşamba"),
-new("4", "Perşembe"),
-new("5", "Cuma"),
-new("6", "Cumartesi"),
-new("0", "Pazar")
+new("1", "Monday"),
+new("2", "Tuesday"),
+new("3", "Wednesday"),
+new("4", "Thursday"),
+new("5", "Friday"),
+new("6", "Saturday"),
+new("0", "Sunday")
 };
 
     private static readonly List<BwSelectItem<string>> _monthItems = new()
 {
-new("1", "Ocak"), new("2", "Şubat"), new("3", "Mart"),
-new("4", "Nisan"), new("5", "Mayıs"), new("6", "Haziran"),
-new("7", "Temmuz"), new("8", "Ağustos"), new("9", "Eylül"),
-new("10", "Ekim"), new("11", "Kasım"), new("12", "Aralık")
+new("1", "January"), new("2", "February"), new("3", "March"),
+new("4", "April"), new("5", "May"), new("6", "June"),
+new("7", "July"), new("8", "August"), new("9", "September"),
+new("10", "October"), new("11", "November"), new("12", "December")
 };
 
     // Computed properties
@@ -218,11 +218,11 @@ new("10", "Ekim"), new("11", "Kasım"), new("12", "Aralık")
 
     private string IntervalLabel => Options.Frequency switch
     {
-        RRuleFrequency.Daily => "gün",
-        RRuleFrequency.Weekly => "hafta",
-        RRuleFrequency.Monthly => "ay",
-        RRuleFrequency.Yearly => "yıl",
-        _ => "gün"
+        RRuleFrequency.Daily => "day",
+        RRuleFrequency.Weekly => "week",
+        RRuleFrequency.Monthly => "month",
+        RRuleFrequency.Yearly => "year",
+        _ => "day"
     };
 
     // Binding helpers
@@ -362,13 +362,13 @@ new("10", "Ekim"), new("11", "Kasım"), new("12", "Aralık")
     {
         _weekDays = new List<WeekDayInfo>
 {
-new() { Day = DayOfWeek.Monday, ShortName = "Pt", LongName = "Pazartesi" },
-new() { Day = DayOfWeek.Tuesday, ShortName = "Sa", LongName = "Salı" },
-new() { Day = DayOfWeek.Wednesday, ShortName = "Ça", LongName = "Çarşamba" },
-new() { Day = DayOfWeek.Thursday, ShortName = "Pe", LongName = "Perşembe" },
-new() { Day = DayOfWeek.Friday, ShortName = "Cu", LongName = "Cuma" },
-new() { Day = DayOfWeek.Saturday, ShortName = "Ct", LongName = "Cumartesi" },
-new() { Day = DayOfWeek.Sunday, ShortName = "Pz", LongName = "Pazar" }
+new() { Day = DayOfWeek.Monday, ShortName = "Mo", LongName = "Monday" },
+new() { Day = DayOfWeek.Tuesday, ShortName = "Tu", LongName = "Tuesday" },
+new() { Day = DayOfWeek.Wednesday, ShortName = "We", LongName = "Wednesday" },
+new() { Day = DayOfWeek.Thursday, ShortName = "Th", LongName = "Thursday" },
+new() { Day = DayOfWeek.Friday, ShortName = "Fr", LongName = "Friday" },
+new() { Day = DayOfWeek.Saturday, ShortName = "Sa", LongName = "Saturday" },
+new() { Day = DayOfWeek.Sunday, ShortName = "Su", LongName = "Sunday" }
 };
     }
 

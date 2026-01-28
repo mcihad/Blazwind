@@ -168,7 +168,7 @@ export function showToast(options: ToastOptions, dotnetRef?: any): string {
         </div>
         ${showClose ? `
             <div class="flex-shrink-0 -mr-1 -mt-1 ml-2">
-                <button type="button" class="bw-toast-close" aria-label="Kapat">
+                <button type="button" class="bw-toast-close" aria-label="Close">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>

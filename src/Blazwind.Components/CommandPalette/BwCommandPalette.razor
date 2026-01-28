@@ -65,22 +65,22 @@
                 {
                     <div class="bw-cp-empty">
                         <i class="fa-solid fa-search text-3xl mb-2"></i>
-                        <p class="m-0 text-sm">Sonuç bulunamadı</p>
+                        <p class="m-0 text-sm">No results found</p>
                     </div>
                 }
             </div>
             
             <div class="bw-cp-footer">
-                <span><kbd class="bw-cp-footer-key">↑↓</kbd> Gezin</span>
-                <span><kbd class="bw-cp-footer-key">↵</kbd> Seç</span>
-                <span><kbd class="bw-cp-footer-key">ESC</kbd> Kapat</span>
+                <span><kbd class="bw-cp-footer-key">↑↓</kbd> Navigate</span>
+                <span><kbd class="bw-cp-footer-key">↵</kbd> Select</span>
+                <span><kbd class="bw-cp-footer-key">ESC</kbd> Close</span>
             </div>
         </div>
     </div>
 }
 
 @code {
-    [Parameter] public string Placeholder { get; set; } = "Komut ara...";
+    [Parameter] public string Placeholder { get; set; } = "Search command...";
     
     private DotNetObjectReference<BwCommandPalette>? _dotNetRef;
     private string _inputId = $"cmd-input-{Guid.NewGuid():N}";

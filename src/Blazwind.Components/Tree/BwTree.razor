@@ -8,7 +8,7 @@
     @if (ShowSearch)
     {
         <div class="mb-3">
-            <BwInput Placeholder="Ara..." IconLeft="fa-solid fa-search" Size="BwSize.Small" @bind-Value="_searchQuery"
+            <BwInput Placeholder="Search..." IconLeft="fa-solid fa-search" Size="BwSize.Small" @bind-Value="_searchQuery"
                 @bind-Value:after="OnSearchChanged" />
         </div>
     }
@@ -17,11 +17,11 @@
     {
         <div class="bw-tree-toolbar">
             <button type="button" class="bw-tree-toolbar-btn" @onclick="ExpandAll">
-                <i class="fa-solid fa-folder-open mr-1"></i> Tümünü Aç
+                <i class="fa-solid fa-folder-open mr-1"></i> Expand All
             </button>
             <span class="bw-tree-toolbar-separator">|</span>
             <button type="button" class="bw-tree-toolbar-btn" @onclick="CollapseAll">
-                <i class="fa-solid fa-folder-minus mr-1"></i> Tümünü Kapat
+                <i class="fa-solid fa-folder-minus mr-1"></i> Collapse All
             </button>
         </div>
     }
@@ -43,7 +43,7 @@
         {
             <div class="bw-tree-empty">
                 <i class="fa-solid fa-tree bw-tree-empty-icon"></i>
-                <p>@(string.IsNullOrEmpty(_searchQuery) ? "Veri bulunamadı" : "Arama sonucu bulunamadı")</p>
+                <p>@(string.IsNullOrEmpty(_searchQuery) ? "No data found" : "No search results found")</p>
             </div>
         }
     </div>

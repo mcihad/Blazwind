@@ -9,58 +9,59 @@
 @inject ScriptLoaderService ScriptLoader
 @implements IAsyncDisposable
 
-<div @ref="_container" class="@CombineClasses("bw-chart")" style="@_containerStyle" id="@Id" @attributes="AdditionalAttributes"></div>
+<div @ref="_container" class="@CombineClasses("bw-chart")" style="@_containerStyle" id="@Id"
+    @attributes="AdditionalAttributes"></div>
 
 @code {
     private const string ScriptPath = "_content/Blazwind.Components/blazwind.chart.js";
-    
+
     private ElementReference _container;
     private string? _instanceId;
     private DotNetObjectReference<BwChart>? _netRef;
     private bool _isInitialized;
     private bool _scriptLoaded;
-    
+
     private string _containerStyle => $"width: {Width}; height: {Height}; {Style}";
-    
+
     #region Parameters
-    
+
     /// <summary>
     /// CSS style - Inherited from BwBase but overriding for custom usage if needed, though BwBase handles it.
     /// Actually, let's remove them to avoid hiding BwBase members.
     /// </summary>
-    
+
     /// <summary>
     /// Chart width
     /// </summary>
     [Parameter] public string Width { get; set; } = "100%";
-    
+
     /// <summary>
     /// Chart height
     /// </summary>
     [Parameter] public string Height { get; set; } = "400px";
-    
+
     /// <summary>
     /// Chart options (ECharts format) - can be ChartOptions or anonymous object
     /// </summary>
     [Parameter] public object? Options { get; set; }
-    
+
     /// <summary>
     /// Chart theme
     /// </summary>
     [Parameter] public ChartTheme Theme { get; set; } = ChartTheme.Default;
-    
+
     /// <summary>
     /// Show loading indicator initially
     /// </summary>
     [Parameter] public bool ShowLoading { get; set; } = false;
-    
+
     /// <summary>
     /// Click event callback
     /// </summary>
     [Parameter] public EventCallback<ChartClickEventArgs> OnClick { get; set; }
-    
+
     #endregion
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -70,7 +71,7 @@
                 // Lazy load chart script
                 await ScriptLoader.LoadScriptAsync(ScriptPath);
                 _scriptLoaded = true;
-                
+
                 if (Options != null)
                 {
                     await InitializeAsync();
@@ -80,7 +81,7 @@
             catch (ObjectDisposedException) { }
         }
     }
-    
+
     protected override async Task OnParametersSetAsync()
     {
         if (_isInitialized && Options != null)
@@ -93,35 +94,35 @@
             catch (ObjectDisposedException) { }
         }
     }
-    
+
     private async Task InitializeAsync()
     {
         if (!_scriptLoaded || Options == null) return;
-        
+
         _netRef = DotNetObjectReference.Create(this);
-        
+
         var themeStr = Theme == ChartTheme.Default ? null : Theme.ToString().ToLower();
         var optionsJson = JsonSerializer.Serialize(Options, new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
         });
-        
+
         _instanceId = await JS.InvokeAsync<string>(
-            "BwChart.init", 
-            _container, 
-            JsonSerializer.Deserialize<object>(optionsJson),
-            themeStr, 
-            _netRef
+        "BwChart.init",
+        _container,
+        JsonSerializer.Deserialize<object>(optionsJson),
+        themeStr,
+        _netRef
         );
         _isInitialized = true;
-        
+
         if (ShowLoading)
         {
             await ShowLoadingAsync();
         }
     }
-    
+
     [JSInvokable]
     public async Task HandleChartClick(string eventDataJson)
     {
@@ -138,7 +139,7 @@
         }
         catch { }
     }
-    
+
     /// <summary>
     /// Update chart options
     /// </summary>
@@ -151,11 +152,11 @@
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
             });
-            
+
             await JS.InvokeVoidAsync("BwChart.setOption", _instanceId, JsonSerializer.Deserialize<object>(optionsJson), notMerge);
         }
     }
-    
+
     /// <summary>
     /// Resize chart
     /// </summary>
@@ -166,7 +167,7 @@
             await JS.InvokeVoidAsync("BwChart.resize", _instanceId);
         }
     }
-    
+
     /// <summary>
     /// Get chart as data URL
     /// </summary>
@@ -178,18 +179,18 @@
         }
         return string.Empty;
     }
-    
+
     /// <summary>
     /// Show loading indicator
     /// </summary>
-    public async Task ShowLoadingAsync(string text = "Yükleniyor...")
+    public async Task ShowLoadingAsync(string text = "Loading...")
     {
         if (_instanceId != null)
         {
             await JS.InvokeVoidAsync("BwChart.showLoading", _instanceId, text);
         }
     }
-    
+
     /// <summary>
     /// Hide loading indicator
     /// </summary>
@@ -200,7 +201,7 @@
             await JS.InvokeVoidAsync("BwChart.hideLoading", _instanceId);
         }
     }
-    
+
     /// <summary>
     /// Clear chart
     /// </summary>
@@ -211,7 +212,7 @@
             await JS.InvokeVoidAsync("BwChart.clear", _instanceId);
         }
     }
-    
+
     public async ValueTask DisposeAsync()
     {
         if (_instanceId != null)
