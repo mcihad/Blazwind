@@ -1,4 +1,5 @@
 using System.Globalization;
+using Blazwind.Components.Segmented;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
@@ -32,11 +33,19 @@ public partial class BwGantt : BwBase, IAsyncDisposable
     private List<DateTime> PeriodBoundaries = new(); // Start dates of each period
     private List<string> TimelinePeriods = new();
 
+    // View mode options for BwSegmented
+    private readonly List<BwSegmented.SegmentedOption> _viewModeOptions = new()
+    {
+        new() { Label = "Day", Value = GanttViewMode.Day },
+        new() { Label = "Week", Value = GanttViewMode.Week },
+        new() { Label = "Month", Value = GanttViewMode.Month }
+    };
+
     [Parameter]
     public List<GanttTask> Tasks { get; set; } = new();
 
     [Parameter]
-    public string Title { get; set; } = "Proje Planı";
+    public string Title { get; set; } = "Project Plan";
 
     [Parameter]
     public string Height { get; set; } = "400px";
@@ -458,36 +467,36 @@ public partial class BwGantt : BwBase, IAsyncDisposable
         }
 
         foreach (var task in tasks)
-        foreach (var depId in task.Dependencies)
-            if (taskMap.ContainsKey(depId) && positions.TryGetValue(depId, out var fromPos) &&
-                positions.TryGetValue(task.Id, out var toPos))
-            {
-                // Draw cubic bezier curve
-                var x1 = fromPos.Right;
-                var y1 = fromPos.Top;
-                var x2 = toPos.Left;
-                var y2 = toPos.Top;
-
-                // Improved sigmoid-like curve for aesthetic flow
-                var path =
-                    $"M {x1.ToString(CultureInfo.InvariantCulture)} {y1.ToString(CultureInfo.InvariantCulture)} ";
-                // Control point 1: x1 + gap, y1
-                // Control point 2: x2 - gap, y2
-                var gap = 30; // Larger gap for smoother curve
-
-                path +=
-                    $"C {(x1 + gap).ToString(CultureInfo.InvariantCulture)} {y1.ToString(CultureInfo.InvariantCulture)}, ";
-                path +=
-                    $"{(x2 - gap).ToString(CultureInfo.InvariantCulture)} {y2.ToString(CultureInfo.InvariantCulture)}, ";
-                path += $"{x2.ToString(CultureInfo.InvariantCulture)} {y2.ToString(CultureInfo.InvariantCulture)}";
-
-                lines.Add(new DependencyLine
+            foreach (var depId in task.Dependencies)
+                if (taskMap.ContainsKey(depId) && positions.TryGetValue(depId, out var fromPos) &&
+                    positions.TryGetValue(task.Id, out var toPos))
                 {
-                    FromId = depId,
-                    ToId = task.Id,
-                    Path = path
-                });
-            }
+                    // Draw cubic bezier curve
+                    var x1 = fromPos.Right;
+                    var y1 = fromPos.Top;
+                    var x2 = toPos.Left;
+                    var y2 = toPos.Top;
+
+                    // Improved sigmoid-like curve for aesthetic flow
+                    var path =
+                        $"M {x1.ToString(CultureInfo.InvariantCulture)} {y1.ToString(CultureInfo.InvariantCulture)} ";
+                    // Control point 1: x1 + gap, y1
+                    // Control point 2: x2 - gap, y2
+                    var gap = 30; // Larger gap for smoother curve
+
+                    path +=
+                        $"C {(x1 + gap).ToString(CultureInfo.InvariantCulture)} {y1.ToString(CultureInfo.InvariantCulture)}, ";
+                    path +=
+                        $"{(x2 - gap).ToString(CultureInfo.InvariantCulture)} {y2.ToString(CultureInfo.InvariantCulture)}, ";
+                    path += $"{x2.ToString(CultureInfo.InvariantCulture)} {y2.ToString(CultureInfo.InvariantCulture)}";
+
+                    lines.Add(new DependencyLine
+                    {
+                        FromId = depId,
+                        ToId = task.Id,
+                        Path = path
+                    });
+                }
 
         return lines;
     }
@@ -576,6 +585,14 @@ public partial class BwGantt : BwBase, IAsyncDisposable
             GanttTaskStatus.Cancelled => "#f3f4f6",
             _ => "#e5e7eb"
         };
+    }
+
+    private async Task OnViewModeChanged(object? value)
+    {
+        if (value is GanttViewMode mode)
+        {
+            await SetViewMode(mode);
+        }
     }
 
     private async Task SetViewMode(GanttViewMode mode)

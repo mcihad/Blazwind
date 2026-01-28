@@ -18,6 +18,12 @@
     box-shadow: none;
     border: none;
     background-color: var(--bw-color-surface);
+    overflow: auto;
+}
+
+/* Ensure scrollbar is always visible in fullscreen */
+.bw-gantt.fullscreen .overflow-auto {
+    overflow: auto !important;
 }
 
 /* ========== Header Toolbar ========== */
@@ -31,6 +37,9 @@
     border-bottom: 1px solid var(--bw-color-border);
     background-color: var(--bw-color-surface);
     transition: background-color 0.3s, border-color 0.3s;
+    position: sticky;
+    top: 0;
+    z-index: 40;
 }
 
 @media (min-width: 640px) {

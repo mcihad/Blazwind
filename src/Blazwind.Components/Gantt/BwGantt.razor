@@ -5,13 +5,14 @@
 @using Blazwind.Components.Avatar
 @using Blazwind.Components.Card
 @using Blazwind.Components.ContextMenu
+@using Blazwind.Components.Segmented
 @using Blazwind.Components.Shared
 @using Microsoft.JSInterop
 @implements IAsyncDisposable
 
 <BwCard Class="@CombineClasses($"bw-gantt overflow-hidden {(_isFullScreen ? "bw-gantt fullscreen" : "")}")"
-        Style="@(_isFullScreen ? "z-index: 9999;" : Style)" BodyClass="p-0" Id="@Id"
-        AdditionalAttributes="@AdditionalAttributes">
+    Style="@(_isFullScreen ? "z-index: 9999;" : Style)" BodyClass="p-0" Id="@Id"
+    AdditionalAttributes="@AdditionalAttributes">
     @* Header - Modern Toolbar *@
     <div class="bw-gantt-header">
         @* Title Section *@
@@ -26,37 +27,23 @@
 
         @* Controls Container *@
         <div class="bw-gantt-controls">
-            @* View Mode Switcher (Segmented Control Style) *@
-            <div class="bw-gantt-view-switcher">
-                <button class="bw-gantt-view-btn @(ViewMode == GanttViewMode.Day ? "active" : "")"
-                        @onclick="async () => await SetViewMode(GanttViewMode.Day)">
-                    Gün
-                </button>
-                <button class="bw-gantt-view-btn @(ViewMode == GanttViewMode.Week ? "active" : "")"
-                        @onclick="async () => await SetViewMode(GanttViewMode.Week)">
-                    Hafta
-                </button>
-                <button class="bw-gantt-view-btn @(ViewMode == GanttViewMode.Month ? "active" : "")"
-                        @onclick="async () => await SetViewMode(GanttViewMode.Month)">
-                    Ay
-                </button>
-            </div>
+            @* View Mode Switcher (BwSegmented) *@
+            <BwSegmented Options="@_viewModeOptions" Value="@ViewMode" ValueChanged="@OnViewModeChanged"
+                Size="BwSize.Small" />
 
             @* Actions Group *@
             <div class="bw-gantt-actions">
-                <button class="bw-gantt-action-btn"
-                        @onclick="ZoomOut" title="Uzaklaş">
+                <button class="bw-gantt-action-btn" @onclick="ZoomOut" title="Zoom Out">
                     <i class="fa-solid fa-minus text-xs"></i>
                 </button>
-                <button class="bw-gantt-action-btn"
-                        @onclick="ZoomIn" title="Yakınlaş">
+                <button class="bw-gantt-action-btn" @onclick="ZoomIn" title="Zoom In">
                     <i class="fa-solid fa-plus text-xs"></i>
                 </button>
 
                 <div class="bw-gantt-action-divider"></div>
 
-                <button class="bw-gantt-action-btn @(_isFullScreen ? "active" : "")"
-                        @onclick="ToggleFullScreen" title="@(_isFullScreen ? "Küçült" : "Tam Ekran")">
+                <button class="bw-gantt-action-btn @(_isFullScreen ? "active" : "")" @onclick="ToggleFullScreen"
+                    title="@(_isFullScreen ? "Exit Fullscreen" : "Fullscreen")">
                     <i class="@(_isFullScreen ? "fa-solid fa-compress" : "fa-solid fa-expand") text-xs"></i>
                 </button>
             </div>
@@ -69,28 +56,26 @@
             @* Task List (Left Panel - Sticky) *@
             @if (ShowTaskList && _isTaskListVisible)
             {
-                <div class="bw-gantt-task-list relative"
-                     style="width: @(_currentTaskListWidth)px;">
+                <div class="bw-gantt-task-list relative" style="width: @(_currentTaskListWidth)px;">
                     @* Task List Header *@
                     <div class="bw-gantt-task-list-header">
-                        <span>Görevler</span>
-                        <button type="button" class="bw-gantt-task-list-toggle"
-                                @onclick="ToggleTaskList" title="Görev listesini gizle">
+                        <span>Tasks</span>
+                        <button type="button" class="bw-gantt-task-list-toggle" @onclick="ToggleTaskList"
+                            title="Hide task list">
                             <i class="fa-solid fa-chevron-left text-xs"></i>
                         </button>
                     </div>
                     @* Task List Items - fixed height rows *@
-                    @{ var taskIndex = 0; }
+                    @{
+                        var taskIndex = 0;
+                    }
                     @foreach (var task in FlatTasks)
                     {
                         var isHovered = _hoveredTaskId == task.Id;
                         var currentTask = task;
-                        <div
-                            class="bw-gantt-task-row @(task.ParentId != null ? "child" : "") @(isHovered ? "hovered" : "")"
-                            data-task-index="@taskIndex"
-                            @onclick="() => HandleTaskClick(task)"
-                            @onmouseenter="() => _hoveredTaskId = task.Id"
-                            @onmouseleave="() => _hoveredTaskId = null">
+                        <div class="bw-gantt-task-row @(task.ParentId != null ? "child" : "") @(isHovered ? "hovered" : "")"
+                            data-task-index="@taskIndex" @onclick="() => HandleTaskClick(task)"
+                            @onmouseenter="() => _hoveredTaskId = task.Id" @onmouseleave="() => _hoveredTaskId = null">
                             @if (TaskItemTemplate != null)
                             {
                                 @TaskItemTemplate(currentTask)
@@ -107,18 +92,15 @@
                                 }
                                 else
                                 {
-                                    <i class="fa-solid fa-circle text-xs"
-                                       style="color: @(task.Color ?? "var(--bw-color-primary)")"></i>
+                                    <i class="fa-solid fa-circle text-xs" style="color: @(task.Color ?? "var(--bw-color-primary)")"></i>
                                 }
 
-                                <span
-                                    class="bw-gantt-task-title @(task.Status == GanttTaskStatus.Completed ? "completed" : "")">
+                                <span class="bw-gantt-task-title @(task.Status == GanttTaskStatus.Completed ? "completed" : "")">
                                     @task.Title
                                 </span>
                                 @if (!string.IsNullOrEmpty(task.AssigneeAvatar) || !string.IsNullOrEmpty(task.AssigneeName))
                                 {
-                                    <BwAvatar Name="@task.AssigneeName" Src="@task.AssigneeAvatar"
-                                              Size="BwSize.ExtraSmall"/>
+                                    <BwAvatar Name="@task.AssigneeName" Src="@task.AssigneeAvatar" Size="BwSize.ExtraSmall" />
                                 }
                             }
                         </div>
@@ -129,8 +111,7 @@
                     @if (TaskListResizable)
                     {
                         <div class="bw-gantt-resize-handle bw-gantt-resize-right absolute top-0 h-full"
-                             @onmousedown="StartTaskListResize"
-                             @onmousedown:preventDefault="true"></div>
+                            @onmousedown="StartTaskListResize" @onmousedown:preventDefault="true"></div>
                     }
                 </div>
             }
@@ -139,8 +120,8 @@
                 @* Collapsed state - show expand button *@
                 <div class="bw-gantt-task-list-collapsed">
                     <div class="bw-gantt-task-list-collapsed-header">
-                        <button type="button" class="bw-gantt-task-list-toggle"
-                                @onclick="ToggleTaskList" title="Görev listesini göster">
+                        <button type="button" class="bw-gantt-task-list-toggle" @onclick="ToggleTaskList"
+                            title="Show task list">
                             <i class="fa-solid fa-chevron-right text-xs"></i>
                         </button>
                     </div>
@@ -159,8 +140,7 @@
                 <div class="bw-gantt-timeline-header relative">
                     @foreach (var period in TimelinePeriods)
                     {
-                        <div class="bw-gantt-timeline-cell"
-                             style="width: @(GetColumnWidth())px;">
+                        <div class="bw-gantt-timeline-cell" style="width: @(GetColumnWidth())px;">
                             @period
                         </div>
                     }
@@ -169,7 +149,7 @@
                     @if (ShowTodayIndicator && TodayOffset >= 0)
                     {
                         <div class="bw-gantt-today-marker"
-                             style="left: @(TodayOffset.ToString("F2", CultureInfo.InvariantCulture))px;">
+                            style="left: @(TodayOffset.ToString("F2", CultureInfo.InvariantCulture))px;">
                             <div class="bw-gantt-today-dot"></div>
                         </div>
                     }
@@ -177,15 +157,16 @@
 
                 @* Timeline Grid - with @ref for JS interop *@
                 <div @ref="_timelineContainer" class="bw-gantt-grid"
-                     style="width: @(TimelinePeriods.Count * GetColumnWidth())px; height: @(FlatTasks.Count * 32)px;">
+                    style="width: @(TimelinePeriods.Count* GetColumnWidth())px; height: @(FlatTasks.Count * 32)px;">
                     @* Row Backgrounds with Grid Pattern *@
                     <div class="absolute inset-0 pointer-events-none">
-                        @{ var rowBgIndex = 0; }
+                        @{
+                            var rowBgIndex = 0;
+                        }
                         @foreach (var task in FlatTasks)
                         {
                             var isRowHovered = _hoveredTaskId == task.Id;
-                            <div
-                                class="bw-gantt-row-bg @(isRowHovered ? "hovered" : rowBgIndex % 2 == 0 ? "even" : "odd")"
+                            <div class="bw-gantt-row-bg @(isRowHovered ? "hovered" : rowBgIndex % 2 == 0 ? "even" : "odd")"
                                 style="top: @(rowBgIndex * 32)px; height: 32px;"></div>
                             rowBgIndex++;
                         }
@@ -195,19 +176,14 @@
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" style="overflow: visible;">
                         <defs>
                             <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
-                                <polygon points="0 0, 6 2, 0 4" fill="currentColor" class="text-gray-400"/>
+                                <polygon points="0 0, 6 2, 0 4" fill="currentColor" class="text-gray-400" />
                             </marker>
                         </defs>
                         @foreach (var dep in CalculateDependencies())
                         {
-                            <path d="@dep.Path"
-                                  data-from="@dep.FromId"
-                                  data-to="@dep.ToId"
-                                  stroke="currentColor"
-                                  stroke-width="1.5"
-                                  fill="none"
-                                  class="bw-gantt-dependency-line text-gray-400"
-                                  marker-end="url(#arrowhead)"/>
+                            <path d="@dep.Path" data-from="@dep.FromId" data-to="@dep.ToId" stroke="currentColor"
+                                stroke-width="1.5" fill="none" class="bw-gantt-dependency-line text-gray-400"
+                                marker-end="url(#arrowhead)" />
                         }
                     </svg>
 
@@ -223,7 +199,7 @@
                     @if (ShowTodayIndicator && TodayOffset >= 0)
                     {
                         <div class="absolute top-0 bottom-0 z-0 pointer-events-none"
-                             style="left: @(TodayOffset.ToString("F2", CultureInfo.InvariantCulture))px;">
+                            style="left: @(TodayOffset.ToString("F2", CultureInfo.InvariantCulture))px;">
                             <div class="bw-gantt-today-line"></div>
                         </div>
                     }
@@ -240,10 +216,8 @@
                         @* Task bar container with data-task-id for JS *@
                         @if (ContextMenuTemplate != null)
                         {
-                            <BwContextMenu Class="@($"bw-gantt-bar {(Editable ? "editable" : "")}")"
-                                           Style="@barStyle"
-                                           @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))"
-                                           data-task-id="@task.Id">
+                            <BwContextMenu Class="@($"bw-gantt-bar {(Editable ? "editable" : "")}")" Style="@barStyle"
+                                @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))" data-task-id="@task.Id">
                                 <ChildContent>
                                     @RenderTaskBar(taskLocal)
                                 </ChildContent>
@@ -254,10 +228,8 @@
                         }
                         else
                         {
-                            <div class="bw-gantt-bar @(Editable ? "editable" : "")"
-                                 style="@barStyle"
-                                 data-task-id="@task.Id"
-                                 @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
+                            <div class="bw-gantt-bar @(Editable ? "editable" : "")" style="@barStyle" data-task-id="@task.Id"
+                                @onclick="@(Editable ? null : () => HandleTaskClick(taskLocal))">
                                 @RenderTaskBar(taskLocal)
                             </div>
                         }
@@ -273,10 +245,8 @@
 @* Resize overlay - captures mouse during panel resize *@
 @if (_isResizingTaskList)
 {
-    <div class="fixed inset-0 z-50 cursor-col-resize"
-         @onmousemove="OnResizeMouseMove"
-         @onmouseup="OnResizeMouseUp"
-         @onmouseleave="OnResizeMouseUp">
+    <div class="fixed inset-0 z-50 cursor-col-resize" @onmousemove="OnResizeMouseMove" @onmouseup="OnResizeMouseUp"
+        @onmouseleave="OnResizeMouseUp">
     </div>
 }
 
